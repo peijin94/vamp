@@ -1,0 +1,14 @@
+Inspection: 20260904_190008_59MHz.ms
+Rows: 62,128; organization: channels_inside_cells
+Selected visibility columns: DATA
+DDID 0: 192 channels, 4 products (XX, XY, YX, YY), 62,128 ordered antenna pairs
+TIME: 1 bitwise-distinct value(s); [5295265208.539846]; reference {'type': 'epoch', 'Ref': 'UTC'}
+TIME_CENTROID: 1 bitwise-distinct value(s); [5295265213.555357]; reference {'type': 'epoch', 'Ref': 'UTC'}
+Autocorrelation rows: 352; duplicate row keys: 0
+UVW: 61,777 bitwise-distinct vectors; 1,491,072 logical bytes; {'type': 'uvw', 'Ref': 'ITRF'}
+Physical file lengths: 409,594,838 bytes; allocated file blocks: 409,800,704 bytes
+MAIN logical arrays: 485,406,064 bytes; subtables: 91,133 bytes
+DATA: 381,714,432 logical bytes; 0 flagged samples; 0 nonfinite samples; 0 signed-zero components
+Layout is a candidate for the initial regular profile; archival round trip remains unimplemented.
+Storage files may contain multiple columns; logical repetition does not establish physical savings.
+No compression ratios, noise guarantees, scientific fidelity or CASA workflow compatibility have been established.

@@ -1,0 +1,37 @@
+import importlib.util
+import json
+from pathlib import Path
+import unittest
+
+import numpy as np
+
+from varquanms.codec import decode_block, encode_block
+from varquanms.config import Config
+
+root = Path(__file__).resolve().parents[1]
+spec = importlib.util.spec_from_file_location("reference_block_decoder", root / "scripts/reference_block_decoder.py")
+reference = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(reference)
+
+
+class ReferenceDecoderTests(unittest.TestCase):
+    def test_literal_conformance_and_independent_decoder(self):
+        fixtures = json.loads((root / "tests/fixtures/codec-v1.json").read_text())
+        for fixture in fixtures["blocks"]:
+            blob = bytes.fromhex(fixture["block_hex"])
+            expected = bytes.fromhex(fixture["complex64_hex"])
+            self.assertEqual(reference.decode(blob, fixture["rows"], fixture["channels"]), expected)
+            self.assertEqual(decode_block(blob, (fixture["rows"], fixture["channels"])).tobytes(), expected)
+        rng = np.random.default_rng(42)
+        values = (rng.normal(size=(8, 31)) + 1j * rng.normal(size=(8, 31))).astype(np.complex64)
+        values.view(np.uint32).flat[0:2] = [0x7FC12345, 0x80000000]
+        flags = np.zeros(values.shape, dtype=bool)
+        flags[2, 2] = True
+        for bits in (2, 4, 6, 8):
+            config = Config(mode="fixed", bits=[bits], max_component_mse=1.0, max_complex_error=5.0)
+            block = encode_block(values, flags, config, config.bounds())
+            self.assertEqual(reference.decode(block.blob, *values.shape), block.decoded.tobytes())
+
+
+if __name__ == "__main__":
+    unittest.main()

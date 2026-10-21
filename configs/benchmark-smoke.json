@@ -1,0 +1,29 @@
+{
+  "schema": "varquanms.benchmark/1",
+  "cache_methodology": "Warm/unspecified OS cache; previous source inspections have populated cache. No cache eviction or cold-cache claim.",
+  "notes": "Engineering bounds in stored DATA units, not validated science tolerances. Same configured ceilings do not imply identical actual reconstruction error.",
+  "export_ms": true,
+  "base": {
+    "mode": "adaptive",
+    "columns": ["DATA"],
+    "baseline_group": 32,
+    "channel_segment": 64,
+    "ordering": "original",
+    "bits": [2, 4, 6, 8],
+    "scale_quantiles": [1.0, 0.995],
+    "max_component_mse": 0.0000001,
+    "max_baseline_component_mse": 0.0000002,
+    "max_complex_error": 0.003,
+    "max_complex_bias": 0.0003,
+    "noise": null
+  },
+  "experiments": [
+    {"name": "lossless-no-dedup", "config": {"mode": "lossless", "deduplicate": false}},
+    {"name": "per-baseline-6bit", "config": {"mode": "fixed", "bits": [6], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
+    {"name": "per-baseline-4bit", "config": {"mode": "fixed", "bits": [4], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
+    {"name": "per-baseline-8bit", "config": {"mode": "fixed", "bits": [8], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
+    {"name": "grouped-original", "config": {}},
+    {"name": "grouped-amplitude", "config": {"ordering": "amplitude"}},
+    {"name": "grouped-buckets", "config": {"ordering": "buckets"}}
+  ]
+}

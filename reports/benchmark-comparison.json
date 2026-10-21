@@ -1,0 +1,1865 @@
+{
+  "schema": "varquanms.benchmark-results/1",
+  "status": "complete",
+  "source": "/data1/users/pz47/varquanMS/data/working/20260904_190008_59MHz.ms",
+  "cache_methodology": "Warm/unspecified OS cache; previous source inspections have populated cache. No cache eviction or cold-cache claim.",
+  "notes": "Engineering bounds in stored DATA units, not validated science tolerances. Same configured ceilings do not imply identical actual reconstruction error.",
+  "experiments": [
+    {
+      "name": "lossless-no-dedup",
+      "configuration": {
+        "mode": "lossless",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "original",
+        "shared_order": false,
+        "bucket_reference": null,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/comparison/lossless-no-dedup/archive.h5",
+        "archive_bytes": 331693912,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 1.2348578710121156,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 328163545,
+        "visibility_dataset_ratio_including_maps_statistics": 1.1631835339906509,
+        "stored_bytes_by_category": {
+          "coordinates": 992476,
+          "flags_weights": 448572,
+          "auxiliary_columns": 14420,
+          "visibility_lossless": 328163545,
+          "subtables": 10365,
+          "container_and_manifest_overhead": 2064534
+        },
+        "elapsed_seconds": 40.47447266802192,
+        "mode": "lossless",
+        "deduplicate": false,
+        "timings_seconds": {
+          "inspection_preflight": 5.15432314388454,
+          "column_encoding_and_writing": 22.53929069917649,
+          "before_integrity_finalization": 27.706439702771604
+        },
+        "peak_process_rss_bytes": 111493120,
+        "visibility_quality": {},
+        "visibility_block_statistics": {},
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 42.61318853404373,
+        "decode_and_export_process": 20.031721155159175,
+        "verification_process": 26.945279010105878
+      }
+    },
+    {
+      "name": "per-baseline-8bit",
+      "configuration": {
+        "mode": "fixed",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 1,
+        "channel_segment": 192,
+        "ordering": "original",
+        "shared_order": false,
+        "bucket_reference": null,
+        "bits": [
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/comparison/per-baseline-8bit/archive.h5",
+        "archive_bytes": 195858700,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.091277221793058,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 194296909,
+        "visibility_dataset_ratio_including_maps_statistics": 1.964593435709263,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "visibility_indexes": 2990444,
+          "visibility_block_payload": 186647240,
+          "visibility_quality": 2982474,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 563467
+        },
+        "elapsed_seconds": 235.2232814137824,
+        "mode": "fixed",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.587788064032793,
+          "column_encoding_and_writing": 220.50493778288364,
+          "before_integrity_finalization": 225.10099182883278
+        },
+        "peak_process_rss_bytes": 2296356864,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 2.33171071062204e-08,
+                "real_mse": 2.3316061617021198e-08,
+                "imag_mse": 2.3318152595419596e-08,
+                "bias_real": -2.1406275093116454e-08,
+                "bias_imag": 2.0133774011416344e-08,
+                "complex_bias_abs": 2.938702892952879e-08,
+                "max_complex_error": 0.000800595355631395,
+                "p99_error": 0.0005940647950540503,
+                "max_baseline_component_mse": 9.999089198789543e-08
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.9751174029196728e-08,
+                "real_mse": 2.9757489169730927e-08,
+                "imag_mse": 2.9744858888662506e-08,
+                "bias_real": -1.409428112486036e-07,
+                "bias_imag": -7.574928781084138e-08,
+                "complex_bias_abs": 1.600088455258308e-07,
+                "max_complex_error": 0.0008031620693625182,
+                "p99_error": 0.0005689125397695869,
+                "max_baseline_component_mse": 9.999912772296323e-08
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 2.913022685089625e-08,
+                "real_mse": 2.912883855351385e-08,
+                "imag_mse": 2.9131615148278668e-08,
+                "bias_real": -5.306617868528126e-09,
+                "bias_imag": -2.2668071751442408e-08,
+                "complex_bias_abs": 2.3280929322755207e-08,
+                "max_complex_error": 0.0008087758841412486,
+                "p99_error": 0.0005669151964631578,
+                "max_baseline_component_mse": 9.999883283525838e-08
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.6493452127078526e-08,
+                "real_mse": 2.647606696272963e-08,
+                "imag_mse": 2.651083729142732e-08,
+                "bias_real": -8.500396787885201e-09,
+                "bias_imag": -1.0514016246752745e-08,
+                "complex_bias_abs": 1.3520402478789961e-08,
+                "max_complex_error": 0.0008131545159569407,
+                "p99_error": 0.0005891578460747185,
+                "max_baseline_component_mse": 9.999978461390656e-08
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 62128,
+                "component_bit_width_histogram": {
+                  "float32": 31896,
+                  "8": 30232
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 6124032,
+                  "8": 5804544
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 48992256,
+                  "packed_code_bytes": 11609088,
+                  "exception_position_bytes": 0,
+                  "exception_value_bytes": 0,
+                  "header_bytes": 994048,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 0
+                },
+                "serialized_block_bytes": 58816157,
+                "index_bytes": 745544,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 62128,
+                "component_bit_width_histogram": {
+                  "8": 49196,
+                  "float32": 12932
+                },
+                "complex_sample_bit_width_histogram": {
+                  "8": 9445632,
+                  "float32": 2482944
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 19863552,
+                  "packed_code_bytes": 18891264,
+                  "exception_position_bytes": 0,
+                  "exception_value_bytes": 0,
+                  "header_bytes": 994048,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 0
+                },
+                "serialized_block_bytes": 38515437,
+                "index_bytes": 745544,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 62128,
+                "component_bit_width_histogram": {
+                  "8": 50538,
+                  "float32": 11590
+                },
+                "complex_sample_bit_width_histogram": {
+                  "8": 9703296,
+                  "float32": 2225280
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 17802240,
+                  "packed_code_bytes": 19406592,
+                  "exception_position_bytes": 0,
+                  "exception_value_bytes": 0,
+                  "header_bytes": 994048,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 0
+                },
+                "serialized_block_bytes": 37064814,
+                "index_bytes": 745544,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 62128,
+                "component_bit_width_histogram": {
+                  "float32": 24052,
+                  "8": 38076
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 4617984,
+                  "8": 7310592
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 36943872,
+                  "packed_code_bytes": 14621184,
+                  "exception_position_bytes": 0,
+                  "exception_value_bytes": 0,
+                  "header_bytes": 994048,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 0
+                },
+                "serialized_block_bytes": 50276643,
+                "index_bytes": 745544,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6347865769639611,
+              "amplitude_statistics": 3.9395231530070305,
+              "baseline_sorting_and_grouping": 0.027298764791339636,
+              "memory_gathering": 2.4727916750125587,
+              "packing_and_secondary_compression": 48.66356759285554,
+              "quantization_and_scale_estimation": 36.841156197711825,
+              "candidate_reconstruction_and_error_checks": 88.91054798616096,
+              "codec_total": 185.74665838712826,
+              "payload_writing": 0.35493729123845696,
+              "quality_accounting": 14.923339423723519
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 235.52966842707247,
+        "decode_and_export_process": 253.2196003207937,
+        "verification_process": 559.9335525929928
+      }
+    },
+    {
+      "name": "grouped-amplitude",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/comparison/grouped-amplitude/archive.h5",
+        "archive_bytes": 146698448,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.7920870573900003,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 145125819,
+        "visibility_dataset_ratio_including_maps_statistics": 2.6302310273267087,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 488354,
+          "visibility_indexes": 281588,
+          "visibility_block_payload": 139461140,
+          "visibility_quality": 3217986,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 574305
+        },
+        "elapsed_seconds": 214.56598179694265,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.30120779806748,
+          "column_encoding_and_writing": 204.04540246492252,
+          "before_integrity_finalization": 208.35382575402036
+        },
+        "peak_process_rss_bytes": 2291486720,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.481934769237392e-08,
+                "real_mse": 3.4827848635591524e-08,
+                "imag_mse": 3.48108467491563e-08,
+                "bias_real": -7.684536734659507e-08,
+                "bias_imag": 2.902503405436082e-08,
+                "complex_bias_abs": 8.214416037972477e-08,
+                "max_complex_error": 0.0027236108244299458,
+                "p99_error": 0.0006177011552838257,
+                "max_baseline_component_mse": 1.021986477673207e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 4.410472340843481e-08,
+                "real_mse": 4.409670343337038e-08,
+                "imag_mse": 4.411274338349926e-08,
+                "bias_real": -1.983429370230183e-09,
+                "bias_imag": 8.501693254471485e-08,
+                "complex_bias_abs": 8.504006591824401e-08,
+                "max_complex_error": 0.0021466543714061172,
+                "p99_error": 0.0005865560968027007,
+                "max_baseline_component_mse": 1.206312961536939e-07
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 4.330632892624921e-08,
+                "real_mse": 4.332228591895626e-08,
+                "imag_mse": 4.3290371933542184e-08,
+                "bias_real": -4.793294804881528e-08,
+                "bias_imag": 1.1766433973479714e-07,
+                "complex_bias_abs": 1.270529982089214e-07,
+                "max_complex_error": 0.0011876462041828465,
+                "p99_error": 0.0005794756325798731,
+                "max_baseline_component_mse": 1.0002061783201084e-07
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.538058405789683e-08,
+                "real_mse": 3.537171347801748e-08,
+                "imag_mse": 3.538945463777615e-08,
+                "bias_real": 2.6361627614220514e-08,
+                "bias_imag": 1.8127755350497886e-08,
+                "complex_bias_abs": 3.1992982426124926e-08,
+                "max_complex_error": 0.0010023583305966862,
+                "p99_error": 0.0006034365679477736,
+                "max_baseline_component_mse": 1.0490603934079585e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 2495,
+                  "2": 3,
+                  "4": 132,
+                  "6": 367,
+                  "8": 2829
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 5106688,
+                  "2": 6144,
+                  "4": 270336,
+                  "6": 751616,
+                  "8": 5793792
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 40853504,
+                  "packed_code_bytes": 12988416,
+                  "exception_position_bytes": 45092,
+                  "exception_value_bytes": 90184,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 11273
+                },
+                "serialized_block_bytes": 47977455,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 214,
+                  "8": 5177,
+                  "2": 3,
+                  "4": 113,
+                  "6": 319
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 435200,
+                  "8": 10602496,
+                  "2": 6144,
+                  "4": 231424,
+                  "6": 653312
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 3481600,
+                  "packed_code_bytes": 22419456,
+                  "exception_position_bytes": 76332,
+                  "exception_value_bytes": 152664,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 19083
+                },
+                "serialized_block_bytes": 23343069,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 155,
+                  "8": 5117,
+                  "4": 112,
+                  "2": 1,
+                  "6": 441
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 314368,
+                  "8": 10479616,
+                  "4": 229376,
+                  "2": 2048,
+                  "6": 903168
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 2514944,
+                  "packed_code_bytes": 22544384,
+                  "exception_position_bytes": 76904,
+                  "exception_value_bytes": 153808,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 19226
+                },
+                "serialized_block_bytes": 22677373,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 2045,
+                  "4": 91,
+                  "2": 1,
+                  "6": 348,
+                  "8": 3341
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 4185088,
+                  "4": 186368,
+                  "2": 2048,
+                  "6": 712704,
+                  "8": 6842368
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 33480704,
+                  "packed_code_bytes": 14941184,
+                  "exception_position_bytes": 66872,
+                  "exception_value_bytes": 133744,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 16718
+                },
+                "serialized_block_bytes": 43655730,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.7114935549907386,
+              "amplitude_statistics": 4.121480478905141,
+              "baseline_sorting_and_grouping": 0.04204862378537655,
+              "memory_gathering": 0.5775972115807235,
+              "packing_and_secondary_compression": 51.90840419800952,
+              "quantization_and_scale_estimation": 37.86465575173497,
+              "candidate_reconstruction_and_error_checks": 86.42515840753913,
+              "codec_total": 178.99050573259592,
+              "payload_writing": 0.23555032024160028,
+              "quality_accounting": 15.212102513294667
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 214.85172461997718,
+        "decode_and_export_process": 20.330257491674274,
+        "verification_process": 42.66192226903513
+      }
+    },
+    {
+      "name": "grouped-buckets",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "buckets",
+        "shared_order": false,
+        "bucket_reference": null,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/comparison/grouped-buckets/archive.h5",
+        "archive_bytes": 157820272,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.595324623442545,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 156235037,
+        "visibility_dataset_ratio_including_maps_statistics": 2.4432063340568098,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 155576,
+          "visibility_indexes": 284373,
+          "visibility_block_payload": 150995520,
+          "visibility_quality": 3122817,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 586911
+        },
+        "elapsed_seconds": 235.0286463368684,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.6955587160773575,
+          "column_encoding_and_writing": 229.3552206219174,
+          "before_integrity_finalization": 234.06188327772543
+        },
+        "peak_process_rss_bytes": 2292613120,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.383170602970566e-08,
+                "real_mse": 3.382482851823813e-08,
+                "imag_mse": 3.383858354117323e-08,
+                "bias_real": -4.976819463428204e-08,
+                "bias_imag": 3.857186168866599e-09,
+                "complex_bias_abs": 4.991744266583652e-08,
+                "max_complex_error": 0.002452086044491983,
+                "p99_error": 0.0006060425007620116,
+                "max_baseline_component_mse": 1.0715324345753949e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 4.0438121314267074e-08,
+                "real_mse": 4.043466769223648e-08,
+                "imag_mse": 4.0441574936297795e-08,
+                "bias_real": -3.502054770315301e-08,
+                "bias_imag": 7.817354404064007e-08,
+                "complex_bias_abs": 8.565945218890154e-08,
+                "max_complex_error": 0.0008714710848730737,
+                "p99_error": 0.0005790464622478604,
+                "max_baseline_component_mse": 1.0033074582476309e-07
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 4.05134436101469e-08,
+                "real_mse": 4.0513329672857366e-08,
+                "imag_mse": 4.05135575474364e-08,
+                "bias_real": -1.4024943305967547e-08,
+                "bias_imag": -8.957150320735954e-08,
+                "complex_bias_abs": 9.066285469563389e-08,
+                "max_complex_error": 0.0023458334617316723,
+                "p99_error": 0.0005812771640219864,
+                "max_baseline_component_mse": 1.0296073726491235e-07
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.222440522612656e-08,
+                "real_mse": 3.22340988531155e-08,
+                "imag_mse": 3.2214711599137616e-08,
+                "bias_real": -4.913621131992555e-09,
+                "bias_imag": 1.1734002191261178e-08,
+                "complex_bias_abs": 1.2721260945884488e-08,
+                "max_complex_error": 0.0007801792979123056,
+                "p99_error": 0.0005875855984339075,
+                "max_baseline_component_mse": 1.0520443055265701e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 5874,
+                "component_bit_width_histogram": {
+                  "6": 384,
+                  "8": 2801,
+                  "float32": 2548,
+                  "2": 10,
+                  "4": 131
+                },
+                "complex_sample_bit_width_histogram": {
+                  "6": 776448,
+                  "8": 5726336,
+                  "float32": 5160640,
+                  "2": 5056,
+                  "4": 260096
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 41285120,
+                  "packed_code_bytes": 12879968,
+                  "exception_position_bytes": 43740,
+                  "exception_value_bytes": 87480,
+                  "header_bytes": 93984,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 10935
+                },
+                "serialized_block_bytes": 48305866,
+                "index_bytes": 70496,
+                "bucket_reference": 0.03763675130253358,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 2,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.01881837565126679,
+                    "upper": 0.03763675130253358
+                  },
+                  {
+                    "start": 2,
+                    "stop": 4,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.03763675130253358,
+                    "upper": 0.07527350260506716
+                  },
+                  {
+                    "start": 4,
+                    "stop": 6,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1505470052101343,
+                    "upper": 0.3010940104202686
+                  },
+                  {
+                    "start": 6,
+                    "stop": 10,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3010940104202686,
+                    "upper": 0.6021880208405372
+                  },
+                  {
+                    "start": 10,
+                    "stop": 11,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6021880208405372,
+                    "upper": 1.2043760416810745
+                  },
+                  {
+                    "start": 11,
+                    "stop": 16,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 1.2043760416810745,
+                    "upper": 2.408752083362149
+                  },
+                  {
+                    "start": 16,
+                    "stop": 19,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 6,
+                    "lower": 2.408752083362149,
+                    "upper": 4.817504166724298
+                  },
+                  {
+                    "start": 19,
+                    "stop": 35,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 7,
+                    "lower": 4.817504166724298,
+                    "upper": 9.635008333448596
+                  },
+                  {
+                    "start": 35,
+                    "stop": 349,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 8,
+                    "lower": 9.635008333448596,
+                    "upper": 19.27001666689719
+                  },
+                  {
+                    "start": 349,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 9,
+                    "lower": 19.27001666689719,
+                    "upper": 38.54003333379438
+                  },
+                  {
+                    "start": 352,
+                    "stop": 353,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -10,
+                    "lower": 3.675463994388045e-05,
+                    "upper": 7.35092798877609e-05
+                  },
+                  {
+                    "start": 353,
+                    "stop": 358,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -9,
+                    "lower": 7.35092798877609e-05,
+                    "upper": 0.0001470185597755218
+                  },
+                  {
+                    "start": 358,
+                    "stop": 369,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 0.0001470185597755218,
+                    "upper": 0.0002940371195510436
+                  },
+                  {
+                    "start": 369,
+                    "stop": 397,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.0002940371195510436,
+                    "upper": 0.0005880742391020871
+                  },
+                  {
+                    "start": 397,
+                    "stop": 1001,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.0005880742391020871,
+                    "upper": 0.0011761484782041743
+                  },
+                  {
+                    "start": 1001,
+                    "stop": 1749,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0011761484782041743,
+                    "upper": 0.0023522969564083486
+                  },
+                  {
+                    "start": 1749,
+                    "stop": 2845,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0023522969564083486,
+                    "upper": 0.004704593912816697
+                  },
+                  {
+                    "start": 2845,
+                    "stop": 4696,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.004704593912816697,
+                    "upper": 0.009409187825633394
+                  },
+                  {
+                    "start": 4696,
+                    "stop": 6437,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.009409187825633394,
+                    "upper": 0.01881837565126679
+                  },
+                  {
+                    "start": 6437,
+                    "stop": 31414,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.01881837565126679,
+                    "upper": 0.03763675130253358
+                  },
+                  {
+                    "start": 31414,
+                    "stop": 42350,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.03763675130253358,
+                    "upper": 0.07527350260506716
+                  },
+                  {
+                    "start": 42350,
+                    "stop": 61526,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.07527350260506716,
+                    "upper": 0.1505470052101343
+                  },
+                  {
+                    "start": 61526,
+                    "stop": 61978,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1505470052101343,
+                    "upper": 0.3010940104202686
+                  },
+                  {
+                    "start": 61978,
+                    "stop": 62114,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3010940104202686,
+                    "upper": 0.6021880208405372
+                  },
+                  {
+                    "start": 62114,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6021880208405372,
+                    "upper": 1.2043760416810745
+                  }
+                ],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 5877,
+                "component_bit_width_histogram": {
+                  "4": 126,
+                  "6": 323,
+                  "8": 4863,
+                  "float32": 556,
+                  "2": 9
+                },
+                "complex_sample_bit_width_histogram": {
+                  "4": 237568,
+                  "6": 644352,
+                  "8": 9939776,
+                  "float32": 1102080,
+                  "2": 4800
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 8816640,
+                  "packed_code_bytes": 21086048,
+                  "exception_position_bytes": 49736,
+                  "exception_value_bytes": 99472,
+                  "header_bytes": 94032,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 12434
+                },
+                "serialized_block_bytes": 26680751,
+                "index_bytes": 70532,
+                "bucket_reference": 0.024056531898176955,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 3,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007517666218180299,
+                    "upper": 0.0015035332436360597
+                  },
+                  {
+                    "start": 3,
+                    "stop": 5,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0015035332436360597,
+                    "upper": 0.0030070664872721194
+                  },
+                  {
+                    "start": 5,
+                    "stop": 8,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0030070664872721194,
+                    "upper": 0.006014132974544239
+                  },
+                  {
+                    "start": 8,
+                    "stop": 14,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.006014132974544239,
+                    "upper": 0.012028265949088478
+                  },
+                  {
+                    "start": 14,
+                    "stop": 19,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.012028265949088478,
+                    "upper": 0.024056531898176955
+                  },
+                  {
+                    "start": 19,
+                    "stop": 26,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.024056531898176955,
+                    "upper": 0.04811306379635391
+                  },
+                  {
+                    "start": 26,
+                    "stop": 30,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.04811306379635391,
+                    "upper": 0.09622612759270782
+                  },
+                  {
+                    "start": 30,
+                    "stop": 35,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09622612759270782,
+                    "upper": 0.19245225518541564
+                  },
+                  {
+                    "start": 35,
+                    "stop": 198,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19245225518541564,
+                    "upper": 0.3849045103708313
+                  },
+                  {
+                    "start": 198,
+                    "stop": 351,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.3849045103708313,
+                    "upper": 0.7698090207416626
+                  },
+                  {
+                    "start": 351,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 0.7698090207416626,
+                    "upper": 1.5396180414833252
+                  },
+                  {
+                    "start": 352,
+                    "stop": 356,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -9,
+                    "lower": 4.6985413863626866e-05,
+                    "upper": 9.397082772725373e-05
+                  },
+                  {
+                    "start": 356,
+                    "stop": 362,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 9.397082772725373e-05,
+                    "upper": 0.00018794165545450746
+                  },
+                  {
+                    "start": 362,
+                    "stop": 377,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.00018794165545450746,
+                    "upper": 0.00037588331090901493
+                  },
+                  {
+                    "start": 377,
+                    "stop": 405,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.00037588331090901493,
+                    "upper": 0.0007517666218180299
+                  },
+                  {
+                    "start": 405,
+                    "stop": 1030,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007517666218180299,
+                    "upper": 0.0015035332436360597
+                  },
+                  {
+                    "start": 1030,
+                    "stop": 1651,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0015035332436360597,
+                    "upper": 0.0030070664872721194
+                  },
+                  {
+                    "start": 1651,
+                    "stop": 3571,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0030070664872721194,
+                    "upper": 0.006014132974544239
+                  },
+                  {
+                    "start": 3571,
+                    "stop": 4985,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.006014132974544239,
+                    "upper": 0.012028265949088478
+                  },
+                  {
+                    "start": 4985,
+                    "stop": 31397,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.012028265949088478,
+                    "upper": 0.024056531898176955
+                  },
+                  {
+                    "start": 31397,
+                    "stop": 61589,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.024056531898176955,
+                    "upper": 0.04811306379635391
+                  },
+                  {
+                    "start": 61589,
+                    "stop": 62008,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.04811306379635391,
+                    "upper": 0.09622612759270782
+                  },
+                  {
+                    "start": 62008,
+                    "stop": 62107,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09622612759270782,
+                    "upper": 0.19245225518541564
+                  },
+                  {
+                    "start": 62107,
+                    "stop": 62125,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19245225518541564,
+                    "upper": 0.3849045103708313
+                  },
+                  {
+                    "start": 62125,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.3849045103708313,
+                    "upper": 0.7698090207416626
+                  }
+                ],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 5874,
+                "component_bit_width_histogram": {
+                  "4": 127,
+                  "6": 453,
+                  "8": 4812,
+                  "float32": 477,
+                  "2": 5
+                },
+                "complex_sample_bit_width_histogram": {
+                  "4": 235584,
+                  "6": 907328,
+                  "8": 9833408,
+                  "float32": 949312,
+                  "2": 2944
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 7594496,
+                  "packed_code_bytes": 21264864,
+                  "exception_position_bytes": 50048,
+                  "exception_value_bytes": 100096,
+                  "header_bytes": 93984,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 12512
+                },
+                "serialized_block_bytes": 25835743,
+                "index_bytes": 70496,
+                "bucket_reference": 0.023884009199278508,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 3,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007463752874774534,
+                    "upper": 0.0014927505749549068
+                  },
+                  {
+                    "start": 3,
+                    "stop": 5,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0014927505749549068,
+                    "upper": 0.0029855011499098135
+                  },
+                  {
+                    "start": 5,
+                    "stop": 8,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0029855011499098135,
+                    "upper": 0.005971002299819627
+                  },
+                  {
+                    "start": 8,
+                    "stop": 14,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.005971002299819627,
+                    "upper": 0.011942004599639254
+                  },
+                  {
+                    "start": 14,
+                    "stop": 19,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.011942004599639254,
+                    "upper": 0.023884009199278508
+                  },
+                  {
+                    "start": 19,
+                    "stop": 26,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.023884009199278508,
+                    "upper": 0.047768018398557016
+                  },
+                  {
+                    "start": 26,
+                    "stop": 30,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.047768018398557016,
+                    "upper": 0.09553603679711403
+                  },
+                  {
+                    "start": 30,
+                    "stop": 35,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09553603679711403,
+                    "upper": 0.19107207359422806
+                  },
+                  {
+                    "start": 35,
+                    "stop": 192,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19107207359422806,
+                    "upper": 0.38214414718845613
+                  },
+                  {
+                    "start": 192,
+                    "stop": 351,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.38214414718845613,
+                    "upper": 0.7642882943769123
+                  },
+                  {
+                    "start": 351,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 0.7642882943769123,
+                    "upper": 1.5285765887538245
+                  },
+                  {
+                    "start": 352,
+                    "stop": 358,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 9.329691093468167e-05,
+                    "upper": 0.00018659382186936334
+                  },
+                  {
+                    "start": 358,
+                    "stop": 372,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.00018659382186936334,
+                    "upper": 0.0003731876437387267
+                  },
+                  {
+                    "start": 372,
+                    "stop": 402,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.0003731876437387267,
+                    "upper": 0.0007463752874774534
+                  },
+                  {
+                    "start": 402,
+                    "stop": 1109,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007463752874774534,
+                    "upper": 0.0014927505749549068
+                  },
+                  {
+                    "start": 1109,
+                    "stop": 1631,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0014927505749549068,
+                    "upper": 0.0029855011499098135
+                  },
+                  {
+                    "start": 1631,
+                    "stop": 4042,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0029855011499098135,
+                    "upper": 0.005971002299819627
+                  },
+                  {
+                    "start": 4042,
+                    "stop": 6644,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.005971002299819627,
+                    "upper": 0.011942004599639254
+                  },
+                  {
+                    "start": 6644,
+                    "stop": 31397,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.011942004599639254,
+                    "upper": 0.023884009199278508
+                  },
+                  {
+                    "start": 31397,
+                    "stop": 61582,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.023884009199278508,
+                    "upper": 0.047768018398557016
+                  },
+                  {
+                    "start": 61582,
+                    "stop": 62019,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.047768018398557016,
+                    "upper": 0.09553603679711403
+                  },
+                  {
+                    "start": 62019,
+                    "stop": 62117,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09553603679711403,
+                    "upper": 0.19107207359422806
+                  },
+                  {
+                    "start": 62117,
+                    "stop": 62127,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19107207359422806,
+                    "upper": 0.38214414718845613
+                  },
+                  {
+                    "start": 62127,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.38214414718845613,
+                    "upper": 0.7642882943769123
+                  }
+                ],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 5871,
+                "component_bit_width_histogram": {
+                  "6": 349,
+                  "8": 3001,
+                  "float32": 2426,
+                  "2": 7,
+                  "4": 88
+                },
+                "complex_sample_bit_width_histogram": {
+                  "6": 700096,
+                  "8": 6136064,
+                  "float32": 4917568,
+                  "2": 3392,
+                  "4": 171456
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 39340544,
+                  "packed_code_bytes": 13495424,
+                  "exception_position_bytes": 42268,
+                  "exception_value_bytes": 84536,
+                  "header_bytes": 93936,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 10567
+                },
+                "serialized_block_bytes": 47314427,
+                "index_bytes": 70460,
+                "bucket_reference": 0.03838162891289627,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 1,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.019190814456448137,
+                    "upper": 0.03838162891289627
+                  },
+                  {
+                    "start": 1,
+                    "stop": 3,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.07676325782579255,
+                    "upper": 0.1535265156515851
+                  },
+                  {
+                    "start": 3,
+                    "stop": 5,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1535265156515851,
+                    "upper": 0.3070530313031702
+                  },
+                  {
+                    "start": 5,
+                    "stop": 10,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3070530313031702,
+                    "upper": 0.6141060626063404
+                  },
+                  {
+                    "start": 10,
+                    "stop": 13,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6141060626063404,
+                    "upper": 1.2282121252126807
+                  },
+                  {
+                    "start": 13,
+                    "stop": 14,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 1.2282121252126807,
+                    "upper": 2.4564242504253615
+                  },
+                  {
+                    "start": 14,
+                    "stop": 16,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 6,
+                    "lower": 2.4564242504253615,
+                    "upper": 4.912848500850723
+                  },
+                  {
+                    "start": 16,
+                    "stop": 34,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 7,
+                    "lower": 4.912848500850723,
+                    "upper": 9.825697001701446
+                  },
+                  {
+                    "start": 34,
+                    "stop": 346,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 8,
+                    "lower": 9.825697001701446,
+                    "upper": 19.651394003402892
+                  },
+                  {
+                    "start": 346,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 9,
+                    "lower": 19.651394003402892,
+                    "upper": 39.302788006805784
+                  },
+                  {
+                    "start": 352,
+                    "stop": 354,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -9,
+                    "lower": 7.496411897050053e-05,
+                    "upper": 0.00014992823794100107
+                  },
+                  {
+                    "start": 354,
+                    "stop": 364,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 0.00014992823794100107,
+                    "upper": 0.00029985647588200214
+                  },
+                  {
+                    "start": 364,
+                    "stop": 381,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.00029985647588200214,
+                    "upper": 0.0005997129517640043
+                  },
+                  {
+                    "start": 381,
+                    "stop": 721,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.0005997129517640043,
+                    "upper": 0.0011994259035280085
+                  },
+                  {
+                    "start": 721,
+                    "stop": 1258,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0011994259035280085,
+                    "upper": 0.002398851807056017
+                  },
+                  {
+                    "start": 1258,
+                    "stop": 2321,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.002398851807056017,
+                    "upper": 0.004797703614112034
+                  },
+                  {
+                    "start": 2321,
+                    "stop": 4448,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.004797703614112034,
+                    "upper": 0.009595407228224068
+                  },
+                  {
+                    "start": 4448,
+                    "stop": 5644,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.009595407228224068,
+                    "upper": 0.019190814456448137
+                  },
+                  {
+                    "start": 5644,
+                    "stop": 31415,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.019190814456448137,
+                    "upper": 0.03838162891289627
+                  },
+                  {
+                    "start": 31415,
+                    "stop": 37492,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.03838162891289627,
+                    "upper": 0.07676325782579255
+                  },
+                  {
+                    "start": 37492,
+                    "stop": 61228,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.07676325782579255,
+                    "upper": 0.1535265156515851
+                  },
+                  {
+                    "start": 61228,
+                    "stop": 62007,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1535265156515851,
+                    "upper": 0.3070530313031702
+                  },
+                  {
+                    "start": 62007,
+                    "stop": 62109,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3070530313031702,
+                    "upper": 0.6141060626063404
+                  },
+                  {
+                    "start": 62109,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6141060626063404,
+                    "upper": 1.2282121252126807
+                  }
+                ],
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6518681552261114,
+              "amplitude_statistics": 4.005244578700513,
+              "baseline_sorting_and_grouping": 0.03389844065532088,
+              "memory_gathering": 0.6383712845854461,
+              "packing_and_secondary_compression": 58.508602449670434,
+              "quantization_and_scale_estimation": 43.9896185696125,
+              "candidate_reconstruction_and_error_checks": 97.10771463578567,
+              "codec_total": 203.07561419717968,
+              "payload_writing": 0.2967189312912524,
+              "quality_accounting": 16.175436466932297
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 235.88943801587448,
+        "decode_and_export_process": 42.39489069208503,
+        "verification_process": 45.07459070626646
+      }
+    }
+  ],
+  "selected_experiments": [
+    "lossless-no-dedup",
+    "per-baseline-8bit",
+    "grouped-amplitude",
+    "grouped-buckets"
+  ],
+  "elapsed_seconds": 1739.5517523721792,
+  "Dysco": "not run; installed executable not found in initial environment",
+  "scientific_products": "not tested by this benchmark; numeric bounds are not scientific acceptance",
+  "timing_note": "Each experiment uses fresh Python processes; RSS is that process's high-water mark. Caches are not forcibly evicted. Some inner codec stages remain combined in the recorded timer names."
+}

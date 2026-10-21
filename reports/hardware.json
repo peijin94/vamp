@@ -1,0 +1,32 @@
+{
+  "varquanMS": "0.2.0.dev0",
+  "python": "3.11.5",
+  "numpy": "1.26.4",
+  "python_casacore": "3.5.2",
+  "h5py": "3.10.0",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "cpu_count": 48,
+  "threads_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": null
+  },
+  "implementation_files_sha256": {
+    "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+    "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "archive.py": "c0b482560f233a0be6108e3cd0daf327608e9c687620c3b8fc1ff27a90e385d3",
+    "benchmark.py": "33ae2ea40b69d6ec77bc576a0d8bda027481c8d87649f4985de378025e1c952b",
+    "cli.py": "75f89706e727a10a45421887de219f19c5265b391425100da5383054bf1c178e",
+    "codec.py": "b65c3641920ffa1c0feb150a0b334454c3ac9d318a88d94e4611d59874d1ba37",
+    "config.py": "2975e596b209356c5dd2135545fc92a8c4cfa97123aca08718ae334e95665e37",
+    "container.py": "09c2297c65a689c5984cdf855aee7d6fb61b902746320093b939e4260107e51f",
+    "inspection.py": "314d49827b08a2c5d48e8f8c19df65d1b458cd32fa5b9ba2efa9afe0e3d73390",
+    "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+    "ordering.py": "e79ba9022061ce0c5687c4ab5f0017bf408ed0ba4a13da3ca869ceeb1a2f008e",
+    "visibility.py": "ce54119b00f68b3f6a60f6b86e546f5fe7a5d200f81043f527523b9bb88998aa"
+  },
+  "cpu_model": "Intel(R) Xeon(R) Silver 4214 CPU @ 2.20GHz",
+  "memory_total_kib": 394837068,
+  "collection_note": "Same host, collected after initial experiments; this is a shared machine, not an isolated throughput test."
+}

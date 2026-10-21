@@ -1,7 +1,9 @@
 # Adaptive visibility archive: experiment specification
 
 Status: implementation proposal. Inspection has been run on the initial sample.
-No measured compression or scientific-fidelity results are available.
+The first lossless/adaptive measurements are in `experiment-results.md`. This
+specification still describes the broader planned experiment, and its future
+steps must not be mistaken for implemented or validated capabilities.
 
 ## Objective and hard requirements
 
@@ -191,21 +193,21 @@ profile and is excluded initially.
 
 1. Inspect actual source and declare layout/support boundaries. (Initial sample
    completed; synthetic inspection fixtures supplied.)
-2. Build lossless normalized archive and deterministic new-MS reconstruction.
-3. Prove exact supported metadata, UVW, flags, weights, values and special bits.
-4. Add uniform fixed-bit codec, packing, exceptions, float32 escape, no sorting.
-5. Establish the per-baseline segmented scaling control.
-6. Add amplitude sorting/buckets and grouped scales with invertible permutations.
-7. Add adaptive byte-aware selection and full error/byte accounting.
-8. Compare stochastic/dither and distribution-adapted codebooks.
+2. Build lossless normalized archive and deterministic new-MS reconstruction. (Implemented.)
+3. Prove exact supported metadata, UVW, flags, weights, values and special bits. (Fixtures and initial source/export passed.)
+4. Add uniform fixed-bit codec, packing, exceptions, float32 escape, no sorting. (Implemented.)
+5. Establish the per-baseline segmented scaling control. (Implemented; initial control recorded.)
+6. Add amplitude sorting/buckets and grouped scales with invertible permutations. (Implemented.)
+7. Add adaptive byte-aware selection and full error/byte accounting. (Implemented.)
+8. Compare stochastic/dither and distribution-adapted codebooks. (Stochastic rounding implemented/tested; broader comparisons pending.)
 9. Benchmark Dysco where available; record any nonequivalent or unsupported mode.
 10. Validate science products and document measured limits before default advice.
 
 Do not prioritize scale quantization, learned predictors, sample-level sorting,
 GPU kernels, a custom container or a virtual MS storage manager.
 
-Proposed future CLI: `encode`, `verify`, `decode`, `benchmark` in addition to the
-implemented `inspect`. Configuration must reject unknown options and include
+Implemented CLI: `encode`, `verify`, `decode`, `benchmark` and `inspect`.
+Configuration must reject unknown options and include
 columns, ordering/statistics, group/segment sizes, bits, codebook, rounding/seed,
 absolute/noise bounds, exception policy and exact fallback. Do not add placeholder
 commands that generate apparently complete archives.

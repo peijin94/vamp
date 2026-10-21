@@ -76,7 +76,9 @@ def unique_bits(values):
     if len(a) == 0:
         return a.copy(), np.empty(0, dtype=np.int64), np.empty(0, dtype=np.int64)
     width = a.dtype.itemsize * math.prod(a.shape[1:])
-    keys = np.ascontiguousarray(a).view(np.dtype((np.void, width))).reshape(-1)
+    if width == 0:
+        return a[:1].copy(), np.zeros(len(a), dtype=np.int64), np.asarray([len(a)], dtype=np.int64)
+    keys = np.ascontiguousarray(a).reshape(len(a), -1).view(np.dtype((np.void, width))).reshape(-1)
     _, first, inverse, counts = np.unique(
         keys, return_index=True, return_inverse=True, return_counts=True)
     order = np.argsort(first)
@@ -398,7 +400,8 @@ def _layout(t, rows, columns, subtable_paths, selected, main_inventory):
     return {"organization": organization, "configurations": configs,
             "regular_single_configuration_candidate": not issues,
             "initial_regular_profile_issues": sorted(set(issues)),
-            "archive_implementation_available": False,
+            "archive_implementation_available": True,
+            "quantized_profile_supported": not issues and organization == "channels_inside_cells",
             "channel_presence_note": "Per-cell dimensions were compared with spectral-window metadata. Unrecorded channels beyond that metadata cannot be inferred.",
             "validation_scope": "Inspection only. This is not an MS conformance or CASA compatibility certification."}
 
@@ -471,7 +474,7 @@ def inspect_ms(source, selected=("DATA",), chunk_rows=1024):
                      "numeric_metadata_encoding": "dtype + shape + base64 raw C-order bytes; values are a human-readable preview",
                      "logical_string_bytes": "UTF-8 value lengths; excludes Python or container overhead",
                      "noise_model": "None validated; WEIGHT/SIGMA do not imply a thermal-noise guarantee",
-                     "archive_status": "No encoding, decoding, quantization or scientific-fidelity tests implemented in this milestone"},
+                     "archive_status": "Lossless reconstruction and regular-layout uniform quantization are implemented; scientific acceptance is separate"},
         "elapsed_seconds": time.perf_counter() - started,
     }
     # Validate portability before any output file is finalized.
@@ -501,7 +504,7 @@ def human_summary(report):
     if layout["initial_regular_profile_issues"]:
         lines.append("Initial regular-profile issues: " + "; ".join(layout["initial_regular_profile_issues"]))
     else:
-        lines.append("Layout is a candidate for the initial regular profile; archival round trip remains unimplemented.")
+        lines.append("Layout meets the initial regular quantization profile; acceptance still requires encode/decode/source verification.")
     lines.append("Storage files may contain multiple columns; logical repetition does not establish physical savings.")
-    lines.append("No compression ratios, noise guarantees, scientific fidelity or CASA workflow compatibility have been established.")
+    lines.append("This inspection alone establishes no compression ratio, noise guarantee, scientific fidelity or CASA workflow compatibility.")
     return "\n".join(lines) + "\n"

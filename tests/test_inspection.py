@@ -43,7 +43,7 @@ def make_ms(path, pairs=((0, 0), (0, 1), (1, 1)), channels=3,
             t.putcell("WEIGHT", row, np.ones(ncorr, dtype=np.float32))
             t.putcell("SIGMA", row, np.ones(ncorr, dtype=np.float32))
             t.putcell("UVW", row, np.asarray([0.0, -0.0, float(pair[1] - pair[0])]))
-    for name, count in (("ANTENNA", 2), ("FIELD", max(fields) + 1),
+    for name, count in (("ANTENNA", max(max(pair) for pair in pairs) + 1), ("FIELD", max(fields) + 1),
                         ("DATA_DESCRIPTION", max(ddids) + 1),
                         ("SPECTRAL_WINDOW", max(ddids) + 1), ("POLARIZATION", 1)):
         with table(str(path / name), readonly=False, ack=False) as t:
@@ -93,7 +93,7 @@ class InspectionTests(unittest.TestCase):
         self.assertEqual(report["main"]["columns"]["DATA"]["logical_array_bytes"], 3 * 3 * 2 * 8)
         self.assertEqual(report["main"]["columns"]["FLAG_CATEGORY"]["undefined_cells"], 3)
         self.assertEqual(report["uvw"]["bitwise_distinct_geometry_records"], 2)
-        self.assertFalse(report["layout"]["archive_implementation_available"])
+        self.assertTrue(report["layout"]["archive_implementation_available"])
         json.dumps(report, allow_nan=False)
 
     def test_single_channel_records_keep_ddids_distinct(self):

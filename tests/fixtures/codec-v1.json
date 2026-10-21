@@ -1,0 +1,12 @@
+{
+  "codec": "uniform-symmetric-v1",
+  "packing": [
+    {"bits": 2, "codes": [0, 1, 2, 3], "hex": "e4"},
+    {"bits": 4, "codes": [1, 2, 15], "hex": "210f"},
+    {"bits": 6, "codes": [0, 1, 63, 32], "hex": "40f083"},
+    {"bits": 8, "codes": [1, 255], "hex": "01ff"}
+  ],
+  "blocks": [
+    {"rows": 1, "channels": 2, "block_hex": "0200000002000000000000000000003f24", "complex64_hex": "000000bf000000000000003f000000bf"}
+  ]
+}

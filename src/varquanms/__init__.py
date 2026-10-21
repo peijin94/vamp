@@ -1,3 +1,3 @@
-"""Measurement Set archive research; current milestone: read-only inspection."""
+"""Self-contained Measurement Set archives and adaptive quantization experiments."""
 
-__version__ = "0.1.0.dev0"
+__version__ = "0.2.0.dev0"

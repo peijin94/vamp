@@ -1,0 +1,7 @@
+{
+  "output": "/data1/users/pz47/varquanMS/results/adaptive/verified.ms",
+  "status": "exported",
+  "elapsed_seconds": 39.59733512112871,
+  "python_casacore_reopen": "passed",
+  "CASA_workflow": "not run"
+}

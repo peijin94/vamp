@@ -1,0 +1,7 @@
+{
+  "output": "/data1/users/pz47/varquanMS/results/lossless/verified.ms",
+  "status": "exported",
+  "elapsed_seconds": 8.936538729816675,
+  "python_casacore_reopen": "passed",
+  "CASA_workflow": "not run"
+}

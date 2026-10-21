@@ -1,0 +1,339 @@
+{
+  "schema": "varquanms.sample-copy/1",
+  "status": "verified",
+  "source_tar": "/nas8/lwa/event-MS/20260904BigType35pol/59MHz/19/20260904_190008_59MHz.ms.tar",
+  "local_tar": "data/raw/20260904_190008_59MHz.ms.tar",
+  "extracted_parent": "data/working",
+  "tar_sha256": "3899b6b7111ec9a9ed8b69b9cee4bdf488b197c3f2379708b9d971ffec43409e",
+  "tar_bytes": 409661440,
+  "regular_file_count": 65,
+  "file_bytes": 409594838,
+  "files": [
+    {
+      "path": "20260904_190008_59MHz.ms/SOURCE/table.dat",
+      "bytes": 4645,
+      "sha256": "d62004aff093b2347fb2f071b3e450fb2c11fa9d0667277e65329bd3c1e671fb"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SOURCE/table.lock",
+      "bytes": 325,
+      "sha256": "0cde0e7b51951b5a1de75ade17a8432cd5fa96ab0317b8e25357b2d6e2492c1a"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SOURCE/table.f0",
+      "bytes": 6912,
+      "sha256": "3c6dba25e29704f385927df6e240a3c6d642693e4175dcea3e2a4ab2d61007d5"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SOURCE/table.f0i",
+      "bytes": 64,
+      "sha256": "07c3070f85e19d53a372afa3b494538509c9e42a4efe121b4149502d88c6df6a"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SOURCE/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FLAG_CMD/table.dat",
+      "bytes": 2421,
+      "sha256": "99b3bb71369b7d4ff57b37edc7044c309db88a1434fe68386ee7a77d86fb55ba"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FLAG_CMD/table.lock",
+      "bytes": 325,
+      "sha256": "c3e12a988982337bb24f3294df38531380ab98d3fac3568d6768cade43f70fe3"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FLAG_CMD/table.f0",
+      "bytes": 2436,
+      "sha256": "264a9bd34dab35b58c0e3cc7156062a5cd27de5079d03247b3559292762baccc"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FLAG_CMD/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POINTING/table.dat",
+      "bytes": 3428,
+      "sha256": "d8a52f3a451d75dc8cccc3ecae8f98a4483c2783b52789112aad47c83788ea36"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POINTING/table.lock",
+      "bytes": 325,
+      "sha256": "77e684e6205bbe7056d80347417d71df498503bc1e7770f33aa1e63469e17cf4"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POINTING/table.f0",
+      "bytes": 2436,
+      "sha256": "c287fdbed7066e41d81601b96115b3fdab19930234a6805423b3695d98fc3c83"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POINTING/table.f0i",
+      "bytes": 16,
+      "sha256": "a02c7a228ec02a8b994a3d4d34df006dfa47f8f70c8c496f1ed833030d7d2966"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POINTING/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/STATE/table.dat",
+      "bytes": 2016,
+      "sha256": "7ee1973bbec76d6939bdc989c48f3aff3ed34fd6ad4b4fb2770a7dd1d1c558ba"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/STATE/table.lock",
+      "bytes": 325,
+      "sha256": "7d44d15bca2e23c0739e04c4828f85729da65663a8c73e0110802c09c91a94e3"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/STATE/table.f0",
+      "bytes": 1548,
+      "sha256": "b802c0447388aec363ffce0275e995baa0381462762023a7b37829567086105c"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/STATE/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/DATA_DESCRIPTION/table.dat",
+      "bytes": 997,
+      "sha256": "6f0ae3c8296e4379a2b53d13814207d1a88a901ac242124f30aa9ce18de55891"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/DATA_DESCRIPTION/table.lock",
+      "bytes": 325,
+      "sha256": "b8f29be34da82b35422ee390735fa721a1eb4b5a3eb3e8a03f9f8afd728a10bf"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/DATA_DESCRIPTION/table.f0",
+      "bytes": 1032,
+      "sha256": "05b9d855ccff92cd84527263c86f3a141a50e5629725fdb0fadaac511d72a1a0"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/DATA_DESCRIPTION/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POLARIZATION/table.dat",
+      "bytes": 1302,
+      "sha256": "32382be664563b67f38100275151f483034367adca94da8fb3fda3954756157f"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POLARIZATION/table.lock",
+      "bytes": 325,
+      "sha256": "25b35105b98eae2b7dbfb011c657aa04cbc6dd4f303e7ea31b7063d3b5d2c868"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POLARIZATION/table.f0",
+      "bytes": 1800,
+      "sha256": "c63154ed7a69ba5831617729887e2bb313c2877a08aa125841746dd2c57981a9"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POLARIZATION/table.f0i",
+      "bytes": 84,
+      "sha256": "a371ee9da6585310303f8b546747c0d45f938704ca2f66d0d0510b3fd72c5e47"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/POLARIZATION/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FIELD/table.dat",
+      "bytes": 3466,
+      "sha256": "243a151981b68b778d0d9d44334171243e8568e9820b90597ffb406b2e31d295"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FIELD/table.lock",
+      "bytes": 325,
+      "sha256": "445ffd354621db6c3b67eb35fa74b728ee152e3594c01ffc604c283b23a77869"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FIELD/table.f0",
+      "bytes": 4616,
+      "sha256": "e36bd4ab4bc9dd660d236a7d23fd0890d737857c556bb3b64208acce6530f538"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FIELD/table.f0i",
+      "bytes": 108,
+      "sha256": "81d0111a13fac24d09e1c5236002dee87393544e3a0e6517a4b12df99f630983"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FIELD/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/table.dat",
+      "bytes": 7129,
+      "sha256": "bbfa808032d1c88dfaef394be8be1120599016e29e12ca6bfc0446b3ac054888"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/table.lock",
+      "bytes": 325,
+      "sha256": "84205ef1af6590e8c5975e2bb160f2f71f482800a5697e401ba23d498a5cb390"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/table.f0",
+      "bytes": 7745912,
+      "sha256": "2088f2c9e1b88e292813b7dddceb71ab80bf0208da19f6554fc577e985554a7e"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/table.f0i",
+      "bytes": 401595404,
+      "sha256": "461a49341b6fb90d030418aedd05277951a0c5bddd82a003cbeaaa8614489444"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/table.info",
+      "bytes": 104,
+      "sha256": "e8c27a5fbb307d21dc44e1e6de91d8e2beeee2009a46e69cf468057206405e81"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/ANTENNA/table.dat",
+      "bytes": 2756,
+      "sha256": "5a666806538598d6699b7d4e68079fcf6511c546d0aeb4c44234eb2685b7c398"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/ANTENNA/table.lock",
+      "bytes": 325,
+      "sha256": "99851db28d98e3203218894e46078943cc18251000e427fdc71e8fe42fdc8e1b"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/ANTENNA/table.f0",
+      "bytes": 32824,
+      "sha256": "001850eb028a438c9a9747f60483b86f5f7b3322454d1822d723ecb5fe0206ab"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/ANTENNA/table.f0i",
+      "bytes": 22544,
+      "sha256": "fbdb98183ff6fdf98e3da03cc7719060d2bca477544ce1947f63aab3362308a2"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/ANTENNA/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FEED/table.dat",
+      "bytes": 4278,
+      "sha256": "2934bc18a2a8169a6c19973e338ae7e812da7029adf25a263d5bf4bf01cb283e"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FEED/table.lock",
+      "bytes": 325,
+      "sha256": "7e71fa1fa9fed383b75a6ba8c065ccf8988de57c21bfcbd948b23a4383f15024"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FEED/table.f0",
+      "bytes": 41472,
+      "sha256": "335a4822764f35b5b5f4e65e14a44fee73ddc1114bca4906867497493b300f0c"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FEED/table.f0i",
+      "bytes": 53520,
+      "sha256": "ad81a1a837bbd1b6271325c5be8a07d77ec6e049ad7774a88e524ffa952e001a"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/FEED/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SPECTRAL_WINDOW/table.dat",
+      "bytes": 5122,
+      "sha256": "ce5ba70381c0c3d291a18e9c23794017c51e8ae75cda1f020c867c88c16ccbac"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SPECTRAL_WINDOW/table.lock",
+      "bytes": 325,
+      "sha256": "f94efaec34302e90787ce38a63021e19462711b36a379f4818183306e512229f"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SPECTRAL_WINDOW/table.f0",
+      "bytes": 9356,
+      "sha256": "c8acd075831b9a596e9479433b4803bd1bc3dcd46abb8483c1882a87c28142ff"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SPECTRAL_WINDOW/table.f0i",
+      "bytes": 6192,
+      "sha256": "ed2fd1c5750f31879fc6ec750c1c07022bd484a0c1d72979ca4bad73a11172f2"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/SPECTRAL_WINDOW/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/HISTORY/table.dat",
+      "bytes": 2592,
+      "sha256": "3bf593e58435c0609b75007f249751fd9b7afc09deabc1c1f9612b075f2eeda7"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/HISTORY/table.lock",
+      "bytes": 325,
+      "sha256": "77e684e6205bbe7056d80347417d71df498503bc1e7770f33aa1e63469e17cf4"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/HISTORY/table.f0",
+      "bytes": 3328,
+      "sha256": "8851f68182f506c528b1d614662b605549febd12cbfd41c275e5e257669c7afc"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/HISTORY/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/PROCESSOR/table.dat",
+      "bytes": 1561,
+      "sha256": "9715aaeae6d6ef61d2232859dceb47872d86fa769ca8148c37ad34b9bf26b849"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/PROCESSOR/table.lock",
+      "bytes": 325,
+      "sha256": "8613f971f02ee3a04a7ba328bde6af8cbbb56948d677a720589cb54aa13404dd"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/PROCESSOR/table.f0",
+      "bytes": 4748,
+      "sha256": "717689985fa9414b8b2f2d13f4563513f3f073b477ba494925f3103852c321e1"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/PROCESSOR/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/OBSERVATION/table.dat",
+      "bytes": 2847,
+      "sha256": "32df07b0c6ac68bcb4cbcabd098bce578aa86e39d4167e1e207289405e28c996"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/OBSERVATION/table.lock",
+      "bytes": 325,
+      "sha256": "445ffd354621db6c3b67eb35fa74b728ee152e3594c01ffc604c283b23a77869"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/OBSERVATION/table.f0",
+      "bytes": 8972,
+      "sha256": "6fd212abf030bdc1a4aaa9251c25a4a2fb2d51ceff22a9178cfe3538d7bd43be"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/OBSERVATION/table.f0i",
+      "bytes": 40,
+      "sha256": "51805705d71837fe516c48eeed2b9db9d062375c34e90b91b570b2e59fa9353d"
+    },
+    {
+      "path": "20260904_190008_59MHz.ms/OBSERVATION/table.info",
+      "bytes": 20,
+      "sha256": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271"
+    }
+  ],
+  "note": "Source/local tar SHA-256 and every extracted regular-file SHA-256 match. Source has only been read. No archive codec or scientific-fidelity check is implied."
+}

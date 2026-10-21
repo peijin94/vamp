@@ -10,12 +10,18 @@ if [[ -e "$bundle_path" ]]; then
 fi
 
 staging_dir=$(mktemp -d /tmp/varquanMS-git.XXXXXX)
-for item in .gitignore README.md pyproject.toml src tests scripts docs reports .github; do
+for item in .gitignore README.md pyproject.toml src tests scripts docs configs .github; do
     cp -a -- "$project_dir/$item" "$staging_dir/"
+done
+mkdir -p "$staging_dir/reports"
+for report in "$project_dir"/reports/*; do
+    if [[ -f "$report" ]]; then
+        cp -p -- "$report" "$staging_dir/reports/"
+    fi
 done
 
 git -C "$staging_dir" init --initial-branch=main
-git -C "$staging_dir" add -- .gitignore README.md pyproject.toml src tests scripts docs reports .github
+git -C "$staging_dir" add -- .gitignore README.md pyproject.toml src tests scripts docs reports configs .github
 if git -C "$staging_dir" ls-files | LC_ALL=C grep -Eq '(^data/|\.ms(/|$)|\.ms\.tar$|^\.(aws|codex|agents)/)'; then
     printf 'Unexpected observation or environment files in staged inventory\n' >&2
     exit 1

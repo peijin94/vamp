@@ -1,0 +1,39 @@
+{
+  "casa_data_cell_shape": [
+    4,
+    192
+  ],
+  "column_names": [
+    "UVW",
+    "FLAG",
+    "FLAG_CATEGORY",
+    "WEIGHT",
+    "SIGMA",
+    "ANTENNA1",
+    "ANTENNA2",
+    "ARRAY_ID",
+    "DATA_DESC_ID",
+    "EXPOSURE",
+    "FEED1",
+    "FEED2",
+    "FIELD_ID",
+    "FLAG_ROW",
+    "INTERVAL",
+    "OBSERVATION_ID",
+    "PROCESSOR_ID",
+    "SCAN_NUMBER",
+    "STATE_ID",
+    "TIME",
+    "TIME_CENTROID",
+    "DATA"
+  ],
+  "python_executable": "/common/casa/casa-release-5.4.1-31.el6/lib/casa/bin/python",
+  "science_acceptance": "not established by this smoke workflow",
+  "elapsed_seconds": 1.0126519203186035,
+  "table_reopen": "passed",
+  "row_count": 62128,
+  "working_ms": "/data1/users/pz47/varquanMS/reports/casa-pristine-copy-reopen.json.work.ms",
+  "imaging": "not run",
+  "ms": "/data1/users/pz47/varquanMS/results/adaptive/verified.ms",
+  "schema": "varquanms.casa-check/1"
+}

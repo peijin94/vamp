@@ -1,0 +1,7 @@
+{
+  "mode": "lossless",
+  "columns": ["DATA"],
+  "deduplicate": true,
+  "compression": "gzip",
+  "compression_level": 1
+}

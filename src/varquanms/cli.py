@@ -1,4 +1,4 @@
-"""Command-line entry point for the first (inspection) milestone."""
+"""Strict command-line entry points for inspection, archival and reconstruction."""
 
 import argparse
 import json
@@ -40,7 +40,7 @@ def _write_new(path, contents):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="visarchive", description="Measurement Set archive research tools (inspection milestone)")
+    parser = argparse.ArgumentParser(prog="visarchive", description="Measurement Set archive research tools")
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
     inspect = sub.add_parser("inspect", help="scan a frozen MS read-only; write a JSON inventory")
@@ -49,8 +49,48 @@ def main(argv=None):
     inspect.add_argument("--summary", type=Path, help="also save the human-readable summary")
     inspect.add_argument("--columns", nargs="+", default=["DATA"], help="visibility columns proposed for compression (default DATA)")
     inspect.add_argument("--chunk-rows", type=int, default=1024)
+    encode_parser = sub.add_parser("encode", help="create an independently decodable HDF5 archive")
+    encode_parser.add_argument("input", type=Path)
+    encode_parser.add_argument("output", type=Path)
+    encode_parser.add_argument("--config", type=Path)
+    encode_parser.add_argument("--report", type=Path)
+    decode_parser = sub.add_parser("decode", help="restore a new MS without overwriting an existing path")
+    decode_parser.add_argument("input", type=Path)
+    decode_parser.add_argument("output", type=Path)
+    decode_parser.add_argument("--report", type=Path)
+    verify_parser = sub.add_parser("verify", help="verify integrity and compare original/exported values")
+    verify_parser.add_argument("input", type=Path)
+    verify_parser.add_argument("--source", type=Path)
+    verify_parser.add_argument("--restored", type=Path)
+    verify_parser.add_argument("--report", type=Path)
+    benchmark_parser = sub.add_parser("benchmark", help="run a strict experiment matrix in fresh processes")
+    benchmark_parser.add_argument("input", type=Path)
+    benchmark_parser.add_argument("--matrix", type=Path, required=True)
+    benchmark_parser.add_argument("--output", type=Path, required=True)
+    benchmark_parser.add_argument("--experiments", nargs="+", help="run only these named matrix entries")
     args = parser.parse_args(argv)
     try:
+        if args.command == "benchmark":
+            from .benchmark import run
+            result = run(args.input, args.matrix, args.output, args.experiments)
+            print(json.dumps({"status": result["status"], "experiments": len(result["experiments"]), "results": str(args.output / "results.json")}, indent=2))
+            return 0
+        if args.command != "inspect":
+            from .archive import decode, encode, verify
+            from .config import Config
+            protected_source = args.source if args.command == "verify" and args.source else args.input
+            report_path = _check_output(args.report, protected_source.resolve()) if args.report else None
+            if args.command == "encode":
+                result = encode(args.input, args.output, Config.load(args.config))
+            elif args.command == "decode":
+                result = decode(args.input, args.output)
+            else:
+                result = verify(args.input, args.source, args.restored)
+            serialized = json.dumps(result, indent=2, allow_nan=False) + "\n"
+            if report_path:
+                _write_new(report_path, serialized)
+            print(serialized, end="")
+            return 0
         if args.chunk_rows < 1:
             raise ValueError("--chunk-rows must be positive")
         source = args.input.resolve()

@@ -1,0 +1,89 @@
+{
+  "archive": "/data1/users/pz47/varquanMS/data/archives/initial-adaptive.h5",
+  "archive_bytes": 171177189,
+  "source_physical_file_bytes": 409594838,
+  "whole_archive_ratio": 2.3928120352531317,
+  "selected_visibility_logical_bytes": 381714432,
+  "visibility_datasets_stored_bytes": 169615802,
+  "visibility_dataset_ratio_including_maps_statistics": 2.2504650362706182,
+  "stored_bytes_by_category": {
+    "coordinates": 988098,
+    "flags_weights": 98,
+    "auxiliary_columns": 184,
+    "quantization_statistics": 1676751,
+    "visibility_indexes": 360832,
+    "visibility_block_payload": 164627060,
+    "visibility_quality": 2951159,
+    "subtables": 9944,
+    "container_and_manifest_overhead": 563063
+  },
+  "elapsed_seconds": 320.0199663299136,
+  "mode": "adaptive",
+  "deduplicate": true,
+  "timings_seconds": {
+    "inspection_preflight": 4.9218692891299725,
+    "column_encoding_and_writing": 312.7435816382058,
+    "before_integrity_finalization": 317.67696939921007
+  },
+  "peak_process_rss_bytes": 2293440512,
+  "visibility_quality": {
+    "DATA": {
+      "by_product": {
+        "XX": {
+          "valid_samples": 11928576,
+          "component_mse": 3.147741723086271e-08,
+          "real_mse": 3.148535461707998e-08,
+          "imag_mse": 3.1469479844645326e-08,
+          "bias_real": -3.0531620474387085e-08,
+          "bias_imag": -2.7816935342382813e-08,
+          "complex_bias_abs": 4.1303289707168834e-08,
+          "max_complex_error": 0.0007839490946218762,
+          "p99_error": 0.0006180067248244709,
+          "max_baseline_component_mse": 1.0820419137417107e-07
+        },
+        "XY": {
+          "valid_samples": 11928576,
+          "component_mse": 4.127589175486558e-08,
+          "real_mse": 4.12811980328308e-08,
+          "imag_mse": 4.127058547690043e-08,
+          "bias_real": -3.909168114898393e-09,
+          "bias_imag": -8.651741124343612e-09,
+          "complex_bias_abs": 9.49390435138235e-09,
+          "max_complex_error": 0.0007897977003955872,
+          "p99_error": 0.0005857741786783043,
+          "max_baseline_component_mse": 1.0468113711123506e-07
+        },
+        "YX": {
+          "valid_samples": 11928576,
+          "component_mse": 4.058931098954722e-08,
+          "real_mse": 4.06047915804518e-08,
+          "imag_mse": 4.0573830398642685e-08,
+          "bias_real": -1.1128861070976244e-07,
+          "bias_imag": 3.1742961311049814e-09,
+          "complex_bias_abs": 1.1133387188828474e-07,
+          "max_complex_error": 0.0007897977003955872,
+          "p99_error": 0.0005848736875559784,
+          "max_baseline_component_mse": 1.0663509976121321e-07
+        },
+        "YY": {
+          "valid_samples": 11928576,
+          "component_mse": 2.910992742769511e-08,
+          "real_mse": 2.9122905830157607e-08,
+          "imag_mse": 2.909694902523258e-08,
+          "bias_real": 9.207190002373053e-08,
+          "bias_imag": -7.656134299951229e-08,
+          "complex_bias_abs": 1.1974503754172362e-07,
+          "max_complex_error": 0.0007807219385568058,
+          "p99_error": 0.0005996050398946367,
+          "max_baseline_component_mse": 1.0717833341859808e-07
+        }
+      },
+      "protected_sample_count": 0,
+      "protected_sample_bits": "exact",
+      "metric_domain": "unflagged finite input samples",
+      "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+      "science_validation": "not performed"
+    }
+  },
+  "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+}

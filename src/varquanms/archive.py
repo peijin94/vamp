@@ -1,0 +1,407 @@
+"""Lossless MS values, relocatable metadata and deterministic MS reconstruction."""
+
+from collections import Counter
+from datetime import datetime, timezone
+import json
+import hashlib
+import os
+from pathlib import Path
+import platform
+import resource
+import tempfile
+import time
+
+import casacore
+from casacore.tables import table
+import h5py
+import numpy as np
+
+from . import __version__
+from .config import Config
+from .container import Reader, Writer, new_output
+from .inspection import _batches, _open, inspect_ms, unique_bits
+from .metadata import casacore_keywords, dumps, equal, logical_descriptor, pack, portable, references, relocate, unpack
+
+SUPPORTED_TYPES = {"boolean", "uchar", "short", "ushort", "int", "uint", "int64", "float", "double", "complex", "dcomplex", "string"}
+
+
+def discover_tables(source):
+    source = Path(source).resolve()
+    pending = [source]
+    discovered = {}
+    while pending:
+        path = pending.pop(0)
+        if path in discovered:
+            continue
+        if not path.is_relative_to(source) or path.is_symlink():
+            raise ValueError(f"Unsupported external/symlink table: {path}")
+        with _open(path) as t:
+            description = t.getdesc()
+            if description.get("_private_keywords_"):
+                raise ValueError("Nonempty private casacore table keywords are not yet supported")
+            for column in t.colnames():
+                if t.getcoldesc(column)["valueType"] not in SUPPORTED_TYPES:
+                    raise ValueError(f"Unsupported column type: {path.name}/{column}")
+            normalized = relocate(description, source)
+            schema = {"path": path.relative_to(source).as_posix(), "row_count": t.nrows(),
+                      "column_names": t.colnames(), "descriptor": pack(normalized),
+                      "info": pack(t.info()), "original_storage_managers": pack(t.getdminfo())}
+            # Validate every schema before any incomplete archive is created.
+            dumps(schema)
+            discovered[path] = schema
+            for reference in references(description):
+                target = Path(reference)
+                target = (source / target).resolve() if not target.is_absolute() else target.resolve()
+                if not target.is_relative_to(source):
+                    raise ValueError(f"External table reference: {reference}")
+                pending.append(target)
+    expected = {p.parent.resolve() for p in source.rglob("table.dat")}
+    if set(discovered) != expected:
+        raise ValueError("Unreferenced nested casacore tables require explicit support")
+    for path in source.rglob("*"):
+        if path.is_symlink():
+            raise ValueError(f"Symlink inside source MS: {path}")
+        if path.is_file() and (path.parent.resolve() not in discovered or not path.name.startswith("table.")):
+            raise ValueError(f"Non-table auxiliary file requires explicit support: {path}")
+    return discovered
+
+
+def _exact_role(table_path, column, selected):
+    if table_path != ".":
+        return "subtables"
+    if column in selected:
+        return "visibility_lossless"
+    if column in ("FLAG", "FLAG_ROW", "FLAG_CATEGORY", "WEIGHT", "SIGMA", "WEIGHT_SPECTRUM", "SIGMA_SPECTRUM"):
+        return "flags_weights"
+    if column in ("UVW", "TIME", "TIME_CENTROID", "ANTENNA1", "ANTENNA2"):
+        return "coordinates"
+    return "auxiliary_columns"
+
+
+def _write_exact_column(writer, t, column, prefix, info, config, role, deduplicate):
+    rows = t.nrows()
+    if rows == 0:
+        return {"encoding": "empty", "row_count": 0}
+    # Numeric homogeneous columns can be represented as one typed array.
+    if info["undefined_cells"] == 0 and len(info["cell_shapes"]) == 1 and len(info["numpy_dtypes"]) == 1 and np.dtype(info["numpy_dtypes"][0]).kind in "biufc":
+        shape = tuple(json.loads(next(iter(info["cell_shapes"]))))
+        dtype = np.dtype(info["numpy_dtypes"][0]).newbyteorder("<")
+        spec = {"encoding": "dense", "row_count": rows, "cell_shape": list(shape), "dtype": dtype.str}
+        if deduplicate and rows > 1 and info["logical_array_bytes"] <= config.max_visibility_bytes:
+            values = portable(t.getcol(column))
+            if values[0].size:
+                bytes_by_row = values.view(np.uint8).reshape(rows, -1)
+                if np.all(bytes_by_row == bytes_by_row[0]):
+                    spec.update(encoding="constant", values=writer.put(prefix + "/values", values[:1], role))
+                    return spec
+                distinct, inverse, _ = unique_bits(values)
+                if len(distinct) <= np.iinfo(np.uint32).max and distinct.nbytes + rows * 4 < values.nbytes:
+                    spec.update(encoding="dictionary",
+                                values=writer.put(prefix + "/values", distinct, role),
+                                row_map=writer.put(prefix + "/row_map", inverse.astype("<u4"), "reconstruction"))
+                    return spec
+        dataset = writer.create(prefix + "/values", (rows, *shape), dtype, role)
+        for start in range(0, rows, config.io_chunk_rows):
+            stop = min(rows, start + config.io_chunk_rows)
+            dataset[start:stop] = portable(t.getcol(column, startrow=start, nrow=stop - start))
+        spec["values"] = prefix + "/values"
+        return spec
+    # Explicit cell records retain undefined versus empty and arbitrary shapes.
+    chunks = []
+    for start in range(0, rows, config.io_chunk_rows):
+        stop = min(rows, start + config.io_chunk_rows)
+        records = [pack(np.asarray(t.getcell(column, row))) if t.iscelldefined(column, row) else ["undefined"]
+                   for row in range(start, stop)]
+        path = prefix + f"/cells_{start}"
+        writer.put_json(path, records, role)
+        chunks.append({"start": start, "stop": stop, "path": path})
+    return {"encoding": "cells", "row_count": rows, "chunks": chunks}
+
+
+def read_column(reader, spec, start, stop):
+    """Return a numeric row slab, or explicit cells (None means undefined)."""
+    if not 0 <= start <= stop <= spec["row_count"]:
+        raise ValueError("Column row bounds out of range")
+    encoding = spec["encoding"]
+    if encoding == "empty":
+        return []
+    if encoding == "dense":
+        return reader.h5[spec["values"]][start:stop]
+    if encoding in ("constant", "dictionary"):
+        if not hasattr(reader, "column_cache"):
+            reader.column_cache = {}
+        if spec["values"] not in reader.column_cache:
+            reader.column_cache[spec["values"]] = reader.h5[spec["values"]][...]
+        values = reader.column_cache[spec["values"]]
+        if encoding == "constant":
+            return np.repeat(values, stop - start, axis=0)
+        indices = reader.h5[spec["row_map"]][start:stop]
+        if np.any(indices >= len(values)):
+            raise ValueError("Dictionary reconstruction index out of range")
+        return values[indices]
+    if encoding == "cells":
+        result = []
+        for chunk in spec["chunks"]:
+            if chunk["stop"] <= start or chunk["start"] >= stop:
+                continue
+            nodes = reader.json(chunk["path"])
+            if len(nodes) != chunk["stop"] - chunk["start"]:
+                raise ValueError("Cell-record chunk length mismatch")
+            lo, hi = max(start, chunk["start"]) - chunk["start"], min(stop, chunk["stop"]) - chunk["start"]
+            result.extend(None if v == ["undefined"] else unpack(v) for v in nodes[lo:hi])
+        if len(result) != stop - start:
+            raise ValueError("Cell-record reconstruction has missing rows")
+        return result
+    if encoding == "quantized":
+        from .visibility import read_visibility
+        return read_visibility(reader, spec)[start:stop]
+    raise ValueError(f"Unknown column encoding: {encoding}")
+
+
+def _environment():
+    return {"varquanMS": __version__, "python": platform.python_version(),
+            "numpy": np.__version__, "python_casacore": casacore.__version__, "h5py": h5py.__version__,
+            "platform": platform.platform(), "machine": platform.machine(),
+            "cpu_count": os.cpu_count(), "threads_environment": {k: os.environ.get(k) for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")},
+            "implementation_files_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(Path(__file__).parent.glob("*.py"))}}
+
+
+def encode(source, output, config=None, inspection=None):
+    config = config or Config()
+    config.validate()
+    source = Path(source).resolve()
+    output = new_output(output, source)
+    started = time.perf_counter()
+    report = inspection or inspect_ms(source, config.columns, config.io_chunk_rows)
+    if report["source"] != str(source) or report["selected_visibility_columns"] != config.columns:
+        raise ValueError("Inspection does not match the requested source/columns")
+    schemas = discover_tables(source)
+    if config.mode != "lossless":
+        issues = report["layout"]["initial_regular_profile_issues"]
+        if issues or report["layout"]["organization"] != "channels_inside_cells":
+            raise ValueError("Quantized profile requires one regular configuration: " + "; ".join(issues or [report["layout"]["organization"]]))
+        names = report["layout"]["configurations"][0]["correlation_names"]
+        if set(config.product_bounds) - set(names):
+            raise ValueError("Per-product bounds name a product absent from POLARIZATION")
+        for c in config.columns:
+            if report["main"]["columns"][c]["numpy_dtypes"] != [np.dtype("complex64").str]:
+                raise ValueError("Quantized profile currently requires complex64 cells")
+            if report["main"]["columns"][c]["logical_array_bytes"] > config.max_visibility_bytes:
+                raise ValueError("Selected visibility array exceeds max_visibility_bytes prototype limit")
+    preflight_seconds = time.perf_counter() - started
+    writer = Writer(output, config)
+    manifest = {
+        "created_utc": datetime.now(timezone.utc).isoformat(), "config": config.to_dict(),
+        "source": {"name": source.name, "physical_file_bytes": report["storage"]["file_bytes"],
+                   "selected_visibility_logical_bytes": sum(report["main"]["columns"][c]["logical_array_bytes"] for c in config.columns),
+                   "layout": report["layout"], "main_row_count": report["main"]["row_count"]},
+        "environment": _environment(), "tables": [], "timings_seconds": {"inspection_preflight": preflight_seconds},
+        "provenance": {"source_modified": False, "source_loss_history": "Unknown; original storage-manager assignments are recorded per table",
+                       "compression_generation": 1, "noise_model": config.noise,
+                       "science_validation": "Not performed; absolute numeric error bounds are not scientific acceptance",
+                       "storage_manager_layout_preserved": False,
+                       "source_snapshot_requirement": "Frozen input; readonly usernoread access"},
+    }
+    exact_started = time.perf_counter()
+    try:
+        for table_index, (path, schema) in enumerate(schemas.items()):
+            item = dict(schema, columns={})
+            table_name = schema["path"]
+            scan = report["main"] if table_name == "." else report["subtables"].get(path.name)
+            if scan is None:
+                raise ValueError("Nested subtable is not covered by the inspection profile")
+            with _open(path) as t:
+                for column_index, column in enumerate(t.colnames()):
+                    prefix = f"tables/t{table_index}/c{column_index}"
+                    if table_name == "." and column in config.columns and config.mode != "lossless":
+                        from .visibility import write_visibility
+                        item["columns"][column] = write_visibility(writer, t, column, prefix, config, report)
+                    else:
+                        role = _exact_role(table_name, column, config.columns)
+                        item["columns"][column] = _write_exact_column(
+                            writer, t, column, prefix, scan["columns"][column], config,
+                            role, config.deduplicate and role != "visibility_lossless")
+            manifest["tables"].append(item)
+        manifest["timings_seconds"]["column_encoding_and_writing"] = time.perf_counter() - exact_started
+        manifest["peak_process_rss_bytes"] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
+        manifest["timings_seconds"]["before_integrity_finalization"] = time.perf_counter() - started
+        manifest = writer.finish(manifest)
+    finally:
+        writer.close()
+    return archive_summary(output, manifest, time.perf_counter() - started)
+
+
+def archive_summary(path, manifest, elapsed=None):
+    categories = dict(manifest["dataset_stored_bytes_by_category"])
+    total = Path(path).stat().st_size
+    categories["container_and_manifest_overhead"] = total - sum(categories.values())
+    original = manifest["source"]["physical_file_bytes"]
+    visibility_logical = manifest["source"]["selected_visibility_logical_bytes"]
+    visibility_stored = sum(v for k, v in categories.items() if k.startswith("visibility_") or k in ("permutations", "quantization_statistics"))
+    return {"archive": str(path), "archive_bytes": total, "source_physical_file_bytes": original,
+            "whole_archive_ratio": original / total if total else None,
+            "selected_visibility_logical_bytes": visibility_logical,
+            "visibility_datasets_stored_bytes": visibility_stored,
+            "visibility_dataset_ratio_including_maps_statistics": visibility_logical / visibility_stored if visibility_stored else None,
+            "stored_bytes_by_category": categories, "elapsed_seconds": elapsed,
+            "mode": manifest["config"]["mode"], "deduplicate": manifest["config"]["deduplicate"],
+            "timings_seconds": manifest["timings_seconds"],
+            "peak_process_rss_bytes": manifest["peak_process_rss_bytes"],
+            "visibility_quality": {c: s.get("quality_summary") for t in manifest["tables"] if t["path"] == "." for c, s in t["columns"].items() if s["encoding"] == "quantized"},
+            "visibility_block_statistics": {c: {"products": s["products"], "timings_seconds": s["timings_seconds"]} for t in manifest["tables"] if t["path"] == "." for c, s in t["columns"].items() if s["encoding"] == "quantized"},
+            "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."}
+
+
+def decode(archive, output):
+    output = new_output(output, archive)
+    started = time.perf_counter()
+    with Reader(archive) as reader:
+        staged = Path(tempfile.mkdtemp(prefix=output.name + ".", suffix=".partial", dir=output.parent))
+        schemas = reader.manifest["tables"]
+        # Create the entire table graph before restoring any table references.
+        for spec in schemas:
+            relative = Path(spec["path"])
+            if relative.is_absolute() or ".." in relative.parts:
+                raise ValueError("Unsafe reconstruction table path")
+            target = staged / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            description = unpack(spec["descriptor"])
+            description.pop("_keywords_", None)
+            description.pop("_private_keywords_", None)
+            for name in spec["column_names"]:
+                description[name] = dict(description[name])
+                description[name].pop("keywords", None)
+                description[name]["dataManagerType"] = "StandardStMan"
+                description[name]["dataManagerGroup"] = "StandardStMan"
+            with table(str(target), tabledesc=description, nrow=spec["row_count"], readonly=False, ack=False) as t:
+                info = unpack(spec["info"])
+                if info.get("readme", "").endswith("\n"):
+                    # CTDS putinfo appends a line terminator to a nonempty readme.
+                    info["readme"] = info["readme"][:-1]
+                t.putinfo(info)
+                for name, column in spec["columns"].items():
+                    if column["encoding"] == "quantized":
+                        values = read_column(reader, column, 0, spec["row_count"])
+                        for start in range(0, spec["row_count"], 1024):
+                            chunk = values[start:start + 1024]
+                            t.putcol(name, chunk, startrow=start, nrow=len(chunk))
+                    else:
+                        for start in range(0, spec["row_count"], 1024):
+                            values = read_column(reader, column, start, min(spec["row_count"], start + 1024))
+                            if isinstance(values, np.ndarray):
+                                if values.size:
+                                    t.putcol(name, values, startrow=start, nrow=len(values))
+                                else:
+                                    for index, value in enumerate(values):
+                                        t.putcell(name, start + index, value)
+                            else:
+                                for index, value in enumerate(values):
+                                    if value is not None:
+                                        cell = value.item() if isinstance(value, np.ndarray) and value.ndim == 0 else value
+                                        t.putcell(name, start + index, cell)
+        for spec in schemas:
+            with table(str(staged / spec["path"]), readonly=False, ack=False) as t:
+                description = relocate(unpack(spec["descriptor"]), staged, restore=True)
+                t.putkeywords(casacore_keywords(description.get("_keywords_", {})))
+                for name in spec["column_names"]:
+                    t.putcolkeywords(name, casacore_keywords(description[name].get("keywords", {})))
+        # Reopen every table prior to publication; reconstruction references must resolve.
+        for spec in schemas:
+            with _open(staged / spec["path"]) as t:
+                if t.nrows() != spec["row_count"]:
+                    raise ValueError("Export row count mismatch")
+        if output.exists():
+            raise FileExistsError(f"Refusing to overwrite {output}")
+        staged.rename(output)
+    return {"output": str(output), "status": "exported", "elapsed_seconds": time.perf_counter() - started,
+            "python_casacore_reopen": "passed", "CASA_workflow": "not run"}
+
+
+def verify(archive, source=None, restored=None):
+    started = time.perf_counter()
+    checks = []
+    with Reader(archive) as reader:
+        for spec in reader.manifest["tables"]:
+            if source is None:
+                continue
+            root = Path(source).resolve()
+            with _open(root / spec["path"]) as t:
+                expected = unpack(spec["descriptor"])
+                actual = relocate(t.getdesc(), root)
+                if t.nrows() != spec["row_count"] or t.colnames() != spec["column_names"] or not equal(logical_descriptor(expected), logical_descriptor(actual)) or not equal(unpack(spec["info"]), t.info()):
+                    raise ValueError(f"Source schema/metadata mismatch: {spec['path']}")
+                for column, encoding in spec["columns"].items():
+                    if encoding["encoding"] == "quantized":
+                        from .visibility import verify_visibility
+                        quality = verify_visibility(reader, encoding, t, column, reader.manifest["config"])
+                        checks.append({"table": spec["path"], "column": column, "status": "measured_error_bounds_passed", "quality": quality})
+                        continue
+                    for start in range(0, t.nrows(), 1024):
+                        stop = min(t.nrows(), start + 1024)
+                        values = read_column(reader, encoding, start, stop)
+                        if isinstance(values, np.ndarray):
+                            if not equal(np.asarray(t.getcol(column, startrow=start, nrow=stop - start)), values):
+                                raise ValueError(f"Exact column mismatch: {spec['path']}/{column}, rows {start}:{stop}")
+                            continue
+                        for index, value in enumerate(values):
+                            row = start + index
+                            defined = t.iscelldefined(column, row)
+                            if defined != (value is not None) or defined and not equal(np.asarray(t.getcell(column, row)), value):
+                                raise ValueError(f"Exact column mismatch: {spec['path']}/{column}, row {row}")
+                    checks.append({"table": spec["path"], "column": column, "status": "bitwise_exact"})
+        if restored is not None:
+            if source is None:
+                raise ValueError("--restored comparison requires --source")
+            checks.extend(compare_ms(source, restored, reader.manifest["config"]["columns"] if reader.manifest["config"]["mode"] != "lossless" else []))
+            for spec in reader.manifest["tables"]:
+                if spec["path"] != ".":
+                    continue
+                with _open(Path(restored).resolve()) as exported:
+                    for name, column in spec["columns"].items():
+                        if column["encoding"] == "quantized":
+                            values = read_column(reader, column, 0, spec["row_count"])
+                            for start in range(0, spec["row_count"], 1024):
+                                expected = values[start:start + 1024]
+                                if not equal(expected, np.asarray(exported.getcol(name, startrow=start, nrow=len(expected)))):
+                                    raise ValueError(f"Exported quantized values differ from archive decoder: {name}")
+                            checks.append({"table": ".", "column": name, "export": "exactly_matches_archive_reconstruction"})
+        result = {"schema": "varquanms.verification/1", "status": "passed",
+                  "archive": str(archive), "integrity": "all inventory SHA-256 and HDF5 chunk checksums passed",
+                  "source": str(source) if source else None, "restored": str(restored) if restored else None,
+                  "column_checks": checks, "summary": archive_summary(archive, reader.manifest),
+                  "CASA_workflow": "not run", "scientific_products": "not tested",
+                  "elapsed_seconds": time.perf_counter() - started}
+    return result
+
+
+def compare_ms(source, restored, approximate_columns=()):
+    source, restored = Path(source).resolve(), Path(restored).resolve()
+    schemas = discover_tables(source)
+    output_schemas = discover_tables(restored)
+    if {s["path"] for s in schemas.values()} != {s["path"] for s in output_schemas.values()}:
+        raise ValueError("Exported subtable graph differs")
+    result = []
+    for path, schema in schemas.items():
+        relative = schema["path"]
+        with _open(path) as a, _open(restored / relative) as b:
+            if a.nrows() != b.nrows() or a.colnames() != b.colnames() or not equal(logical_descriptor(relocate(a.getdesc(), source)), logical_descriptor(relocate(b.getdesc(), restored))) or not equal(a.info(), b.info()):
+                raise ValueError(f"Exported schema/metadata differs: {relative}")
+            for column in a.colnames():
+                if relative == "." and column in approximate_columns:
+                    # Archive-vs-source measured errors are checked separately.
+                    continue
+                for start in range(0, a.nrows(), 1024):
+                    stop = min(a.nrows(), start + 1024)
+                    try:
+                        original_values = np.asarray(a.getcol(column, startrow=start, nrow=stop - start))
+                        exported_values = np.asarray(b.getcol(column, startrow=start, nrow=stop - start))
+                    except RuntimeError:
+                        for row in range(start, stop):
+                            defined_a, defined_b = a.iscelldefined(column, row), b.iscelldefined(column, row)
+                            if defined_a != defined_b or defined_a and not equal(np.asarray(a.getcell(column, row)), np.asarray(b.getcell(column, row))):
+                                raise ValueError(f"Exported exact column differs: {relative}/{column}, row {row}")
+                    else:
+                        if not equal(original_values, exported_values):
+                            raise ValueError(f"Exported exact column differs: {relative}/{column}, rows {start}:{stop}")
+                result.append({"table": relative, "column": column, "export": "bitwise_exact"})
+    return result

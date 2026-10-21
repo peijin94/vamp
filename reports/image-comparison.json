@@ -1,0 +1,23 @@
+{
+  "schema": "varquanms.image-comparison/1",
+  "reference": "results/casa/lossless.image",
+  "candidate": "results/casa/adaptive.image",
+  "shape": [
+    64,
+    64
+  ],
+  "difference_rms": 3.826968250692284e-08,
+  "difference_max_abs": 1.6154081095010042e-07,
+  "difference_bias": -1.374507209439546e-09,
+  "reference_rms": 0.0001429742475022521,
+  "relative_rms_difference": 0.0002676683610894334,
+  "reference_peak": 0.0006964323110878468,
+  "candidate_peak": 0.0006964733474887908,
+  "relative_peak_change": 5.892374648714175e-05,
+  "limitations": [
+    "64x64 natural-weight MFS Stokes I dirty image only; no calibration, deconvolution or weak-polarization acceptance",
+    "CASA 5.4.1 warned of outdated IERS/leap-second tables and missing OVRO-LWA observatory metadata",
+    "Image RMS includes sky structure and is not a validated thermal-noise estimate",
+    "Array ordering is native to both CASA image tables; this plot has pixel coordinates, not validated celestial axes"
+  ]
+}

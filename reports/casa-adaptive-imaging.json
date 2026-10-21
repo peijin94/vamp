@@ -1,0 +1,59 @@
+{
+  "casa_data_cell_shape": [
+    4,
+    192
+  ],
+  "image_max": 0.0006964733474887908,
+  "column_names": [
+    "UVW",
+    "FLAG",
+    "FLAG_CATEGORY",
+    "WEIGHT",
+    "SIGMA",
+    "ANTENNA1",
+    "ANTENNA2",
+    "ARRAY_ID",
+    "DATA_DESC_ID",
+    "EXPOSURE",
+    "FEED1",
+    "FEED2",
+    "FIELD_ID",
+    "FLAG_ROW",
+    "INTERVAL",
+    "OBSERVATION_ID",
+    "PROCESSOR_ID",
+    "SCAN_NUMBER",
+    "STATE_ID",
+    "TIME",
+    "TIME_CENTROID",
+    "DATA"
+  ],
+  "python_executable": "/common/casa/casa-release-5.4.1-31.el6/lib/casa/bin/python",
+  "science_acceptance": "not established by this smoke workflow",
+  "image_sha256": "145fb3cc2fcc76e7c0794b8019a09897b3185e7e2609e93ee64cc904710b8998",
+  "image_shape": [
+    64,
+    64,
+    1,
+    1
+  ],
+  "image_min": -0.0005816988996230066,
+  "table_reopen": "passed",
+  "row_count": 62128,
+  "imaging_parameters": {
+    "cell": "600arcsec",
+    "weighting": "natural",
+    "nx": 64,
+    "ny": 64,
+    "mode": "mfs",
+    "stokes": "I",
+    "type": "observed/dirty"
+  },
+  "elapsed_seconds": 5.5943169593811035,
+  "imaging": "passed",
+  "ms": "/data1/users/pz47/varquanMS/results/adaptive/restored.ms",
+  "image_rms": 0.000142972302507376,
+  "imaging_seconds": 5.060153007507324,
+  "image": "/data1/users/pz47/varquanMS/results/casa/adaptive.image",
+  "schema": "varquanms.casa-check/1"
+}

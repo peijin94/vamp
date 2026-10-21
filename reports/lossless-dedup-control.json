@@ -1,0 +1,29 @@
+{
+  "archive": "/data1/users/pz47/varquanMS/data/archives/lossless-controlled.h5",
+  "archive_bytes": 331220418,
+  "source_physical_file_bytes": 409594838,
+  "whole_archive_ratio": 1.2366231540713772,
+  "selected_visibility_logical_bytes": 381714432,
+  "visibility_datasets_stored_bytes": 328163545,
+  "visibility_dataset_ratio_including_maps_statistics": 1.1631835339906509,
+  "stored_bytes_by_category": {
+    "coordinates": 988098,
+    "flags_weights": 98,
+    "auxiliary_columns": 184,
+    "visibility_lossless": 328163545,
+    "subtables": 9944,
+    "container_and_manifest_overhead": 2058549
+  },
+  "elapsed_seconds": 31.825715069193393,
+  "mode": "lossless",
+  "deduplicate": true,
+  "timings_seconds": {
+    "inspection_preflight": 4.8163116332143545,
+    "column_encoding_and_writing": 21.120524044148624,
+    "before_integrity_finalization": 25.94580653309822
+  },
+  "peak_process_rss_bytes": 194756608,
+  "visibility_quality": {},
+  "visibility_block_statistics": {},
+  "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+}

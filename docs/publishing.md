@@ -1,4 +1,4 @@
-# Publishing the initial repository
+# Publishing the prototype repository
 
 The user authorized a **public** GitHub repository named `varquanMS`. The active
 GitHub CLI configuration names the account `peijin94`; authentication and account
@@ -8,11 +8,14 @@ created by this environment.
 Observed local blockers: `api.github.com` cannot be resolved; `gh auth status`
 fails; the GitHub connector is disabled by an administrator; and initializing
 the existing workspace `.git` fails with `Read-only file system`.
+An explicit outside-sandbox `gh repo create` attempt was rejected by the
+execution policy because `sandbox_approval=false`, despite the user's permission.
 
 The root project files are ready for Git. The large source MS and tar are under
-ignored `data/` paths. A portable initial-commit bundle is provided as
-`varquanMS-initial.bundle` in this workspace. It contains code, design, tests and
-inspection reports, and excludes observation payloads and environment files.
+ignored `data/` paths. A portable Git-history bundle is provided as
+`varquanMS-initial.bundle` in this workspace. It contains the initial inspection
+commit and prototype implementation, design, tests and measured reports. It
+excludes observation payloads, decoded MS/image tables and environment files.
 
 On an authenticated host with GitHub access and a writable destination:
 

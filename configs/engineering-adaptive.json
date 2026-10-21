@@ -1,0 +1,19 @@
+{
+  "mode": "adaptive",
+  "columns": ["DATA"],
+  "deduplicate": true,
+  "baseline_group": 32,
+  "channel_segment": 64,
+  "ordering": "original",
+  "bits": [2, 4, 6, 8],
+  "codebook": "uniform-symmetric-v1",
+  "rounding": "nearest-even",
+  "scale_quantiles": [1.0, 0.995],
+  "max_component_mse": 0.0000001,
+  "max_baseline_component_mse": 0.0000002,
+  "max_complex_error": 0.003,
+  "max_complex_bias": 0.0003,
+  "noise": null,
+  "compression": "gzip",
+  "compression_level": 1
+}

@@ -1,0 +1,2708 @@
+{
+  "schema": "varquanms.benchmark-results/1",
+  "status": "complete",
+  "source": "/data1/users/pz47/varquanMS/data/working/20260904_190008_59MHz.ms",
+  "cache_methodology": "Warm/unspecified OS cache; independent experiment lanes run concurrently on a shared host. Timings are diagnostic, not isolated throughput measurements.",
+  "notes": "Matched adaptive precisions and absolute bounds. Geometry and antenna group boundaries are explicit. Frequency-segment experiments vary only segment length relative to amplitude-64. All decoded outputs undergo WSClean imaging separately.",
+  "experiments": [
+    {
+      "name": "amplitude-64",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-amplitude/amplitude-64/archive.h5",
+        "archive_bytes": 146699340,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.7920700802062233,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 145125819,
+        "visibility_dataset_ratio_including_maps_statistics": 2.6302310273267087,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 488354,
+          "visibility_indexes": 281588,
+          "visibility_block_payload": 139461140,
+          "visibility_quality": 3217986,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 575197
+        },
+        "elapsed_seconds": 209.1869461243041,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 5.120882547926158,
+          "column_encoding_and_writing": 201.4934327318333,
+          "before_integrity_finalization": 206.62123854923993
+        },
+        "peak_process_rss_bytes": 2291908608,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.481934769237392e-08,
+                "real_mse": 3.4827848635591524e-08,
+                "imag_mse": 3.48108467491563e-08,
+                "bias_real": -7.684536734659507e-08,
+                "bias_imag": 2.902503405436082e-08,
+                "complex_bias_abs": 8.214416037972477e-08,
+                "max_complex_error": 0.0027236108244299458,
+                "p99_error": 0.0006177011552838257,
+                "max_baseline_component_mse": 1.021986477673207e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 4.410472340843481e-08,
+                "real_mse": 4.409670343337038e-08,
+                "imag_mse": 4.411274338349926e-08,
+                "bias_real": -1.983429370230183e-09,
+                "bias_imag": 8.501693254471485e-08,
+                "complex_bias_abs": 8.504006591824401e-08,
+                "max_complex_error": 0.0021466543714061172,
+                "p99_error": 0.0005865560968027007,
+                "max_baseline_component_mse": 1.206312961536939e-07
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 4.330632892624921e-08,
+                "real_mse": 4.332228591895626e-08,
+                "imag_mse": 4.3290371933542184e-08,
+                "bias_real": -4.793294804881528e-08,
+                "bias_imag": 1.1766433973479714e-07,
+                "complex_bias_abs": 1.270529982089214e-07,
+                "max_complex_error": 0.0011876462041828465,
+                "p99_error": 0.0005794756325798731,
+                "max_baseline_component_mse": 1.0002061783201084e-07
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.538058405789683e-08,
+                "real_mse": 3.537171347801748e-08,
+                "imag_mse": 3.538945463777615e-08,
+                "bias_real": 2.6361627614220514e-08,
+                "bias_imag": 1.8127755350497886e-08,
+                "complex_bias_abs": 3.1992982426124926e-08,
+                "max_complex_error": 0.0010023583305966862,
+                "p99_error": 0.0006034365679477736,
+                "max_baseline_component_mse": 1.0490603934079585e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 2495,
+                  "2": 3,
+                  "4": 132,
+                  "6": 367,
+                  "8": 2829
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 5106688,
+                  "2": 6144,
+                  "4": 270336,
+                  "6": 751616,
+                  "8": 5793792
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 40853504,
+                  "packed_code_bytes": 12988416,
+                  "exception_position_bytes": 45092,
+                  "exception_value_bytes": 90184,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 11273
+                },
+                "serialized_block_bytes": 47977455,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 214,
+                  "8": 5177,
+                  "2": 3,
+                  "4": 113,
+                  "6": 319
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 435200,
+                  "8": 10602496,
+                  "2": 6144,
+                  "4": 231424,
+                  "6": 653312
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 3481600,
+                  "packed_code_bytes": 22419456,
+                  "exception_position_bytes": 76332,
+                  "exception_value_bytes": 152664,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 19083
+                },
+                "serialized_block_bytes": 23343069,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 155,
+                  "8": 5117,
+                  "4": 112,
+                  "2": 1,
+                  "6": 441
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 314368,
+                  "8": 10479616,
+                  "4": 229376,
+                  "2": 2048,
+                  "6": 903168
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 2514944,
+                  "packed_code_bytes": 22544384,
+                  "exception_position_bytes": 76904,
+                  "exception_value_bytes": 153808,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 19226
+                },
+                "serialized_block_bytes": 22677373,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 2045,
+                  "4": 91,
+                  "2": 1,
+                  "6": 348,
+                  "8": 3341
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 4185088,
+                  "4": 186368,
+                  "2": 2048,
+                  "6": 712704,
+                  "8": 6842368
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 33480704,
+                  "packed_code_bytes": 14941184,
+                  "exception_position_bytes": 66872,
+                  "exception_value_bytes": 133744,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 16718
+                },
+                "serialized_block_bytes": 43655730,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6645715921185911,
+              "amplitude_statistics": 3.8013585871085525,
+              "baseline_sorting_and_grouping": 0.04017025697976351,
+              "memory_gathering": 0.5797838582657278,
+              "packing_and_secondary_compression": 50.82550335070118,
+              "quantization_and_scale_estimation": 37.51017662836239,
+              "candidate_reconstruction_and_error_checks": 85.37714832508937,
+              "codec_total": 176.50662450678647,
+              "payload_writing": 0.2419311092235148,
+              "quality_accounting": 15.773853654973209
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 218.66104864887893,
+        "decode_and_export_process": 40.75098589621484,
+        "verification_process": 44.11848180601373
+      }
+    },
+    {
+      "name": "buckets-64",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "buckets",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-amplitude/buckets-64/archive.h5",
+        "archive_bytes": 157821630,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.5953022915806914,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 156235037,
+        "visibility_dataset_ratio_including_maps_statistics": 2.4432063340568098,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 155576,
+          "visibility_indexes": 284373,
+          "visibility_block_payload": 150995520,
+          "visibility_quality": 3122817,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 588269
+        },
+        "elapsed_seconds": 213.53851027134806,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.363673923071474,
+          "column_encoding_and_writing": 208.1442012861371,
+          "before_integrity_finalization": 212.51441776193678
+        },
+        "peak_process_rss_bytes": 2291875840,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.383170602970566e-08,
+                "real_mse": 3.382482851823813e-08,
+                "imag_mse": 3.383858354117323e-08,
+                "bias_real": -4.976819463428204e-08,
+                "bias_imag": 3.857186168866599e-09,
+                "complex_bias_abs": 4.991744266583652e-08,
+                "max_complex_error": 0.002452086044491983,
+                "p99_error": 0.0006060425007620116,
+                "max_baseline_component_mse": 1.0715324345753949e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 4.0438121314267074e-08,
+                "real_mse": 4.043466769223648e-08,
+                "imag_mse": 4.0441574936297795e-08,
+                "bias_real": -3.502054770315301e-08,
+                "bias_imag": 7.817354404064007e-08,
+                "complex_bias_abs": 8.565945218890154e-08,
+                "max_complex_error": 0.0008714710848730737,
+                "p99_error": 0.0005790464622478604,
+                "max_baseline_component_mse": 1.0033074582476309e-07
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 4.05134436101469e-08,
+                "real_mse": 4.0513329672857366e-08,
+                "imag_mse": 4.05135575474364e-08,
+                "bias_real": -1.4024943305967547e-08,
+                "bias_imag": -8.957150320735954e-08,
+                "complex_bias_abs": 9.066285469563389e-08,
+                "max_complex_error": 0.0023458334617316723,
+                "p99_error": 0.0005812771640219864,
+                "max_baseline_component_mse": 1.0296073726491235e-07
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.222440522612656e-08,
+                "real_mse": 3.22340988531155e-08,
+                "imag_mse": 3.2214711599137616e-08,
+                "bias_real": -4.913621131992555e-09,
+                "bias_imag": 1.1734002191261178e-08,
+                "complex_bias_abs": 1.2721260945884488e-08,
+                "max_complex_error": 0.0007801792979123056,
+                "p99_error": 0.0005875855984339075,
+                "max_baseline_component_mse": 1.0520443055265701e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 5874,
+                "component_bit_width_histogram": {
+                  "6": 384,
+                  "8": 2801,
+                  "float32": 2548,
+                  "2": 10,
+                  "4": 131
+                },
+                "complex_sample_bit_width_histogram": {
+                  "6": 776448,
+                  "8": 5726336,
+                  "float32": 5160640,
+                  "2": 5056,
+                  "4": 260096
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 41285120,
+                  "packed_code_bytes": 12879968,
+                  "exception_position_bytes": 43740,
+                  "exception_value_bytes": 87480,
+                  "header_bytes": 93984,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 10935
+                },
+                "serialized_block_bytes": 48305866,
+                "index_bytes": 70496,
+                "bucket_reference": 0.03763675130253358,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 2,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.01881837565126679,
+                    "upper": 0.03763675130253358
+                  },
+                  {
+                    "start": 2,
+                    "stop": 4,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.03763675130253358,
+                    "upper": 0.07527350260506716
+                  },
+                  {
+                    "start": 4,
+                    "stop": 6,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1505470052101343,
+                    "upper": 0.3010940104202686
+                  },
+                  {
+                    "start": 6,
+                    "stop": 10,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3010940104202686,
+                    "upper": 0.6021880208405372
+                  },
+                  {
+                    "start": 10,
+                    "stop": 11,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6021880208405372,
+                    "upper": 1.2043760416810745
+                  },
+                  {
+                    "start": 11,
+                    "stop": 16,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 1.2043760416810745,
+                    "upper": 2.408752083362149
+                  },
+                  {
+                    "start": 16,
+                    "stop": 19,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 6,
+                    "lower": 2.408752083362149,
+                    "upper": 4.817504166724298
+                  },
+                  {
+                    "start": 19,
+                    "stop": 35,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 7,
+                    "lower": 4.817504166724298,
+                    "upper": 9.635008333448596
+                  },
+                  {
+                    "start": 35,
+                    "stop": 349,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 8,
+                    "lower": 9.635008333448596,
+                    "upper": 19.27001666689719
+                  },
+                  {
+                    "start": 349,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 9,
+                    "lower": 19.27001666689719,
+                    "upper": 38.54003333379438
+                  },
+                  {
+                    "start": 352,
+                    "stop": 353,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -10,
+                    "lower": 3.675463994388045e-05,
+                    "upper": 7.35092798877609e-05
+                  },
+                  {
+                    "start": 353,
+                    "stop": 358,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -9,
+                    "lower": 7.35092798877609e-05,
+                    "upper": 0.0001470185597755218
+                  },
+                  {
+                    "start": 358,
+                    "stop": 369,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 0.0001470185597755218,
+                    "upper": 0.0002940371195510436
+                  },
+                  {
+                    "start": 369,
+                    "stop": 397,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.0002940371195510436,
+                    "upper": 0.0005880742391020871
+                  },
+                  {
+                    "start": 397,
+                    "stop": 1001,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.0005880742391020871,
+                    "upper": 0.0011761484782041743
+                  },
+                  {
+                    "start": 1001,
+                    "stop": 1749,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0011761484782041743,
+                    "upper": 0.0023522969564083486
+                  },
+                  {
+                    "start": 1749,
+                    "stop": 2845,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0023522969564083486,
+                    "upper": 0.004704593912816697
+                  },
+                  {
+                    "start": 2845,
+                    "stop": 4696,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.004704593912816697,
+                    "upper": 0.009409187825633394
+                  },
+                  {
+                    "start": 4696,
+                    "stop": 6437,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.009409187825633394,
+                    "upper": 0.01881837565126679
+                  },
+                  {
+                    "start": 6437,
+                    "stop": 31414,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.01881837565126679,
+                    "upper": 0.03763675130253358
+                  },
+                  {
+                    "start": 31414,
+                    "stop": 42350,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.03763675130253358,
+                    "upper": 0.07527350260506716
+                  },
+                  {
+                    "start": 42350,
+                    "stop": 61526,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.07527350260506716,
+                    "upper": 0.1505470052101343
+                  },
+                  {
+                    "start": 61526,
+                    "stop": 61978,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1505470052101343,
+                    "upper": 0.3010940104202686
+                  },
+                  {
+                    "start": 61978,
+                    "stop": 62114,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3010940104202686,
+                    "upper": 0.6021880208405372
+                  },
+                  {
+                    "start": 62114,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6021880208405372,
+                    "upper": 1.2043760416810745
+                  }
+                ],
+                "grouping": {
+                  "method": "buckets",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 2,
+                    "2": 3,
+                    "3": 2,
+                    "4": 2,
+                    "5": 2,
+                    "8": 3,
+                    "11": 1,
+                    "12": 1,
+                    "13": 1,
+                    "14": 1,
+                    "16": 1,
+                    "17": 1,
+                    "24": 1,
+                    "26": 1,
+                    "27": 1,
+                    "28": 2,
+                    "32": 1933
+                  },
+                  "group_count": 1958,
+                  "partial_group_count": 25
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 5877,
+                "component_bit_width_histogram": {
+                  "4": 126,
+                  "6": 323,
+                  "8": 4863,
+                  "float32": 556,
+                  "2": 9
+                },
+                "complex_sample_bit_width_histogram": {
+                  "4": 237568,
+                  "6": 644352,
+                  "8": 9939776,
+                  "float32": 1102080,
+                  "2": 4800
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 8816640,
+                  "packed_code_bytes": 21086048,
+                  "exception_position_bytes": 49736,
+                  "exception_value_bytes": 99472,
+                  "header_bytes": 94032,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 12434
+                },
+                "serialized_block_bytes": 26680751,
+                "index_bytes": 70532,
+                "bucket_reference": 0.024056531898176955,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 3,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007517666218180299,
+                    "upper": 0.0015035332436360597
+                  },
+                  {
+                    "start": 3,
+                    "stop": 5,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0015035332436360597,
+                    "upper": 0.0030070664872721194
+                  },
+                  {
+                    "start": 5,
+                    "stop": 8,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0030070664872721194,
+                    "upper": 0.006014132974544239
+                  },
+                  {
+                    "start": 8,
+                    "stop": 14,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.006014132974544239,
+                    "upper": 0.012028265949088478
+                  },
+                  {
+                    "start": 14,
+                    "stop": 19,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.012028265949088478,
+                    "upper": 0.024056531898176955
+                  },
+                  {
+                    "start": 19,
+                    "stop": 26,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.024056531898176955,
+                    "upper": 0.04811306379635391
+                  },
+                  {
+                    "start": 26,
+                    "stop": 30,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.04811306379635391,
+                    "upper": 0.09622612759270782
+                  },
+                  {
+                    "start": 30,
+                    "stop": 35,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09622612759270782,
+                    "upper": 0.19245225518541564
+                  },
+                  {
+                    "start": 35,
+                    "stop": 198,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19245225518541564,
+                    "upper": 0.3849045103708313
+                  },
+                  {
+                    "start": 198,
+                    "stop": 351,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.3849045103708313,
+                    "upper": 0.7698090207416626
+                  },
+                  {
+                    "start": 351,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 0.7698090207416626,
+                    "upper": 1.5396180414833252
+                  },
+                  {
+                    "start": 352,
+                    "stop": 356,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -9,
+                    "lower": 4.6985413863626866e-05,
+                    "upper": 9.397082772725373e-05
+                  },
+                  {
+                    "start": 356,
+                    "stop": 362,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 9.397082772725373e-05,
+                    "upper": 0.00018794165545450746
+                  },
+                  {
+                    "start": 362,
+                    "stop": 377,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.00018794165545450746,
+                    "upper": 0.00037588331090901493
+                  },
+                  {
+                    "start": 377,
+                    "stop": 405,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.00037588331090901493,
+                    "upper": 0.0007517666218180299
+                  },
+                  {
+                    "start": 405,
+                    "stop": 1030,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007517666218180299,
+                    "upper": 0.0015035332436360597
+                  },
+                  {
+                    "start": 1030,
+                    "stop": 1651,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0015035332436360597,
+                    "upper": 0.0030070664872721194
+                  },
+                  {
+                    "start": 1651,
+                    "stop": 3571,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0030070664872721194,
+                    "upper": 0.006014132974544239
+                  },
+                  {
+                    "start": 3571,
+                    "stop": 4985,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.006014132974544239,
+                    "upper": 0.012028265949088478
+                  },
+                  {
+                    "start": 4985,
+                    "stop": 31397,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.012028265949088478,
+                    "upper": 0.024056531898176955
+                  },
+                  {
+                    "start": 31397,
+                    "stop": 61589,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.024056531898176955,
+                    "upper": 0.04811306379635391
+                  },
+                  {
+                    "start": 61589,
+                    "stop": 62008,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.04811306379635391,
+                    "upper": 0.09622612759270782
+                  },
+                  {
+                    "start": 62008,
+                    "stop": 62107,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09622612759270782,
+                    "upper": 0.19245225518541564
+                  },
+                  {
+                    "start": 62107,
+                    "stop": 62125,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19245225518541564,
+                    "upper": 0.3849045103708313
+                  },
+                  {
+                    "start": 62125,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.3849045103708313,
+                    "upper": 0.7698090207416626
+                  }
+                ],
+                "grouping": {
+                  "method": "buckets",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 1,
+                    "2": 1,
+                    "3": 6,
+                    "4": 2,
+                    "5": 2,
+                    "6": 3,
+                    "7": 1,
+                    "12": 1,
+                    "13": 1,
+                    "15": 1,
+                    "16": 1,
+                    "17": 1,
+                    "18": 1,
+                    "25": 1,
+                    "28": 1,
+                    "32": 1935
+                  },
+                  "group_count": 1959,
+                  "partial_group_count": 24
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 5874,
+                "component_bit_width_histogram": {
+                  "4": 127,
+                  "6": 453,
+                  "8": 4812,
+                  "float32": 477,
+                  "2": 5
+                },
+                "complex_sample_bit_width_histogram": {
+                  "4": 235584,
+                  "6": 907328,
+                  "8": 9833408,
+                  "float32": 949312,
+                  "2": 2944
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 7594496,
+                  "packed_code_bytes": 21264864,
+                  "exception_position_bytes": 50048,
+                  "exception_value_bytes": 100096,
+                  "header_bytes": 93984,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 12512
+                },
+                "serialized_block_bytes": 25835743,
+                "index_bytes": 70496,
+                "bucket_reference": 0.023884009199278508,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 3,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007463752874774534,
+                    "upper": 0.0014927505749549068
+                  },
+                  {
+                    "start": 3,
+                    "stop": 5,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0014927505749549068,
+                    "upper": 0.0029855011499098135
+                  },
+                  {
+                    "start": 5,
+                    "stop": 8,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0029855011499098135,
+                    "upper": 0.005971002299819627
+                  },
+                  {
+                    "start": 8,
+                    "stop": 14,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.005971002299819627,
+                    "upper": 0.011942004599639254
+                  },
+                  {
+                    "start": 14,
+                    "stop": 19,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.011942004599639254,
+                    "upper": 0.023884009199278508
+                  },
+                  {
+                    "start": 19,
+                    "stop": 26,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.023884009199278508,
+                    "upper": 0.047768018398557016
+                  },
+                  {
+                    "start": 26,
+                    "stop": 30,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.047768018398557016,
+                    "upper": 0.09553603679711403
+                  },
+                  {
+                    "start": 30,
+                    "stop": 35,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09553603679711403,
+                    "upper": 0.19107207359422806
+                  },
+                  {
+                    "start": 35,
+                    "stop": 192,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19107207359422806,
+                    "upper": 0.38214414718845613
+                  },
+                  {
+                    "start": 192,
+                    "stop": 351,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.38214414718845613,
+                    "upper": 0.7642882943769123
+                  },
+                  {
+                    "start": 351,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 0.7642882943769123,
+                    "upper": 1.5285765887538245
+                  },
+                  {
+                    "start": 352,
+                    "stop": 358,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 9.329691093468167e-05,
+                    "upper": 0.00018659382186936334
+                  },
+                  {
+                    "start": 358,
+                    "stop": 372,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.00018659382186936334,
+                    "upper": 0.0003731876437387267
+                  },
+                  {
+                    "start": 372,
+                    "stop": 402,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.0003731876437387267,
+                    "upper": 0.0007463752874774534
+                  },
+                  {
+                    "start": 402,
+                    "stop": 1109,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0007463752874774534,
+                    "upper": 0.0014927505749549068
+                  },
+                  {
+                    "start": 1109,
+                    "stop": 1631,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.0014927505749549068,
+                    "upper": 0.0029855011499098135
+                  },
+                  {
+                    "start": 1631,
+                    "stop": 4042,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.0029855011499098135,
+                    "upper": 0.005971002299819627
+                  },
+                  {
+                    "start": 4042,
+                    "stop": 6644,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.005971002299819627,
+                    "upper": 0.011942004599639254
+                  },
+                  {
+                    "start": 6644,
+                    "stop": 31397,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.011942004599639254,
+                    "upper": 0.023884009199278508
+                  },
+                  {
+                    "start": 31397,
+                    "stop": 61582,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.023884009199278508,
+                    "upper": 0.047768018398557016
+                  },
+                  {
+                    "start": 61582,
+                    "stop": 62019,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.047768018398557016,
+                    "upper": 0.09553603679711403
+                  },
+                  {
+                    "start": 62019,
+                    "stop": 62117,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.09553603679711403,
+                    "upper": 0.19107207359422806
+                  },
+                  {
+                    "start": 62117,
+                    "stop": 62127,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.19107207359422806,
+                    "upper": 0.38214414718845613
+                  },
+                  {
+                    "start": 62127,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.38214414718845613,
+                    "upper": 0.7642882943769123
+                  }
+                ],
+                "grouping": {
+                  "method": "buckets",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 2,
+                    "2": 2,
+                    "3": 3,
+                    "4": 1,
+                    "5": 2,
+                    "6": 2,
+                    "7": 1,
+                    "9": 1,
+                    "10": 3,
+                    "11": 1,
+                    "14": 1,
+                    "17": 1,
+                    "21": 1,
+                    "29": 1,
+                    "30": 1,
+                    "31": 1,
+                    "32": 1934
+                  },
+                  "group_count": 1958,
+                  "partial_group_count": 24
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 5871,
+                "component_bit_width_histogram": {
+                  "6": 349,
+                  "8": 3001,
+                  "float32": 2426,
+                  "2": 7,
+                  "4": 88
+                },
+                "complex_sample_bit_width_histogram": {
+                  "6": 700096,
+                  "8": 6136064,
+                  "float32": 4917568,
+                  "2": 3392,
+                  "4": 171456
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 39340544,
+                  "packed_code_bytes": 13495424,
+                  "exception_position_bytes": 42268,
+                  "exception_value_bytes": 84536,
+                  "header_bytes": 93936,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 10567
+                },
+                "serialized_block_bytes": 47314427,
+                "index_bytes": 70460,
+                "bucket_reference": 0.03838162891289627,
+                "buckets": [
+                  {
+                    "start": 0,
+                    "stop": 1,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.019190814456448137,
+                    "upper": 0.03838162891289627
+                  },
+                  {
+                    "start": 1,
+                    "stop": 3,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.07676325782579255,
+                    "upper": 0.1535265156515851
+                  },
+                  {
+                    "start": 3,
+                    "stop": 5,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1535265156515851,
+                    "upper": 0.3070530313031702
+                  },
+                  {
+                    "start": 5,
+                    "stop": 10,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3070530313031702,
+                    "upper": 0.6141060626063404
+                  },
+                  {
+                    "start": 10,
+                    "stop": 13,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6141060626063404,
+                    "upper": 1.2282121252126807
+                  },
+                  {
+                    "start": 13,
+                    "stop": 14,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 5,
+                    "lower": 1.2282121252126807,
+                    "upper": 2.4564242504253615
+                  },
+                  {
+                    "start": 14,
+                    "stop": 16,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 6,
+                    "lower": 2.4564242504253615,
+                    "upper": 4.912848500850723
+                  },
+                  {
+                    "start": 16,
+                    "stop": 34,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 7,
+                    "lower": 4.912848500850723,
+                    "upper": 9.825697001701446
+                  },
+                  {
+                    "start": 34,
+                    "stop": 346,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 8,
+                    "lower": 9.825697001701446,
+                    "upper": 19.651394003402892
+                  },
+                  {
+                    "start": 346,
+                    "stop": 352,
+                    "class": "auto",
+                    "kind": "positive",
+                    "bucket_index": 9,
+                    "lower": 19.651394003402892,
+                    "upper": 39.302788006805784
+                  },
+                  {
+                    "start": 352,
+                    "stop": 354,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -9,
+                    "lower": 7.496411897050053e-05,
+                    "upper": 0.00014992823794100107
+                  },
+                  {
+                    "start": 354,
+                    "stop": 364,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -8,
+                    "lower": 0.00014992823794100107,
+                    "upper": 0.00029985647588200214
+                  },
+                  {
+                    "start": 364,
+                    "stop": 381,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -7,
+                    "lower": 0.00029985647588200214,
+                    "upper": 0.0005997129517640043
+                  },
+                  {
+                    "start": 381,
+                    "stop": 721,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -6,
+                    "lower": 0.0005997129517640043,
+                    "upper": 0.0011994259035280085
+                  },
+                  {
+                    "start": 721,
+                    "stop": 1258,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -5,
+                    "lower": 0.0011994259035280085,
+                    "upper": 0.002398851807056017
+                  },
+                  {
+                    "start": 1258,
+                    "stop": 2321,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -4,
+                    "lower": 0.002398851807056017,
+                    "upper": 0.004797703614112034
+                  },
+                  {
+                    "start": 2321,
+                    "stop": 4448,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -3,
+                    "lower": 0.004797703614112034,
+                    "upper": 0.009595407228224068
+                  },
+                  {
+                    "start": 4448,
+                    "stop": 5644,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -2,
+                    "lower": 0.009595407228224068,
+                    "upper": 0.019190814456448137
+                  },
+                  {
+                    "start": 5644,
+                    "stop": 31415,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": -1,
+                    "lower": 0.019190814456448137,
+                    "upper": 0.03838162891289627
+                  },
+                  {
+                    "start": 31415,
+                    "stop": 37492,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 0,
+                    "lower": 0.03838162891289627,
+                    "upper": 0.07676325782579255
+                  },
+                  {
+                    "start": 37492,
+                    "stop": 61228,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 1,
+                    "lower": 0.07676325782579255,
+                    "upper": 0.1535265156515851
+                  },
+                  {
+                    "start": 61228,
+                    "stop": 62007,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 2,
+                    "lower": 0.1535265156515851,
+                    "upper": 0.3070530313031702
+                  },
+                  {
+                    "start": 62007,
+                    "stop": 62109,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 3,
+                    "lower": 0.3070530313031702,
+                    "upper": 0.6141060626063404
+                  },
+                  {
+                    "start": 62109,
+                    "stop": 62128,
+                    "class": "cross",
+                    "kind": "positive",
+                    "bucket_index": 4,
+                    "lower": 0.6141060626063404,
+                    "upper": 1.2282121252126807
+                  }
+                ],
+                "grouping": {
+                  "method": "buckets",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 2,
+                    "2": 4,
+                    "3": 1,
+                    "5": 1,
+                    "6": 2,
+                    "7": 1,
+                    "10": 1,
+                    "11": 2,
+                    "12": 1,
+                    "15": 1,
+                    "17": 1,
+                    "18": 1,
+                    "19": 1,
+                    "20": 1,
+                    "24": 2,
+                    "25": 1,
+                    "29": 1,
+                    "32": 1933
+                  },
+                  "group_count": 1957,
+                  "partial_group_count": 24
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.9450014922767878,
+              "amplitude_statistics": 5.725947926752269,
+              "baseline_sorting_and_grouping": 0.0346697811037302,
+              "memory_gathering": 0.5890503167174757,
+              "packing_and_secondary_compression": 51.93708820454776,
+              "quantization_and_scale_estimation": 38.81378018669784,
+              "candidate_reconstruction_and_error_checks": 86.9531035348773,
+              "codec_total": 180.61786661017686,
+              "payload_writing": 0.2701569488272071,
+              "quality_accounting": 15.894694553222507
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 213.87035384913906,
+        "decode_and_export_process": 10.255095589905977,
+        "verification_process": 52.67317543365061
+      }
+    },
+    {
+      "name": "amplitude-16",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 16,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-amplitude/amplitude-16/archive.h5",
+        "archive_bytes": 150763658,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.7168008751817365,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 149190026,
+        "visibility_dataset_ratio_including_maps_statistics": 2.5585787618268796,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 488354,
+          "visibility_indexes": 1120532,
+          "visibility_block_payload": 142606880,
+          "visibility_quality": 3297509,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 575308
+        },
+        "elapsed_seconds": 447.6625220682472,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.466219916008413,
+          "column_encoding_and_writing": 441.62482895702124,
+          "before_integrity_finalization": 446.10153626231477
+        },
+        "peak_process_rss_bytes": 2289909760,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.9815363624866935e-08,
+                "real_mse": 3.979981616190869e-08,
+                "imag_mse": 3.983091108782517e-08,
+                "bias_real": 5.019962741811567e-08,
+                "bias_imag": -1.9419325987091494e-08,
+                "complex_bias_abs": 5.3824834553489875e-08,
+                "max_complex_error": 0.0017616920720490443,
+                "p99_error": 0.0006248303998154482,
+                "max_baseline_component_mse": 9.98762527744647e-08
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.7769690000640576e-08,
+                "real_mse": 2.7774976909686583e-08,
+                "imag_mse": 2.7764403091594486e-08,
+                "bias_real": -2.2614054760830914e-08,
+                "bias_imag": 6.213094843581461e-08,
+                "complex_bias_abs": 6.61184560184198e-08,
+                "max_complex_error": 0.001055179018339244,
+                "p99_error": 0.0004977379352155305,
+                "max_baseline_component_mse": 9.236956899514893e-08
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 2.809371089416556e-08,
+                "real_mse": 2.808943978033652e-08,
+                "imag_mse": 2.8097982007994524e-08,
+                "bias_real": -4.234619213214244e-08,
+                "bias_imag": 1.0529879857766056e-08,
+                "complex_bias_abs": 4.36357463315492e-08,
+                "max_complex_error": 0.0009294282420266983,
+                "p99_error": 0.0005038910998107584,
+                "max_baseline_component_mse": 9.39254870242284e-08
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.393924248341209e-08,
+                "real_mse": 3.394414715540721e-08,
+                "imag_mse": 3.393433781141688e-08,
+                "bias_real": -3.733590843764661e-09,
+                "bias_imag": 6.016346197747718e-08,
+                "complex_bias_abs": 6.02791992125309e-08,
+                "max_complex_error": 0.0009987926648316722,
+                "p99_error": 0.0006124061962133915,
+                "max_baseline_component_mse": 9.639062433568866e-08
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 23304,
+                "component_bit_width_histogram": {
+                  "float32": 6375,
+                  "2": 12,
+                  "4": 547,
+                  "6": 1583,
+                  "8": 14787
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 3260928,
+                  "2": 6144,
+                  "4": 280064,
+                  "6": 810496,
+                  "8": 7570944
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 26087424,
+                  "packed_code_bytes": 16640768,
+                  "exception_position_bytes": 31452,
+                  "exception_value_bytes": 62904,
+                  "header_bytes": 372864,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 7863
+                },
+                "serialized_block_bytes": 40519565,
+                "index_bytes": 279656,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 23304,
+                "component_bit_width_histogram": {
+                  "float32": 1878,
+                  "8": 19626,
+                  "4": 473,
+                  "2": 10,
+                  "6": 1317
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 958464,
+                  "8": 10048512,
+                  "4": 242176,
+                  "2": 5120,
+                  "6": 674304
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 7667712,
+                  "packed_code_bytes": 21353216,
+                  "exception_position_bytes": 6984,
+                  "exception_value_bytes": 13968,
+                  "header_bytes": 372864,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 1746
+                },
+                "serialized_block_bytes": 28153807,
+                "index_bytes": 279656,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 23304,
+                "component_bit_width_histogram": {
+                  "float32": 1790,
+                  "8": 19110,
+                  "4": 464,
+                  "2": 8,
+                  "6": 1932
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 913408,
+                  "8": 9784320,
+                  "4": 237568,
+                  "2": 4096,
+                  "6": 989184
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 7307264,
+                  "packed_code_bytes": 21292032,
+                  "exception_position_bytes": 7152,
+                  "exception_value_bytes": 14304,
+                  "header_bytes": 372864,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 1788
+                },
+                "serialized_block_bytes": 27779415,
+                "index_bytes": 279656,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 23304,
+                "component_bit_width_histogram": {
+                  "float32": 7895,
+                  "4": 371,
+                  "2": 4,
+                  "6": 1411,
+                  "8": 13623
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 4039168,
+                  "4": 189952,
+                  "2": 2048,
+                  "6": 722432,
+                  "8": 6974976
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 32313344,
+                  "packed_code_bytes": 15224576,
+                  "exception_position_bytes": 28868,
+                  "exception_value_bytes": 57736,
+                  "header_bytes": 372864,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 7217
+                },
+                "serialized_block_bytes": 44809668,
+                "index_bytes": 279656,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6610854053869843,
+              "amplitude_statistics": 4.5442543108947575,
+              "baseline_sorting_and_grouping": 0.045847222208976746,
+              "memory_gathering": 1.6254271427169442,
+              "packing_and_secondary_compression": 102.2255126554519,
+              "quantization_and_scale_estimation": 95.63629623129964,
+              "candidate_reconstruction_and_error_checks": 204.06760400161147,
+              "codec_total": 412.1036603706889,
+              "payload_writing": 0.2781073125079274,
+              "quality_accounting": 15.133077468723059
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 448.60767376888543,
+        "decode_and_export_process": 44.71365991374478,
+        "verification_process": 93.51332006510347
+      }
+    },
+    {
+      "name": "amplitude-32",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 32,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-amplitude/amplitude-32/archive.h5",
+        "archive_bytes": 154370510,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.6533230861257113,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 152796886,
+        "visibility_dataset_ratio_including_maps_statistics": 2.498182011379473,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 488354,
+          "visibility_indexes": 561236,
+          "visibility_block_payload": 146801200,
+          "visibility_quality": 3269345,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 575300
+        },
+        "elapsed_seconds": 318.51239023311064,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.576534043066204,
+          "column_encoding_and_writing": 313.23323618480936,
+          "before_integrity_finalization": 317.8175752880052
+        },
+        "peak_process_rss_bytes": 2293338112,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.811955301388954e-08,
+                "real_mse": 3.8117930649490685e-08,
+                "imag_mse": 3.812117537828853e-08,
+                "bias_real": -7.207569428013392e-08,
+                "bias_imag": 3.2905763563738304e-09,
+                "complex_bias_abs": 7.215076991079483e-08,
+                "max_complex_error": 0.0027236108244299458,
+                "p99_error": 0.0006222595369899901,
+                "max_baseline_component_mse": 1.0267940605061656e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.2259490561118526e-08,
+                "real_mse": 3.226659066243688e-08,
+                "imag_mse": 3.225239045980016e-08,
+                "bias_real": -3.770086859234131e-08,
+                "bias_imag": 1.9790658943748984e-08,
+                "complex_bias_abs": 4.257963919580319e-08,
+                "max_complex_error": 0.0009222274629249967,
+                "p99_error": 0.0005530947911985831,
+                "max_baseline_component_mse": 9.454111101705775e-08
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.32029156031365e-08,
+                "real_mse": 3.3201187692641344e-08,
+                "imag_mse": 3.3204643513631615e-08,
+                "bias_real": -5.394067486498936e-08,
+                "bias_imag": 2.5756718206776998e-08,
+                "complex_bias_abs": 5.977461783795705e-08,
+                "max_complex_error": 0.0010177124007576407,
+                "p99_error": 0.000560106564441745,
+                "max_baseline_component_mse": 9.604824888705584e-08
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.5841380917462855e-08,
+                "real_mse": 3.5841804207692976e-08,
+                "imag_mse": 3.584095762723267e-08,
+                "bias_real": -3.867289177465239e-08,
+                "bias_imag": 2.045187455153534e-08,
+                "complex_bias_abs": 4.3747819727224294e-08,
+                "max_complex_error": 0.0009987926648316722,
+                "p99_error": 0.0006105126079484324,
+                "max_baseline_component_mse": 1.0617279196313863e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 11652,
+                "component_bit_width_histogram": {
+                  "float32": 3948,
+                  "2": 6,
+                  "4": 269,
+                  "6": 771,
+                  "8": 6658
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 4039680,
+                  "2": 6144,
+                  "4": 275456,
+                  "6": 789504,
+                  "8": 6817792
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 32317440,
+                  "packed_code_bytes": 15098368,
+                  "exception_position_bytes": 40048,
+                  "exception_value_bytes": 80096,
+                  "header_bytes": 186432,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 10012
+                },
+                "serialized_block_bytes": 43565809,
+                "index_bytes": 139832,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 11652,
+                "component_bit_width_histogram": {
+                  "float32": 1331,
+                  "8": 9435,
+                  "4": 233,
+                  "2": 5,
+                  "6": 648
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 1359872,
+                  "8": 9661440,
+                  "4": 238592,
+                  "2": 5120,
+                  "6": 663552
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 10878976,
+                  "packed_code_bytes": 20559360,
+                  "exception_position_bytes": 22844,
+                  "exception_value_bytes": 45688,
+                  "header_bytes": 186432,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 5711
+                },
+                "serialized_block_bytes": 29001935,
+                "index_bytes": 139832,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 11652,
+                "component_bit_width_histogram": {
+                  "float32": 1156,
+                  "8": 9327,
+                  "4": 229,
+                  "2": 4,
+                  "6": 936
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 1180672,
+                  "8": 9550848,
+                  "4": 234496,
+                  "2": 4096,
+                  "6": 958464
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 9445376,
+                  "packed_code_bytes": 20775936,
+                  "exception_position_bytes": 25080,
+                  "exception_value_bytes": 50160,
+                  "header_bytes": 186432,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 6270
+                },
+                "serialized_block_bytes": 27951630,
+                "index_bytes": 139832,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 11652,
+                "component_bit_width_histogram": {
+                  "float32": 4023,
+                  "4": 182,
+                  "2": 3,
+                  "6": 705,
+                  "8": 6739
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 4116480,
+                  "4": 186368,
+                  "2": 3072,
+                  "6": 721920,
+                  "8": 6900736
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 32931840,
+                  "packed_code_bytes": 15072256,
+                  "exception_position_bytes": 47252,
+                  "exception_value_bytes": 94504,
+                  "header_bytes": 186432,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 11813
+                },
+                "serialized_block_bytes": 44108020,
+                "index_bytes": 139832,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.7077709222212434,
+              "amplitude_statistics": 4.162071187980473,
+              "baseline_sorting_and_grouping": 0.04721744218841195,
+              "memory_gathering": 1.0197331421077251,
+              "packing_and_secondary_compression": 72.91482385015115,
+              "quantization_and_scale_estimation": 64.58027456328273,
+              "candidate_reconstruction_and_error_checks": 133.51249893009663,
+              "codec_total": 276.6561005441472,
+              "payload_writing": 0.27193740475922823,
+              "quality_accounting": 24.556174596771598
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 318.8506289049983,
+        "decode_and_export_process": 32.288771661929786,
+        "verification_process": 61.50646481662989
+      }
+    },
+    {
+      "name": "amplitude-192",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-amplitude/amplitude-192/archive.h5",
+        "archive_bytes": 138050348,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.9669960556709354,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 136476764,
+        "visibility_dataset_ratio_including_maps_statistics": 2.7969188366746445,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 488354,
+          "visibility_indexes": 95156,
+          "visibility_block_payload": 131072500,
+          "visibility_quality": 3144003,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 575260
+        },
+        "elapsed_seconds": 174.0697724618949,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.295885900966823,
+          "column_encoding_and_writing": 168.3491512639448,
+          "before_integrity_finalization": 172.6532155009918
+        },
+        "peak_process_rss_bytes": 2292469760,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.5190541854594864e-08,
+                "real_mse": 3.5184434994627954e-08,
+                "imag_mse": 3.519664871456172e-08,
+                "bias_real": -2.8547932639662064e-09,
+                "bias_imag": 2.0391118440678703e-08,
+                "complex_bias_abs": 2.0589986785857194e-08,
+                "max_complex_error": 0.0027236108244299458,
+                "p99_error": 0.0006037349072321207,
+                "max_baseline_component_mse": 1.6979325196462966e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.8451831980890564e-08,
+                "real_mse": 2.845716841045915e-08,
+                "imag_mse": 2.8446495551322007e-08,
+                "bias_real": 2.287051088022713e-08,
+                "bias_imag": -5.244909838085609e-08,
+                "complex_bias_abs": 5.721860002558004e-08,
+                "max_complex_error": 0.0007898004216324161,
+                "p99_error": 0.0004815922189904789,
+                "max_baseline_component_mse": 1.1242103463202518e-07
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 2.812462619077424e-08,
+                "real_mse": 2.8114820240881767e-08,
+                "imag_mse": 2.8134432140666597e-08,
+                "bias_real": 2.3135634969409543e-08,
+                "bias_imag": 6.42094932635662e-08,
+                "complex_bias_abs": 6.825039656003267e-08,
+                "max_complex_error": 0.0010488916261406165,
+                "p99_error": 0.0004830902267760846,
+                "max_baseline_component_mse": 1.656564988094084e-07
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.8539493969815746e-08,
+                "real_mse": 2.8534796875948844e-08,
+                "imag_mse": 2.8544191063682788e-08,
+                "bias_real": 7.200615980026305e-08,
+                "bias_imag": -1.2777906901324186e-07,
+                "complex_bias_abs": 1.4667098393026428e-07,
+                "max_complex_error": 0.0007783253225523734,
+                "p99_error": 0.000588942725367622,
+                "max_baseline_component_mse": 1.1242917139674905e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 1942,
+                "component_bit_width_histogram": {
+                  "float32": 592,
+                  "2": 1,
+                  "4": 44,
+                  "6": 101,
+                  "8": 1204
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 3634176,
+                  "2": 6144,
+                  "4": 270336,
+                  "6": 620544,
+                  "8": 7397376
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 29073408,
+                  "packed_code_bytes": 15998976,
+                  "exception_position_bytes": 153112,
+                  "exception_value_bytes": 306224,
+                  "header_bytes": 31072,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 38278
+                },
+                "serialized_block_bytes": 39843489,
+                "index_bytes": 23312,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 1942,
+                "component_bit_width_histogram": {
+                  "float32": 20,
+                  "2": 1,
+                  "4": 38,
+                  "6": 93,
+                  "8": 1790
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 119808,
+                  "2": 6144,
+                  "4": 233472,
+                  "6": 571392,
+                  "8": 10997760
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 958464,
+                  "packed_code_bytes": 23089152,
+                  "exception_position_bytes": 224528,
+                  "exception_value_bytes": 449056,
+                  "header_bytes": 31072,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 56132
+                },
+                "serialized_block_bytes": 22690865,
+                "index_bytes": 23312,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 1942,
+                "component_bit_width_histogram": {
+                  "float32": 24,
+                  "2": 1,
+                  "4": 37,
+                  "6": 118,
+                  "8": 1762
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 144384,
+                  "2": 6144,
+                  "4": 227328,
+                  "6": 724992,
+                  "8": 10825728
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 1155072,
+                  "packed_code_bytes": 22969344,
+                  "exception_position_bytes": 219704,
+                  "exception_value_bytes": 439408,
+                  "header_bytes": 31072,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 54926
+                },
+                "serialized_block_bytes": 22696649,
+                "index_bytes": 23312,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 1942,
+                "component_bit_width_histogram": {
+                  "float32": 727,
+                  "4": 29,
+                  "6": 113,
+                  "8": 1073
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 4463616,
+                  "4": 178176,
+                  "6": 694272,
+                  "8": 6592512
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 35708928,
+                  "packed_code_bytes": 14404608,
+                  "exception_position_bytes": 129924,
+                  "exception_value_bytes": 259848,
+                  "header_bytes": 31072,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 32481
+                },
+                "serialized_block_bytes": 44155305,
+                "index_bytes": 23312,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6482866429723799,
+              "amplitude_statistics": 3.8773344908840954,
+              "baseline_sorting_and_grouping": 0.04272710392251611,
+              "memory_gathering": 0.3853422999382019,
+              "packing_and_secondary_compression": 44.57535915914923,
+              "quantization_and_scale_estimation": 29.28567224694416,
+              "candidate_reconstruction_and_error_checks": 69.22358480934054,
+              "codec_total": 144.64770821714774,
+              "payload_writing": 0.23445854242891073,
+              "quality_accounting": 15.043728715740144
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 175.10015517426655,
+        "decode_and_export_process": 26.22307004313916,
+        "verification_process": 38.62848757673055
+      }
+    }
+  ],
+  "selected_experiments": [
+    "amplitude-64",
+    "buckets-64",
+    "amplitude-16",
+    "amplitude-32",
+    "amplitude-192"
+  ],
+  "elapsed_seconds": 1821.1224101819098,
+  "Dysco": {
+    "status": "not_run",
+    "available_executable": null,
+    "reason": "External Dysco benchmark adapter/settings equivalence are not implemented"
+  },
+  "scientific_products": "not tested by this benchmark; numeric bounds are not scientific acceptance",
+  "timing_note": "Each experiment uses fresh Python processes; RSS is that process's high-water mark. Caches are not forcibly evicted. Some inner codec stages remain combined in the recorded timer names."
+}

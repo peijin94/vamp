@@ -5,9 +5,11 @@ It was created and pushed on 2026-10-22 after outside-sandbox GitHub access
 became available. Public visibility and the initial successful Actions run were
 verified. Earlier network/approval failures are resolved for publication.
 
-The workspace `.git` remains a read-only mount. A separate writable Git checkout
-is used to stage and push reviewed project files. The original portable bundle
-remains a historical snapshot of the initial two commits, not the latest branch.
+The project directory now has a normal Git checkout tracking `origin/main`.
+It was initialized from the published history without overwriting working files.
+Git mutations may still require outside-sandbox execution because `.git` is
+protected inside the restricted sandbox. The original portable bundle remains a
+historical snapshot of the initial two commits, not the latest branch.
 
 The root project files are ready for Git. The large source MS and tar are under
 ignored `data/` paths. A portable Git-history bundle is provided as

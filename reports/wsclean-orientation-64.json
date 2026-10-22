@@ -1,0 +1,579 @@
+{
+  "schema": "varquanms.wsclean-comparison/1",
+  "status": "measured",
+  "reference": "results/wsclean-grouping/reference-fixed",
+  "candidate": "results/wsclean-grouping/orientation-64",
+  "parameters": {
+    "size": 2048,
+    "scale": "4amin",
+    "polarizations": "I",
+    "weighting": "briggs 0",
+    "multiscale": true,
+    "mgain": 0.8,
+    "niter": 10000,
+    "auto_mask": 5,
+    "auto_threshold": 1,
+    "threads": 8,
+    "memory_gb": 8,
+    "restoring_beam": {
+      "major_arcsec": 666.0489741755111,
+      "minor_arcsec": 517.0156754893128,
+      "position_angle_deg": 43.3244852231235
+    }
+  },
+  "container_id": "sha256:03ffbf70c829e220707b9843e96765f5886005b4b05a26344a0b5bb4d9ece8c6",
+  "products": {
+    "image-dirty.fits": {
+      "reference": "results/wsclean-grouping/reference-fixed/image-dirty.fits",
+      "candidate": "results/wsclean-grouping/orientation-64/image-dirty.fits",
+      "shape": [
+        2048,
+        2048
+      ],
+      "grid_and_beam": {
+        "NAXIS": 4,
+        "NAXIS1": 2048,
+        "NAXIS2": 2048,
+        "NAXIS3": 1,
+        "NAXIS4": 1,
+        "BUNIT": "JY/BEAM",
+        "BMAJ": 0.185013603937642,
+        "BMIN": 0.143615465413698,
+        "BPA": 43.3244852231235,
+        "EQUINOX": 2000.0,
+        "LONPOLE": 180.0,
+        "CTYPE1": "RA---SIN",
+        "CRPIX1": 1025.0,
+        "CRVAL1": 150.29277504442,
+        "CDELT1": -0.0666666666666667,
+        "CUNIT1": "deg",
+        "CTYPE2": "DEC--SIN",
+        "CRPIX2": 1025.0,
+        "CRVAL2": 37.1824649806474,
+        "CDELT2": 0.0666666666666667,
+        "CUNIT2": "deg",
+        "CTYPE3": "FREQ",
+        "CRPIX3": 1.0,
+        "CRVAL3": 61620849.609375,
+        "CDELT3": 4593750.0,
+        "CUNIT3": "Hz",
+        "CTYPE4": "STOKES",
+        "CRPIX4": 1.0,
+        "CRVAL4": 1.0,
+        "CDELT4": 1.0,
+        "CUNIT4": "",
+        "SPECSYS": "TOPOCENT"
+      },
+      "finite_mask_matches": true,
+      "excluded_pixels": 1873791,
+      "regions": {
+        "celestial_valid": {
+          "pixels": 2320513,
+          "difference_rms": 4.6253454965446866e-08,
+          "difference_bias": 1.6679449187614608e-12,
+          "difference_max_abs": 2.2947824618313462e-07,
+          "difference_p99_abs": 1.1908969099749811e-07,
+          "difference_p999_abs": 1.5234579768730309e-07,
+          "reference_rms": 2.6976723948711987e-05,
+          "relative_rms_difference": 0.0017145690133977612,
+          "reference_abs_peak": 0.001415202277712524,
+          "rms_normalized_to_reference_peak": 3.268328188406331e-05
+        },
+        "bright_reference": {
+          "pixels": 1538,
+          "difference_rms": 4.5847229033681144e-08,
+          "difference_bias": 1.2888568871314257e-10,
+          "difference_max_abs": 1.6143894754350185e-07,
+          "difference_p99_abs": 1.1845870176330204e-07,
+          "difference_p999_abs": 1.5264336252585032e-07,
+          "reference_rms": 0.0005098231412402066,
+          "relative_rms_difference": 8.992771281851233e-05,
+          "reference_abs_peak": 0.001415202277712524,
+          "rms_normalized_to_reference_peak": 3.239623745362166e-05
+        },
+        "reference_peak_aperture": {
+          "pixels": 49,
+          "difference_rms": 4.0777257457522644e-08,
+          "difference_bias": -3.4568223113916356e-09,
+          "difference_max_abs": 8.66129994392395e-08,
+          "difference_p99_abs": 8.588656783103943e-08,
+          "difference_p999_abs": 8.654035627841949e-08,
+          "reference_rms": 0.0012696508104882264,
+          "relative_rms_difference": 3.2116907358049355e-05,
+          "reference_abs_peak": 0.001415202277712524,
+          "rms_normalized_to_reference_peak": 2.881373079997678e-05
+        }
+      },
+      "reference_peak_yx": [
+        601,
+        839
+      ],
+      "candidate_peak_yx": [
+        601,
+        839
+      ],
+      "peak_shift_pixels": 0.0,
+      "reference_peak_value": 0.001415202277712524,
+      "candidate_at_reference_peak": 0.0014152873773127794,
+      "relative_change_at_reference_peak": 6.0132464168331415e-05,
+      "aperture": {
+        "radius_pixels": 4,
+        "reference_sum_pixels": 0.06213443074375391,
+        "candidate_sum_pixels": 0.06213426135946065,
+        "relative_sum_change": -2.7260939101018093e-06,
+        "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+      },
+      "clean": {
+        "reference_iterations": null,
+        "candidate_iterations": null,
+        "reference_iteration_limit": 10000.0,
+        "candidate_iteration_limit": 10000.0
+      },
+      "reference_file_sha256": "db005ea3fdad060624a0f3eda6c8302d8e7642de0ba13de19d9a5baf6c24cdcc",
+      "candidate_file_sha256": "3db3fdf4da1c847a0c75cb941b4234090d43377b593eaea1131bab6bfcf1b05b"
+    },
+    "image-image.fits": {
+      "reference": "results/wsclean-grouping/reference-fixed/image-image.fits",
+      "candidate": "results/wsclean-grouping/orientation-64/image-image.fits",
+      "shape": [
+        2048,
+        2048
+      ],
+      "grid_and_beam": {
+        "NAXIS": 4,
+        "NAXIS1": 2048,
+        "NAXIS2": 2048,
+        "NAXIS3": 1,
+        "NAXIS4": 1,
+        "BUNIT": "JY/BEAM",
+        "BMAJ": 0.185013603937642,
+        "BMIN": 0.143615465413698,
+        "BPA": 43.3244852231235,
+        "EQUINOX": 2000.0,
+        "LONPOLE": 180.0,
+        "CTYPE1": "RA---SIN",
+        "CRPIX1": 1025.0,
+        "CRVAL1": 150.29277504442,
+        "CDELT1": -0.0666666666666667,
+        "CUNIT1": "deg",
+        "CTYPE2": "DEC--SIN",
+        "CRPIX2": 1025.0,
+        "CRVAL2": 37.1824649806474,
+        "CDELT2": 0.0666666666666667,
+        "CUNIT2": "deg",
+        "CTYPE3": "FREQ",
+        "CRPIX3": 1.0,
+        "CRVAL3": 61620849.609375,
+        "CDELT3": 4593750.0,
+        "CUNIT3": "Hz",
+        "CTYPE4": "STOKES",
+        "CRPIX4": 1.0,
+        "CRVAL4": 1.0,
+        "CDELT4": 1.0,
+        "CUNIT4": "",
+        "SPECSYS": "TOPOCENT"
+      },
+      "finite_mask_matches": true,
+      "excluded_pixels": 1873791,
+      "regions": {
+        "celestial_valid": {
+          "pixels": 2320513,
+          "difference_rms": 1.775269673678655e-07,
+          "difference_bias": -2.4517680064293462e-08,
+          "difference_max_abs": 3.851740984828211e-06,
+          "difference_p99_abs": 5.054130451753731e-07,
+          "difference_p999_abs": 1.3804898680973548e-06,
+          "reference_rms": 2.493146522674415e-05,
+          "relative_rms_difference": 0.007120599040341645,
+          "reference_abs_peak": 0.0010093223536387086,
+          "rms_normalized_to_reference_peak": 0.00017588728390673496
+        },
+        "bright_reference": {
+          "pixels": 3016,
+          "difference_rms": 4.5149953028056545e-07,
+          "difference_bias": -8.432186648773958e-08,
+          "difference_max_abs": 3.3024261938408017e-06,
+          "difference_p99_abs": 1.4620629372075198e-06,
+          "difference_p999_abs": 2.5514950539218397e-06,
+          "reference_rms": 0.0002701168745400104,
+          "relative_rms_difference": 0.0016714969438671194,
+          "reference_abs_peak": 0.0010093223536387086,
+          "rms_normalized_to_reference_peak": 0.000447329367721684
+        },
+        "reference_peak_aperture": {
+          "pixels": 49,
+          "difference_rms": 4.062403480255029e-07,
+          "difference_bias": 1.659963698107369e-07,
+          "difference_max_abs": 1.0370858944952488e-06,
+          "difference_p99_abs": 9.796977974474425e-07,
+          "difference_p999_abs": 1.031347084790468e-06,
+          "reference_rms": 0.0008854286568051241,
+          "relative_rms_difference": 0.00045880641529192473,
+          "reference_abs_peak": 0.0010093223536387086,
+          "rms_normalized_to_reference_peak": 0.0004024882105909629
+        }
+      },
+      "reference_peak_yx": [
+        599,
+        839
+      ],
+      "candidate_peak_yx": [
+        599,
+        839
+      ],
+      "peak_shift_pixels": 0.0,
+      "reference_peak_value": 0.0010093223536387086,
+      "candidate_at_reference_peak": 0.0010093640303239226,
+      "relative_change_at_reference_peak": 4.1291748928173467e-05,
+      "aperture": {
+        "radius_pixels": 4,
+        "reference_sum_pixels": 0.04325594968395308,
+        "candidate_sum_pixels": 0.0432640835060738,
+        "relative_sum_change": 0.00018803938371843358,
+        "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+      },
+      "clean": {
+        "reference_iterations": 10000.0,
+        "candidate_iterations": 10000.0,
+        "reference_iteration_limit": 10000.0,
+        "candidate_iteration_limit": 10000.0
+      },
+      "reference_file_sha256": "dc9fe1fd254200bda7dec26e942ee87e820249b21a04d14be57fbec011dc2cf9",
+      "candidate_file_sha256": "13178bae9cb93c1e15151bc4abc63895a7231b663849f2fe77e6c79268f6e9b9"
+    },
+    "image-model.fits": {
+      "reference": "results/wsclean-grouping/reference-fixed/image-model.fits",
+      "candidate": "results/wsclean-grouping/orientation-64/image-model.fits",
+      "shape": [
+        2048,
+        2048
+      ],
+      "grid_and_beam": {
+        "NAXIS": 4,
+        "NAXIS1": 2048,
+        "NAXIS2": 2048,
+        "NAXIS3": 1,
+        "NAXIS4": 1,
+        "BUNIT": "JY/PIXEL",
+        "BMAJ": 0.185013603937642,
+        "BMIN": 0.143615465413698,
+        "BPA": 43.3244852231235,
+        "EQUINOX": 2000.0,
+        "LONPOLE": 180.0,
+        "CTYPE1": "RA---SIN",
+        "CRPIX1": 1025.0,
+        "CRVAL1": 150.29277504442,
+        "CDELT1": -0.0666666666666667,
+        "CUNIT1": "deg",
+        "CTYPE2": "DEC--SIN",
+        "CRPIX2": 1025.0,
+        "CRVAL2": 37.1824649806474,
+        "CDELT2": 0.0666666666666667,
+        "CUNIT2": "deg",
+        "CTYPE3": "FREQ",
+        "CRPIX3": 1.0,
+        "CRVAL3": 61620849.609375,
+        "CDELT3": 4593750.0,
+        "CUNIT3": "Hz",
+        "CTYPE4": "STOKES",
+        "CRPIX4": 1.0,
+        "CRVAL4": 1.0,
+        "CDELT4": 1.0,
+        "CUNIT4": "",
+        "SPECSYS": "TOPOCENT"
+      },
+      "finite_mask_matches": true,
+      "excluded_pixels": 1873791,
+      "regions": {
+        "celestial_valid": {
+          "pixels": 2320513,
+          "difference_rms": 8.282256295081066e-08,
+          "difference_bias": -2.2448552992015174e-09,
+          "difference_max_abs": 4.167685870015703e-05,
+          "difference_p99_abs": 9.966356628865453e-08,
+          "difference_p999_abs": 4.2097477853529566e-07,
+          "reference_rms": 1.6524479548238013e-06,
+          "relative_rms_difference": 0.0501211325349378,
+          "reference_abs_peak": 0.0002325719251530245,
+          "rms_normalized_to_reference_peak": 0.0003561159107932576
+        },
+        "bright_reference": {
+          "pixels": 951,
+          "difference_rms": 3.155823673197953e-06,
+          "difference_bias": -4.0194694954031053e-07,
+          "difference_max_abs": 4.167685870015703e-05,
+          "difference_p99_abs": 7.96866606833646e-06,
+          "difference_p999_abs": 3.5043829338121354e-05,
+          "reference_rms": 7.063614453470173e-05,
+          "relative_rms_difference": 0.04467717899930931,
+          "reference_abs_peak": 0.0002325719251530245,
+          "rms_normalized_to_reference_peak": 0.013569237435350493
+        },
+        "reference_peak_aperture": {
+          "pixels": 49,
+          "difference_rms": 1.0440721312755552e-06,
+          "difference_bias": -3.974572773215038e-07,
+          "difference_max_abs": 7.076741894707084e-06,
+          "difference_p99_abs": 3.851155051961514e-06,
+          "difference_p999_abs": 6.754183210432517e-06,
+          "reference_rms": 0.0001063129244611389,
+          "relative_rms_difference": 0.009820745093482967,
+          "reference_abs_peak": 0.0002325719251530245,
+          "rms_normalized_to_reference_peak": 0.004489244050366745
+        }
+      },
+      "reference_peak_yx": [
+        596,
+        835
+      ],
+      "candidate_peak_yx": [
+        596,
+        835
+      ],
+      "peak_shift_pixels": 0.0,
+      "reference_peak_value": 0.0002325719251530245,
+      "candidate_at_reference_peak": 0.0002254951832583174,
+      "relative_change_at_reference_peak": -0.030428186420398014,
+      "aperture": {
+        "radius_pixels": 4,
+        "reference_sum_pixels": 0.004853778358665295,
+        "candidate_sum_pixels": 0.004834302952076541,
+        "relative_sum_change": -0.004012421900968112,
+        "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+      },
+      "clean": {
+        "reference_iterations": 10000.0,
+        "candidate_iterations": 10000.0,
+        "reference_iteration_limit": 10000.0,
+        "candidate_iteration_limit": 10000.0
+      },
+      "reference_file_sha256": "2e7fc3284120311b3b3ffedb656bb701d614b981a170a1b405ef12a7724c09c5",
+      "candidate_file_sha256": "944367d79ced18cfdb80eea4a571339493dffea8da4d2cd8b5b115f52b8b244a"
+    },
+    "image-psf.fits": {
+      "reference": "results/wsclean-grouping/reference-fixed/image-psf.fits",
+      "candidate": "results/wsclean-grouping/orientation-64/image-psf.fits",
+      "shape": [
+        2048,
+        2048
+      ],
+      "grid_and_beam": {
+        "NAXIS": 4,
+        "NAXIS1": 2048,
+        "NAXIS2": 2048,
+        "NAXIS3": 1,
+        "NAXIS4": 1,
+        "BUNIT": "JY/BEAM",
+        "BMAJ": 0.185013603937642,
+        "BMIN": 0.143615465413698,
+        "BPA": 43.3244852231235,
+        "EQUINOX": 2000.0,
+        "LONPOLE": 180.0,
+        "CTYPE1": "RA---SIN",
+        "CRPIX1": 1025.0,
+        "CRVAL1": 150.29277504442,
+        "CDELT1": -0.0666666666666667,
+        "CUNIT1": "deg",
+        "CTYPE2": "DEC--SIN",
+        "CRPIX2": 1025.0,
+        "CRVAL2": 37.1824649806474,
+        "CDELT2": 0.0666666666666667,
+        "CUNIT2": "deg",
+        "CTYPE3": "FREQ",
+        "CRPIX3": 1.0,
+        "CRVAL3": 61620849.609375,
+        "CDELT3": 4593750.0,
+        "CUNIT3": "Hz",
+        "CTYPE4": "STOKES",
+        "CRPIX4": 1.0,
+        "CRVAL4": 1.0,
+        "CDELT4": 1.0,
+        "CUNIT4": "",
+        "SPECSYS": "TOPOCENT"
+      },
+      "finite_mask_matches": true,
+      "excluded_pixels": 1873791,
+      "regions": {
+        "celestial_valid": {
+          "pixels": 2320513,
+          "difference_rms": 5.700816243509531e-10,
+          "difference_bias": -3.188886491676083e-12,
+          "difference_max_abs": 6.51925802230835e-08,
+          "difference_p99_abs": 1.5170371625572443e-09,
+          "difference_p999_abs": 4.089088179171085e-09,
+          "reference_rms": 0.0014807083596601626,
+          "relative_rms_difference": 3.8500601460897574e-07,
+          "reference_abs_peak": 1.0,
+          "rms_normalized_to_reference_peak": 5.700816243509531e-10
+        },
+        "bright_reference": {
+          "pixels": 19,
+          "difference_rms": 4.034046632027697e-08,
+          "difference_bias": 2.078319850720857e-08,
+          "difference_max_abs": 5.960464477539063e-08,
+          "difference_p99_abs": 5.960464477539063e-08,
+          "difference_p999_abs": 5.960464477539063e-08,
+          "reference_rms": 0.43184533576377204,
+          "relative_rms_difference": 9.341415312250588e-08,
+          "reference_abs_peak": 1.0,
+          "rms_normalized_to_reference_peak": 4.034046632027697e-08
+        },
+        "reference_peak_aperture": {
+          "pixels": 49,
+          "difference_rms": 3.1149711420949105e-08,
+          "difference_bias": 7.768940864777079e-09,
+          "difference_max_abs": 6.51925802230835e-08,
+          "difference_p99_abs": 6.25103712081909e-08,
+          "difference_p999_abs": 6.492435932159423e-08,
+          "reference_rms": 0.26994672477563303,
+          "relative_rms_difference": 1.1539207021992682e-07,
+          "reference_abs_peak": 1.0,
+          "rms_normalized_to_reference_peak": 3.1149711420949105e-08
+        }
+      },
+      "reference_peak_yx": [
+        1024,
+        1024
+      ],
+      "candidate_peak_yx": [
+        1024,
+        1024
+      ],
+      "peak_shift_pixels": 0.0,
+      "reference_peak_value": 1.0,
+      "candidate_at_reference_peak": 1.0,
+      "relative_change_at_reference_peak": 0.0,
+      "aperture": {
+        "radius_pixels": 4,
+        "reference_sum_pixels": 6.135323780821636,
+        "candidate_sum_pixels": 6.135324161499739,
+        "relative_sum_change": 6.204694584563504e-08,
+        "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+      },
+      "clean": {
+        "reference_iterations": null,
+        "candidate_iterations": null,
+        "reference_iteration_limit": 10000.0,
+        "candidate_iteration_limit": 10000.0
+      },
+      "reference_file_sha256": "76b14637fd4187f3b5ccd2191267f93d2055127bb90ba8edcdc9d3766798ca62",
+      "candidate_file_sha256": "e69e512d7085293925191f7e5280f492bd29b6d5f26ce67d7638ecb8a22fa7d0"
+    },
+    "image-residual.fits": {
+      "reference": "results/wsclean-grouping/reference-fixed/image-residual.fits",
+      "candidate": "results/wsclean-grouping/orientation-64/image-residual.fits",
+      "shape": [
+        2048,
+        2048
+      ],
+      "grid_and_beam": {
+        "NAXIS": 4,
+        "NAXIS1": 2048,
+        "NAXIS2": 2048,
+        "NAXIS3": 1,
+        "NAXIS4": 1,
+        "BUNIT": "JY/BEAM",
+        "BMAJ": 0.185013603937642,
+        "BMIN": 0.143615465413698,
+        "BPA": 43.3244852231235,
+        "EQUINOX": 2000.0,
+        "LONPOLE": 180.0,
+        "CTYPE1": "RA---SIN",
+        "CRPIX1": 1025.0,
+        "CRVAL1": 150.29277504442,
+        "CDELT1": -0.0666666666666667,
+        "CUNIT1": "deg",
+        "CTYPE2": "DEC--SIN",
+        "CRPIX2": 1025.0,
+        "CRVAL2": 37.1824649806474,
+        "CDELT2": 0.0666666666666667,
+        "CUNIT2": "deg",
+        "CTYPE3": "FREQ",
+        "CRPIX3": 1.0,
+        "CRVAL3": 61620849.609375,
+        "CDELT3": 4593750.0,
+        "CUNIT3": "Hz",
+        "CTYPE4": "STOKES",
+        "CRPIX4": 1.0,
+        "CRVAL4": 1.0,
+        "CDELT4": 1.0,
+        "CUNIT4": "",
+        "SPECSYS": "TOPOCENT"
+      },
+      "finite_mask_matches": true,
+      "excluded_pixels": 1873791,
+      "regions": {
+        "celestial_valid": {
+          "pixels": 2320513,
+          "difference_rms": 3.4003792748557897e-07,
+          "difference_bias": -9.317306894565645e-09,
+          "difference_max_abs": 4.145296406932175e-05,
+          "difference_p99_abs": 1.0007242690335235e-06,
+          "difference_p999_abs": 3.891118485626056e-06,
+          "reference_rms": 2.1877508299338134e-05,
+          "relative_rms_difference": 0.015542808752853552,
+          "reference_abs_peak": 0.00010236196249024943,
+          "rms_normalized_to_reference_peak": 0.00332191684501916
+        },
+        "bright_reference": {
+          "pixels": 1464052,
+          "difference_rms": 3.633992829274098e-07,
+          "difference_bias": -8.632948215035408e-09,
+          "difference_max_abs": 4.145296406932175e-05,
+          "difference_p99_abs": 1.0734783609223077e-06,
+          "difference_p999_abs": 4.040708421143801e-06,
+          "reference_rms": 2.7181567215099952e-05,
+          "relative_rms_difference": 0.013369327826157632,
+          "reference_abs_peak": 0.00010236196249024943,
+          "rms_normalized_to_reference_peak": 0.0035501398574888177
+        },
+        "reference_peak_aperture": {
+          "pixels": 49,
+          "difference_rms": 1.8813523426869628e-07,
+          "difference_bias": -1.4665278638635846e-07,
+          "difference_max_abs": 4.687176442530472e-07,
+          "difference_p99_abs": 4.2183617551927415e-07,
+          "difference_p999_abs": 4.6402949737966974e-07,
+          "reference_rms": 4.606557688046973e-05,
+          "relative_rms_difference": 0.0040840742048420834,
+          "reference_abs_peak": 0.00010236196249024943,
+          "rms_normalized_to_reference_peak": 0.0018379408687735667
+        }
+      },
+      "reference_peak_yx": [
+        734,
+        445
+      ],
+      "candidate_peak_yx": [
+        678,
+        492
+      ],
+      "peak_shift_pixels": 73.10950690573696,
+      "reference_peak_value": 0.00010236196249024943,
+      "candidate_at_reference_peak": 0.00010210908658336848,
+      "relative_change_at_reference_peak": -0.0024704089363764676,
+      "aperture": {
+        "radius_pixels": 4,
+        "reference_sum_pixels": 0.0014119204031430854,
+        "candidate_sum_pixels": 0.0014047344166101539,
+        "relative_sum_change": -0.005089512494425885,
+        "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+      },
+      "clean": {
+        "reference_iterations": 10000.0,
+        "candidate_iterations": 10000.0,
+        "reference_iteration_limit": 10000.0,
+        "candidate_iteration_limit": 10000.0
+      },
+      "reference_file_sha256": "3a8a3dec8914c0b132f600101ba393b7a7239dfdaf85b4afecc0458273e0ec87",
+      "candidate_file_sha256": "71f9b8f0232c987b87cf48764928f9e948556df05298feb188072eac4153bbc9"
+    }
+  },
+  "limitations": [
+    "No scientific acceptance thresholds have been approved; measured does not mean scientifically accepted",
+    "Dirty, restored, residual and model images include sky structure; image RMS is not thermal noise",
+    "Automatic masks and nonlinear CLEAN paths may differ; compare the repeated lossless reference",
+    "Celestial WCS validity excludes SIN projection corners; this is not a primary-beam or sky mask",
+    "No calibration-solution, solar-identification, absolute-flux or temporal validation is implied"
+  ]
+}

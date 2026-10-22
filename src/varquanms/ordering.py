@@ -39,6 +39,7 @@ def make_order(statistic, valid_counts, autocorrelation, lengths, config, *, uvw
         bucket[positive] = np.floor(np.log2(statistic[positive]) - math.log2(reference)).astype(np.int32)
     if config.ordering == "original":
         permutation = original
+        grouping["classes"] = "original row order; groups stop at auto/cross and no-valid transitions"
     elif config.ordering == "class-original":
         permutation = np.lexsort((original, no_valid, ~autocorrelation)).astype(np.uint32)
     elif config.ordering == "antenna":

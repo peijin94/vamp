@@ -22,6 +22,8 @@
     {"name": "buckets-64", "config": {"ordering": "buckets"}},
     {"name": "amplitude-16", "config": {"ordering": "amplitude", "channel_segment": 16}},
     {"name": "amplitude-32", "config": {"ordering": "amplitude", "channel_segment": 32}},
-    {"name": "amplitude-192", "config": {"ordering": "amplitude", "channel_segment": 192}}
+    {"name": "amplitude-192", "config": {"ordering": "amplitude", "channel_segment": 192}},
+    {"name": "amplitude-g8-192", "config": {"ordering": "amplitude", "baseline_group": 8, "channel_segment": 192}},
+    {"name": "amplitude-g128-192", "config": {"ordering": "amplitude", "baseline_group": 128, "channel_segment": 192}}
   ]
 }

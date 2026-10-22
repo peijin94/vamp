@@ -1,0 +1,363 @@
+{
+  "schema": "varquanms.benchmark-results/1",
+  "status": "complete",
+  "source": "/data1/users/pz47/varquanMS/data/working/20260904_190008_59MHz.ms",
+  "cache_methodology": "Warm/unspecified OS cache; independent experiment lanes run concurrently on a shared host. Timings are diagnostic, not isolated throughput measurements.",
+  "notes": "Matched adaptive precisions and absolute bounds. Geometry and antenna group boundaries are explicit. Frequency-segment experiments vary only segment length relative to amplitude-64. All decoded outputs undergo WSClean imaging separately.",
+  "experiments": [
+    {
+      "name": "baseline-64",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 1,
+        "channel_segment": 64,
+        "ordering": "original",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-baseline/baseline-64/archive.h5",
+        "archive_bytes": 155010223,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.6423730646461943,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 153447260,
+        "visibility_dataset_ratio_including_maps_statistics": 2.487593665732448,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "visibility_indexes": 8954732,
+          "visibility_block_payload": 139461140,
+          "visibility_quality": 3354637,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 564639
+        },
+        "elapsed_seconds": 2155.610971786082,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 8.662884986028075,
+          "column_encoding_and_writing": 2146.3392548821867,
+          "before_integrity_finalization": 2155.0133037492633
+        },
+        "peak_process_rss_bytes": 2304667648,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.8769453283649076e-08,
+                "real_mse": 3.8775769896257696e-08,
+                "imag_mse": 3.8763136671040384e-08,
+                "bias_real": -2.371469355624168e-08,
+                "bias_imag": -2.9601103439552e-08,
+                "complex_bias_abs": 3.7929039208837175e-08,
+                "max_complex_error": 0.0020083331037312746,
+                "p99_error": 0.000614570106380707,
+                "max_baseline_component_mse": 9.915898355715249e-08
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.635388193970569e-08,
+                "real_mse": 2.6355065500618122e-08,
+                "imag_mse": 2.635269837879315e-08,
+                "bias_real": -1.0089266029270677e-07,
+                "bias_imag": -6.090264335778779e-08,
+                "complex_bias_abs": 1.1784931424877033e-07,
+                "max_complex_error": 0.001008333289064467,
+                "p99_error": 0.0005512652334122951,
+                "max_baseline_component_mse": 9.784555436349351e-08
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 2.6399122965987207e-08,
+                "real_mse": 2.6398780536536837e-08,
+                "imag_mse": 2.6399465395437523e-08,
+                "bias_real": -8.980780018013431e-08,
+                "bias_imag": -6.100687297527532e-08,
+                "complex_bias_abs": 1.0856923838461938e-07,
+                "max_complex_error": 0.0009760766583400075,
+                "p99_error": 0.0005495221334808502,
+                "max_baseline_component_mse": 9.585411202237268e-08
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 3.69140990327054e-08,
+                "real_mse": 3.692292128581375e-08,
+                "imag_mse": 3.6905276779597095e-08,
+                "bias_real": -1.844338413917666e-08,
+                "bias_imag": -6.490297102660469e-08,
+                "complex_bias_abs": 6.747261716122712e-08,
+                "max_complex_error": 0.0009085339960011132,
+                "p99_error": 0.0006175047849480629,
+                "max_baseline_component_mse": 9.865106255850494e-08
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 186384,
+                "component_bit_width_histogram": {
+                  "float32": 35582,
+                  "8": 132679,
+                  "4": 4957,
+                  "6": 13052,
+                  "2": 114
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 2277248,
+                  "8": 8491456,
+                  "4": 317248,
+                  "6": 835328,
+                  "2": 7296
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 18217984,
+                  "packed_code_bytes": 18556800,
+                  "exception_position_bytes": 38632,
+                  "exception_value_bytes": 77264,
+                  "header_bytes": 2982144,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 9658
+                },
+                "serialized_block_bytes": 39597084,
+                "index_bytes": 2236616,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 62128
+                  },
+                  "group_count": 62128,
+                  "partial_group_count": 0
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 186384,
+                "component_bit_width_histogram": {
+                  "6": 10733,
+                  "8": 163367,
+                  "float32": 7484,
+                  "4": 4691,
+                  "2": 109
+                },
+                "complex_sample_bit_width_histogram": {
+                  "6": 686912,
+                  "8": 10455488,
+                  "float32": 478976,
+                  "4": 300224,
+                  "2": 6976
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 3831808,
+                  "packed_code_bytes": 22245056,
+                  "exception_position_bytes": 27508,
+                  "exception_value_bytes": 55016,
+                  "header_bytes": 2982144,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 6877
+                },
+                "serialized_block_bytes": 29135960,
+                "index_bytes": 2236616,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 62128
+                  },
+                  "group_count": 62128,
+                  "partial_group_count": 0
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 186384,
+                "component_bit_width_histogram": {
+                  "6": 15362,
+                  "4": 4911,
+                  "2": 74,
+                  "float32": 6527,
+                  "8": 159510
+                },
+                "complex_sample_bit_width_histogram": {
+                  "6": 983168,
+                  "4": 314304,
+                  "2": 4736,
+                  "float32": 417728,
+                  "8": 10208640
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 3341824,
+                  "packed_code_bytes": 22208704,
+                  "exception_position_bytes": 26216,
+                  "exception_value_bytes": 52432,
+                  "header_bytes": 2982144,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 6554
+                },
+                "serialized_block_bytes": 28605016,
+                "index_bytes": 2236616,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 62128
+                  },
+                  "group_count": 62128,
+                  "partial_group_count": 0
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": null,
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 186384,
+                "component_bit_width_histogram": {
+                  "float32": 36257,
+                  "6": 11679,
+                  "4": 3491,
+                  "2": 71,
+                  "8": 134886
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 2320448,
+                  "6": 747456,
+                  "4": 223424,
+                  "2": 4544,
+                  "8": 8632704
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 18563584,
+                  "packed_code_bytes": 18612288,
+                  "exception_position_bytes": 32276,
+                  "exception_value_bytes": 64552,
+                  "header_bytes": 2982144,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 8069
+                },
+                "serialized_block_bytes": 39975413,
+                "index_bytes": 2236616,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "1": 62128
+                  },
+                  "group_count": 62128,
+                  "partial_group_count": 0
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6522913360968232,
+              "amplitude_statistics": 3.7960205068811774,
+              "baseline_sorting_and_grouping": 0.04946295125409961,
+              "memory_gathering": 7.084666062146425,
+              "packing_and_secondary_compression": 426.8438185537234,
+              "quantization_and_scale_estimation": 528.4537295792252,
+              "candidate_reconstruction_and_error_checks": 1062.7806106400676,
+              "codec_total": 2088.239212624263,
+              "payload_writing": 0.3189470190554857,
+              "quality_accounting": 14.567547227721661
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 2155.8793052951805,
+        "decode_and_export_process": 93.4553152709268,
+        "verification_process": 306.81756970193237
+      }
+    }
+  ],
+  "selected_experiments": [
+    "baseline-64"
+  ],
+  "elapsed_seconds": 2556.159155467991,
+  "Dysco": {
+    "status": "not_run",
+    "available_executable": null,
+    "reason": "External Dysco benchmark adapter/settings equivalence are not implemented"
+  },
+  "scientific_products": "not tested by this benchmark; numeric bounds are not scientific acceptance",
+  "timing_note": "Each experiment uses fresh Python processes; RSS is that process's high-water mark. Caches are not forcibly evicted. Some inner codec stages remain combined in the recorded timer names."
+}

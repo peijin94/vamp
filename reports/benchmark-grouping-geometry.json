@@ -1,0 +1,1094 @@
+{
+  "schema": "varquanms.benchmark-results/1",
+  "status": "complete",
+  "source": "/data1/users/pz47/varquanMS/data/working/20260904_190008_59MHz.ms",
+  "cache_methodology": "Warm/unspecified OS cache; independent experiment lanes run concurrently on a shared host. Timings are diagnostic, not isolated throughput measurements.",
+  "notes": "Matched adaptive precisions and absolute bounds. Geometry and antenna group boundaries are explicit. Frequency-segment experiments vary only segment length relative to amplitude-64. All decoded outputs undergo WSClean imaging separately.",
+  "experiments": [
+    {
+      "name": "class-original-64",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "class-original",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-geometry/class-original-64/archive.h5",
+        "archive_bytes": 173188297,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.3650260733264212,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 171614821,
+        "visibility_dataset_ratio_including_maps_statistics": 2.224250969559325,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 16388,
+          "visibility_indexes": 281588,
+          "visibility_block_payload": 166724220,
+          "visibility_quality": 2915874,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 575152
+        },
+        "elapsed_seconds": 220.80310959601775,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 7.492661783006042,
+          "column_encoding_and_writing": 205.1217649341561,
+          "before_integrity_finalization": 212.6212510522455
+        },
+        "peak_process_rss_bytes": 2291666944,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.040353788964337e-08,
+                "real_mse": 3.04158208200407e-08,
+                "imag_mse": 3.0391254959246064e-08,
+                "bias_real": -4.1094051350109604e-08,
+                "bias_imag": 8.043189619736467e-08,
+                "complex_bias_abs": 9.032170825592866e-08,
+                "max_complex_error": 0.0007839490946218762,
+                "p99_error": 0.0006163548574243447,
+                "max_baseline_component_mse": 1.0939212719145674e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 4.166444521299123e-08,
+                "real_mse": 4.166104120398519e-08,
+                "imag_mse": 4.166784922199714e-08,
+                "bias_real": -8.057243200442894e-09,
+                "bias_imag": 6.935102090291432e-08,
+                "complex_bias_abs": 6.981749972798755e-08,
+                "max_complex_error": 0.0007780264562552699,
+                "p99_error": 0.0005862043104881416,
+                "max_baseline_component_mse": 1.0241320687057147e-07
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 4.120263706513322e-08,
+                "real_mse": 4.120513935072194e-08,
+                "imag_mse": 4.1200134779544493e-08,
+                "bias_real": -1.0347542776968914e-07,
+                "bias_imag": -4.343140569482503e-08,
+                "complex_bias_abs": 1.1222054692768448e-07,
+                "max_complex_error": 0.0007845231350408563,
+                "p99_error": 0.000586208784948953,
+                "max_baseline_component_mse": 1.0663509976121321e-07
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.7918445625076025e-08,
+                "real_mse": 2.7919450384262814e-08,
+                "imag_mse": 2.7917440865889174e-08,
+                "bias_real": 1.5026304512109886e-08,
+                "bias_imag": 1.71499618679907e-08,
+                "complex_bias_abs": 2.2801557389007202e-08,
+                "max_complex_error": 0.0007855481576917308,
+                "p99_error": 0.0005968135311227652,
+                "max_baseline_component_mse": 1.0717833341859808e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 3116,
+                  "8": 2569,
+                  "6": 100,
+                  "4": 41
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 6379520,
+                  "8": 5260288,
+                  "6": 204800,
+                  "4": 83968
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 51036160,
+                  "packed_code_bytes": 10911744,
+                  "exception_position_bytes": 48464,
+                  "exception_value_bytes": 96928,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 12116
+                },
+                "serialized_block_bytes": 55187563,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "class-original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 649,
+                  "8": 5025,
+                  "6": 113,
+                  "4": 39
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 1328128,
+                  "8": 10289152,
+                  "6": 231424,
+                  "4": 79872
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 10625024,
+                  "packed_code_bytes": 21005312,
+                  "exception_position_bytes": 54208,
+                  "exception_value_bytes": 108416,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 13552
+                },
+                "serialized_block_bytes": 27933677,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "class-original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 547,
+                  "6": 166,
+                  "8": 5094,
+                  "4": 19
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 1120256,
+                  "6": 339968,
+                  "8": 10429440,
+                  "4": 38912
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 8962048,
+                  "packed_code_bytes": 21407744,
+                  "exception_position_bytes": 53084,
+                  "exception_value_bytes": 106168,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 13271
+                },
+                "serialized_block_bytes": 26886366,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "class-original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 3132,
+                  "6": 167,
+                  "8": 2512,
+                  "4": 15
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 6411264,
+                  "6": 342016,
+                  "8": 5144576,
+                  "4": 30720
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 51290112,
+                  "packed_code_bytes": 10832896,
+                  "exception_position_bytes": 42140,
+                  "exception_value_bytes": 84280,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 10535
+                },
+                "serialized_block_bytes": 55531163,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "class-original",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6555630038492382,
+              "amplitude_statistics": 3.811842979863286,
+              "baseline_sorting_and_grouping": 0.015152367297559977,
+              "memory_gathering": 0.6432326547801495,
+              "packing_and_secondary_compression": 51.13668022444472,
+              "quantization_and_scale_estimation": 38.47717307880521,
+              "candidate_reconstruction_and_error_checks": 88.16035953350365,
+              "codec_total": 180.5834388914518,
+              "payload_writing": 0.31869220873340964,
+              "quality_accounting": 15.226759273093194
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 221.07793141016737,
+        "decode_and_export_process": 36.477120581083,
+        "verification_process": 42.65053411992267
+      }
+    },
+    {
+      "name": "length-64",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "length",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-geometry/length-64/archive.h5",
+        "archive_bytes": 163284699,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.5084704231839874,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 161711119,
+        "visibility_dataset_ratio_including_maps_statistics": 2.3604711559753664,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 479308,
+          "visibility_indexes": 281588,
+          "visibility_block_payload": 156238420,
+          "visibility_quality": 3035052,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 575256
+        },
+        "elapsed_seconds": 219.58096924703568,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.258162957150489,
+          "column_encoding_and_writing": 214.57844971306622,
+          "before_integrity_finalization": 218.846023586113
+        },
+        "peak_process_rss_bytes": 2293719040,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.201740772667995e-08,
+                "real_mse": 3.201760799172239e-08,
+                "imag_mse": 3.201720746163745e-08,
+                "bias_real": -6.641975891638737e-08,
+                "bias_imag": -4.937685902622602e-08,
+                "complex_bias_abs": 8.27626641777971e-08,
+                "max_complex_error": 0.0007746248806954005,
+                "p99_error": 0.0006134627156374136,
+                "max_baseline_component_mse": 1.0241250818696183e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 4.753262287902361e-08,
+                "real_mse": 4.7537214064411965e-08,
+                "imag_mse": 4.7528031693635016e-08,
+                "bias_real": 1.1419361466459074e-08,
+                "bias_imag": -5.185823550398835e-09,
+                "complex_bias_abs": 1.2541713686634754e-08,
+                "max_complex_error": 0.000777543332002757,
+                "p99_error": 0.0005791729273327909,
+                "max_baseline_component_mse": 9.780800600416536e-08
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 4.662798795936605e-08,
+                "real_mse": 4.660706325692622e-08,
+                "imag_mse": 4.6648912661805895e-08,
+                "bias_real": 1.9301413306813632e-08,
+                "bias_imag": -1.5188185381918027e-08,
+                "complex_bias_abs": 2.456065004913247e-08,
+                "max_complex_error": 0.0007739404370288528,
+                "p99_error": 0.0005728147420112768,
+                "max_baseline_component_mse": 9.439447411724241e-08
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.991117206605726e-08,
+                "real_mse": 2.991318466947416e-08,
+                "imag_mse": 2.990915946264039e-08,
+                "bias_real": -1.0887074681155872e-08,
+                "bias_imag": 6.6259844295720775e-09,
+                "complex_bias_abs": 1.2744883866634362e-08,
+                "max_complex_error": 0.0007729600453828399,
+                "p99_error": 0.0005788829212973781,
+                "max_baseline_component_mse": 1.0293879399539395e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 3099,
+                  "8": 2727
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 6346752,
+                  "8": 5581824
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 50774016,
+                  "packed_code_bytes": 11163648,
+                  "exception_position_bytes": 38956,
+                  "exception_value_bytes": 77912,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 9739
+                },
+                "serialized_block_bytes": 54847887,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "length",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "length": "hypot(hypot(U,V),W), original metre UVW",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 236,
+                  "8": 5590
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 483328,
+                  "8": 11445248
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 3866624,
+                  "packed_code_bytes": 22890496,
+                  "exception_position_bytes": 81248,
+                  "exception_value_bytes": 162496,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 20312
+                },
+                "serialized_block_bytes": 23709093,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "length",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "length": "hypot(hypot(U,V),W), original metre UVW",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 187,
+                  "8": 5639
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 382976,
+                  "8": 11545600
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 3063808,
+                  "packed_code_bytes": 23091200,
+                  "exception_position_bytes": 81864,
+                  "exception_value_bytes": 163728,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 20466
+                },
+                "serialized_block_bytes": 23182313,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "length",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "length": "hypot(hypot(U,V),W), original metre UVW",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 5826,
+                "component_bit_width_histogram": {
+                  "float32": 2807,
+                  "8": 3019
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 5748736,
+                  "8": 6179840
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 45989888,
+                  "packed_code_bytes": 12359680,
+                  "exception_position_bytes": 50816,
+                  "exception_value_bytes": 101632,
+                  "header_bytes": 93216,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 12704
+                },
+                "serialized_block_bytes": 52087872,
+                "index_bytes": 69920,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "length",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "length": "hypot(hypot(U,V),W), original metre UVW",
+                  "group_size_histogram": {
+                    "16": 1,
+                    "32": 1941
+                  },
+                  "group_count": 1942,
+                  "partial_group_count": 1
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.64522605529055,
+              "amplitude_statistics": 3.8885992849245667,
+              "baseline_sorting_and_grouping": 0.04179844493046403,
+              "memory_gathering": 0.6086498778313398,
+              "packing_and_secondary_compression": 53.50622025644407,
+              "quantization_and_scale_estimation": 39.71800641994923,
+              "candidate_reconstruction_and_error_checks": 92.06229989370331,
+              "codec_total": 188.27508096629754,
+              "payload_writing": 0.2849907325580716,
+              "quality_accounting": 16.523299602791667
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 219.87681638309732,
+        "decode_and_export_process": 33.30957376770675,
+        "verification_process": 48.29747148510069
+      }
+    },
+    {
+      "name": "orientation-64",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 64,
+        "ordering": "orientation",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/grouping-geometry/orientation-64/archive.h5",
+        "archive_bytes": 198722068,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 2.0611442006531453,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 197139876,
+        "visibility_dataset_ratio_including_maps_statistics": 1.9362619057343833,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 478784,
+          "visibility_indexes": 284112,
+          "visibility_block_payload": 191890140,
+          "visibility_quality": 2810089,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 583868
+        },
+        "elapsed_seconds": 227.7274048179388,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "timings_seconds": {
+          "inspection_preflight": 4.719336801674217,
+          "column_encoding_and_writing": 222.20202256692573,
+          "before_integrity_finalization": 226.93015157384798
+        },
+        "peak_process_rss_bytes": 2291027968,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 1.9183345268432293e-08,
+                "real_mse": 1.9188208261071916e-08,
+                "imag_mse": 1.917848227579265e-08,
+                "bias_real": -3.0235381802484664e-08,
+                "bias_imag": -1.4474427341198189e-08,
+                "complex_bias_abs": 3.3521446263513845e-08,
+                "max_complex_error": 0.0007790990579958453,
+                "p99_error": 0.0006109321968224894,
+                "max_baseline_component_mse": 1.0712520329989344e-07
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 4.8776833356548286e-08,
+                "real_mse": 4.878816652230126e-08,
+                "imag_mse": 4.876550019079536e-08,
+                "bias_real": -2.177393375637134e-08,
+                "bias_imag": -3.416317711146541e-08,
+                "complex_bias_abs": 4.051205822438798e-08,
+                "max_complex_error": 0.0007754746981096782,
+                "p99_error": 0.0005942010032856129,
+                "max_baseline_component_mse": 1.0597531925457508e-07
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 4.841228353960591e-08,
+                "real_mse": 4.8422315183629893e-08,
+                "imag_mse": 4.840225189558217e-08,
+                "bias_real": 7.732198040208145e-08,
+                "bias_imag": -5.3266271661301636e-08,
+                "complex_bias_abs": 9.389347341533092e-08,
+                "max_complex_error": 0.0007725001899990869,
+                "p99_error": 0.0005855385255555136,
+                "max_baseline_component_mse": 1.080937797163685e-07
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 1.3921221818790427e-08,
+                "real_mse": 1.391567231695517e-08,
+                "imag_mse": 1.392677132062576e-08,
+                "bias_real": -1.3826547631702061e-08,
+                "bias_imag": -1.863354533812251e-08,
+                "complex_bias_abs": 2.32030694365981e-08,
+                "max_complex_error": 0.0007779801098286517,
+                "p99_error": 0.0005783128251025329,
+                "max_baseline_component_mse": 1.0383348618342805e-07
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 5862,
+                "component_bit_width_histogram": {
+                  "float32": 4419,
+                  "8": 1443
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 9009024,
+                  "8": 2919552
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 72072192,
+                  "packed_code_bytes": 5839104,
+                  "exception_position_bytes": 39876,
+                  "exception_value_bytes": 79752,
+                  "header_bytes": 93792,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 9969
+                },
+                "serialized_block_bytes": 68902759,
+                "index_bytes": 70352,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "orientation",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "orientation": "atan2(V,U) modulo 2*pi, original ordered metre UVW",
+                  "orientation_bins": 24,
+                  "bin_width_degrees": 15.0,
+                  "special_geometry": "zero projected UV and nonfinite geometry form separate groups",
+                  "group_size_histogram": {
+                    "2": 1,
+                    "3": 2,
+                    "4": 1,
+                    "8": 2,
+                    "10": 2,
+                    "13": 2,
+                    "14": 1,
+                    "15": 1,
+                    "17": 2,
+                    "18": 1,
+                    "19": 2,
+                    "20": 1,
+                    "21": 1,
+                    "22": 1,
+                    "25": 1,
+                    "26": 1,
+                    "29": 1,
+                    "32": 1931
+                  },
+                  "group_count": 1954,
+                  "partial_group_count": 23
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 5862,
+                "component_bit_width_histogram": {
+                  "float32": 389,
+                  "8": 5473
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 792064,
+                  "8": 11136512
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 6336512,
+                  "packed_code_bytes": 22273024,
+                  "exception_position_bytes": 80664,
+                  "exception_value_bytes": 161328,
+                  "header_bytes": 93792,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 20166
+                },
+                "serialized_block_bytes": 25188222,
+                "index_bytes": 70352,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "orientation",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "orientation": "atan2(V,U) modulo 2*pi, original ordered metre UVW",
+                  "orientation_bins": 24,
+                  "bin_width_degrees": 15.0,
+                  "special_geometry": "zero projected UV and nonfinite geometry form separate groups",
+                  "group_size_histogram": {
+                    "2": 1,
+                    "3": 2,
+                    "4": 1,
+                    "8": 2,
+                    "10": 2,
+                    "13": 2,
+                    "14": 1,
+                    "15": 1,
+                    "17": 2,
+                    "18": 1,
+                    "19": 2,
+                    "20": 1,
+                    "21": 1,
+                    "22": 1,
+                    "25": 1,
+                    "26": 1,
+                    "29": 1,
+                    "32": 1931
+                  },
+                  "group_count": 1954,
+                  "partial_group_count": 23
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 5862,
+                "component_bit_width_histogram": {
+                  "float32": 277,
+                  "8": 5585
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 564352,
+                  "8": 11364224
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 4514816,
+                  "packed_code_bytes": 22728448,
+                  "exception_position_bytes": 83972,
+                  "exception_value_bytes": 167944,
+                  "header_bytes": 93792,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 20993
+                },
+                "serialized_block_bytes": 24021995,
+                "index_bytes": 70352,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "orientation",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "orientation": "atan2(V,U) modulo 2*pi, original ordered metre UVW",
+                  "orientation_bins": 24,
+                  "bin_width_degrees": 15.0,
+                  "special_geometry": "zero projected UV and nonfinite geometry form separate groups",
+                  "group_size_histogram": {
+                    "2": 1,
+                    "3": 2,
+                    "4": 1,
+                    "8": 2,
+                    "10": 2,
+                    "13": 2,
+                    "14": 1,
+                    "15": 1,
+                    "17": 2,
+                    "18": 1,
+                    "19": 2,
+                    "20": 1,
+                    "21": 1,
+                    "22": 1,
+                    "25": 1,
+                    "26": 1,
+                    "29": 1,
+                    "32": 1931
+                  },
+                  "group_count": 1954,
+                  "partial_group_count": 23
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 5862,
+                "component_bit_width_histogram": {
+                  "float32": 4720,
+                  "8": 1142
+                },
+                "complex_sample_bit_width_histogram": {
+                  "float32": 9621632,
+                  "8": 2306944
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 76973056,
+                  "packed_code_bytes": 4613888,
+                  "exception_position_bytes": 29380,
+                  "exception_value_bytes": 58760,
+                  "header_bytes": 93792,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 7345
+                },
+                "serialized_block_bytes": 72321351,
+                "index_bytes": 70352,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "orientation",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "orientation": "atan2(V,U) modulo 2*pi, original ordered metre UVW",
+                  "orientation_bins": 24,
+                  "bin_width_degrees": 15.0,
+                  "special_geometry": "zero projected UV and nonfinite geometry form separate groups",
+                  "group_size_histogram": {
+                    "2": 1,
+                    "3": 2,
+                    "4": 1,
+                    "8": 2,
+                    "10": 2,
+                    "13": 2,
+                    "14": 1,
+                    "15": 1,
+                    "17": 2,
+                    "18": 1,
+                    "19": 2,
+                    "20": 1,
+                    "21": 1,
+                    "22": 1,
+                    "25": 1,
+                    "26": 1,
+                    "29": 1,
+                    "32": 1931
+                  },
+                  "group_count": 1954,
+                  "partial_group_count": 23
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6351161110214889,
+              "amplitude_statistics": 3.804705907125026,
+              "baseline_sorting_and_grouping": 0.061982769053429365,
+              "memory_gathering": 0.6575212068855762,
+              "packing_and_secondary_compression": 55.51570605440065,
+              "quantization_and_scale_estimation": 41.74690535757691,
+              "candidate_reconstruction_and_error_checks": 96.58843141235411,
+              "codec_total": 196.89497853117064,
+              "payload_writing": 0.3599961022846401,
+              "quality_accounting": 15.53022754471749
+            }
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "verification_status": "passed",
+      "process_timings_seconds": {
+        "encode_process": 227.96709073893726,
+        "decode_and_export_process": 9.621079304721206,
+        "verification_process": 61.59248120104894
+      }
+    }
+  ],
+  "selected_experiments": [
+    "class-original-64",
+    "length-64",
+    "orientation-64"
+  ],
+  "elapsed_seconds": 901.4166732961312,
+  "Dysco": {
+    "status": "not_run",
+    "available_executable": null,
+    "reason": "External Dysco benchmark adapter/settings equivalence are not implemented"
+  },
+  "scientific_products": "not tested by this benchmark; numeric bounds are not scientific acceptance",
+  "timing_note": "Each experiment uses fresh Python processes; RSS is that process's high-water mark. Caches are not forcibly evicted. Some inner codec stages remain combined in the recorded timer names."
+}

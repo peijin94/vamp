@@ -5,6 +5,7 @@ Astropy is an optional validation dependency; it is not needed by the decoder.
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 
@@ -127,6 +128,8 @@ def compare_run(reference_dir, candidate_dir):
 
 
 def plot_comparison(reference_path, candidate_path, output):
+    # Reuse a writable task-specific font cache on restricted execution hosts.
+    os.environ.setdefault("MPLCONFIGDIR", "/tmp/varquanms-matplotlib-cache")
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

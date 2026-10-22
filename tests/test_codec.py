@@ -119,6 +119,10 @@ class CodecTests(unittest.TestCase):
                 self.assertTrue(np.isfinite(bucket["lower"]) and np.isfinite(bucket["upper"]))
 
     def test_class_control_preserves_original_order_within_classes(self):
+        original = make_order(np.ones(5), np.ones(5), np.asarray([False, True, False, True, False]),
+                              np.ones(5), self.config(ordering="original"))
+        self.assertEqual(original["permutation"].tolist(), list(range(5)))
+        self.assertIn("original row order", original["grouping"]["classes"])
         config = self.config(ordering="class-original")
         order = make_order(np.asarray([3, 5, 8, 1, 9.]), np.asarray([1, 1, 1, 1, 0]),
                            np.asarray([False, True, False, True, False]), np.ones(5), config)

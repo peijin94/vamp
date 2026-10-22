@@ -17,3 +17,6 @@ __pycache__/
 *.zarr/
 *.partial
 *.bundle
+*.fits
+*.image/
+*.sif

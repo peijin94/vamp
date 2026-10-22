@@ -1,0 +1,27 @@
+{
+  "schema": "varquanms.benchmark/1",
+  "cache_methodology": "Warm/unspecified OS cache; independent experiment lanes run concurrently on a shared host. Timings are diagnostic, not isolated throughput measurements.",
+  "notes": "Matched adaptive precisions and absolute bounds. Geometry and antenna group boundaries are explicit. Frequency-segment experiments vary only segment length relative to amplitude-64. All decoded outputs undergo WSClean imaging separately.",
+  "export_ms": true,
+  "base": {
+    "mode": "adaptive", "columns": ["DATA"], "baseline_group": 32,
+    "channel_segment": 64, "ordering": "class-original", "shared_order": false,
+    "bits": [2, 4, 6, 8], "scale_quantiles": [1.0, 0.995],
+    "max_component_mse": 1e-7, "max_baseline_component_mse": 2e-7,
+    "max_complex_error": 0.003, "max_complex_bias": 0.0003, "noise": null
+  },
+  "experiments": [
+    {"name": "baseline-64", "config": {"ordering": "original", "baseline_group": 1}},
+    {"name": "class-original-64", "config": {}},
+    {"name": "length-64", "config": {"ordering": "length"}},
+    {"name": "orientation-64", "config": {"ordering": "orientation", "orientation_bins": 24}},
+    {"name": "length-orientation-64", "config": {"ordering": "length-orientation", "orientation_bins": 24, "length_reference_m": 1.0}},
+    {"name": "antenna1-64", "config": {"ordering": "antenna", "antenna_endpoint": 1}},
+    {"name": "antenna2-64", "config": {"ordering": "antenna", "antenna_endpoint": 2}},
+    {"name": "amplitude-64", "config": {"ordering": "amplitude"}},
+    {"name": "buckets-64", "config": {"ordering": "buckets"}},
+    {"name": "amplitude-16", "config": {"ordering": "amplitude", "channel_segment": 16}},
+    {"name": "amplitude-32", "config": {"ordering": "amplitude", "channel_segment": 32}},
+    {"name": "amplitude-192", "config": {"ordering": "amplitude", "channel_segment": 192}}
+  ]
+}

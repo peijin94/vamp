@@ -12,6 +12,7 @@ dependencies = ["numpy>=1.24", "python-casacore>=3.5", "h5py>=3.9"]
 
 [project.optional-dependencies]
 plot = ["matplotlib>=3.7"]
+validation = ["matplotlib>=3.7", "astropy>=5.3"]
 
 [project.scripts]
 visarchive = "varquanms.cli:main"

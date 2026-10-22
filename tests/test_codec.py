@@ -90,7 +90,7 @@ class CodecTests(unittest.TestCase):
         flags[4] = True
         pairs = np.asarray([[0, 1], [0, 0], [1, 2], [0, 2], [2, 2]])
         uvw = np.column_stack([np.arange(5), np.zeros((5, 2))])
-        for method in ("original", "length", "amplitude", "buckets"):
+        for method in ("original", "class-original", "length", "orientation", "length-orientation", "antenna", "amplitude", "buckets"):
             config = self.config(ordering=method, baseline_group=3)
             orders, _, counts = all_orders(values, flags, pairs, uvw, config)
             self.assertEqual(counts[4].tolist(), [0, 0])
@@ -104,7 +104,9 @@ class CodecTests(unittest.TestCase):
 
     def test_strict_config_and_no_implicit_noise_estimation(self):
         for changes in ({"noise": {"component_variance": 1, "epsilon": .01}}, {"bits": [3]},
-                        {"mode": "fixed"}, {"rounding": "dither"}, {"max_complex_error": None}):
+                        {"mode": "fixed"}, {"rounding": "dither"}, {"max_complex_error": None},
+                        {"orientation_bins": 0}, {"orientation_bins": True}, {"antenna_endpoint": 3},
+                        {"length_reference_m": float("nan")}):
             with self.assertRaises(ValueError):
                 self.config(**changes)
 
@@ -115,6 +117,35 @@ class CodecTests(unittest.TestCase):
         for bucket in result["buckets"]:
             if bucket["kind"] == "positive":
                 self.assertTrue(np.isfinite(bucket["lower"]) and np.isfinite(bucket["upper"]))
+
+    def test_class_control_preserves_original_order_within_classes(self):
+        config = self.config(ordering="class-original")
+        order = make_order(np.asarray([3, 5, 8, 1, 9.]), np.asarray([1, 1, 1, 1, 0]),
+                           np.asarray([False, True, False, True, False]), np.ones(5), config)
+        self.assertEqual(order["permutation"].tolist(), [1, 3, 0, 2, 4])
+        self.assertEqual(order["group_boundaries"].tolist(), [0, 2, 4, 5])
+
+    def test_geometry_bins_do_not_fold_antennas_and_separate_special_geometry(self):
+        uvw = np.asarray([[2, 0, 0], [-2, 0, 0], [3, 0, 0], [8, 0, 0],
+                          [0, 0, 1], [np.nan, 0, 0], [0, 2, 0], [0, -2, 0]])
+        lengths = np.hypot(np.hypot(uvw[:, 0], uvw[:, 1]), uvw[:, 2])
+        config = self.config(ordering="length-orientation", orientation_bins=4, baseline_group=8)
+        order = make_order(np.ones(8), np.ones(8), np.zeros(8, dtype=bool), lengths, config, uvw=uvw)
+        groups = [order["permutation"][lo:hi].tolist() for lo, hi in zip(order["group_boundaries"][:-1], order["group_boundaries"][1:])]
+        self.assertIn([0, 2], groups)
+        for row in (1, 3, 4, 5, 6, 7):
+            self.assertIn([row], groups)
+        self.assertEqual(sum(int(size) * count for size, count in order["grouping"]["group_size_histogram"].items()), 8)
+
+    def test_each_antenna_endpoint_stays_in_its_own_group(self):
+        pairs = np.asarray([[2, 1], [0, 2], [2, 0], [1, 0], [0, 1]])
+        for endpoint in (1, 2):
+            config = self.config(ordering="antenna", antenna_endpoint=endpoint, baseline_group=8)
+            order = make_order(np.ones(5), np.ones(5), np.zeros(5, dtype=bool), np.ones(5), config, pairs=pairs)
+            for lo, hi in zip(order["group_boundaries"][:-1], order["group_boundaries"][1:]):
+                rows = order["permutation"][lo:hi]
+                self.assertEqual(len(set(pairs[rows, endpoint - 1])), 1)
+                self.assertEqual(rows.tolist(), sorted(rows.tolist()))
 
 
 if __name__ == "__main__":

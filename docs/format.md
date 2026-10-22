@@ -35,7 +35,11 @@ correlation]`. A product-specific permutation stores `perm[j]`, the original row
 at archived position j. Restore by `restored[perm,:,product] = decoded`.
 Identity permutations are implicit, and shared product order uses one stored
 permutation. Group boundary arrays define exact partial edges and auto/cross,
-bucket and no-valid-data boundaries. Frequency segments have exact final edges.
+bucket and no-valid-data boundaries. Geometry/antenna grouping also respects its
+configured radial/angular/endpoint boundaries. Each product records the grouping
+definition and a group-size histogram; the stored permutation and boundaries,
+not a re-run of the sort algorithm, determine reconstruction.
+Frequency segments have exact final edges.
 Original correlation and frequency order come from unchanged MS metadata.
 The row-presence rule is identity to the original MS; no absent rows are padded.
 

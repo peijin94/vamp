@@ -47,7 +47,7 @@ class QuantizedArchiveTests(unittest.TestCase):
     def test_adaptive_orderings_and_exact_preserved_columns(self):
         source = self.source()
         before = snapshot(source)
-        for index, method in enumerate(("original", "length", "amplitude", "buckets")):
+        for index, method in enumerate(("original", "class-original", "length", "orientation", "length-orientation", "antenna", "amplitude", "buckets")):
             archive, restored = self.root / f"{index}.h5", self.root / f"{index}.ms"
             summary = encode(source, archive, self.config(ordering=method))
             self.assertEqual(sum(summary["stored_bytes_by_category"].values()), archive.stat().st_size)

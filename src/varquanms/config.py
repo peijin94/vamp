@@ -19,6 +19,9 @@ class Config:
     ordering: str = "original"
     shared_order: bool = False
     bucket_reference: float | None = None
+    orientation_bins: int = 24
+    length_reference_m: float = 1.0
+    antenna_endpoint: int = 1
     bits: list = field(default_factory=lambda: [2, 4, 6, 8])
     codebook: str = "uniform-symmetric-v1"
     rounding: str = "nearest-even"
@@ -62,8 +65,14 @@ class Config:
             raise ValueError("Quantization blocks are limited to 262144 complex samples")
         if self.compression not in ("gzip", "none"):
             raise ValueError("compression must be gzip or none")
-        if self.ordering not in ("original", "length", "amplitude", "buckets"):
+        if self.ordering not in ("original", "class-original", "length", "orientation", "length-orientation", "antenna", "amplitude", "buckets"):
             raise ValueError("Unsupported baseline ordering")
+        if type(self.orientation_bins) is not int or not 1 <= self.orientation_bins <= 3600:
+            raise ValueError("orientation_bins must be an integer in [1,3600]")
+        if type(self.length_reference_m) not in (int, float) or not math.isfinite(self.length_reference_m) or self.length_reference_m <= 0:
+            raise ValueError("length_reference_m must be positive and finite")
+        if type(self.antenna_endpoint) is not int or self.antenna_endpoint not in (1, 2):
+            raise ValueError("antenna_endpoint must be 1 or 2 (ordered MS antenna columns)")
         if self.codebook != "uniform-symmetric-v1":
             raise ValueError("Only uniform-symmetric-v1 is currently implemented")
         if self.rounding not in ("nearest-even", "stochastic-pcg64-v1"):

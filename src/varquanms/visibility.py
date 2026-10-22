@@ -164,6 +164,7 @@ def write_visibility(writer, t, column, prefix, config, inspection):
                                  "logical_bytes_before_secondary_compression": dict(accounting),
                                  "serialized_block_bytes": offsets[-1], "index_bytes": len(offsets) * 8 + len(crc) * 4,
                                  "bucket_reference": order["bucket_reference"], "buckets": order["buckets"],
+                                 "grouping": order["grouping"],
                                  "permutation_direction": order["permutation_direction"]})
     stamp = time.perf_counter()
     summary, arrays = quality(values, reconstructed, flags, names)

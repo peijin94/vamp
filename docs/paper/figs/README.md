@@ -12,18 +12,20 @@ numerical charts have PNG, SVG and PDF versions; FITS panels are PNG.
 | `precision-and-bytes` | Precision fractions and non-payload bytes | `reports/precision-ladder-4-8-12-16.json` |
 | `wsclean-full` | Dirty/restored original, decoded and difference images | Measured reference/candidate FITS files |
 | `wsclean-peak` | Fixed-reference peak neighborhood | Same FITS files, no solar identification |
-| `runtime` | Repeated encode-process and exclusive phase timings | `reports/paper-runtime.json` |
-| `performance` | Original/optimized latency, remaining wall-time costs and native thread CPU time | `reports/performance-runtime.json`, `reports/performance-profile.json` |
+| `encoding-speed` | Paper benchmark: historical medians/ranges and three current repeats | `reports/paper-runtime.json`, `reports/performance-runtime.json` |
+| `runtime` | Historical phase timings retained for development notes | `reports/paper-runtime.json` |
+| `performance` | Profiling chart retained for development notes | `reports/performance-runtime.json`, `reports/performance-profile.json` |
 
 From the repository root:
 
 ```bash
-python scripts/build_paper_figures.py --timing reports/paper-runtime.json --force
+python scripts/build_paper_figures.py --force
 ```
 
 Add `--skip-images` without the untracked observation/FITS data. `--force` only
 overwrites the named generated figure files. Scientific interpretation, units,
 limits and full reproduction commands are in [the paper](../varquantMS.md).
+Use `--speed-only` to regenerate just the encoding-speed benchmark figure.
 Regenerate the performance figure from versioned runtime reports with
 `python scripts/report_performance.py --plot-only --force`. Generating a fresh
 profiling report additionally reads trusted local `.prof` files retained outside Git.

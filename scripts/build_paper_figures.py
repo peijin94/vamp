@@ -206,6 +206,35 @@ def timing(report):
     return fig
 
 
+def speed_benchmark(report, baseline):
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4.8), constrained_layout=True)
+    summaries = [baseline["adaptive_summary"]["encode_process_seconds"],
+                 report["adaptive_summary"]["encode_process_seconds"]]
+    medians = [item["median"] for item in summaries]
+    ranges = [[item["median"]-item["minimum"] for item in summaries],
+              [item["maximum"]-item["median"] for item in summaries]]
+    bars = axes[0].bar(["Earlier encoder\n1 worker", "Current encoder\n24 workers"], medians,
+                       yerr=ranges, capsize=5, color=[COLORS["grey"], COLORS["teal"]])
+    for bar, item in zip(bars, summaries):
+        axes[0].text(bar.get_x()+bar.get_width()/2, item["maximum"]+4,
+                     f"{item['median']:.2f} s", ha="center")
+    axes[0].set(ylabel="Complete encode-process wall time (s)", ylim=(0, 205),
+                title="Historical comparison: median and observed range")
+    records = [record for record in report["records"] if record["mode"] == "adaptive"]
+    bars = axes[1].bar([f"Repeat {i+1}" for i in range(len(records))],
+                       [record["encode_process_seconds"] for record in records], color=COLORS["teal"])
+    for bar, record in zip(bars, records):
+        axes[1].text(bar.get_x()+bar.get_width()/2, bar.get_height()+.3,
+                     f"{record['encode_process_seconds']:.2f} s", ha="center")
+    axes[1].axhline(15, color=COLORS["red"], linestyle="--", label="15 s target")
+    axes[1].set(ylabel="Complete encode-process wall time (s)", ylim=(0, 18),
+                title=f"Current benchmark: {medians[1]:.2f} s median")
+    axes[1].legend(loc="upper right")
+    fig.suptitle("MS → complete archive: three sequential fresh-process repeats\n"
+                 "Shared host; warm/unspecified cache; verification and imaging excluded", fontsize=12)
+    return fig
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output",type=Path,default=ROOT/"docs/paper/figs")
@@ -214,10 +243,17 @@ def main():
     parser.add_argument("--candidate",type=Path,default=ROOT/"results/wsclean-precision-4-8-12-16")
     parser.add_argument("--force",action="store_true")
     parser.add_argument("--skip-images",action="store_true")
+    parser.add_argument("--speed-only",action="store_true",help="generate only the measured encoding-speed figure")
     args=parser.parse_args();args.output.mkdir(parents=True,exist_ok=True)
+    speed = speed_benchmark(read("reports/performance-runtime.json"), read("reports/paper-runtime.json"))
+    if args.speed_only:
+        paths = save(speed, args.output, "encoding-speed", args.force)
+        print(json.dumps({"figures": [str(p) for p in paths]}, indent=2))
+        return
     old,new=read("reports/grouping-results.json"),read("reports/precision-ladder-4-8-12-16.json")
     figures={"grouping":grouping(),"precision-selection":selection(),
-             "rate-distortion":rate_distortion(old,new),"precision-and-bytes":precision_bytes(new)}
+             "rate-distortion":rate_distortion(old,new),"precision-and-bytes":precision_bytes(new),
+             "encoding-speed":speed}
     if args.timing:figures["runtime"]=timing(json.loads(args.timing.read_text()))
     paths=[]
     for name,fig in figures.items():paths.extend(save(fig,args.output,name,args.force))

@@ -2,8 +2,7 @@
 
 **Working methods and experiment paper — 23 October 2026.** This document describes
 implemented behavior and measured results, not an approved archival science profile.
-The repository/software name is **varquanMS**; this manuscript retains the requested
-filename `varquantMS.md`. All sizes use decimal MB unless explicitly stated.
+All sizes use decimal MB unless explicitly stated.
 
 ## Abstract
 
@@ -23,13 +22,12 @@ configuration produces a 106.730 MB archive, a **3.838× whole-MS reduction**.
 Mean per-component visibility MSE is `2.8117e-8` in stored DATA units squared.
 Matched WSClean 2048², 4-arcmin, multiscale imaging gives dirty/restored relative
 RMS differences of **0.1996% / 0.7137%** over the valid celestial footprint.
-These image metrics are not thermal-noise estimates. Three fresh-process encoding
-runs of the initial encoder had a median wall time of 170.62 s (2.84 min).
-After profiling and CPU optimization, three fresh processes with 24 workers take
-**12.19 s median**, range **11.71–12.66 s**, retaining bit-identical visibility
-payloads and exact auxiliary datasets. Both experiments used a shared host with
-warm/unspecified cache. Verification, MS export and imaging are excluded from
-encode time; full scope and repeatability are in Section 9.
+These image metrics are not thermal-noise estimates. Three sequential encoding
+runs with 24 CPU workers take **12.19 s median**, range **11.71–12.66 s**, for a
+106.731 MB archive. The benchmark includes startup, inspection, writing and
+integrity checks; verification, MS export and imaging are timed separately.
+It uses a shared host with warm/unspecified cache. Section 9 describes the test
+conditions, individual runs and output validation.
 
 ## 1. Scope and relationship to earlier work
 
@@ -110,7 +108,7 @@ one can form wavelength coordinates
 
 $$
 \boldsymbol u_{\lambda}(r,f)
-=\boldsymbol u_{\mathrm m}(r)\,\frac{\nu_f}{c},
+=\boldsymbol u_{\mathrm{m}}(r)\,\frac{\nu_f}{c},
 $$
 
 but this frequency-dependent conversion is not used for archival reconstruction.
@@ -183,7 +181,7 @@ quantization blocks, not averaging bins. [SVG](figs/grouping.svg),
 For the measured $B=128,F=192$ configuration, all source rows have valid samples:
 
 $$
-N_{\rm blocks}
+N_{\mathrm{blocks}}
 =4\left(\left\lceil\frac{352}{128}\right\rceil
 +\left\lceil\frac{61{,}776}{128}\right\rceil\right)
 =4(3+483)=1{,}944.
@@ -209,7 +207,7 @@ uses 24 bins by default (15° each), without folding opposite ordered baselines.
 Log-amplitude buckets use
 
 $$
-k_{rp}=\left\lfloor\log_2 A_{rp}-\log_2 A_{\rm ref}\right\rfloor,
+k_{rp}=\left\lfloor\log_2 A_{rp}-\log_2 A_{\mathrm{ref}}\right\rfloor,
 \quad A_{rp}>0,
 $$
 
@@ -253,7 +251,7 @@ For a finite, unprotected component $x$ inside the supported interval, nearest
 ties-to-even rounding in float64 gives
 
 $$
-q_b(x)=\operatorname{rint}_{\rm even}(x/\Delta)+M_b,
+q_b(x)=\operatorname{rint}_{\mathrm{even}}(x/\Delta)+M_b,
 \qquad q_b\in\{0,\ldots,2M_b\}.
 $$
 
@@ -262,9 +260,9 @@ code $M_b$; zero-step blocks assign this code to ordinary zeros. The decoder is
 defined operationally, including storage precision:
 
 $$
-\widehat x=\operatorname{float32}\!\left[
-\operatorname{float32}\!\left(\operatorname{int32}(q_b)-M_b\right)
-\times\Delta_{\rm stored}\right].
+\widehat x=\operatorname{float32}\left[
+\operatorname{float32}\left(\operatorname{int32}(q_b)-M_b\right)
+\times\Delta_{\mathrm{stored}}\right].
 $$
 
 Real and imaginary float32 bit patterns are interleaved into complex64. Evaluating
@@ -303,7 +301,7 @@ Let $\mathcal U$ be the block's source-unflagged finite samples and
 $e_i=\widehat V_i-V_i$. Error calculations use float64 component differences:
 
 $$
-\mathrm{MSE}_{\rm comp}=\frac{1}{2|\mathcal U|}
+\mathrm{MSE}_{\mathrm{comp}}=\frac{1}{2|\mathcal U|}
 \sum_{i\in\mathcal U}|e_i|^2,\quad
 \mu_e=\frac{1}{|\mathcal U|}\sum_{i\in\mathcal U}e_i,\quad
 E_{\max}=\max_{i\in\mathcal U}|e_i|.
@@ -360,8 +358,8 @@ The exact branch remains available even at 16 bits. [SVG](figs/precision-selecti
 [PDF](figs/precision-selection.pdf).*
 
 There is **no validated thermal-noise model** for this test. Were a defensible
-per-component thermal variance $\sigma_{\rm th}^2$ supplied, one could require
-$\mathrm{MSE}_{\rm comp}\le\epsilon\sigma_{\rm th}^2$. Independent, unbiased added
+per-component thermal variance $\sigma_{\mathrm{th}}^2$ supplied, one could require
+$\mathrm{MSE}_{\mathrm{comp}}\le\epsilon\sigma_{\mathrm{th}}^2$. Independent, unbiased added
 noise would then increase RMS by $\sqrt{1+\epsilon}$. Those assumptions are not
 established here; median signal amplitude, image RMS and stored WEIGHT/SIGMA are
 not silently substituted for thermal variance. Original weights are unchanged.
@@ -527,152 +525,80 @@ is a useful rate/distortion observation, not a universal monotonic relationship
 between visibility MSE and a nonlinear CLEAN product. Full per-region/peak/beam
 and checksum records are in [the imaging report](../../reports/wsclean-precision-4-8-12-16.json).
 
-## 9. End-to-end MS-to-archive timing
+## 9. Encoding-speed benchmark
 
-### 9.1 Initial implementation baseline
+### 9.1 Test setup and timing scope
 
-The timing experiment uses the unchanged source and the measured amplitude
-128×192 profile, with three sequential fresh-process adaptive repeats and one
-lossless control. OMP/OPENBLAS/MKL thread limits are all 1. The host is an Intel
-Xeon Silver 4214 at 2.20 GHz with 48 logical CPUs and approximately 376.5 GiB RAM.
-It is a shared host: no CPU pinning, cache eviction or resource isolation is
-claimed. Source reads preceded these runs, so this is a warm/unspecified-cache
-measurement, not a cold-storage benchmark. Figure generation and small synthetic
-unit tests overlapped this task and are recorded as possible interference. No
-other full-observation encode or imaging job was launched concurrently by this task.
+We measured the complete conversion of the inspected 409.595 MB MS into an archive
+using the amplitude-ordered 128-baseline × 192-channel configuration. The precision
+ladder was 4/8/12/16 bits per component, with the error ceilings in Section 5.
+Flags, weights, original coordinates and auxiliary columns were preserved.
 
-The headline wall timer surrounds a new `visarchive encode` process and includes
-Python startup, full inspection/preflight, all selected-column encoding, metadata
-preservation, HDF5 writing, checksums, manifest/final publication and report
-serialization. Copying/extracting the NAS tar and the separate source-hash audit
-are not timed; the input is the already extracted local MS. `encode()`'s internal
-wall time is reported separately. Source
-verification runs afterward in another process; neither it nor MS export or
-imaging is included in the headline encode time. The earlier single trial was
-171.181 s at process scope and 170.918 s inside `encode()`; the repeated benchmark
-below supersedes using that single sample as a performance summary.
+The benchmark ran on an Intel Xeon Silver 4214 at 2.20 GHz with 48 logical CPUs
+and approximately 376.5 GiB RAM. The encoder used 24 CPU workers; OMP, OpenBLAS
+and MKL thread limits were set to one. The recorded software environment was
+Python 3.11.5, NumPy 1.26.4, python-casacore 3.5.2 and h5py 3.10.0.
 
-| Run | Complete encode process (s) | `encode()` function (s) | Separate verification (s) | Archive bytes |
-| --- | ---: | ---: | ---: | ---: |
-| Lossless control (one run) | 33.657 | 33.351 | 8.725 | 331,220,418 |
-| Adaptive repeat 1 | 181.006 | 180.499 | 33.301 | 106,730,113 |
-| Adaptive repeat 2 | 170.620 | 170.353 | 34.989 | 106,730,111 |
-| Adaptive repeat 3 | 168.688 | 168.453 | 38.799 | 106,730,116 |
+Three runs were executed sequentially, each in a fresh process. The wall timer
+included program startup, full input inspection, compression and reconstruction-error
+checks, preservation of auxiliary data, archive writing, integrity checks and
+final publication. Source verification ran separately after each encode. The
+initial NAS copy/extraction, MS export and imaging were excluded from encode time.
 
-The adaptive process-wall median is **170.620 s**, mean 173.438 s, sample standard
-deviation 6.625 s, and range 168.688–181.006 s ($n=3$). Median throughput is
-**2.401 MB/s of physical source size**, or **0.280 million complex DATA samples/s**.
-These are whole-workflow rates, not raw disk or quantizer-kernel bandwidths.
-Median peak process RSS is **2.136 GiB** (range 2.135–2.138 GiB); the encoder holds
-selected visibility arrays in memory and is not an out-of-core implementation.
+The input had already been read, so the cache condition was warm/unspecified.
+The shared host had no CPU pinning, cache eviction or resource isolation. This
+task launched no other benchmark, profiling, test or imaging work during these
+three runs. Measurements therefore describe this host and cache condition.
 
-All four timed archives passed source verification. Across adaptive repeats,
-all inventoried dataset paths, shapes, dtypes and SHA-256 hashes were identical.
-The five-byte file-length spread is outside these scientific datasets, in
-manifest/container overhead; timestamps and measured timing fields differ.
-All 65 original source-file hashes still match the earlier frozen inventory.
+### 9.2 Measured speed
 
-| Exclusive adaptive encode-function region | Mean seconds across three repeats |
-| --- | ---: |
-| Inspection/preflight | 4.411 |
-| Visibility input reading | 0.795 |
-| Amplitude statistics | 4.130 |
-| Baseline ID sorting and grouping | 0.044 |
-| Memory gathering | 0.313 |
-| Scale estimation and quantization | 23.962 |
-| Packing and secondary lossless compression | 84.894 |
-| Candidate decoding and error checks | 32.383 |
-| Visibility payload writes | 0.155 |
-| Whole-product quality accounting, including quality-array writes | 16.321 |
-| Integrity finalization/publication | 1.756 |
-| Other exact-column work and uninstrumented overhead | 3.940 |
+| Repeat | Complete encode process (s) | Separate verification (s) | Archive bytes |
+| --- | ---: | ---: | ---: |
+| 1 | 12.663 | 9.258 | 106,731,154 |
+| 2 | 12.190 | 8.844 | 106,731,153 |
+| 3 | 11.709 | 9.334 | 106,731,150 |
 
-The mean exclusive stages sum to the mean internal encode time (173.102 s), not
-to the median process time. Packing/compression, candidate evaluation and global
-quality checks dominate this prototype; sorting IDs alone does not. Latency can
-change with cache, hardware, flags, bounds and grouping. This three-run shared-host
-sample supplies an observed range, not a population confidence interval or
-production-throughput guarantee. The single lossless control is not a repeated
-lossless-performance distribution.
+Median encode time was **12.190 s**, with range **11.709–12.663 s**. All three runs
+met the 15 s target. Mean time was 12.187 s and sample standard deviation was
+0.477 s. Median throughput was **33.602 MB/s** of physical input size, equivalent
+to **3.914 million complex samples/s**. Median peak process memory was **1.573 GiB**.
 
-![End-to-end timing and exclusive subregions](figs/runtime.png)
+The earlier one-worker encoder had a median of 170.620 s across three runs
+(range 168.688–181.006 s), using the same observation, grouping, error bounds and
+preservation policies. The current 24-worker benchmark has **14.00× lower median
+latency**. The worker counts and software versions differ, so this comparison
+measures the complete configurations. The earlier runs also overlapped figure
+generation and small synthetic tests; their shared-host conditions were less
+controlled. The original timings remain in [the baseline report](../../reports/paper-runtime.json).
 
-*Figure 7. Complete encode-process timings (left) and mean exclusive adaptive
-function-stage times (right). The right panel excludes interpreter startup and
-CLI report serialization. Every complete archive was then verified separately.
-[SVG](figs/runtime.svg), [machine-readable timings](../../reports/paper-runtime.json).*
+![Encoding-speed benchmark](figs/encoding-speed.png)
 
-Packing and conventional secondary compression share one timer; they cannot be
-reported as separately measured phases. Likewise `payload_writing` counts only
-visibility stream writes, not all I/O. Quality-array writes are inside
-`quality_accounting`; exact-column/index/statistic writes and remaining untimed
-setup are reported as residual overhead. Nested `codec_total` and cumulative
-`before_integrity_finalization` are **not** added to their child timers. Raw
-per-run values and timer scopes remain in the machine-readable report.
+*Figure 7. Complete MS-to-archive wall times. Left: median and observed
+minimum–maximum range for the earlier and current encoders, with three runs each.
+Right: individual current runs and the 15 s target. Verification and imaging are
+excluded from encode time. [SVG](figs/encoding-speed.svg),
+[PDF](figs/encoding-speed.pdf).*
 
-### 9.2 Profiled implementation and the 15-second target
+### 9.3 Output validation and measurement limits
 
-Profiling found 45.104 s of self time in zlib compression and 29.454 s in bit
-packing in a separate baseline run. The encoder now packs codes directly by bytes,
-uses an optional C candidate-search kernel that releases the interpreter lock,
-and runs bounded work queues. It preserves all candidates, scale precision,
-exceptions, error thresholds and the exact escape. Every winner passes the portable
-decoder and strict NumPy checks; near-threshold misses repeat the reference search.
+Every timed archive passed source verification. All inventoried datasets were
+identical across the three current runs; the four-byte spread in total file size
+comes from archive overhead. The median archive size was **106.731 MB**, retaining
+the approximately **3.838×** whole-MS reduction.
 
-Amplitude statistics run across products concurrently. Quality moments use fixed
-1024-row chunks and ordered merges, independent of worker count. The full inspection
-reuses already-proven uniform cell shapes and reads flags in batches. An 8 MiB
-HDF5 cache prevents repeated compression of partially written chunks. Integrity
-checks, fsync and final publication remain inside the measured workflow.
-
-The measured performance preset uses 24 encoder workers on the same host, with
-OMP/OpenBLAS/MKL limits of one. Three sequential fresh processes gave:
-
-| Repeat | Complete encode process (s) | Internal encode (s) | Separate verification (s) | Archive bytes |
-| --- | ---: | ---: | ---: | ---: |
-| 1 | 12.663 | 12.391 | 9.258 | 106,731,154 |
-| 2 | 12.190 | 11.937 | 8.844 | 106,731,153 |
-| 3 | 11.709 | 11.468 | 9.334 | 106,731,150 |
-
-All three are below 15 s. Median latency is **12.190 s**, a **14.00×** reduction
-relative to the earlier 170.620 s median. This combines implementation improvements
-and parallelism; it is not a single-core speedup. Mean process time is 12.187 s,
-sample standard deviation 0.477 s, and median peak RSS 1.573 GiB. The shared host
-and warm/unspecified cache qualify this measured result; it is not a latency
-guarantee for other observations or hardware. No other profiling, tests or full-data
-work from this task overlapped the final repeats.
-
-The principal remaining wall-time costs are the parallel block pipeline (4.863 s
-mean) and inspection/preflight (3.141 s). Amplitude statistics take 0.878 s and
-quality accounting 0.781 s. Inside the native search, compression accounts for
-57.947 summed thread CPU seconds versus 20.433 for quantization/packing/prechecks.
-These CPU times overlap across workers and must not be added to wall time.
-The parent cProfile's lock-acquisition time primarily measures waiting for futures.
-
-![Profiled performance and remaining costs](figs/performance.png)
-
-*Figure 8. Measured baseline and optimized process medians; exclusive optimized
-wall-time regions; summed native thread CPU costs. The dashed line is the 15 s
-target. Three repeats contribute to each median. [SVG](figs/performance.svg),
-[PDF](figs/performance.pdf).*
-
-All timed archives passed source verification. All 121 inventoried datasets
-outside the numerical quality arrays match the baseline's dtypes, shapes and
-SHA-256 values, including packed visibilities, maps, original coordinates, flags
-and weights. All scientific inputs to the existing WSClean comparison are therefore
+Compared with the earlier encoder, packed visibility payloads, maps, original
+coordinates, flags, weights and auxiliary values were bit-for-bit identical.
+Small differences in the numerical error summaries do not change the reconstructed
+visibilities. The scientific inputs to the existing WSClean comparison are
 unchanged; no additional imaging run is claimed. The second archive was exported
-to a new MS and passed independent source/export verification with native kernels
-disabled. All 65 original source files still match their frozen SHA-256 inventory.
+to a new MS and passed independent source/export verification. All 65 source files
+still matched their frozen SHA-256 inventory.
 
-The quality calculation is explicitly marked `native-moments-v2`: its different
-float64 reduction order can change the last bits of stored error moments. Portable
-verification allows the documented rounding tolerance for those moments while
-checking error limits strictly. Quality-array compression and additional provenance
-explain the approximately 1 kB whole-archive increase to 106.731 MB. The visibility
-payload and scientific reconstruction are unchanged. Full measurements and setup
-are in [the performance note](../../devnotes/performance.md),
-[runtime report](../../reports/performance-runtime.json) and
-[profiling evidence](../../reports/performance-profile.json).
+These three runs establish an observed speed on this sample. Performance may
+differ with hardware, cache state, observation size, flag density and error bounds.
+The full configurations, per-run measurements and validation evidence are retained
+in the [speed benchmark report](../../reports/performance-runtime.json) and
+[validation summary](../../reports/performance-profile.json).
 
 ## 10. Limits and conclusions
 
@@ -708,22 +634,16 @@ python -m unittest discover -s tests -v
 visarchive benchmark INPUT.ms --matrix configs/benchmark-grouping.json \
   --experiments amplitude-g128-192 --output results/new-precision-run
 
-# Timing: lossless control + three sequential adaptive repeats, verification separate.
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  visarchive benchmark INPUT.ms --matrix configs/benchmark-paper-runtime.json \
-  --output results/new-runtime-run
-python scripts/summarize_runtime.py results/new-runtime-run/results.json \
-  --source-inventory reports/sample-copy-after-grouping.json \
-  --output reports/new-runtime.json
-
-# Optimized 24-worker preset, with the optional compiled kernels installed:
-python -c 'from varquanms import _native'
+# Speed benchmark: three fresh processes, 24 workers, verification separate.
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
   visarchive benchmark INPUT.ms --matrix configs/benchmark-performance.json \
   --output results/new-performance-run
+python scripts/summarize_runtime.py results/new-performance-run/results.json \
+  --source-inventory reports/sample-copy-after-grouping.json \
+  --output reports/new-runtime.json
 
 # Diagrams/charts; image panels additionally require the local generated FITS files.
-python scripts/build_paper_figures.py --timing reports/paper-runtime.json
+python scripts/build_paper_figures.py
 ```
 
 Use `--force` only to regenerate existing paper figures. For a checkout without
@@ -731,7 +651,8 @@ the untracked observation/FITS data, add `--skip-images` to regenerate diagrams
 and report-derived numerical charts. The source-inventory argument above belongs
 to this specific sample; use a matching inventory for another input. Historical
 reports retain old configurations and are not recreated simply by running today's
-default matrices.
+default matrices. The measured preset's installation prerequisites are listed in
+the [benchmark setup notes](../../devnotes/performance.md#running-it).
 
 The WSClean reproduction command uses a private working MS copy:
 
@@ -751,9 +672,9 @@ Primary local evidence:
 - [New-ladder configuration, byte/error accounting and imaging summary](../../reports/precision-ladder-4-8-12-16.json)
 - [Full WSClean comparison](../../reports/wsclean-precision-4-8-12-16.json)
 - [Single-thread reference repeatability](../../reports/wsclean-single-reference-repeat.json)
-- [Repeated timing measurements](../../reports/paper-runtime.json)
-- [Optimized repeated timings](../../reports/performance-runtime.json)
-- [Profiling and independent verification](../../reports/performance-profile.json)
+- [Historical timing measurements](../../reports/paper-runtime.json)
+- [Current encoding-speed benchmark](../../reports/performance-runtime.json)
+- [Output identity and independent verification](../../reports/performance-profile.json)
 - [Archive/codec format](../format.md)
 
 All flow diagrams, measured charts and image panels are in [figs/](figs/).

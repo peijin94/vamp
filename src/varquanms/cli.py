@@ -53,6 +53,7 @@ def main(argv=None):
     encode_parser.add_argument("input", type=Path)
     encode_parser.add_argument("output", type=Path)
     encode_parser.add_argument("--config", type=Path)
+    encode_parser.add_argument("--workers", type=int, help="bounded CPU worker count; default 1 or config value")
     encode_parser.add_argument("--burn-flag", "--burn_flag", action="store_true", default=None,
                                help="destructive: discard MAIN flags; export defined flag cells as all-false (no reflagging)")
     encode_parser.add_argument("--report", type=Path)
@@ -84,6 +85,8 @@ def main(argv=None):
             report_path = _check_output(args.report, protected_source.resolve()) if args.report else None
             if args.command == "encode":
                 overrides = {} if args.burn_flag is None else {"burn_flag": True}
+                if args.workers is not None:
+                    overrides["workers"] = args.workers
                 configuration = Config.load(args.config, **overrides)
                 if configuration.burn_flag:
                     print("WARNING: burn_flag discards MAIN FLAG/FLAG_CATEGORY/FLAG_ROW values. "

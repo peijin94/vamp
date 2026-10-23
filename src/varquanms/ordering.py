@@ -2,24 +2,34 @@
 
 import math
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 
 
-def amplitude_statistics(values, flags):
+def amplitude_statistics(values, flags, workers=1):
     nrow, _, products = values.shape
     statistics = np.zeros((nrow, products), dtype=np.float64)
     counts = np.zeros((nrow, products), dtype=np.uint32)
-    for product in range(products):
+    def product_statistics(product):
         data = values[:, :, product]
         valid = ~flags[:, :, product] & np.isfinite(data)
         counts[:, product] = valid.sum(axis=1)
         amplitude = np.hypot(data.real.astype(np.float64), data.imag.astype(np.float64))
-        amplitude[~valid] = np.nan
         absent = counts[:, product] == 0
-        amplitude[absent, 0] = 0.0
-        statistics[:, product] = np.nanmedian(amplitude, axis=1)
+        if np.all(valid):
+            statistics[:, product] = np.median(amplitude, axis=1, overwrite_input=True)
+        else:
+            amplitude[~valid] = np.nan
+            amplitude[absent, 0] = 0.0
+            statistics[:, product] = np.nanmedian(amplitude, axis=1, overwrite_input=True)
         statistics[absent, product] = 0.0
+    if workers == 1:
+        for product in range(products):
+            product_statistics(product)
+    else:
+        with ThreadPoolExecutor(max_workers=min(workers, products)) as pool:
+            list(pool.map(product_statistics, range(products)))
     return statistics, counts
 
 
@@ -116,7 +126,7 @@ def make_order(statistic, valid_counts, autocorrelation, lengths, config, *, uvw
 
 def all_orders(values, flags, pairs, uvw, config, timings=None):
     stamp = time.perf_counter()
-    statistics, counts = amplitude_statistics(values, flags)
+    statistics, counts = amplitude_statistics(values, flags, config.workers)
     if timings is not None:
         timings["amplitude_statistics"] += time.perf_counter() - stamp
     stamp = time.perf_counter()

@@ -26,7 +26,7 @@ def stages(encoding):
     for key in ("input_reading", "amplitude_statistics", "baseline_sorting_and_grouping",
                 "memory_gathering", "quantization_and_scale_estimation",
                 "packing_and_secondary_compression", "candidate_reconstruction_and_error_checks",
-                "payload_writing", "quality_accounting"):
+                "payload_writing", "quality_accounting", "parallel_block_pipeline_wall", "native_candidate_search"):
         result[key] = detail.get(key, 0.0)
     result["integrity_finalization_and_publication"] = encoding["elapsed_seconds"] - outer["before_integrity_finalization"]
     if any(value < 0 for value in result.values()):
@@ -55,6 +55,8 @@ def summarize(benchmark):
                         "verification_process_seconds": entry["process_timings_seconds"]["verification_process"],
                         "peak_process_rss_bytes": e["peak_process_rss_bytes"],
                         "exclusive_encode_stages_seconds": stages(e),
+                        "worker_count": e.get("visibility_block_statistics", {}).get("DATA", {}).get("worker_count", 1),
+                        "worker_timing_sums_seconds": e.get("visibility_block_statistics", {}).get("DATA", {}).get("worker_timings_seconds", {}),
                         "source_MB_per_second": e["source_physical_file_bytes"] / 1e6 / entry["process_timings_seconds"]["encode_process"],
                         "visibility_Mcomplex_samples_per_second": e["selected_visibility_logical_bytes"] / 8e6 / entry["process_timings_seconds"]["encode_process"],
                         "verification_status": "passed"})

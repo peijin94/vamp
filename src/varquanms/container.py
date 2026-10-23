@@ -50,7 +50,10 @@ class Writer:
         fd, path = tempfile.mkstemp(prefix=self.output.name + ".", suffix=".partial", dir=self.output.parent)
         os.close(fd)
         self.partial = Path(path)
-        self.h5 = h5py.File(self.partial, "w")
+        # Keep at least two target chunks cached. With HDF5's smaller default
+        # cache, row-slab writes repeatedly recompressed an entire 1–4 MiB
+        # chunk whenever it was larger than the cache.
+        self.h5 = h5py.File(self.partial, "w", rdcc_nbytes=2 * TARGET_CHUNK_BYTES)
         self.h5.attrs.update(format=FORMAT, schema_version=SCHEMA_VERSION, complete=False)
         self.config = config
         self.roles = {}

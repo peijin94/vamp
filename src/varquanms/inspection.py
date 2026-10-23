@@ -290,10 +290,14 @@ def _visibility_inventory(t, selected, chunk_rows):
                 continue
             if values.ndim != 3:
                 raise ValueError(f"{column} must have channel/correlation cells; got {values.shape[1:]}")
-            flags = np.stack([t.getcell("FLAG", int(row)) for row in rows])
+            try:
+                flags = np.asarray(t.getcol("FLAG", startrow=int(rows[0]), nrow=len(rows)))
+                row_flags = np.asarray(t.getcol("FLAG_ROW", startrow=int(rows[0]), nrow=len(rows)), dtype=bool)
+            except RuntimeError:
+                flags = np.stack([t.getcell("FLAG", int(row)) for row in rows])
+                row_flags = np.asarray([t.getcell("FLAG_ROW", int(row)) for row in rows], dtype=bool)
             if flags.shape != values.shape:
                 raise ValueError(f"FLAG shape does not match {column} at row {rows[0]}")
-            row_flags = np.asarray([t.getcell("FLAG_ROW", int(row)) for row in rows], dtype=bool)
             flagged = flags | row_flags[:, None, None]
             finite = np.isfinite(values)
             valid = ~flagged & finite
@@ -356,6 +360,11 @@ def _layout(t, rows, columns, subtable_paths, selected, main_inventory):
             for name in selected:
                 if t.getcoldesc(name).get("valueType") != "complex":
                     issues.append(f"{name}: initial quantization target requires complex64")
+                scanned = main_inventory["columns"][name]
+                if not scanned["undefined_cells"] and scanned["cell_shapes"] == {str([nchan, ncorr]): t.nrows()}:
+                    # The full column scan already read every cell and proved
+                    # its shape; avoid a second per-row visibility read.
+                    continue
                 for row in row_indices:
                     if not t.iscelldefined(name, int(row)):
                         issues.append(f"{name}: undefined visibility cells require explicit presence maps")

@@ -1,13 +1,14 @@
 """One-product quantization blocks, invertible orderings and measured quality."""
 
-from collections import Counter
+from collections import Counter, deque
+from concurrent.futures import ThreadPoolExecutor
 import math
 import time
 import zlib
 
 import numpy as np
 
-from .codec import decode_block, encode_block, error_metrics, within_bounds
+from .codec import _native, decode_block, encode_block, error_metrics, within_bounds
 from .config import Config
 from .metadata import equal
 from .ordering import all_orders
@@ -23,7 +24,85 @@ def protected_mask(values, flags):
     return flags | ~np.isfinite(values) | ((values.real == 0) & np.signbit(values.real)) | ((values.imag == 0) & np.signbit(values.imag))
 
 
-def quality(original, decoded, flags, names):
+def quality(original, decoded, flags, names, method=None, workers=1):
+    if method not in (None, "numpy-v1", "native-moments-v2"):
+        raise ValueError("Unsupported quality calculation")
+    if _native is not None and method != "numpy-v1" and 0 < original.shape[1] <= 65536 and original.shape[2] <= 32:
+        return _native_quality(original, decoded, flags, names, workers)
+    return _numpy_quality(original, decoded, flags, names)
+
+
+def _native_quality(original, decoded, flags, names, workers=1):
+    rows, channels, products = original.shape
+    if original.dtype != np.dtype("<c8") or decoded.dtype != original.dtype or decoded.shape != original.shape or flags.shape != original.shape:
+        raise ValueError("Quality expects matching complex64 visibility and flag arrays")
+    def calculate(start):
+        stop = min(rows, start+1024)
+        return _native.quality(np.ascontiguousarray(original[start:stop]), np.ascontiguousarray(decoded[start:stop]),
+                               np.ascontiguousarray(flags[start:stop], dtype=bool), stop-start, channels, products)
+    starts = range(0, rows, 1024)
+    if workers == 1:
+        pieces = list(map(calculate, starts))
+    else:
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            pieces = list(pool.map(calculate, starts))
+    # Fixed 1024-row partitions and ordered merges make reductions independent
+    # of worker count. Retain exactly the valid amplitudes for global p99.
+    piece_moments = [np.frombuffer(piece[0], dtype="<f8").reshape(products, 7) for piece in pieces]
+    moments = np.sum(piece_moments, axis=0)
+    moments[:, 4:6] = np.max(np.stack(piece_moments)[:, :, 4:6], axis=0)
+    raw = [None] * 11
+    raw[0] = moments.tobytes()
+    for key in (1, 2):
+        raw[key] = b"".join(piece[key] for piece in pieces)
+    for key in (3, 4, 5, 6, 7, 8):
+        dtype = "<u8" if key in (4, 6, 8) else "<f8"
+        raw[key] = np.sum([np.frombuffer(piece[key], dtype=dtype) for piece in pieces], axis=0).tobytes()
+    raw[10] = sum(piece[10] for piece in pieces)
+    moments = np.frombuffer(raw[0], dtype="<f8").reshape(products, 7)
+    def percentile(p):
+        values = np.concatenate([np.frombuffer(piece[9], dtype="<f8").reshape(products, -1)[p, :int(pm[p,6])]
+                                 for piece, pm in zip(pieces, piece_moments)])
+        return float(np.quantile(values, .99, overwrite_input=True)) if len(values) else 0.0
+    if workers == 1:
+        percentiles = list(map(percentile, range(products)))
+    else:
+        with ThreadPoolExecutor(max_workers=min(workers, products)) as pool:
+            percentiles = list(pool.map(percentile, range(products)))
+    metrics = {}
+    for p, name in enumerate(names):
+        r, i, rr, ii, maximum, max_row, valid_count = moments[p]
+        count = int(valid_count); divisor = max(1, count)
+        metrics[name] = {"valid_samples": count, "component_mse": float((rr+ii)/(2*divisor)),
+                         "real_mse": float(rr/divisor), "imag_mse": float(ii/divisor),
+                         "bias_real": float(r/divisor), "bias_imag": float(i/divisor),
+                         "complex_bias_abs": math.hypot(r/divisor, i/divisor),
+                         "max_complex_error": float(maximum), "max_baseline_component_mse": float(max_row),
+                         "p99_error": percentiles[p]}
+
+    def covariance(sums, counts, shape):
+        s = np.frombuffer(sums, dtype="<f8").reshape(*shape, 6)
+        n = np.frombuffer(counts, dtype="<u8").reshape(shape)
+        denominator = np.maximum(1, n)
+        x = s[..., 2] + 1j*s[..., 3]; y = s[..., 4] + 1j*s[..., 5]
+        return (s[..., 0]+1j*s[..., 1])/denominator - x*np.conj(y)/denominator**2, n
+
+    adjacent, adjacent_counts = covariance(raw[5], raw[6], (max(0, channels-1), products))
+    cross, cross_counts = covariance(raw[7], raw[8], (products, products))
+    channel_sum = np.frombuffer(raw[3], dtype="<f8").reshape(channels, products)
+    channel_count = np.frombuffer(raw[4], dtype="<u8").reshape(channels, products)
+    arrays = {"baseline_component_mse": np.frombuffer(raw[1], dtype="<f8").reshape(rows, products),
+              "baseline_max_complex_error": np.frombuffer(raw[2], dtype="<f8").reshape(rows, products),
+              "channel_component_mse": channel_sum/(2*np.maximum(1, channel_count)),
+              "cross_product_error_covariance": cross, "cross_product_paired_counts": cross_counts,
+              "adjacent_channel_error_covariance": adjacent, "adjacent_channel_paired_counts": adjacent_counts}
+    return {"by_product": metrics, "protected_sample_count": raw[10],
+            "protected_sample_bits": "exact", "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed", "calculation": "native-moments-v2"}, arrays
+
+
+def _numpy_quality(original, decoded, flags, names):
     rows, channels, products = original.shape
     valid = ~flags & np.isfinite(original)
     protected = protected_mask(original, flags)
@@ -83,6 +162,38 @@ def quality(original, decoded, flags, names):
             "science_validation": "not performed"}, arrays
 
 
+def _encoded_blocks(values, flags, permutation, boundaries, product, column, name, config):
+    def jobs():
+        for g, (start, stop) in enumerate(zip(boundaries[:-1], boundaries[1:])):
+            rows = permutation[start:stop]
+            for segment, lo in enumerate(range(0, values.shape[1], config.channel_segment)):
+                yield rows, lo, min(values.shape[1], lo + config.channel_segment), g, segment
+
+    def run(job):
+        rows, lo, hi, g, segment = job
+        stamp = time.perf_counter()
+        block, flagged = values[rows, lo:hi, product], flags[rows, lo:hi, product]
+        gathering = time.perf_counter() - stamp
+        chosen = encode_block(block, flagged, config, config.bounds(name),
+                              stream=(config.columns.index(column), product, g, segment))
+        chosen.timings["memory_gathering"] = gathering
+        return rows, lo, hi, chosen
+
+    if config.workers == 1:
+        yield from map(run, jobs())
+    else:
+        # Bound outstanding work; preserve submission order and deterministic
+        # stream IDs. Only the parent thread ever touches HDF5/casacore.
+        with ThreadPoolExecutor(max_workers=config.workers) as pool:
+            iterator, pending = iter(jobs()), deque()
+            for job in iterator:
+                pending.append(pool.submit(run, job))
+                if len(pending) >= 2 * config.workers:
+                    yield pending.popleft().result()
+            while pending:
+                yield pending.popleft().result()
+
+
 def write_visibility(writer, t, column, prefix, config, inspection):
     timings = Counter()
     stamp = time.perf_counter()
@@ -104,6 +215,7 @@ def write_visibility(writer, t, column, prefix, config, inspection):
             "statistics": writer.put(prefix + "/amplitude_medians", statistics, "quantization_statistics"),
             "valid_counts": writer.put(prefix + "/valid_counts", counts, "quantization_statistics")}
     shared_permutation_path = None
+    worker_timings = Counter()
     for p, order in enumerate(orders):
         product_prefix = prefix + f"/p{p}"
         permutation = order["permutation"]
@@ -122,34 +234,30 @@ def write_visibility(writer, t, column, prefix, config, inspection):
         offsets, crc = [0], []
         histogram, sample_histogram, accounting = Counter(), Counter(), Counter()
         buffered, buffered_size, written = [], 0, 0
-        for g, (start, stop) in enumerate(zip(boundaries[:-1], boundaries[1:])):
-            source_rows = permutation[start:stop]
-            for segment, lo in enumerate(range(0, channels, config.channel_segment)):
-                hi = min(channels, lo + config.channel_segment)
-                stamp = time.perf_counter()
-                block = values[source_rows, lo:hi, p]
-                flagged = flags[source_rows, lo:hi, p]
-                timings["memory_gathering"] += time.perf_counter() - stamp
-                stamp = time.perf_counter()
-                chosen = encode_block(block, flagged, config, config.bounds(names[p]),
-                                      stream=(config.columns.index(column), p, g, segment))
+        pipeline_start = time.perf_counter()
+        previous_writes = timings["payload_writing"]
+        for source_rows, lo, hi, chosen in _encoded_blocks(values, flags, permutation, boundaries, p, column, names[p], config):
+            worker_timings.update(chosen.timings)
+            if config.workers == 1:
                 timings.update(chosen.timings)
-                reconstructed[source_rows, lo:hi, p] = chosen.decoded
-                offsets.append(offsets[-1] + len(chosen.blob))
-                crc.append(zlib.crc32(chosen.blob))
-                label = "float32" if chosen.bits == 0 else str(chosen.bits)
-                histogram[label] += 1
-                sample_histogram[label] += block.size
-                accounting.update(chosen.accounting)
-                buffered.append(chosen.blob)
-                buffered_size += len(chosen.blob)
-                if buffered_size >= 1024 * 1024:
-                    stamp = time.perf_counter()
-                    payload.resize((written + buffered_size,))
-                    payload[written:written + buffered_size] = np.frombuffer(b"".join(buffered), dtype=np.uint8)
-                    written += buffered_size
-                    buffered, buffered_size = [], 0
-                    timings["payload_writing"] += time.perf_counter() - stamp
+            reconstructed[source_rows, lo:hi, p] = chosen.decoded
+            offsets.append(offsets[-1] + len(chosen.blob))
+            crc.append(zlib.crc32(chosen.blob))
+            label = "float32" if chosen.bits == 0 else str(chosen.bits)
+            histogram[label] += 1
+            sample_histogram[label] += chosen.decoded.size
+            accounting.update(chosen.accounting)
+            buffered.append(chosen.blob)
+            buffered_size += len(chosen.blob)
+            if buffered_size >= 1024 * 1024:
+                stamp = time.perf_counter()
+                payload.resize((written + buffered_size,))
+                payload[written:written + buffered_size] = np.frombuffer(b"".join(buffered), dtype=np.uint8)
+                written += buffered_size
+                buffered, buffered_size = [], 0
+                timings["payload_writing"] += time.perf_counter() - stamp
+        if config.workers > 1:
+            timings["parallel_block_pipeline_wall"] += time.perf_counter() - pipeline_start - (timings["payload_writing"] - previous_writes)
         if buffered:
             stamp = time.perf_counter()
             payload.resize((written + buffered_size,))
@@ -167,7 +275,7 @@ def write_visibility(writer, t, column, prefix, config, inspection):
                                  "grouping": order["grouping"],
                                  "permutation_direction": order["permutation_direction"]})
     stamp = time.perf_counter()
-    summary, arrays = quality(values, reconstructed, flags, names)
+    summary, arrays = quality(values, reconstructed, flags, names, workers=config.workers)
     for name, metrics in summary["by_product"].items():
         if not within_bounds(metrics, config.bounds(name)):
             raise ValueError(f"Whole-product error criteria failed for {name}; no complete archive was published")
@@ -175,6 +283,9 @@ def write_visibility(writer, t, column, prefix, config, inspection):
     spec["quality_summary"] = summary
     timings["quality_accounting"] += time.perf_counter() - stamp
     spec["timings_seconds"] = dict(timings)
+    spec["worker_timings_seconds"] = dict(worker_timings)
+    spec["worker_count"] = config.workers
+    spec["worker_timer_scope"] = "*_cpu fields sum thread CPU seconds. Other fields sum elapsed task subregions, overlapping across workers; not additive to pipeline wall time. codec_total/native_candidate_search are nested."
     spec["byte_accounting_note"] = "Header/body serialization and index bytes are exact. Code/exception byte counts are before joint secondary compression; their compressed physical bytes cannot be attributed separately. HDF5 allocation and all metadata are counted in archive totals."
     return spec
 
@@ -243,11 +354,18 @@ def verify_visibility(reader, spec, t, column, configuration):
     config.validate()
     decoded = read_visibility(reader, spec)
     original, flags = np.asarray(t.getcol(column)), _flags(t)
-    summary, arrays = quality(original, decoded, flags, spec["product_names"])
-    if summary != spec["quality_summary"]:
+    method = spec["quality_summary"].get("calculation", "numpy-v1")
+    summary, arrays = quality(original, decoded, flags, spec["product_names"], method, config.workers)
+    numerical_fallback = method == "native-moments-v2" and _native is None
+    if numerical_fallback:
+        # The portable verification path has a different floating reduction
+        # order. Counts/protected values stay exact; numerical moments are
+        # compared with a documented rounding tolerance. Bounds stay strict.
+        assert_quality_close(spec["quality_summary"], summary, spec["quality_arrays"], arrays, reader)
+    elif summary != spec["quality_summary"]:
         raise ValueError("Reconstructed errors differ from encode-time statistics")
     for name, path in spec["quality_arrays"].items():
-        if not equal(arrays[name], reader.h5[path][...]):
+        if not numerical_fallback and not equal(arrays[name], reader.h5[path][...]):
             raise ValueError(f"Reconstructed error accounting differs: {name}")
     for p, name in enumerate(spec["product_names"]):
         layout = _product_layout(reader, spec, p)
@@ -260,3 +378,21 @@ def verify_visibility(reader, spec, t, column, configuration):
         if not within_bounds(summary["by_product"][name], config.bounds(name)):
             raise ValueError(f"Whole-product measured error criteria failed: {name}")
     return summary
+
+
+def assert_quality_close(expected, actual, paths, arrays, reader):
+    if expected["protected_sample_count"] != actual["protected_sample_count"]:
+        raise ValueError("Protected sample counts differ")
+    scale = max((v["component_mse"] for v in actual["by_product"].values()), default=0)
+    for product, metrics in actual["by_product"].items():
+        for name, value in metrics.items():
+            reference = expected["by_product"][product][name]
+            atol = 1e-12 * (scale if "mse" in name else math.sqrt(scale))
+            if (name == "valid_samples" and value != reference) or not math.isclose(value, reference, rel_tol=1e-10, abs_tol=atol):
+                raise ValueError(f"Reconstructed error statistic differs: {product}/{name}")
+    for name, path in paths.items():
+        reference = reader.h5[path][...]
+        array = arrays[name]
+        atol = 1e-12 * (math.sqrt(scale) if "max_complex_error" in name else scale)
+        if (array.dtype.kind in "iu" and not equal(array, reference)) or not np.allclose(array, reference, rtol=1e-10, atol=atol):
+            raise ValueError(f"Reconstructed error accounting differs: {name}")

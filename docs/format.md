@@ -88,7 +88,7 @@ Each block starts with the 16-byte little-endian structure `<BBHIIf`:
 | step | float32 | Nonnegative stored uniform step, or zero for an exact block |
 
 The configuration's `gzip` selection uses the HDF5 gzip filter for ordinary
-arrays and Python zlib for independently compressed block bodies. A block uses
+arrays and zlib for independently compressed block bodies. A block uses
 secondary compression only when it shortens its body. Body decoding is bounded
 by the exact size derived from the header; truncation and trailing bytes fail.
 
@@ -165,6 +165,42 @@ and valid counts. All their bytes count toward the visibility archive totals.
 Code/exception categories before joint secondary compression are exact logical
 counts; physical bytes of a jointly compressed body cannot be attributed uniquely
 to its ingredients. Reports make this distinction explicit.
+
+### Optional CPU acceleration and quality arithmetic
+
+An optional C extension accelerates the encoder; it does not change codec IDs,
+bit packing, exception semantics or decoder dependencies. It uses float64
+division, ties-to-even integer rounding and the prescribed float32 reconstruction,
+with fast-math and floating contraction disabled. The complete candidate search
+uses the same zlib bodies and encoded-byte comparison. Conservative native
+prechecks avoid expensive compression of failing candidates. Every winner is
+decoded by the portable decoder and checked strictly with NumPy. A candidate
+near a numeric bound that fails that check triggers the full reference search.
+Stochastic rounding and configured p99 bounds retain the reference selection path.
+
+`workers` (1–64, default 1) controls bounded CPU pools. Block submission order,
+PRNG stream IDs and output order are deterministic. Only the calling thread uses
+casacore and HDF5; worker queues hold at most twice the configured worker count.
+Worker elapsed-time sums overlap and must not be added to pipeline wall time.
+Native `*_cpu` counters measure thread CPU time, separately from elapsed time.
+
+Quality summaries marked `calculation: "native-moments-v2"` use fixed 1024-row
+partitions, ordered float64 moment reductions, paired masks and exact protected-bit
+checks. Worker count does not change these reductions. This changes floating
+reduction order from the older NumPy implementation, so stored quality numbers
+may differ in their last bits while the decoded visibilities remain identical.
+Archives without this marker retain the original `numpy-v1` calculation.
+Verification with the native implementation compares its quality outputs exactly.
+Portable verification without the extension recomputes NumPy moments with relative
+tolerance `1e-10` and absolute tolerance `1e-12` times the error variance (or its
+square root for amplitude/bias quantities). Counts and protected values remain
+exact, all source metadata/coordinates remain exact, and reconstruction-error
+thresholds are still enforced without relaxed bounds. Inventory checksums also
+cover every quality array. Unknown calculation IDs are rejected.
+
+The writer caches two 4 MiB HDF5 chunks so partial row writes do not repeatedly
+compress a chunk larger than HDF5's cache. The archive still includes chunk,
+dataset and manifest integrity checks and fsync before final publication.
 
 ## Support boundaries and durable reconstruction
 

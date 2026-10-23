@@ -13,6 +13,7 @@ import math
 import struct
 import time
 import zlib
+import sys
 
 import numpy as np
 
@@ -22,6 +23,12 @@ from .metadata import portable
 HEADER = struct.Struct("<BBHIIf")
 MAX_SAMPLES = 262144
 ALLOWED_BITS = SUPPORTED_BITS
+try:
+    from . import _native
+except ImportError:
+    _native = None
+if sys.byteorder != "little":
+    _native = None
 
 
 def pack_codes(codes, bits):
@@ -31,8 +38,33 @@ def pack_codes(codes, bits):
     if a.dtype.kind not in "iu" or np.any(a < 0) or np.any(a >= 2**bits):
         raise ValueError("Code is outside its bit width")
     a = a.astype(np.uint16, copy=False).ravel()
-    unpacked = ((a[:, None] >> np.arange(bits, dtype=np.uint16)) & 1).ravel()
-    return np.packbits(unpacked, bitorder="little").tobytes()
+    if bits == 8:
+        return a.astype(np.uint8).tobytes()
+    if bits == 16:
+        return a.astype("<u2", copy=False).tobytes()
+    if bits in (2, 4):
+        per_byte = 8 // bits
+        padded = np.zeros(((a.size + per_byte - 1) // per_byte) * per_byte, dtype=np.uint8)
+        padded[:a.size] = a
+        result = padded[::per_byte].copy()
+        for j in range(1, per_byte):
+            result |= padded[j::per_byte] << (bits * j)
+        return result.tobytes()
+    # 6/12-bit streams repeat after four/two codes respectively. Work in
+    # bytes, without the old samples-by-bits temporary array.
+    count = (a.size * bits + 7) // 8
+    result = np.zeros(count, dtype=np.uint8)
+    per_group = 8 // math.gcd(bits, 8)
+    for j in range(per_group):
+        values = a[j::per_group]
+        offset, shift = divmod(j * bits, 8)
+        stride = per_group * bits // 8
+        result[offset:offset + len(values)*stride:stride] |= (values << shift).astype(np.uint8)
+        if shift + bits > 8:
+            high = values >> (8 - shift)
+            target = result[offset+1:offset+1+len(values)*stride:stride]
+            target |= high[:len(target)].astype(np.uint8)
+    return result.tobytes()
 
 
 def unpack_codes(payload, bits, count):
@@ -44,9 +76,23 @@ def unpack_codes(payload, bits, count):
     remainder = count * bits % 8
     if remainder and payload[-1] >> remainder:
         raise ValueError("Nonzero code padding bits")
-    values = np.unpackbits(np.frombuffer(payload, dtype=np.uint8), bitorder="little", count=count * bits).reshape(count, bits)
-    dtype = np.uint8 if bits <= 8 else np.uint16
-    return np.sum(values.astype(np.uint16) << np.arange(bits, dtype=np.uint16), axis=1).astype(dtype)
+    if bits == 8:
+        return np.frombuffer(payload, dtype=np.uint8).copy()
+    if bits == 16:
+        return np.frombuffer(payload, dtype="<u2").astype(np.uint16, copy=True)
+    source = np.frombuffer(payload, dtype=np.uint8)
+    result = np.empty(count, dtype=np.uint8 if bits <= 8 else np.uint16)
+    per_group = 8 // math.gcd(bits, 8)
+    stride = per_group * bits // 8
+    for j in range(per_group):
+        target = result[j::per_group]
+        offset, shift = divmod(j * bits, 8)
+        values = source[offset:offset+len(target)*stride:stride].astype(np.uint16) >> shift
+        if shift + bits > 8:
+            high = source[offset+1:offset+1+len(target)*stride:stride].astype(np.uint16)
+            values[:len(high)] |= high << (8-shift)
+        target[:] = values & (2**bits - 1)
+    return result
 
 
 def error_metrics(original, decoded, valid, percentile=True):
@@ -152,12 +198,68 @@ class EncodedBlock:
     timings: dict = field(default_factory=dict)
 
 
+def _native_encode_block(original, flags, config, bounds):
+    started = stamp = time.perf_counter()
+    valid = ~flags & np.isfinite(original)
+    signed_zero = ((original.real == 0) & np.signbit(original.real)) | ((original.imag == 0) & np.signbit(original.imag))
+    mandatory = flags | ~np.isfinite(original) | signed_zero
+    amplitude = np.maximum(np.abs(original.real), np.abs(original.imag))[valid & ~signed_zero].astype(np.float64)
+    cutoffs = [float(amplitude.max()) if q == 1 else float(np.quantile(amplitude, q))
+               for q in config.scale_quantiles] if amplitude.size else [0.] * len(config.scale_quantiles)
+    widths, steps = [], []
+    for bits in sorted(config.bits):
+        maximum = 2**(bits-1)-1
+        for cutoff in cutoffs:
+            with np.errstate(over="ignore"):
+                step = np.float32(cutoff/maximum)
+                if float(step)*maximum < cutoff:
+                    step = np.nextafter(step, np.float32(np.inf))
+            widths.append(bits); steps.append(step)
+    if len(widths) > 4096:
+        return None
+    limits = [bounds[name] if bounds[name] is not None else np.inf for name in
+              ("max_component_mse", "max_complex_error", "max_complex_bias", "max_baseline_component_mse")]
+    timings = {"quantization_and_scale_estimation": time.perf_counter()-stamp}
+    stamp = time.perf_counter()
+    blob, reconstructed, quantization_cpu, compression_cpu = _native.search(original, np.ascontiguousarray(flags, dtype=bool),
+        np.asarray(widths, dtype="u1"), np.asarray(steps, dtype="<f4"), np.asarray(limits, dtype="<f8"),
+        original.shape[1], config.compression_level if config.compression == "gzip" else -1)
+    timings["native_candidate_search"] = time.perf_counter()-stamp
+    timings["native_search_quantization_cpu"] = quantization_cpu
+    timings["native_search_compression_cpu"] = compression_cpu
+    stamp = time.perf_counter()
+    decoded = decode_block(blob, original.shape)
+    if decoded.tobytes() != reconstructed:
+        raise ValueError("Native candidate differs from the reference decoder")
+    metrics = error_metrics(original, decoded, valid)
+    timings["candidate_reconstruction_and_error_checks"] = time.perf_counter()-stamp
+    if not within_bounds(metrics, bounds):
+        # A native reduction very near a threshold can differ from NumPy.
+        # Repeat the complete reference selection, keeping all bounds strict.
+        return None
+    bits, _, _, count, exceptions, _ = HEADER.unpack_from(blob)
+    accounting = {"lossless_component_bytes": count*8 if bits == 0 else 0,
+                  "packed_code_bytes": (2*count*bits+7)//8,
+                  "exception_position_bytes": exceptions*4, "exception_value_bytes": exceptions*8,
+                  "header_bytes": HEADER.size,
+                  "flagged_exception_samples": int(flags.sum()) if bits else 0,
+                  "nonfinite_exception_samples": int(np.count_nonzero(~flags & ~np.isfinite(original))) if bits else 0,
+                  "signed_zero_exception_samples": int(np.count_nonzero(~flags & np.isfinite(original) & signed_zero)) if bits else 0,
+                  "outlier_exception_samples": exceptions-int(mandatory.sum()) if bits else 0}
+    timings["codec_total"] = time.perf_counter()-started
+    return EncodedBlock(blob, decoded, bits, exceptions, metrics, accounting, timings)
+
+
 def encode_block(original, flags, config, bounds, stream=()):
     total_start = time.perf_counter()
     times = Counter()
     original = portable(original)
     if original.dtype != np.dtype("<c8") or original.ndim != 2 or not 0 < original.size <= MAX_SAMPLES or flags.shape != original.shape:
         raise ValueError("Codec expects bounded complex64[baseline,channel] blocks")
+    if _native is not None and config.rounding == "nearest-even" and bounds["max_p99_error"] is None:
+        accelerated = _native_encode_block(original, flags, config, bounds)
+        if accelerated is not None:
+            return accelerated
     valid = ~flags & np.isfinite(original)
     raw = original.tobytes()
     stamp = time.perf_counter()
@@ -175,10 +277,11 @@ def encode_block(original, flags, config, bounds, stream=()):
     best = exact
     stamp = time.perf_counter()
     components = np.stack([original.real, original.imag], axis=-1)
+    absolute_components = np.abs(components.astype(np.float64))
     signed_zero = np.any((components == 0) & np.signbit(components), axis=-1)
     mandatory = flags | ~np.isfinite(original) | signed_zero
     estimable = valid & ~signed_zero
-    magnitudes = np.max(np.abs(components.astype(np.float64)), axis=-1)[estimable]
+    magnitudes = np.max(absolute_components, axis=-1)[estimable]
     cutoffs = [float(magnitudes.max()) if q == 1.0 else float(np.quantile(magnitudes, q))
                for q in config.scale_quantiles] if magnitudes.size else [0.0] * len(config.scale_quantiles)
     times["quantization_and_scale_estimation"] += time.perf_counter() - stamp
@@ -193,8 +296,44 @@ def encode_block(original, flags, config, bounds, stream=()):
             if not np.isfinite(step):
                 times["quantization_and_scale_estimation"] += time.perf_counter() - stamp
                 continue
+            if _native is not None and config.rounding == "nearest-even":
+                candidate = _native.candidate(original, np.ascontiguousarray(flags, dtype=bool), bits, float(step), original.shape[1])
+                times["quantization_and_scale_estimation"] += time.perf_counter() - stamp
+                if candidate is None:
+                    continue
+                decoded_raw, packed, position_raw, value_raw, mse, maximum_error, row_mse = candidate
+                # Positive-sum native prechecks have a generous rounding margin.
+                # Exact NumPy checks below decide every candidate that can win;
+                # bias/percentile are never rejected by this prefilter.
+                if any(limit is not None and measured > limit * (1 + 1e-9)
+                       for measured, limit in ((mse, bounds["max_component_mse"]),
+                                               (maximum_error, bounds["max_complex_error"]),
+                                               (row_mse, bounds["max_baseline_component_mse"]))):
+                    continue
+                stamp = time.perf_counter()
+                compression, body = _compress(packed + position_raw + value_raw, config)
+                exception_count = len(position_raw) // 4
+                blob = HEADER.pack(bits, compression, 0, original.size, exception_count, step) + body
+                times["packing_and_secondary_compression"] += time.perf_counter() - stamp
+                if len(blob) >= len(best.blob):
+                    continue
+                stamp = time.perf_counter()
+                decoded = np.frombuffer(decoded_raw, dtype="<c8").reshape(original.shape)
+                metrics = error_metrics(original, decoded, valid, percentile=bounds["max_p99_error"] is not None)
+                times["candidate_reconstruction_and_error_checks"] += time.perf_counter() - stamp
+                if not within_bounds(metrics, bounds):
+                    continue
+                mandatory_count = int(np.count_nonzero(mandatory))
+                best = EncodedBlock(blob, decoded, bits, exception_count, metrics, {
+                    "lossless_component_bytes": 0, "packed_code_bytes": len(packed),
+                    "exception_position_bytes": len(position_raw), "exception_value_bytes": len(value_raw),
+                    "header_bytes": HEADER.size, "flagged_exception_samples": int(np.count_nonzero(flags)),
+                    "nonfinite_exception_samples": int(np.count_nonzero(~flags & ~np.isfinite(original))),
+                    "signed_zero_exception_samples": int(np.count_nonzero(~flags & np.isfinite(original) & signed_zero)),
+                    "outlier_exception_samples": exception_count - mandatory_count})
+                continue
             limit = float(step) * maximum
-            outside = np.any(np.abs(components.astype(np.float64)) > limit, axis=-1)
+            outside = np.any(absolute_components > limit, axis=-1)
             exception_mask = mandatory | outside
             safe = np.where(exception_mask[..., None], np.float32(0), components)
             scaled = safe.astype(np.float64) / float(step) if step else np.zeros_like(safe, dtype=np.float64)
@@ -214,6 +353,20 @@ def encode_block(original, flags, config, bounds, stream=()):
             positions = np.flatnonzero(exception_mask).astype("<u4")
             values = original.ravel()[positions]
             times["quantization_and_scale_estimation"] += time.perf_counter() - stamp
+            # Evaluate exactly the decoder's int32 -> float32 -> multiply
+            # operation before spending time packing/compressing a failure.
+            stamp = time.perf_counter()
+            with np.errstate(over="ignore", invalid="ignore"):
+                reconstructed = rounded.astype(np.int32).astype(np.float32) * step
+            if not np.all(np.isfinite(reconstructed)):
+                times["candidate_reconstruction_and_error_checks"] += time.perf_counter() - stamp
+                continue
+            decoded = reconstructed.astype("<f4", copy=False).view("<c8").reshape(original.shape)
+            decoded.ravel()[positions] = values
+            metrics = error_metrics(original, decoded, valid, percentile=bounds["max_p99_error"] is not None)
+            times["candidate_reconstruction_and_error_checks"] += time.perf_counter() - stamp
+            if not within_bounds(metrics, bounds):
+                continue
             stamp = time.perf_counter()
             packed = pack_codes(codes, bits)
             raw_body = packed + positions.tobytes() + values.tobytes()
@@ -221,16 +374,6 @@ def encode_block(original, flags, config, bounds, stream=()):
             blob = HEADER.pack(bits, compression, 0, original.size, len(positions), step) + body
             times["packing_and_secondary_compression"] += time.perf_counter() - stamp
             if len(blob) >= len(best.blob):
-                continue
-            try:
-                stamp = time.perf_counter()
-                decoded = decode_block(blob, original.shape)
-                metrics = error_metrics(original, decoded, valid, percentile=bounds["max_p99_error"] is not None)
-            except ValueError:
-                continue
-            finally:
-                times["candidate_reconstruction_and_error_checks"] += time.perf_counter() - stamp
-            if not within_bounds(metrics, bounds):
                 continue
             best = EncodedBlock(blob, decoded, bits, len(positions), metrics, {
                 "lossless_component_bytes": 0, "packed_code_bytes": len(packed),
@@ -244,6 +387,13 @@ def encode_block(original, flags, config, bounds, stream=()):
     if best.bits and bounds["max_p99_error"] is None:
         stamp = time.perf_counter()
         best.metrics = error_metrics(original, best.decoded, valid)
+        times["candidate_reconstruction_and_error_checks"] += time.perf_counter() - stamp
+    # Check the selected serialized representation with the public decoder.
+    # The early error check must never conceal packing/serialization mistakes.
+    if best.bits:
+        stamp = time.perf_counter()
+        if decode_block(best.blob, original.shape).tobytes() != best.decoded.tobytes():
+            raise ValueError("Selected encoding differs from candidate reconstruction")
         times["candidate_reconstruction_and_error_checks"] += time.perf_counter() - stamp
     times["codec_total"] = time.perf_counter() - total_start
     best.timings = dict(times)

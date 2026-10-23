@@ -40,6 +40,7 @@ class Config:
     product_bounds: dict = field(default_factory=dict)
     noise: dict | None = None
     max_visibility_bytes: int = 2 * 1024**3
+    workers: int = 1
 
     @classmethod
     def load(cls, path=None, **overrides):
@@ -68,6 +69,8 @@ class Config:
                 raise ValueError(f"{name} must be an integer in [{lower}, {upper}]")
         if self.baseline_group * self.channel_segment > 262144:
             raise ValueError("Quantization blocks are limited to 262144 complex samples")
+        if type(self.workers) is not int or not 1 <= self.workers <= 64:
+            raise ValueError("workers must be an integer in [1,64]")
         if self.compression not in ("gzip", "none"):
             raise ValueError("compression must be gzip or none")
         if self.ordering not in ("original", "class-original", "length", "orientation", "length-orientation", "antenna", "amplitude", "buckets"):

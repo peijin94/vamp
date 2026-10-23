@@ -1,0 +1,560 @@
+{
+  "schema": "varquanms.paper-runtime/1",
+  "status": "complete",
+  "created_utc": "2026-10-23T13:20:25.764168+00:00",
+  "source": "/data1/users/pz47/varquanMS/data/working/20260904_190008_59MHz.ms",
+  "cache_methodology": "Three sequential fresh encode processes on the same shared host after prior source reads; warm/unspecified OS cache. No cache eviction, CPU pinning or isolation. 24 encoder workers, OMP/OPENBLAS/MKL=1.",
+  "methodology": "Complete encode-process wall time includes startup, full inspection, exact preservation, candidate search, measured errors, quality arrays, writing, integrity checks and fsync/publication. Source verification is separate. No concurrent full-data encoding or imaging was launched by this task during the final repeats. Profiling is a separate run.",
+  "records": [
+    {
+      "name": "adaptive-repeat-1",
+      "mode": "adaptive",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 24
+      },
+      "archive_bytes": 106731154,
+      "source_physical_file_bytes": 409594838,
+      "selected_visibility_logical_bytes": 381714432,
+      "encode_process_seconds": 12.662831962108612,
+      "encode_function_seconds": 12.390610691159964,
+      "verification_process_seconds": 9.257859422825277,
+      "peak_process_rss_bytes": 1687576576,
+      "exclusive_encode_stages_seconds": {
+        "inspection_preflight": 3.1588966990821064,
+        "input_reading": 0.9943710980005562,
+        "amplitude_statistics": 0.8878148789517581,
+        "baseline_sorting_and_grouping": 0.038837727159261703,
+        "memory_gathering": 0.0,
+        "quantization_and_scale_estimation": 0.0,
+        "packing_and_secondary_compression": 0.0,
+        "candidate_reconstruction_and_error_checks": 0.0,
+        "payload_writing": 0.3009255761280656,
+        "quality_accounting": 0.787674062885344,
+        "parallel_block_pipeline_wall": 4.970309850759804,
+        "native_candidate_search": 0.0,
+        "integrity_finalization_and_publication": 0.4494761601090431,
+        "other_exact_columns_and_uninstrumented_overhead": 0.8023046380840242
+      },
+      "worker_count": 24,
+      "worker_timing_sums_seconds": {
+        "quantization_and_scale_estimation": 11.357728593517095,
+        "native_candidate_search": 79.26505477912724,
+        "native_search_quantization_cpu": 20.47669253900001,
+        "native_search_compression_cpu": 57.68377230500007,
+        "candidate_reconstruction_and_error_checks": 22.036668395157903,
+        "codec_total": 116.01524274423718,
+        "memory_gathering": 1.3451050189323723
+      },
+      "source_MB_per_second": 32.34622707034599,
+      "visibility_Mcomplex_samples_per_second": 3.7680594785413724,
+      "verification_status": "passed"
+    },
+    {
+      "name": "adaptive-repeat-2",
+      "mode": "adaptive",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 24
+      },
+      "archive_bytes": 106731153,
+      "source_physical_file_bytes": 409594838,
+      "selected_visibility_logical_bytes": 381714432,
+      "encode_process_seconds": 12.189621166791767,
+      "encode_function_seconds": 11.937490270007402,
+      "verification_process_seconds": 8.844146798364818,
+      "peak_process_rss_bytes": 1689640960,
+      "exclusive_encode_stages_seconds": {
+        "inspection_preflight": 3.060784174595028,
+        "input_reading": 0.6047796797938645,
+        "amplitude_statistics": 0.8659382513724267,
+        "baseline_sorting_and_grouping": 0.06198293110355735,
+        "memory_gathering": 0.0,
+        "quantization_and_scale_estimation": 0.0,
+        "packing_and_secondary_compression": 0.0,
+        "candidate_reconstruction_and_error_checks": 0.0,
+        "payload_writing": 0.3254726896993816,
+        "quality_accounting": 0.7798160528764129,
+        "parallel_block_pipeline_wall": 5.109397657215595,
+        "native_candidate_search": 0.0,
+        "integrity_finalization_and_publication": 0.4307302702218294,
+        "other_exact_columns_and_uninstrumented_overhead": 0.6985885631293058
+      },
+      "worker_count": 24,
+      "worker_timing_sums_seconds": {
+        "quantization_and_scale_estimation": 11.13787507172674,
+        "native_candidate_search": 82.9338298374787,
+        "native_search_quantization_cpu": 21.754478081000062,
+        "native_search_compression_cpu": 60.20912114900003,
+        "candidate_reconstruction_and_error_checks": 21.435077415779233,
+        "codec_total": 118.78511758660898,
+        "memory_gathering": 1.3217920130118728
+      },
+      "source_MB_per_second": 33.60193334932023,
+      "visibility_Mcomplex_samples_per_second": 3.9143385464667486,
+      "verification_status": "passed"
+    },
+    {
+      "name": "adaptive-repeat-3",
+      "mode": "adaptive",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 24
+      },
+      "archive_bytes": 106731150,
+      "source_physical_file_bytes": 409594838,
+      "selected_visibility_logical_bytes": 381714432,
+      "encode_process_seconds": 11.708678818307817,
+      "encode_function_seconds": 11.467782176099718,
+      "verification_process_seconds": 9.333743683993816,
+      "peak_process_rss_bytes": 1688461312,
+      "exclusive_encode_stages_seconds": {
+        "inspection_preflight": 3.202626199927181,
+        "input_reading": 0.6205299999564886,
+        "amplitude_statistics": 0.8794300039298832,
+        "baseline_sorting_and_grouping": 0.04602524219080806,
+        "memory_gathering": 0.0,
+        "quantization_and_scale_estimation": 0.0,
+        "packing_and_secondary_compression": 0.0,
+        "candidate_reconstruction_and_error_checks": 0.0,
+        "payload_writing": 0.2892075553536415,
+        "quality_accounting": 0.7764648543670774,
+        "parallel_block_pipeline_wall": 4.509725658223033,
+        "native_candidate_search": 0.0,
+        "integrity_finalization_and_publication": 0.43220106326043606,
+        "other_exact_columns_and_uninstrumented_overhead": 0.7115715988911688
+      },
+      "worker_count": 24,
+      "worker_timing_sums_seconds": {
+        "quantization_and_scale_estimation": 10.482791136018932,
+        "native_candidate_search": 75.810776906088,
+        "native_search_quantization_cpu": 19.06688007900003,
+        "native_search_compression_cpu": 55.94776208700002,
+        "candidate_reconstruction_and_error_checks": 20.68138853693381,
+        "codec_total": 110.0891631692648,
+        "memory_gathering": 1.291622303891927
+      },
+      "source_MB_per_second": 34.9821567707155,
+      "visibility_Mcomplex_samples_per_second": 4.075122799114909,
+      "verification_status": "passed"
+    }
+  ],
+  "adaptive_summary": {
+    "encode_process_seconds": {
+      "count": 3,
+      "median": 12.189621166791767,
+      "minimum": 11.708678818307817,
+      "maximum": 12.662831962108612,
+      "mean": 12.187043982402733,
+      "sample_stddev": 0.4770817926370346
+    },
+    "encode_function_seconds": {
+      "count": 3,
+      "median": 11.937490270007402,
+      "minimum": 11.467782176099718,
+      "maximum": 12.390610691159964,
+      "mean": 11.931961045755694,
+      "sample_stddev": 0.4614391035583069
+    },
+    "verification_process_seconds": {
+      "count": 3,
+      "median": 9.257859422825277,
+      "minimum": 8.844146798364818,
+      "maximum": 9.333743683993816,
+      "mean": 9.145249968394637,
+      "sample_stddev": 0.2635089078660878
+    },
+    "archive_bytes": {
+      "count": 3,
+      "median": 106731153,
+      "minimum": 106731150,
+      "maximum": 106731154,
+      "mean": 106731152.33333333,
+      "sample_stddev": 2.0816659994661326
+    },
+    "peak_process_rss_bytes": {
+      "count": 3,
+      "median": 1688461312,
+      "minimum": 1687576576,
+      "maximum": 1689640960,
+      "mean": 1688559616,
+      "sample_stddev": 1035696.9065204356
+    },
+    "source_MB_per_second": {
+      "count": 3,
+      "median": 33.60193334932023,
+      "minimum": 32.34622707034599,
+      "maximum": 34.9821567707155,
+      "mean": 33.64343906346057,
+      "sample_stddev": 1.3184549251120599
+    },
+    "visibility_Mcomplex_samples_per_second": {
+      "count": 3,
+      "median": 3.9143385464667486,
+      "minimum": 3.7680594785413724,
+      "maximum": 4.075122799114909,
+      "mean": 3.91917360804101,
+      "sample_stddev": 0.1535887498345233
+    },
+    "exclusive_encode_stages_seconds": {
+      "inspection_preflight": {
+        "count": 3,
+        "median": 3.1588966990821064,
+        "minimum": 3.060784174595028,
+        "maximum": 3.202626199927181,
+        "mean": 3.1407690245347717,
+        "sample_stddev": 0.07263779646955386
+      },
+      "input_reading": {
+        "count": 3,
+        "median": 0.6205299999564886,
+        "minimum": 0.6047796797938645,
+        "maximum": 0.9943710980005562,
+        "mean": 0.7398935925836364,
+        "sample_stddev": 0.2205246442434952
+      },
+      "amplitude_statistics": {
+        "count": 3,
+        "median": 0.8794300039298832,
+        "minimum": 0.8659382513724267,
+        "maximum": 0.8878148789517581,
+        "mean": 0.8777277114180227,
+        "sample_stddev": 0.011037212438299044
+      },
+      "baseline_sorting_and_grouping": {
+        "count": 3,
+        "median": 0.04602524219080806,
+        "minimum": 0.038837727159261703,
+        "maximum": 0.06198293110355735,
+        "mean": 0.04894863348454237,
+        "sample_stddev": 0.011846298109450515
+      },
+      "memory_gathering": {
+        "count": 3,
+        "median": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "sample_stddev": 0.0
+      },
+      "quantization_and_scale_estimation": {
+        "count": 3,
+        "median": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "sample_stddev": 0.0
+      },
+      "packing_and_secondary_compression": {
+        "count": 3,
+        "median": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "sample_stddev": 0.0
+      },
+      "candidate_reconstruction_and_error_checks": {
+        "count": 3,
+        "median": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "sample_stddev": 0.0
+      },
+      "payload_writing": {
+        "count": 3,
+        "median": 0.3009255761280656,
+        "minimum": 0.2892075553536415,
+        "maximum": 0.3254726896993816,
+        "mean": 0.30520194039369625,
+        "sample_stddev": 0.018506903057451733
+      },
+      "quality_accounting": {
+        "count": 3,
+        "median": 0.7798160528764129,
+        "minimum": 0.7764648543670774,
+        "maximum": 0.787674062885344,
+        "mean": 0.781318323376278,
+        "sample_stddev": 0.005753625065345284
+      },
+      "parallel_block_pipeline_wall": {
+        "count": 3,
+        "median": 4.970309850759804,
+        "minimum": 4.509725658223033,
+        "maximum": 5.109397657215595,
+        "mean": 4.8631443887328105,
+        "sample_stddev": 0.31387091898187724
+      },
+      "native_candidate_search": {
+        "count": 3,
+        "median": 0.0,
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "sample_stddev": 0.0
+      },
+      "integrity_finalization_and_publication": {
+        "count": 3,
+        "median": 0.43220106326043606,
+        "minimum": 0.4307302702218294,
+        "maximum": 0.4494761601090431,
+        "mean": 0.4374691645304362,
+        "sample_stddev": 0.010424335238235487
+      },
+      "other_exact_columns_and_uninstrumented_overhead": {
+        "count": 3,
+        "median": 0.7115715988911688,
+        "minimum": 0.6985885631293058,
+        "maximum": 0.8023046380840242,
+        "mean": 0.7374882667014996,
+        "sample_stddev": 0.05650673680010611
+      }
+    }
+  },
+  "timer_scope": {
+    "encode_process": "Fresh Python process: startup + inspect + encode + integrity/final publication + report serialization; no verification/export/imaging",
+    "encode_function": "encode() entry through complete archive publication, including input inspection; excludes CLI startup/report serialization",
+    "stages": "Exclusive measured regions plus residual. codec_total and before_integrity_finalization are nested/cumulative and are NOT summed. Stage medians need not sum to median total.",
+    "writing": "payload_writing covers visibility payload writes only. quality_accounting includes quality-array writes. Exact-column/index/statistic writes and miscellaneous setup are included in the residual; integrity stage includes flushing, checksums, manifest and fsync/publication.",
+    "measurement_limits": "Shared host; no cache eviction, CPU affinity, resource isolation or cold-cache claim. Packing and secondary compression are a combined timer."
+  },
+  "run_environments": [
+    {
+      "name": "adaptive-repeat-1",
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1"
+        },
+        "native_acceleration": true,
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "_native.c": "e4e524df34ee742bc2d5189adfc148a38f084ea9cfc82898ccc681f576194c6a",
+          "_native.cpython-311-x86_64-linux-gnu.so": "b61f8f79abe84b9faf1355aa6e65bb75f24633db97997855b879cb3822e8009f",
+          "archive.py": "bdc93401f965677e29ab5204d825b24d13ccde373aadfaa06e95fe89d038b44c",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "97c53f3d044784785115d1a59f50cddd5e98db827e611dd1be1deedb22b7bbb7",
+          "codec.py": "fc2ed6b6f6f2169e877e88d3fcf5add6bf2f147b40b580202de5b8b7df679adc",
+          "config.py": "564d2fdba8b54b8491c46abcbf2e345980378572fb2f7a6f3d4144301230062d",
+          "container.py": "ff9557d1e91bcd9c540282e42b23fe257fd05686dafd6cd37772a9ef870f3b5e",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "a762f44c7eb7e437d506a1f9cd2c4dfb8e30663bd2dbefaccd568df637453b2d",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "4db0f3a6aa25874ab206ed524d1f32a90edb8bfb31e42be4d133d5d1e4134704",
+          "visibility.py": "0765866c06dcab0030e8c7d2ccd07c925ad40ad6576e968a7c887a12b303a9d7"
+        }
+      }
+    },
+    {
+      "name": "adaptive-repeat-2",
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1"
+        },
+        "native_acceleration": true,
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "_native.c": "e4e524df34ee742bc2d5189adfc148a38f084ea9cfc82898ccc681f576194c6a",
+          "_native.cpython-311-x86_64-linux-gnu.so": "b61f8f79abe84b9faf1355aa6e65bb75f24633db97997855b879cb3822e8009f",
+          "archive.py": "bdc93401f965677e29ab5204d825b24d13ccde373aadfaa06e95fe89d038b44c",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "97c53f3d044784785115d1a59f50cddd5e98db827e611dd1be1deedb22b7bbb7",
+          "codec.py": "fc2ed6b6f6f2169e877e88d3fcf5add6bf2f147b40b580202de5b8b7df679adc",
+          "config.py": "564d2fdba8b54b8491c46abcbf2e345980378572fb2f7a6f3d4144301230062d",
+          "container.py": "ff9557d1e91bcd9c540282e42b23fe257fd05686dafd6cd37772a9ef870f3b5e",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "a762f44c7eb7e437d506a1f9cd2c4dfb8e30663bd2dbefaccd568df637453b2d",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "4db0f3a6aa25874ab206ed524d1f32a90edb8bfb31e42be4d133d5d1e4134704",
+          "visibility.py": "0765866c06dcab0030e8c7d2ccd07c925ad40ad6576e968a7c887a12b303a9d7"
+        }
+      }
+    },
+    {
+      "name": "adaptive-repeat-3",
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1"
+        },
+        "native_acceleration": true,
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "_native.c": "e4e524df34ee742bc2d5189adfc148a38f084ea9cfc82898ccc681f576194c6a",
+          "_native.cpython-311-x86_64-linux-gnu.so": "b61f8f79abe84b9faf1355aa6e65bb75f24633db97997855b879cb3822e8009f",
+          "archive.py": "bdc93401f965677e29ab5204d825b24d13ccde373aadfaa06e95fe89d038b44c",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "97c53f3d044784785115d1a59f50cddd5e98db827e611dd1be1deedb22b7bbb7",
+          "codec.py": "fc2ed6b6f6f2169e877e88d3fcf5add6bf2f147b40b580202de5b8b7df679adc",
+          "config.py": "564d2fdba8b54b8491c46abcbf2e345980378572fb2f7a6f3d4144301230062d",
+          "container.py": "ff9557d1e91bcd9c540282e42b23fe257fd05686dafd6cd37772a9ef870f3b5e",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "a762f44c7eb7e437d506a1f9cd2c4dfb8e30663bd2dbefaccd568df637453b2d",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "4db0f3a6aa25874ab206ed524d1f32a90edb8bfb31e42be4d133d5d1e4134704",
+          "visibility.py": "0765866c06dcab0030e8c7d2ccd07c925ad40ad6576e968a7c887a12b303a9d7"
+        }
+      }
+    }
+  ],
+  "adaptive_repeat_dataset_identity": {
+    "status": "passed",
+    "archives_compared": 3,
+    "scope": "All inventoried dataset paths, shapes, dtypes and SHA-256 values match; manifest timestamps/timings/environment are excluded"
+  },
+  "shared_host_activity_note": "Final repeats ran sequentially without this task launching profiling, figure generation, unit tests, imaging or other full-data work concurrently. Shared-host activity from other users was not controlled.",
+  "hardware": {
+    "cpu_model": "Intel(R) Xeon(R) Silver 4214 CPU @ 2.20GHz",
+    "memory_total_kib": 394837068
+  },
+  "source_unchanged": {
+    "sha256_matched_files": 65,
+    "reference_inventory": "reports/sample-copy-after-grouping.json"
+  },
+  "benchmark_report": "results/performance-final-20261023/results.json"
+}

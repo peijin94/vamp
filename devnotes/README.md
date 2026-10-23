@@ -1,5 +1,6 @@
 # Development notes
 
+- [Profiling and the under-15-second encoder](performance.md)
 - [Methods paper and reproducible figures](../docs/paper/varquantMS.md)
 - [Design and experiment specification](design.md)
 - [Initial source inspection findings](initial-findings.md)

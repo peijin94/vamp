@@ -6,6 +6,8 @@
 /.pytest_cache/
 __pycache__/
 *.py[cod]
+*.so
+*.pyd
 *.egg-info/
 /build/
 /dist/

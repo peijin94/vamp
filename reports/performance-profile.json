@@ -1,0 +1,612 @@
+{
+  "schema": "varquanms.performance-profile/1",
+  "status": "complete",
+  "baseline_profile": {
+    "total_seconds": 161.83169001900015,
+    "total_calls": 3797392,
+    "top_self_time": [
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method zlib.compress>",
+        "primitive_calls": 17496,
+        "total_calls": 17496,
+        "self_seconds": 45.104400411,
+        "cumulative_seconds": 45.104400411
+      },
+      {
+        "file": "codec.py",
+        "line": 27,
+        "function": "pack_codes",
+        "primitive_calls": 15552,
+        "total_calls": 15552,
+        "self_seconds": 29.453569463,
+        "cumulative_seconds": 29.909102694
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+        "primitive_calls": 224486,
+        "total_calls": 224486,
+        "self_seconds": 21.084117583,
+        "cumulative_seconds": 21.084117583
+      },
+      {
+        "file": "codec.py",
+        "line": 52,
+        "function": "error_metrics",
+        "primitive_calls": 9863,
+        "total_calls": 9863,
+        "self_seconds": 14.089086327,
+        "cumulative_seconds": 17.993922394000002
+      },
+      {
+        "file": "codec.py",
+        "line": 155,
+        "function": "encode_block",
+        "primitive_calls": 1944,
+        "total_calls": 1944,
+        "self_seconds": 9.643644057000001,
+        "cumulative_seconds": 127.408516507
+      },
+      {
+        "file": "visibility.py",
+        "line": 26,
+        "function": "quality",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 7.135542336,
+        "cumulative_seconds": 14.089075423
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'astype' of 'numpy.ndarray' objects>",
+        "primitive_calls": 145270,
+        "total_calls": 145270,
+        "self_seconds": 4.177999162,
+        "cumulative_seconds": 4.177999162
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method _imp.create_dynamic>",
+        "primitive_calls": 60,
+        "total_calls": 60,
+        "self_seconds": 3.555388132,
+        "cumulative_seconds": 3.569286925
+      },
+      {
+        "file": "codec.py",
+        "line": 38,
+        "function": "unpack_codes",
+        "primitive_calls": 7915,
+        "total_calls": 7915,
+        "self_seconds": 3.117149029,
+        "cumulative_seconds": 12.930681653
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'decompress' of 'zlib.Decompress' objects>",
+        "primitive_calls": 7915,
+        "total_calls": 7915,
+        "self_seconds": 2.044374942,
+        "cumulative_seconds": 2.044374942
+      },
+      {
+        "file": "table.py",
+        "line": 1011,
+        "function": "getcol",
+        "primitive_calls": 1764,
+        "total_calls": 1764,
+        "self_seconds": 2.0344407970000002,
+        "cumulative_seconds": 2.0344407970000002
+      },
+      {
+        "file": "dataset.py",
+        "line": 848,
+        "function": "__setitem__",
+        "primitive_calls": 396,
+        "total_calls": 396,
+        "self_seconds": 1.908590355,
+        "cumulative_seconds": 1.947598732
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'partition' of 'numpy.ndarray' objects>",
+        "primitive_calls": 3892,
+        "total_calls": 3892,
+        "self_seconds": 1.781399157,
+        "cumulative_seconds": 1.781399157
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'update' of '_hashlib.HASH' objects>",
+        "primitive_calls": 4464,
+        "total_calls": 4464,
+        "self_seconds": 1.6403175650000001,
+        "cumulative_seconds": 1.6403175650000001
+      },
+      {
+        "file": "ordering.py",
+        "line": 9,
+        "function": "amplitude_statistics",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 1.639661303,
+        "cumulative_seconds": 5.249317212
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'argsort' of 'numpy.ndarray' objects>",
+        "primitive_calls": 54,
+        "total_calls": 54,
+        "self_seconds": 1.122088047,
+        "cumulative_seconds": 1.122088047
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'read' of '_io.BufferedReader' objects>",
+        "primitive_calls": 185,
+        "total_calls": 185,
+        "self_seconds": 1.093053521,
+        "cumulative_seconds": 1.093053521
+      },
+      {
+        "file": "visibility.py",
+        "line": 86,
+        "function": "write_visibility",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 0.9906854020000001,
+        "cumulative_seconds": 149.130145128
+      },
+      {
+        "file": "core.py",
+        "line": 3217,
+        "function": "__getitem__",
+        "primitive_calls": 12,
+        "total_calls": 12,
+        "self_seconds": 0.9381197530000001,
+        "cumulative_seconds": 0.9388302590000001
+      },
+      {
+        "file": "table.py",
+        "line": 952,
+        "function": "getcell",
+        "primitive_calls": 195263,
+        "total_calls": 195263,
+        "self_seconds": 0.911327497,
+        "cumulative_seconds": 0.911327497
+      },
+      {
+        "file": "codec.py",
+        "line": 111,
+        "function": "decode_block",
+        "primitive_calls": 7915,
+        "total_calls": 7915,
+        "self_seconds": 0.8383377080000001,
+        "cumulative_seconds": 16.572508963
+      },
+      {
+        "file": "fromnumeric.py",
+        "line": 71,
+        "function": "_wrapreduction",
+        "primitive_calls": 151614,
+        "total_calls": 151614,
+        "self_seconds": 0.421670017,
+        "cumulative_seconds": 20.036318272000003
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method numpy.array>",
+        "primitive_calls": 204,
+        "total_calls": 204,
+        "self_seconds": 0.401880479,
+        "cumulative_seconds": 0.439367027
+      },
+      {
+        "file": "visibility.py",
+        "line": 22,
+        "function": "protected_mask",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 0.341576123,
+        "cumulative_seconds": 0.341576123
+      },
+      {
+        "file": "numeric.py",
+        "line": 67,
+        "function": "zeros_like",
+        "primitive_calls": 9866,
+        "total_calls": 9866,
+        "self_seconds": 0.28358002000000004,
+        "cumulative_seconds": 0.295681438
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'tobytes' of 'numpy.ndarray' objects>",
+        "primitive_calls": 56977,
+        "total_calls": 56977,
+        "self_seconds": 0.20816277200000002,
+        "cumulative_seconds": 0.20816277200000002
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'flatten' of 'numpy.ndarray' objects>",
+        "primitive_calls": 7815,
+        "total_calls": 7815,
+        "self_seconds": 0.191917539,
+        "cumulative_seconds": 0.191917539
+      },
+      {
+        "file": "inspection.py",
+        "line": 322,
+        "function": "_layout",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 0.16455841100000002,
+        "cumulative_seconds": 0.693036702
+      },
+      {
+        "file": "fromnumeric.py",
+        "line": 2322,
+        "function": "any",
+        "primitive_calls": 93246,
+        "total_calls": 93246,
+        "self_seconds": 0.158273773,
+        "cumulative_seconds": 7.755950108
+      },
+      {
+        "file": "inspection.py",
+        "line": 119,
+        "function": "numeric_counts",
+        "primitive_calls": 1417,
+        "total_calls": 1417,
+        "self_seconds": 0.154010057,
+        "cumulative_seconds": 0.604416795
+      }
+    ]
+  },
+  "optimized_profile": {
+    "total_seconds": 12.586447335999996,
+    "total_calls": 753864,
+    "top_self_time": [
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'acquire' of '_thread.lock' objects>",
+        "primitive_calls": 2865,
+        "total_calls": 2865,
+        "self_seconds": 4.595701377,
+        "cumulative_seconds": 4.595701377
+      },
+      {
+        "file": "table.py",
+        "line": 1011,
+        "function": "getcol",
+        "primitive_calls": 1886,
+        "total_calls": 1886,
+        "self_seconds": 2.0021374880000002,
+        "cumulative_seconds": 2.0021374880000002
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'update' of '_hashlib.HASH' objects>",
+        "primitive_calls": 4464,
+        "total_calls": 4464,
+        "self_seconds": 1.5137302990000001,
+        "cumulative_seconds": 1.5137302990000001
+      },
+      {
+        "file": "visibility.py",
+        "line": 197,
+        "function": "write_visibility",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 1.28205764,
+        "cumulative_seconds": 8.022795241
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method zlib.crc32>",
+        "primitive_calls": 1944,
+        "total_calls": 1944,
+        "self_seconds": 0.46112980400000003,
+        "cumulative_seconds": 0.46112980400000003
+      },
+      {
+        "file": "dataset.py",
+        "line": 848,
+        "function": "__setitem__",
+        "primitive_calls": 396,
+        "total_calls": 396,
+        "self_seconds": 0.21619279900000002,
+        "cumulative_seconds": 0.261560301
+      },
+      {
+        "file": "visibility.py",
+        "line": 282,
+        "function": "<dictcomp>",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 0.177404996,
+        "cumulative_seconds": 0.18562850800000003
+      },
+      {
+        "file": "inspection.py",
+        "line": 129,
+        "function": "<genexpr>",
+        "primitive_calls": 1088,
+        "total_calls": 1088,
+        "self_seconds": 0.147873474,
+        "cumulative_seconds": 0.154153917
+      },
+      {
+        "file": "inspection.py",
+        "line": 119,
+        "function": "numeric_counts",
+        "primitive_calls": 1417,
+        "total_calls": 1417,
+        "self_seconds": 0.14645175900000001,
+        "cumulative_seconds": 0.5779601990000001
+      },
+      {
+        "file": "inspection.py",
+        "line": 283,
+        "function": "_visibility_inventory",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 0.11463195500000001,
+        "cumulative_seconds": 0.44593454600000004
+      },
+      {
+        "file": "archive.py",
+        "line": 84,
+        "function": "_write_exact_column",
+        "primitive_calls": 132,
+        "total_calls": 132,
+        "self_seconds": 0.103022071,
+        "cumulative_seconds": 0.602357033
+      },
+      {
+        "file": "ufunclike.py",
+        "line": 71,
+        "function": "isposinf",
+        "primitive_calls": 575,
+        "total_calls": 575,
+        "self_seconds": 0.098194657,
+        "cumulative_seconds": 0.098194657
+      },
+      {
+        "file": "ufunclike.py",
+        "line": 142,
+        "function": "isneginf",
+        "primitive_calls": 575,
+        "total_calls": 575,
+        "self_seconds": 0.093643552,
+        "cumulative_seconds": 0.093643552
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'read' of 'h5py._selector.Reader' objects>",
+        "primitive_calls": 206,
+        "total_calls": 206,
+        "self_seconds": 0.093298508,
+        "cumulative_seconds": 0.093298508
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'tobytes' of 'numpy.ndarray' objects>",
+        "primitive_calls": 8382,
+        "total_calls": 8382,
+        "self_seconds": 0.06935590200000001,
+        "cumulative_seconds": 0.06935590200000001
+      },
+      {
+        "file": "inspection.py",
+        "line": 44,
+        "function": "json_value",
+        "primitive_calls": 7704,
+        "total_calls": 28877,
+        "self_seconds": 0.062988265,
+        "cumulative_seconds": 0.09861399500000001
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'reduce' of 'numpy.ufunc' objects>",
+        "primitive_calls": 304,
+        "total_calls": 304,
+        "self_seconds": 0.057778878000000006,
+        "cumulative_seconds": 0.057778878000000006
+      },
+      {
+        "file": "archive.py",
+        "line": 176,
+        "function": "encode",
+        "primitive_calls": 1,
+        "total_calls": 1,
+        "self_seconds": 0.056894476000000006,
+        "cumulative_seconds": 12.357911493000001
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'argsort' of 'numpy.ndarray' objects>",
+        "primitive_calls": 50,
+        "total_calls": 50,
+        "self_seconds": 0.056548322000000005,
+        "cumulative_seconds": 0.056548322000000005
+      },
+      {
+        "file": "__init__.py",
+        "line": 660,
+        "function": "update",
+        "primitive_calls": 5586,
+        "total_calls": 5586,
+        "self_seconds": 0.053091303000000006,
+        "cumulative_seconds": 0.082077487
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method _imp.create_dynamic>",
+        "primitive_calls": 63,
+        "total_calls": 63,
+        "self_seconds": 0.052512958000000005,
+        "cumulative_seconds": 0.053787295000000006
+      },
+      {
+        "file": "inspection.py",
+        "line": 126,
+        "function": "<genexpr>",
+        "primitive_calls": 1088,
+        "total_calls": 1088,
+        "self_seconds": 0.051309779,
+        "cumulative_seconds": 0.05782872000000001
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<method 'join' of 'bytes' objects>",
+        "primitive_calls": 94,
+        "total_calls": 94,
+        "self_seconds": 0.049394062,
+        "cumulative_seconds": 0.049440965
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method numpy.core._multiarray_umath.count_nonzero>",
+        "primitive_calls": 3767,
+        "total_calls": 3767,
+        "self_seconds": 0.044812985,
+        "cumulative_seconds": 0.044812985
+      },
+      {
+        "file": "ordering.py",
+        "line": 36,
+        "function": "make_order",
+        "primitive_calls": 4,
+        "total_calls": 4,
+        "self_seconds": 0.03880364,
+        "cumulative_seconds": 0.045571686
+      },
+      {
+        "file": "~",
+        "line": 0,
+        "function": "<built-in method builtins.isinstance>",
+        "primitive_calls": 205629,
+        "total_calls": 205629,
+        "self_seconds": 0.031711326000000005,
+        "cumulative_seconds": 0.041279153000000006
+      },
+      {
+        "file": "encoder.py",
+        "line": 205,
+        "function": "iterencode",
+        "primitive_calls": 40,
+        "total_calls": 40,
+        "self_seconds": 0.028756527,
+        "cumulative_seconds": 0.028769100000000002
+      },
+      {
+        "file": "visibility.py",
+        "line": 166,
+        "function": "jobs",
+        "primitive_calls": 1948,
+        "total_calls": 1948,
+        "self_seconds": 0.023741705000000002,
+        "cumulative_seconds": 0.025647076
+      },
+      {
+        "file": "arraysetops.py",
+        "line": 323,
+        "function": "_unique1d",
+        "primitive_calls": 31,
+        "total_calls": 31,
+        "self_seconds": 0.023108456000000003,
+        "cumulative_seconds": 0.082560509
+      },
+      {
+        "file": "group.py",
+        "line": 508,
+        "function": "__contains__",
+        "primitive_calls": 256,
+        "total_calls": 256,
+        "self_seconds": 0.022106212,
+        "cumulative_seconds": 0.026430928000000003
+      }
+    ]
+  },
+  "profile_scope": "cProfile observes the calling thread. Lock acquire time in the optimized profile is primarily waiting for worker results; it is not a CPU-cost attribution to locks. Native kernel CPU counters are separately measured with CLOCK_THREAD_CPUTIME_ID.",
+  "native_mean_thread_cpu_seconds": {
+    "native_search_quantization_cpu": 20.432683566333367,
+    "native_search_compression_cpu": 57.946885180333375
+  },
+  "baseline_median_process_seconds": 170.62046329071745,
+  "optimized_median_process_seconds": 12.189621166791767,
+  "median_latency_speedup": 13.997191623603484,
+  "target_process_seconds": 15,
+  "all_final_repeats_under_target": true,
+  "comparison": "Original one-worker Python encoder versus optimized 24-worker encoder; both algorithm changes and parallelism contribute. Same quantization/error/flag policies, same shared host, warm/unspecified cache.",
+  "dataset_identity": {
+    "reference": "results/performance-20261023/baseline.h5",
+    "scope": "All inventoried datasets except numerical quality arrays; exact paths, dtypes, shapes and SHA-256 digests",
+    "runs": [
+      {
+        "archive": "results/performance-final-20261023/adaptive-repeat-1/archive.h5",
+        "status": "bitwise_identical",
+        "datasets": 121
+      },
+      {
+        "archive": "results/performance-final-20261023/adaptive-repeat-2/archive.h5",
+        "status": "bitwise_identical",
+        "datasets": 121
+      },
+      {
+        "archive": "results/performance-final-20261023/adaptive-repeat-3/archive.h5",
+        "status": "bitwise_identical",
+        "datasets": 121
+      }
+    ]
+  },
+  "portable_verification": {
+    "status": "passed",
+    "native_kernels_disabled": true,
+    "export": {
+      "output": "/data1/users/pz47/varquanMS/results/performance-final-20261023/restored.ms",
+      "status": "exported",
+      "elapsed_seconds": 3.608234834857285,
+      "python_casacore_reopen": "passed",
+      "CASA_workflow": "not run",
+      "flag_policy": {
+        "burn_flag": false,
+        "discarded_main_columns": [],
+        "original_main_flag_values_preserved": true,
+        "export": "original flag values",
+        "reflagging_performed": false,
+        "subtable_flags": "preserved exactly",
+        "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+        "warning": null
+      }
+    },
+    "seconds": 26.78907777229324,
+    "source_and_restored": true
+  },
+  "timing_report": "reports/performance-runtime.json"
+}

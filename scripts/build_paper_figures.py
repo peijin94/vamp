@@ -188,7 +188,7 @@ def timing(report):
     fig,axes=plt.subplots(1,2,figsize=(13,6),constrained_layout=True)
     records=report["records"]
     bars=axes[0].bar([r["name"].replace("adaptive-repeat-","Repeat ").replace("lossless-control","Lossless") for r in records],
-                    [r["encode_process_seconds"] for r in records],color=[COLORS["grey"]]+[COLORS["blue"]]*(len(records)-1))
+                    [r["encode_process_seconds"] for r in records],color=[COLORS["grey"] if r["mode"]=="lossless" else COLORS["blue"] for r in records])
     for bar,r in zip(bars,records):axes[0].text(bar.get_x()+bar.get_width()/2,bar.get_height()+2,f"{r['encode_process_seconds']:.2f} s",ha="center")
     axes[0].set(ylabel="Complete encode-process wall time (s)",title="MS → complete archive; verification excluded")
     stages=report["adaptive_summary"]["exclusive_encode_stages_seconds"]
@@ -197,6 +197,8 @@ def timing(report):
             "baseline_sorting_and_grouping":"Sort IDs + group","memory_gathering":"Gather blocks","quantization_and_scale_estimation":"Scale + quantization",
             "packing_and_secondary_compression":"Packing + lossless compression","candidate_reconstruction_and_error_checks":"Candidate decode + error checks",
             "payload_writing":"Visibility payload writes","quality_accounting":"Global quality accounting",
+            "parallel_block_pipeline_wall":"Parallel block pipeline",
+            "native_candidate_search":"Native candidate search",
             "integrity_finalization_and_publication":"Integrity/final publication","other_exact_columns_and_uninstrumented_overhead":"Exact columns + other overhead"}
     axes[1].barh([labels[k] for k in keys],[stages[k]["mean"] for k in keys],color=COLORS["teal"])
     axes[1].invert_yaxis();axes[1].set(xlabel="Mean exclusive encode-function subregion (s)",title="Nested codec_total is not added again")

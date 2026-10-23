@@ -164,11 +164,13 @@ def read_column(reader, spec, start, stop):
 
 
 def _environment():
+    from .codec import _native
     return {"varquanMS": __version__, "python": platform.python_version(),
             "numpy": np.__version__, "python_casacore": casacore.__version__, "h5py": h5py.__version__,
             "platform": platform.platform(), "machine": platform.machine(),
             "cpu_count": os.cpu_count(), "threads_environment": {k: os.environ.get(k) for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")},
-            "implementation_files_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(Path(__file__).parent.glob("*.py"))}}
+            "native_acceleration": _native is not None,
+            "implementation_files_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(Path(__file__).parent.iterdir()) if p.is_file() and p.suffix in (".py", ".c", ".so", ".pyd")}}
 
 
 def encode(source, output, config=None, inspection=None):
@@ -268,7 +270,10 @@ def archive_summary(path, manifest, elapsed=None):
             "timings_seconds": manifest["timings_seconds"],
             "peak_process_rss_bytes": manifest["peak_process_rss_bytes"],
             "visibility_quality": {c: s.get("quality_summary") for t in manifest["tables"] if t["path"] == "." for c, s in t["columns"].items() if s["encoding"] == "quantized"},
-            "visibility_block_statistics": {c: {"products": s["products"], "timings_seconds": s["timings_seconds"]} for t in manifest["tables"] if t["path"] == "." for c, s in t["columns"].items() if s["encoding"] == "quantized"},
+            "visibility_block_statistics": {c: {"products": s["products"], "timings_seconds": s["timings_seconds"],
+                                                "worker_timings_seconds": s.get("worker_timings_seconds", {}),
+                                                "worker_count": s.get("worker_count", 1)}
+                                           for t in manifest["tables"] if t["path"] == "." for c, s in t["columns"].items() if s["encoding"] == "quantized"},
             "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."}
 
 

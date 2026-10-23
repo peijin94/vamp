@@ -11,19 +11,19 @@
 static double thread_cpu(void) {struct timespec t;clock_gettime(CLOCK_THREAD_CPUTIME_ID,&t);return t.tv_sec+t.tv_nsec*1e-9;}
 
 static void put32(uint8_t *p,uint32_t value) {for(int k=0;k<4;k++) p[k]=(uint8_t)(value>>(8*k));}
-static void header(uint8_t *p,int bits,int compressed,uint32_t n,uint32_t exceptions,float step) {
-    p[0]=bits;p[1]=compressed;p[2]=p[3]=0;put32(p+4,n);put32(p+8,exceptions);memcpy(p+12,&step,4);
+static void header(uint8_t *p,int bits,int compressed,uint32_t n,uint32_t exceptions,float step,int mapping) {
+    p[0]=bits;p[1]=compressed;p[2]=mapping;p[3]=0;put32(p+4,n);put32(p+8,exceptions);memcpy(p+12,&step,4);
 }
 
 /* Evaluate the complete block search inside one GIL-free region. A generous
  * bound margin prevents reduction-order false rejections; Python checks the
  * winner strictly and retries its reference search on a near-boundary miss. */
 static PyObject *search(PyObject *self,PyObject *args) {
-    Py_buffer a={0},f={0},widths={0},scales={0},bounds={0};int channels,level;
-    if(!PyArg_ParseTuple(args,"y*y*y*y*y*ii",&a,&f,&widths,&scales,&bounds,&channels,&level)) return NULL;
+    Py_buffer a={0},f={0},widths={0},scales={0},bounds={0};int channels,level,mapping=0;
+    if(!PyArg_ParseTuple(args,"y*y*y*y*y*ii|i",&a,&f,&widths,&scales,&bounds,&channels,&level,&mapping)) return NULL;
     Py_ssize_t n=a.len/8, candidates=widths.len;
     int valid=a.len%8==0 && n>0 && n<=262144 && f.len==n && channels>0 && n%channels==0 &&
-        candidates>0 && candidates<=4096 && scales.len==4*candidates && bounds.len==32 && level>=-1 && level<=9 && fegetround()==FE_TONEAREST;
+        candidates>0 && candidates<=4096 && scales.len==4*candidates && bounds.len==32 && level>=-1 && level<=9 && (mapping==0||mapping==1) && fegetround()==FE_TONEAREST;
     const uint8_t *width=(const uint8_t *)widths.buf;
     for(Py_ssize_t k=0;k<candidates && valid;k++) valid=width[k]==2||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16;
     if(!valid) {PyErr_SetString(PyExc_ValueError,"Invalid native search buffers/parameters");goto cleanup_search;}
@@ -37,20 +37,22 @@ static PyObject *search(PyObject *self,PyObject *args) {
     const uint8_t *flags=(const uint8_t *)f.buf;
     size_t best_size=8*n+16; int failed=0;double compression_cpu=0,quantization_cpu=0,cpu_stamp;
     Py_BEGIN_ALLOW_THREADS
-    header(best,0,0,(uint32_t)n,0,0);memcpy(best+16,a.buf,8*n);memcpy(best_decoded,a.buf,8*n);
+    header(best,0,0,(uint32_t)n,0,0,0);memcpy(best+16,a.buf,8*n);memcpy(best_decoded,a.buf,8*n);
     if(level>=0) {
         cpu_stamp=thread_cpu();
         uLongf size=compressBound(8*n);
         if(compress2(compressed,&size,(const Bytef *)a.buf,8*n,level)!=Z_OK) failed=1;
-        else if(size<(size_t)8*n) {header(best,0,1,(uint32_t)n,0,0);memcpy(best+16,compressed,size);best_size=size+16;}
+        else if(size<(size_t)8*n) {header(best,0,1,(uint32_t)n,0,0,0);memcpy(best+16,compressed,size);best_size=size+16;}
         compression_cpu+=thread_cpu()-cpu_stamp;
     }
     for(Py_ssize_t k=0;k<candidates && !failed;k++) {
         int bits=width[k],maximum=(1<<(bits-1))-1;float step=steps[k];
+        double center=maximum+(mapping?0.5:0.0),shift=mapping?center:0;
+        int lower=mapping?0:-maximum,upper=mapping?(1<<bits)-1:maximum;
         if(!isfinite(step)||step<0) continue;
         cpu_stamp=thread_cpu();
         size_t packed=(2*n*bits+7)/8,ne=0,byte=0;
-        double limit=(double)step*maximum,sum=0,sum_r=0,sum_i=0,row_sum=0,max_square=0,max_row=0;
+        double limit=(double)step*center,sum=0,sum_r=0,sum_i=0,row_sum=0,max_square=0,max_row=0;
         Py_ssize_t count=0,row_count=0;uint64_t accumulator=0;int available=0,overflow=0;
         /* Exception positions are staged after maximum code capacity; values
          * are copied into the final body after the exception count is known. */
@@ -58,12 +60,13 @@ static PyObject *search(PyObject *self,PyObject *args) {
         for(Py_ssize_t j=0;j<n;j++) {
             float r=x[2*j],im=x[2*j+1];int finite=isfinite(r)&&isfinite(im);
             int exact=flags[j]||!finite||(r==0&&signbit(r))||(im==0&&signbit(im))||fabs((double)r)>limit||fabs((double)im)>limit;
-            int qr=0,qi=0;
-            if(!exact&&step!=0) {qr=(int)nearbyint((double)r/step);qi=(int)nearbyint((double)im/step);}
-            if(qr < -maximum||qr>maximum||qi < -maximum||qi>maximum) {overflow=1;break;}
-            decoded[2*j]=(float)qr*step;decoded[2*j+1]=(float)qi*step;
+            int qr=mapping?maximum+1:0,qi=qr;
+            if(!exact&&step!=0) {qr=(int)nearbyint((double)r/step+shift);qi=(int)nearbyint((double)im/step+shift);}
+            if(qr<lower||qr>upper||qi<lower||qi>upper) {overflow=1;break;}
+            float cr=(float)qr-(float)shift,ci=(float)qi-(float)shift;
+            decoded[2*j]=cr*step;decoded[2*j+1]=ci*step;
             if(!isfinite(decoded[2*j])||!isfinite(decoded[2*j+1])) {overflow=1;break;}
-            uint32_t pair[2]={(uint32_t)(qr+maximum),(uint32_t)(qi+maximum)};
+            uint32_t pair[2]={(uint32_t)(qr+(mapping?0:maximum)),(uint32_t)(qi+(mapping?0:maximum))};
             for(int h=0;h<2;h++) {accumulator|=(uint64_t)pair[h]<<available;available+=bits;
                 while(available>=8) {raw[byte++]=(uint8_t)accumulator;accumulator>>=8;available-=8;}}
             if(exact) {positions[ne++]=(uint32_t)j;memcpy(decoded+2*j,x+2*j,8);}
@@ -89,7 +92,7 @@ static PyObject *search(PyObject *self,PyObject *args) {
             if(compress2(compressed,&size,raw,body_size,level)!=Z_OK) {failed=1;break;}
             if(size<body_size) {body=compressed;body_size=size;compressed_id=1;}}
         compression_cpu+=thread_cpu()-cpu_stamp;
-        if(body_size+16<best_size) {best_size=body_size+16;header(best,bits,compressed_id,(uint32_t)n,(uint32_t)ne,step);memcpy(best+16,body,body_size);memcpy(best_decoded,decoded,8*n);}
+        if(body_size+16<best_size) {best_size=body_size+16;header(best,bits,compressed_id,(uint32_t)n,(uint32_t)ne,step,mapping);memcpy(best+16,body,body_size);memcpy(best_decoded,decoded,8*n);}
     }
     Py_END_ALLOW_THREADS
     PyObject *result=NULL;
@@ -104,12 +107,12 @@ cleanup_search:
 /* Optional CPU kernels. Buffer inputs are checked before releasing the GIL.
  * No fast-math or fused multiply/add: reconstruction is float32 multiply. */
 static PyObject *candidate(PyObject *self, PyObject *args) {
-    Py_buffer a={0}, f={0}; int bits, channels; double step_arg;
-    if (!PyArg_ParseTuple(args,"y*y*idi",&a,&f,&bits,&step_arg,&channels)) return NULL;
+    Py_buffer a={0}, f={0}; int bits, channels,mapping=0; double step_arg;
+    if (!PyArg_ParseTuple(args,"y*y*idi|i",&a,&f,&bits,&step_arg,&channels,&mapping)) return NULL;
     Py_ssize_t n=a.len/8;
     if (a.len%8 || n<1 || n>262144 || f.len!=n || channels<1 || n%channels ||
         !(bits==2 || bits==4 || bits==6 || bits==8 || bits==12 || bits==16) ||
-        !isfinite(step_arg) || step_arg<0 || fegetround()!=FE_TONEAREST) {
+        !isfinite(step_arg) || step_arg<0 || !(mapping==0||mapping==1) || fegetround()!=FE_TONEAREST) {
         PyBuffer_Release(&a); PyBuffer_Release(&f);
         return PyErr_Format(PyExc_ValueError,"Invalid native candidate buffers/parameters/rounding mode");
     }
@@ -123,7 +126,9 @@ static PyObject *candidate(PyObject *self, PyObject *args) {
     float *out=(float *)PyBytes_AS_STRING(decoded);
     uint8_t *codes=(uint8_t *)PyBytes_AS_STRING(packed), *pos=(uint8_t *)PyBytes_AS_STRING(positions), *exc=(uint8_t *)PyBytes_AS_STRING(exceptions);
     int maximum=(1<<(bits-1))-1, failed=0;
-    double limit=(double)step*maximum, sum=0, row_sum=0, max_square=0, max_row=0;
+    double center=maximum+(mapping?0.5:0.0),shift=mapping?center:0;
+    int lower=mapping?0:-maximum,upper=mapping?(1<<bits)-1:maximum;
+    double limit=(double)step*center, sum=0, row_sum=0, max_square=0, max_row=0;
     Py_ssize_t count=0, row_count=0, ne=0, byte=0;
     uint64_t accumulator=0; int available=0;
     Py_BEGIN_ALLOW_THREADS
@@ -131,15 +136,16 @@ static PyObject *candidate(PyObject *self, PyObject *args) {
         float r=x[2*j], im=x[2*j+1];
         int finite=isfinite(r)&&isfinite(im);
         int exact=flag[j] || !finite || (r==0 && signbit(r)) || (im==0 && signbit(im)) || fabs((double)r)>limit || fabs((double)im)>limit;
-        int qr=0, qi=0;
+        int qr=mapping?maximum+1:0, qi=qr;
         if (!exact && step!=0) {
-            qr=(int)nearbyint((double)r/(double)step);
-            qi=(int)nearbyint((double)im/(double)step);
+            qr=(int)nearbyint((double)r/(double)step+shift);
+            qi=(int)nearbyint((double)im/(double)step+shift);
         }
-        if (qr < -maximum || qr > maximum || qi < -maximum || qi > maximum) { failed=1; break; }
-        out[2*j]=(float)qr*step; out[2*j+1]=(float)qi*step;
+        if (qr<lower || qr>upper || qi<lower || qi>upper) { failed=1; break; }
+        float cr=(float)qr-(float)shift,ci=(float)qi-(float)shift;
+        out[2*j]=cr*step; out[2*j+1]=ci*step;
         if (!isfinite(out[2*j]) || !isfinite(out[2*j+1])) { failed=1; break; }
-        uint32_t pair[2]={(uint32_t)(qr+maximum),(uint32_t)(qi+maximum)};
+        uint32_t pair[2]={(uint32_t)(qr+(mapping?0:maximum)),(uint32_t)(qi+(mapping?0:maximum))};
         for(int k=0;k<2;k++) {
             accumulator|=(uint64_t)pair[k]<<available; available+=bits;
             while(available>=8) { codes[byte++]=(uint8_t)accumulator; accumulator>>=8; available-=8; }
@@ -270,4 +276,8 @@ static PyMethodDef methods[]={
     {NULL,NULL,0,NULL}
 };
 static struct PyModuleDef module={PyModuleDef_HEAD_INIT,"_native",NULL,-1,methods};
-PyMODINIT_FUNC PyInit__native(void) { return PyModule_Create(&module); }
+PyMODINIT_FUNC PyInit__native(void) {
+    PyObject *m=PyModule_Create(&module);
+    if(m && PyModule_AddIntConstant(m,"MIDRISE_V1",1)<0) {Py_DECREF(m);return NULL;}
+    return m;
+}

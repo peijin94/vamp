@@ -1,0 +1,3399 @@
+{
+  "schema": "varquanms.uint-midrise-study/1",
+  "date_utc": "2026-10-23",
+  "source": "/data1/users/pz47/varquanMS/data/working/20260904_190008_59MHz.ms",
+  "methodology": "Matched grouping and error thresholds; 24 workers, OPENBLAS_NUM_THREADS=1 and OMP_NUM_THREADS=1. Full archive encode includes inspection, preserved columns, error accounting and publication. Verification separately timed. No imaging runs concurrently with timed encodes. Compare measured error as well as total bytes; identical ceilings do not imply equal achieved error.",
+  "cache_methodology": "Previously read source; no cache eviction. Sequential fresh processes, alternating codecs, three repetitions each. Shared host, no affinity or cold-cache claim.",
+  "codecs": [
+    {
+      "codebook": "uniform-symmetric-v1",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 24
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/midrise-20261023/benchmark/symmetric-1/archive.h5",
+        "archive_bytes": 106731246,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 3.8376281862201815,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 105156575,
+        "visibility_dataset_ratio_including_maps_statistics": 3.6299625772330453,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 488354,
+          "visibility_indexes": 25572,
+          "visibility_block_payload": 99615100,
+          "visibility_quality": 3350798,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 576347
+        },
+        "elapsed_seconds": 12.712386928964406,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "flag_policy": {
+          "burn_flag": false,
+          "discarded_main_columns": [],
+          "original_main_flag_values_preserved": true,
+          "export": "original flag values",
+          "reflagging_performed": false,
+          "subtable_flags": "preserved exactly",
+          "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+          "warning": null
+        },
+        "exact_ms_round_trip": false,
+        "timings_seconds": {
+          "inspection_preflight": 3.5767236766405404,
+          "column_encoding_and_writing": 8.650952382944524,
+          "before_integrity_finalization": 12.242261413950473
+        },
+        "peak_process_rss_bytes": 1693401088,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.4500064569818484e-08,
+                "real_mse": 3.456241806734997e-08,
+                "imag_mse": 3.4437711072286994e-08,
+                "bias_real": 2.5708917935047918e-08,
+                "bias_imag": -1.4031556964419529e-07,
+                "complex_bias_abs": 1.4265134961144266e-07,
+                "max_complex_error": 0.0007737967887591865,
+                "max_baseline_component_mse": 1.1524460752120948e-07,
+                "p99_error": 0.0005971821906497005
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.6602773320192024e-08,
+                "real_mse": 2.6610406456180498e-08,
+                "imag_mse": 2.6595140184203546e-08,
+                "bias_real": -3.145532405997917e-08,
+                "bias_imag": 4.860542141505502e-08,
+                "complex_bias_abs": 5.789580643408807e-08,
+                "max_complex_error": 0.0007542472416511174,
+                "max_baseline_component_mse": 1.0693926124921874e-07,
+                "p99_error": 0.00043944582088300047
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 2.6034481527116565e-08,
+                "real_mse": 2.6033560321103446e-08,
+                "imag_mse": 2.6035402733129684e-08,
+                "bias_real": 7.158231238798731e-08,
+                "bias_imag": -6.706578458404475e-08,
+                "complex_bias_abs": 9.809101339411728e-08,
+                "max_complex_error": 0.0007433888409991838,
+                "max_baseline_component_mse": 1.045410893266224e-07,
+                "p99_error": 0.00043649128835422234
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.5330463540351233e-08,
+                "real_mse": 2.545768610242844e-08,
+                "imag_mse": 2.5203240978274027e-08,
+                "bias_real": 1.8597920392677936e-08,
+                "bias_imag": 1.9475958083801102e-09,
+                "complex_bias_abs": 1.869961957808783e-08,
+                "max_complex_error": 0.0007694688188751957,
+                "max_baseline_component_mse": 1.125714442102961e-07,
+                "p99_error": 0.0005639329651762844
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed",
+            "calculation": "native-moments-v2"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "16": 3,
+                  "4": 11,
+                  "8": 322,
+                  "12": 150
+                },
+                "complex_sample_bit_width_histogram": {
+                  "16": 67584,
+                  "4": 270336,
+                  "8": 7913472,
+                  "12": 3677184
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 0,
+                  "packed_code_bytes": 27399168,
+                  "exception_position_bytes": 144616,
+                  "exception_value_bytes": 289232,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 36154
+                },
+                "serialized_block_bytes": 25703902,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "12": 6,
+                  "4": 10,
+                  "8": 470
+                },
+                "complex_sample_bit_width_histogram": {
+                  "12": 132096,
+                  "4": 245760,
+                  "8": 11550720
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 0,
+                  "packed_code_bytes": 23743488,
+                  "exception_position_bytes": 221240,
+                  "exception_value_bytes": 442480,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 55310
+                },
+                "serialized_block_bytes": 22217718,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "12": 6,
+                  "4": 9,
+                  "8": 471
+                },
+                "complex_sample_bit_width_histogram": {
+                  "12": 132096,
+                  "4": 221184,
+                  "8": 11575296
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 0,
+                  "packed_code_bytes": 23768064,
+                  "exception_position_bytes": 213860,
+                  "exception_value_bytes": 427720,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 53465
+                },
+                "serialized_block_bytes": 22126790,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "16": 3,
+                  "4": 8,
+                  "8": 293,
+                  "12": 182
+                },
+                "complex_sample_bit_width_histogram": {
+                  "16": 67584,
+                  "4": 196608,
+                  "8": 7200768,
+                  "12": 4463616
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 0,
+                  "packed_code_bytes": 28259328,
+                  "exception_position_bytes": 131824,
+                  "exception_value_bytes": 263648,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 32956
+                },
+                "serialized_block_bytes": 27010386,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.6480180858634412,
+              "amplitude_statistics": 0.8067811038345098,
+              "baseline_sorting_and_grouping": 0.053417811170220375,
+              "payload_writing": 0.32044436363503337,
+              "parallel_block_pipeline_wall": 5.228120971471071,
+              "quality_accounting": 0.8009273931384087
+            },
+            "worker_timings_seconds": {
+              "quantization_and_scale_estimation": 13.21602278156206,
+              "native_candidate_search": 84.64468980627134,
+              "native_search_quantization_cpu": 23.28244977699994,
+              "native_search_compression_cpu": 60.189561202999876,
+              "candidate_reconstruction_and_error_checks": 25.366105858702213,
+              "codec_total": 127.44676422094926,
+              "memory_gathering": 1.5217923796735704
+            },
+            "worker_count": 24
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": null
+        },
+        "native_acceleration": true,
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "_native.c": "a0acade23a080e1545b28f98c7f57c812bbff22e9db9086eef5e3878604815cd",
+          "_native.cpython-311-x86_64-linux-gnu.so": "9043e4163c1d8b824fc436f12da49dbf8cc1622eb3e1aeb8ecb013830830cbb4",
+          "archive.py": "bdc93401f965677e29ab5204d825b24d13ccde373aadfaa06e95fe89d038b44c",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "97c53f3d044784785115d1a59f50cddd5e98db827e611dd1be1deedb22b7bbb7",
+          "codec.py": "0be9a8419b650a34cd3a88e238ea38c654efc9bea4aa818e593a73c12594af58",
+          "config.py": "aadeb2475fe501d1c9145870abe585ab5126624a70ba8894621e22abc0e27bee",
+          "container.py": "ff9557d1e91bcd9c540282e42b23fe257fd05686dafd6cd37772a9ef870f3b5e",
+          "experimental_mx.py": "6bf972f07e784e8b0eb50e83c7756a640da404e70efc6e019d5d5f292854557d",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "a762f44c7eb7e437d506a1f9cd2c4dfb8e30663bd2dbefaccd568df637453b2d",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "4db0f3a6aa25874ab206ed524d1f32a90edb8bfb31e42be4d133d5d1e4134704",
+          "visibility.py": "da0a6948799353b0766577488290188204ed1c9341bc1dc230707c522762391e"
+        }
+      },
+      "component_mse": 2.811694573936958e-08,
+      "block_histogram": {
+        "16": 6,
+        "4": 38,
+        "8": 1556,
+        "12": 344
+      },
+      "sample_histogram": {
+        "16": 135168,
+        "4": 933888,
+        "8": 38240256,
+        "12": 8404992
+      },
+      "logical_byte_accounting": {
+        "lossless_component_bytes": 0,
+        "packed_code_bytes": 103170048,
+        "exception_position_bytes": 711540,
+        "exception_value_bytes": 1423080,
+        "header_bytes": 31104,
+        "flagged_exception_samples": 0,
+        "nonfinite_exception_samples": 0,
+        "signed_zero_exception_samples": 0,
+        "outlier_exception_samples": 177885
+      },
+      "encode_process_seconds": [
+        12.996988020837307,
+        12.945079354103655,
+        13.295115693006665
+      ],
+      "verification_process_seconds": [
+        10.098890249151736,
+        9.83731817966327,
+        9.953978527802974
+      ],
+      "archive_bytes_repeats": [
+        106731246,
+        106731243,
+        106731239
+      ],
+      "payloads_identical_across_repeats": true,
+      "verification": "passed"
+    },
+    {
+      "codebook": "uniform-midrise-v1",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-midrise-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 24
+      },
+      "encoding": {
+        "archive": "/data1/users/pz47/varquanMS/results/midrise-20261023/benchmark/midrise-1/archive.h5",
+        "archive_bytes": 106732004,
+        "source_physical_file_bytes": 409594838,
+        "whole_archive_ratio": 3.8376009317692565,
+        "selected_visibility_logical_bytes": 381714432,
+        "visibility_datasets_stored_bytes": 105157280,
+        "visibility_dataset_ratio_including_maps_statistics": 3.629938241080408,
+        "stored_bytes_by_category": {
+          "coordinates": 988098,
+          "flags_weights": 98,
+          "auxiliary_columns": 184,
+          "quantization_statistics": 1676751,
+          "permutations": 488354,
+          "visibility_indexes": 25572,
+          "visibility_block_payload": 99615100,
+          "visibility_quality": 3351503,
+          "subtables": 9944,
+          "container_and_manifest_overhead": 576400
+        },
+        "elapsed_seconds": 12.777084952685982,
+        "mode": "adaptive",
+        "deduplicate": true,
+        "flag_policy": {
+          "burn_flag": false,
+          "discarded_main_columns": [],
+          "original_main_flag_values_preserved": true,
+          "export": "original flag values",
+          "reflagging_performed": false,
+          "subtable_flags": "preserved exactly",
+          "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+          "warning": null
+        },
+        "exact_ms_round_trip": false,
+        "timings_seconds": {
+          "inspection_preflight": 3.7893669228069484,
+          "column_encoding_and_writing": 8.53333499794826,
+          "before_integrity_finalization": 12.333168896846473
+        },
+        "peak_process_rss_bytes": 1692844032,
+        "visibility_quality": {
+          "DATA": {
+            "by_product": {
+              "XX": {
+                "valid_samples": 11928576,
+                "component_mse": 3.4972908301526e-08,
+                "real_mse": 3.4903842147635846e-08,
+                "imag_mse": 3.504197445541616e-08,
+                "bias_real": -1.1577583224234755e-07,
+                "bias_imag": 1.1083417992887376e-06,
+                "complex_bias_abs": 1.1143722840155368e-06,
+                "max_complex_error": 0.0007750349388709806,
+                "max_baseline_component_mse": 1.1429691409974657e-07,
+                "p99_error": 0.0005992212577844979
+              },
+              "XY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.6296172414828997e-08,
+                "real_mse": 2.6291895661884917e-08,
+                "imag_mse": 2.6300449167773075e-08,
+                "bias_real": 6.193194420489731e-08,
+                "bias_imag": 1.328697358732615e-08,
+                "complex_bias_abs": 6.334121391407664e-08,
+                "max_complex_error": 0.0007470103621502403,
+                "max_baseline_component_mse": 1.0916627862410518e-07,
+                "p99_error": 0.00043438493434730857
+              },
+              "YX": {
+                "valid_samples": 11928576,
+                "component_mse": 2.590557156490434e-08,
+                "real_mse": 2.5907511173219282e-08,
+                "imag_mse": 2.5903631956589403e-08,
+                "bias_real": -3.086853650973294e-08,
+                "bias_imag": 9.822052996295564e-08,
+                "complex_bias_abs": 1.0295697670608138e-07,
+                "max_complex_error": 0.0007386723229293987,
+                "max_baseline_component_mse": 1.0424161115060925e-07,
+                "p99_error": 0.0004358789016488151
+              },
+              "YY": {
+                "valid_samples": 11928576,
+                "component_mse": 2.504237435403473e-08,
+                "real_mse": 2.497677374705382e-08,
+                "imag_mse": 2.510797496101564e-08,
+                "bias_real": 7.475128072552595e-08,
+                "bias_imag": 9.173447547365227e-07,
+                "complex_bias_abs": 9.203853285514265e-07,
+                "max_complex_error": 0.0007629515956648514,
+                "max_baseline_component_mse": 1.1383051546016295e-07,
+                "p99_error": 0.0005595991362455583
+              }
+            },
+            "protected_sample_count": 0,
+            "protected_sample_bits": "exact",
+            "metric_domain": "unflagged finite input samples",
+            "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+            "science_validation": "not performed",
+            "calculation": "native-moments-v2"
+          }
+        },
+        "visibility_block_statistics": {
+          "DATA": {
+            "products": [
+              {
+                "permutation": "tables/t0/c21/p0/permutation",
+                "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+                "payload": "tables/t0/c21/p0/payload",
+                "offsets": "tables/t0/c21/p0/offsets",
+                "crc32": "tables/t0/c21/p0/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "16": 2,
+                  "float32": 1,
+                  "4": 12,
+                  "8": 324,
+                  "12": 147
+                },
+                "complex_sample_bit_width_histogram": {
+                  "16": 49152,
+                  "float32": 18432,
+                  "4": 294912,
+                  "8": 7962624,
+                  "12": 3603456
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 147456,
+                  "packed_code_bytes": 27227136,
+                  "exception_position_bytes": 146584,
+                  "exception_value_bytes": 293168,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 36646
+                },
+                "serialized_block_bytes": 25664225,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p1/permutation",
+                "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+                "payload": "tables/t0/c21/p1/payload",
+                "offsets": "tables/t0/c21/p1/offsets",
+                "crc32": "tables/t0/c21/p1/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "12": 6,
+                  "4": 10,
+                  "8": 470
+                },
+                "complex_sample_bit_width_histogram": {
+                  "12": 132096,
+                  "4": 245760,
+                  "8": 11550720
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 0,
+                  "packed_code_bytes": 23743488,
+                  "exception_position_bytes": 221240,
+                  "exception_value_bytes": 442480,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 55310
+                },
+                "serialized_block_bytes": 22236486,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p2/permutation",
+                "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+                "payload": "tables/t0/c21/p2/payload",
+                "offsets": "tables/t0/c21/p2/offsets",
+                "crc32": "tables/t0/c21/p2/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "12": 6,
+                  "4": 10,
+                  "8": 470
+                },
+                "complex_sample_bit_width_histogram": {
+                  "12": 132096,
+                  "4": 245760,
+                  "8": 11550720
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 0,
+                  "packed_code_bytes": 23743488,
+                  "exception_position_bytes": 214352,
+                  "exception_value_bytes": 428704,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 53588
+                },
+                "serialized_block_bytes": 22128479,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              },
+              {
+                "permutation": "tables/t0/c21/p3/permutation",
+                "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+                "payload": "tables/t0/c21/p3/payload",
+                "offsets": "tables/t0/c21/p3/offsets",
+                "crc32": "tables/t0/c21/p3/crc32",
+                "block_count": 486,
+                "component_bit_width_histogram": {
+                  "16": 2,
+                  "float32": 1,
+                  "4": 8,
+                  "8": 293,
+                  "12": 182
+                },
+                "complex_sample_bit_width_histogram": {
+                  "16": 49152,
+                  "float32": 18432,
+                  "4": 196608,
+                  "8": 7200768,
+                  "12": 4463616
+                },
+                "logical_bytes_before_secondary_compression": {
+                  "lossless_component_bytes": 147456,
+                  "packed_code_bytes": 28185600,
+                  "exception_position_bytes": 131824,
+                  "exception_value_bytes": 263648,
+                  "header_bytes": 7776,
+                  "flagged_exception_samples": 0,
+                  "nonfinite_exception_samples": 0,
+                  "signed_zero_exception_samples": 0,
+                  "outlier_exception_samples": 32956
+                },
+                "serialized_block_bytes": 27051903,
+                "index_bytes": 5840,
+                "bucket_reference": null,
+                "buckets": [],
+                "grouping": {
+                  "method": "amplitude",
+                  "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                  "group_size_histogram": {
+                    "80": 1,
+                    "96": 1,
+                    "128": 484
+                  },
+                  "group_count": 486,
+                  "partial_group_count": 2
+                },
+                "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+              }
+            ],
+            "timings_seconds": {
+              "input_reading": 0.7310140831395984,
+              "amplitude_statistics": 0.7113180533051491,
+              "baseline_sorting_and_grouping": 0.05088326195254922,
+              "payload_writing": 0.28518069302663207,
+              "parallel_block_pipeline_wall": 4.981183708179742,
+              "quality_accounting": 0.8097462668083608
+            },
+            "worker_timings_seconds": {
+              "quantization_and_scale_estimation": 11.64600775577128,
+              "native_candidate_search": 81.77644680347294,
+              "native_search_quantization_cpu": 22.399431847999992,
+              "native_search_compression_cpu": 58.38485812000004,
+              "candidate_reconstruction_and_error_checks": 21.615196709055454,
+              "codec_total": 118.35743073746562,
+              "memory_gathering": 1.375589955598116
+            },
+            "worker_count": 24
+          }
+        },
+        "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+      },
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": null
+        },
+        "native_acceleration": true,
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "_native.c": "a0acade23a080e1545b28f98c7f57c812bbff22e9db9086eef5e3878604815cd",
+          "_native.cpython-311-x86_64-linux-gnu.so": "9043e4163c1d8b824fc436f12da49dbf8cc1622eb3e1aeb8ecb013830830cbb4",
+          "archive.py": "bdc93401f965677e29ab5204d825b24d13ccde373aadfaa06e95fe89d038b44c",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "97c53f3d044784785115d1a59f50cddd5e98db827e611dd1be1deedb22b7bbb7",
+          "codec.py": "0be9a8419b650a34cd3a88e238ea38c654efc9bea4aa818e593a73c12594af58",
+          "config.py": "aadeb2475fe501d1c9145870abe585ab5126624a70ba8894621e22abc0e27bee",
+          "container.py": "ff9557d1e91bcd9c540282e42b23fe257fd05686dafd6cd37772a9ef870f3b5e",
+          "experimental_mx.py": "6bf972f07e784e8b0eb50e83c7756a640da404e70efc6e019d5d5f292854557d",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "a762f44c7eb7e437d506a1f9cd2c4dfb8e30663bd2dbefaccd568df637453b2d",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "4db0f3a6aa25874ab206ed524d1f32a90edb8bfb31e42be4d133d5d1e4134704",
+          "visibility.py": "da0a6948799353b0766577488290188204ed1c9341bc1dc230707c522762391e"
+        }
+      },
+      "component_mse": 2.8054256658823517e-08,
+      "block_histogram": {
+        "16": 4,
+        "float32": 2,
+        "4": 40,
+        "8": 1557,
+        "12": 341
+      },
+      "sample_histogram": {
+        "16": 98304,
+        "float32": 36864,
+        "4": 983040,
+        "8": 38264832,
+        "12": 8331264
+      },
+      "logical_byte_accounting": {
+        "lossless_component_bytes": 294912,
+        "packed_code_bytes": 102899712,
+        "exception_position_bytes": 714000,
+        "exception_value_bytes": 1428000,
+        "header_bytes": 31104,
+        "flagged_exception_samples": 0,
+        "nonfinite_exception_samples": 0,
+        "signed_zero_exception_samples": 0,
+        "outlier_exception_samples": 178500
+      },
+      "encode_process_seconds": [
+        13.06905462499708,
+        13.039090788923204,
+        12.20993338804692
+      ],
+      "verification_process_seconds": [
+        9.669408284127712,
+        10.001767360139638,
+        9.315072989091277
+      ],
+      "archive_bytes_repeats": [
+        106732004,
+        106731998,
+        106731994
+      ],
+      "payloads_identical_across_repeats": true,
+      "verification": "passed"
+    }
+  ],
+  "formula": {
+    "levels": "N=2**b; C=(N-1)/2; delta=ceil_float32(t/C)",
+    "encoder": "q=rint_even(float64(x)/float64(delta)+C), 0 <= q < N",
+    "decoder": "float32(float32(q)-float32(C))*stored_float32_delta",
+    "positive_zero_nonzero_step": "+delta/2 under nearest-even",
+    "old_to_new_step_ratio": "(N-2)/(N-1)"
+  },
+  "midrise_by_baseline_class": {
+    "autocorrelation": {
+      "by_product": {
+        "XX": {
+          "valid_samples": 67584,
+          "component_mse": 3.065274743713931e-08,
+          "real_mse": 1.5275510678040755e-08,
+          "imag_mse": 4.602998419623786e-08,
+          "bias_real": 3.8029764420405793e-07,
+          "bias_imag": 0.0001828802368518981,
+          "complex_bias_abs": 0.00018288063226406598,
+          "max_complex_error": 0.00036666073317756476,
+          "max_baseline_component_mse": 4.695906025702654e-08,
+          "p99_error": 0.00036130344583619326
+        },
+        "XY": {
+          "valid_samples": 67584,
+          "component_mse": 3.462620111729924e-08,
+          "real_mse": 3.4696852573366795e-08,
+          "imag_mse": 3.455554966123168e-08,
+          "bias_real": 8.976358404927556e-07,
+          "bias_imag": 2.908410808552278e-07,
+          "complex_bias_abs": 9.435775730962309e-07,
+          "max_complex_error": 0.0005680380163179764,
+          "max_baseline_component_mse": 6.112032395774325e-08,
+          "p99_error": 0.0005028650396459955
+        },
+        "YX": {
+          "valid_samples": 67584,
+          "component_mse": 3.462620111729924e-08,
+          "real_mse": 3.4696852573366795e-08,
+          "imag_mse": 3.455554966123168e-08,
+          "bias_real": 8.976358404927556e-07,
+          "bias_imag": -2.47815757968267e-07,
+          "complex_bias_abs": 9.312157387171473e-07,
+          "max_complex_error": 0.0005680380163179764,
+          "max_baseline_component_mse": 6.112032395774325e-08,
+          "p99_error": 0.0005028650396459955
+        },
+        "YY": {
+          "valid_samples": 67584,
+          "component_mse": 2.2310803486480093e-08,
+          "real_mse": 1.1173224532026262e-08,
+          "imag_mse": 3.3448382440933925e-08,
+          "bias_real": 1.537070574792751e-07,
+          "bias_imag": 0.00015566875861788338,
+          "complex_bias_abs": 0.0001556688345029035,
+          "max_complex_error": 0.0003212407117500255,
+          "max_baseline_component_mse": 3.6227895943154373e-08,
+          "p99_error": 0.0003172236117105146
+        }
+      },
+      "protected_sample_count": 0,
+      "protected_sample_bits": "exact",
+      "metric_domain": "unflagged finite input samples",
+      "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+      "science_validation": "not performed",
+      "calculation": "native-moments-v2"
+    },
+    "cross_correlation": {
+      "by_product": {
+        "XX": {
+          "valid_samples": 11860992,
+          "component_mse": 3.499752460274762e-08,
+          "real_mse": 3.501568449219182e-08,
+          "imag_mse": 3.497936471330342e-08,
+          "bias_real": -1.1860246173776867e-07,
+          "bias_imag": 7.260450554167562e-08,
+          "complex_bias_abs": 1.3906098717904345e-07,
+          "max_complex_error": 0.0007750349388709806,
+          "max_baseline_component_mse": 1.1429691409974657e-07,
+          "p99_error": 0.0005995898763095418
+        },
+        "XY": {
+          "valid_samples": 11860992,
+          "component_mse": 2.6248707863817754e-08,
+          "real_mse": 2.6244004169511785e-08,
+          "imag_mse": 2.625341155812373e-08,
+          "bias_real": 5.7170098642003533e-08,
+          "bias_imag": 1.170546870260876e-08,
+          "complex_bias_abs": 5.835613229373728e-08,
+          "max_complex_error": 0.0007470103621502403,
+          "max_baseline_component_mse": 1.0916627862410518e-07,
+          "p99_error": 0.00043308977753285635
+        },
+        "YX": {
+          "valid_samples": 11860992,
+          "component_mse": 2.5855881368024657e-08,
+          "real_mse": 2.5857429455839574e-08,
+          "imag_mse": 2.5854333280209737e-08,
+          "bias_real": -3.615915974051635e-08,
+          "bias_imag": 1.0019224670330449e-07,
+          "complex_bias_abs": 1.0651746867343406e-07,
+          "max_complex_error": 0.0007386723229293987,
+          "max_baseline_component_mse": 1.0424161115060925e-07,
+          "p99_error": 0.0004346062580454647
+        },
+        "YY": {
+          "valid_samples": 11860992,
+          "component_mse": 2.5057938860402636e-08,
+          "real_mse": 2.5055426449133776e-08,
+          "imag_mse": 2.5060451271671493e-08,
+          "bias_real": 7.430139025969262e-08,
+          "bias_imag": 3.557031676987392e-08,
+          "complex_bias_abs": 8.237684158568062e-08,
+          "max_complex_error": 0.0007629515956648514,
+          "max_baseline_component_mse": 1.1383051546016295e-07,
+          "p99_error": 0.0005600065385786086
+        }
+      },
+      "protected_sample_count": 0,
+      "protected_sample_bits": "exact",
+      "metric_domain": "unflagged finite input samples",
+      "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+      "science_validation": "not performed",
+      "calculation": "native-moments-v2"
+    }
+  },
+  "export_verification": {
+    "schema": "varquanms.verification/1",
+    "status": "passed",
+    "archive": "results/midrise-20261023/benchmark/midrise-1/archive.h5",
+    "integrity": "all inventory SHA-256 and HDF5 chunk checksums passed",
+    "source": "data/working/20260904_190008_59MHz.ms",
+    "restored": "results/midrise-20261023/restored.ms",
+    "column_checks": [
+      {
+        "table": ".",
+        "column": "UVW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FLAG",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FLAG_CATEGORY",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "WEIGHT",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "SIGMA",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "ANTENNA1",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "ANTENNA2",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "ARRAY_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "DATA_DESC_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "EXPOSURE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FEED1",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FEED2",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FIELD_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "INTERVAL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "OBSERVATION_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "PROCESSOR_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "SCAN_NUMBER",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "STATE_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "TIME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "TIME_CENTROID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "DATA",
+        "status": "measured_error_bounds_passed",
+        "quality": {
+          "by_product": {
+            "XX": {
+              "valid_samples": 11928576,
+              "component_mse": 3.4972908301526e-08,
+              "real_mse": 3.4903842147635846e-08,
+              "imag_mse": 3.504197445541616e-08,
+              "bias_real": -1.1577583224234755e-07,
+              "bias_imag": 1.1083417992887376e-06,
+              "complex_bias_abs": 1.1143722840155368e-06,
+              "max_complex_error": 0.0007750349388709806,
+              "max_baseline_component_mse": 1.1429691409974657e-07,
+              "p99_error": 0.0005992212577844979
+            },
+            "XY": {
+              "valid_samples": 11928576,
+              "component_mse": 2.6296172414828997e-08,
+              "real_mse": 2.6291895661884917e-08,
+              "imag_mse": 2.6300449167773075e-08,
+              "bias_real": 6.193194420489731e-08,
+              "bias_imag": 1.328697358732615e-08,
+              "complex_bias_abs": 6.334121391407664e-08,
+              "max_complex_error": 0.0007470103621502403,
+              "max_baseline_component_mse": 1.0916627862410518e-07,
+              "p99_error": 0.00043438493434730857
+            },
+            "YX": {
+              "valid_samples": 11928576,
+              "component_mse": 2.590557156490434e-08,
+              "real_mse": 2.5907511173219282e-08,
+              "imag_mse": 2.5903631956589403e-08,
+              "bias_real": -3.086853650973294e-08,
+              "bias_imag": 9.822052996295564e-08,
+              "complex_bias_abs": 1.0295697670608138e-07,
+              "max_complex_error": 0.0007386723229293987,
+              "max_baseline_component_mse": 1.0424161115060925e-07,
+              "p99_error": 0.0004358789016488151
+            },
+            "YY": {
+              "valid_samples": 11928576,
+              "component_mse": 2.504237435403473e-08,
+              "real_mse": 2.497677374705382e-08,
+              "imag_mse": 2.510797496101564e-08,
+              "bias_real": 7.475128072552595e-08,
+              "bias_imag": 9.173447547365227e-07,
+              "complex_bias_abs": 9.203853285514265e-07,
+              "max_complex_error": 0.0007629515956648514,
+              "max_baseline_component_mse": 1.1383051546016295e-07,
+              "p99_error": 0.0005595991362455583
+            }
+          },
+          "protected_sample_count": 0,
+          "protected_sample_bits": "exact",
+          "metric_domain": "unflagged finite input samples",
+          "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+          "science_validation": "not performed",
+          "calculation": "native-moments-v2"
+        }
+      },
+      {
+        "table": "ANTENNA",
+        "column": "OFFSET",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "POSITION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "TYPE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "DISH_DIAMETER",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "MOUNT",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "NAME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "STATION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "DATA_DESCRIPTION",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "DATA_DESCRIPTION",
+        "column": "POLARIZATION_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "DATA_DESCRIPTION",
+        "column": "SPECTRAL_WINDOW_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "POSITION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "BEAM_OFFSET",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "POLARIZATION_TYPE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "POL_RESPONSE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "RECEPTOR_ANGLE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "ANTENNA_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "BEAM_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "FEED_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "INTERVAL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "NUM_RECEPTORS",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "SPECTRAL_WINDOW_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "TIME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "DELAY_DIR",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "PHASE_DIR",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "REFERENCE_DIR",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "CODE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "NAME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "NUM_POLY",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "SOURCE_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "TIME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "TIME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "INTERVAL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "TYPE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "REASON",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "LEVEL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "SEVERITY",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "APPLIED",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "COMMAND",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "TIME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "OBSERVATION_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "MESSAGE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "PRIORITY",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "ORIGIN",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "OBJECT_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "APPLICATION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "CLI_COMMAND",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "APP_PARAMS",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "TIME_RANGE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "LOG",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "SCHEDULE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "OBSERVER",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "PROJECT",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "RELEASE_DATE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "SCHEDULE_TYPE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "TELESCOPE_NAME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "ANTENNA_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TIME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "INTERVAL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "NAME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "NUM_POLY",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TIME_ORIGIN",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "DIRECTION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TARGET",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TRACKING",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "CORR_TYPE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "CORR_PRODUCT",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "NUM_CORR",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "TYPE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "SUB_TYPE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "TYPE_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "MODE_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "SETTINGS",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "DIRECTION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "PROPER_MOTION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "CALIBRATION_GROUP",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "CODE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "INTERVAL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "NAME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "NUM_LINES",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "SOURCE_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "SPECTRAL_WINDOW_ID",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "TIME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "TRANSITION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "REST_FREQUENCY",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "SYSVEL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "MEAS_FREQ_REF",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "CHAN_FREQ",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "REF_FREQUENCY",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "CHAN_WIDTH",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "EFFECTIVE_BW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "RESOLUTION",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "FREQ_GROUP",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "FREQ_GROUP_NAME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "IF_CONV_CHAIN",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "NAME",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "NET_SIDEBAND",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "NUM_CHAN",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "TOTAL_BANDWIDTH",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "SIG",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "REF",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "CAL",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "LOAD",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "SUB_SCAN",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "OBS_MODE",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "FLAG_ROW",
+        "status": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "UVW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FLAG",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FLAG_CATEGORY",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "WEIGHT",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "SIGMA",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "ANTENNA1",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "ANTENNA2",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "ARRAY_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "DATA_DESC_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "EXPOSURE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FEED1",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FEED2",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FIELD_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "INTERVAL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "OBSERVATION_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "PROCESSOR_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "SCAN_NUMBER",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "STATE_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "TIME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "TIME_CENTROID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "OFFSET",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "POSITION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "TYPE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "DISH_DIAMETER",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "MOUNT",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "NAME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "ANTENNA",
+        "column": "STATION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "DATA_DESCRIPTION",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "DATA_DESCRIPTION",
+        "column": "POLARIZATION_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "DATA_DESCRIPTION",
+        "column": "SPECTRAL_WINDOW_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "POSITION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "BEAM_OFFSET",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "POLARIZATION_TYPE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "POL_RESPONSE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "RECEPTOR_ANGLE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "ANTENNA_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "BEAM_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "FEED_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "INTERVAL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "NUM_RECEPTORS",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "SPECTRAL_WINDOW_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FEED",
+        "column": "TIME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "DELAY_DIR",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "PHASE_DIR",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "REFERENCE_DIR",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "CODE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "NAME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "NUM_POLY",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "SOURCE_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FIELD",
+        "column": "TIME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "TIME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "INTERVAL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "TYPE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "REASON",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "LEVEL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "SEVERITY",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "APPLIED",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "FLAG_CMD",
+        "column": "COMMAND",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "TIME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "OBSERVATION_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "MESSAGE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "PRIORITY",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "ORIGIN",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "OBJECT_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "APPLICATION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "CLI_COMMAND",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "HISTORY",
+        "column": "APP_PARAMS",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "TIME_RANGE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "LOG",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "SCHEDULE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "OBSERVER",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "PROJECT",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "RELEASE_DATE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "SCHEDULE_TYPE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "OBSERVATION",
+        "column": "TELESCOPE_NAME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "ANTENNA_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TIME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "INTERVAL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "NAME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "NUM_POLY",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TIME_ORIGIN",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "DIRECTION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TARGET",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POINTING",
+        "column": "TRACKING",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "CORR_TYPE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "CORR_PRODUCT",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "POLARIZATION",
+        "column": "NUM_CORR",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "TYPE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "SUB_TYPE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "TYPE_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "MODE_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "PROCESSOR",
+        "column": "SETTINGS",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "DIRECTION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "PROPER_MOTION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "CALIBRATION_GROUP",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "CODE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "INTERVAL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "NAME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "NUM_LINES",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "SOURCE_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "SPECTRAL_WINDOW_ID",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "TIME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "TRANSITION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "REST_FREQUENCY",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SOURCE",
+        "column": "SYSVEL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "MEAS_FREQ_REF",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "CHAN_FREQ",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "REF_FREQUENCY",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "CHAN_WIDTH",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "EFFECTIVE_BW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "RESOLUTION",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "FREQ_GROUP",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "FREQ_GROUP_NAME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "IF_CONV_CHAIN",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "NAME",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "NET_SIDEBAND",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "NUM_CHAN",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "SPECTRAL_WINDOW",
+        "column": "TOTAL_BANDWIDTH",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "SIG",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "REF",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "CAL",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "LOAD",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "SUB_SCAN",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "OBS_MODE",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": "STATE",
+        "column": "FLAG_ROW",
+        "export": "bitwise_exact"
+      },
+      {
+        "table": ".",
+        "column": "DATA",
+        "export": "exactly_matches_archive_reconstruction"
+      }
+    ],
+    "summary": {
+      "archive": "results/midrise-20261023/benchmark/midrise-1/archive.h5",
+      "archive_bytes": 106732004,
+      "source_physical_file_bytes": 409594838,
+      "whole_archive_ratio": 3.8376009317692565,
+      "selected_visibility_logical_bytes": 381714432,
+      "visibility_datasets_stored_bytes": 105157280,
+      "visibility_dataset_ratio_including_maps_statistics": 3.629938241080408,
+      "stored_bytes_by_category": {
+        "coordinates": 988098,
+        "flags_weights": 98,
+        "auxiliary_columns": 184,
+        "quantization_statistics": 1676751,
+        "permutations": 488354,
+        "visibility_indexes": 25572,
+        "visibility_block_payload": 99615100,
+        "visibility_quality": 3351503,
+        "subtables": 9944,
+        "container_and_manifest_overhead": 576400
+      },
+      "elapsed_seconds": null,
+      "mode": "adaptive",
+      "deduplicate": true,
+      "flag_policy": {
+        "burn_flag": false,
+        "discarded_main_columns": [],
+        "original_main_flag_values_preserved": true,
+        "export": "original flag values",
+        "reflagging_performed": false,
+        "subtable_flags": "preserved exactly",
+        "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+        "warning": null
+      },
+      "exact_ms_round_trip": false,
+      "timings_seconds": {
+        "inspection_preflight": 3.7893669228069484,
+        "column_encoding_and_writing": 8.53333499794826,
+        "before_integrity_finalization": 12.333168896846473
+      },
+      "peak_process_rss_bytes": 1692844032,
+      "visibility_quality": {
+        "DATA": {
+          "by_product": {
+            "XX": {
+              "valid_samples": 11928576,
+              "component_mse": 3.4972908301526e-08,
+              "real_mse": 3.4903842147635846e-08,
+              "imag_mse": 3.504197445541616e-08,
+              "bias_real": -1.1577583224234755e-07,
+              "bias_imag": 1.1083417992887376e-06,
+              "complex_bias_abs": 1.1143722840155368e-06,
+              "max_complex_error": 0.0007750349388709806,
+              "max_baseline_component_mse": 1.1429691409974657e-07,
+              "p99_error": 0.0005992212577844979
+            },
+            "XY": {
+              "valid_samples": 11928576,
+              "component_mse": 2.6296172414828997e-08,
+              "real_mse": 2.6291895661884917e-08,
+              "imag_mse": 2.6300449167773075e-08,
+              "bias_real": 6.193194420489731e-08,
+              "bias_imag": 1.328697358732615e-08,
+              "complex_bias_abs": 6.334121391407664e-08,
+              "max_complex_error": 0.0007470103621502403,
+              "max_baseline_component_mse": 1.0916627862410518e-07,
+              "p99_error": 0.00043438493434730857
+            },
+            "YX": {
+              "valid_samples": 11928576,
+              "component_mse": 2.590557156490434e-08,
+              "real_mse": 2.5907511173219282e-08,
+              "imag_mse": 2.5903631956589403e-08,
+              "bias_real": -3.086853650973294e-08,
+              "bias_imag": 9.822052996295564e-08,
+              "complex_bias_abs": 1.0295697670608138e-07,
+              "max_complex_error": 0.0007386723229293987,
+              "max_baseline_component_mse": 1.0424161115060925e-07,
+              "p99_error": 0.0004358789016488151
+            },
+            "YY": {
+              "valid_samples": 11928576,
+              "component_mse": 2.504237435403473e-08,
+              "real_mse": 2.497677374705382e-08,
+              "imag_mse": 2.510797496101564e-08,
+              "bias_real": 7.475128072552595e-08,
+              "bias_imag": 9.173447547365227e-07,
+              "complex_bias_abs": 9.203853285514265e-07,
+              "max_complex_error": 0.0007629515956648514,
+              "max_baseline_component_mse": 1.1383051546016295e-07,
+              "p99_error": 0.0005595991362455583
+            }
+          },
+          "protected_sample_count": 0,
+          "protected_sample_bits": "exact",
+          "metric_domain": "unflagged finite input samples",
+          "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+          "science_validation": "not performed",
+          "calculation": "native-moments-v2"
+        }
+      },
+      "visibility_block_statistics": {
+        "DATA": {
+          "products": [
+            {
+              "permutation": "tables/t0/c21/p0/permutation",
+              "group_boundaries": "tables/t0/c21/p0/group_boundaries",
+              "payload": "tables/t0/c21/p0/payload",
+              "offsets": "tables/t0/c21/p0/offsets",
+              "crc32": "tables/t0/c21/p0/crc32",
+              "block_count": 486,
+              "component_bit_width_histogram": {
+                "16": 2,
+                "float32": 1,
+                "4": 12,
+                "8": 324,
+                "12": 147
+              },
+              "complex_sample_bit_width_histogram": {
+                "16": 49152,
+                "float32": 18432,
+                "4": 294912,
+                "8": 7962624,
+                "12": 3603456
+              },
+              "logical_bytes_before_secondary_compression": {
+                "lossless_component_bytes": 147456,
+                "packed_code_bytes": 27227136,
+                "exception_position_bytes": 146584,
+                "exception_value_bytes": 293168,
+                "header_bytes": 7776,
+                "flagged_exception_samples": 0,
+                "nonfinite_exception_samples": 0,
+                "signed_zero_exception_samples": 0,
+                "outlier_exception_samples": 36646
+              },
+              "serialized_block_bytes": 25664225,
+              "index_bytes": 5840,
+              "bucket_reference": null,
+              "buckets": [],
+              "grouping": {
+                "method": "amplitude",
+                "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                "group_size_histogram": {
+                  "80": 1,
+                  "96": 1,
+                  "128": 484
+                },
+                "group_count": 486,
+                "partial_group_count": 2
+              },
+              "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+            },
+            {
+              "permutation": "tables/t0/c21/p1/permutation",
+              "group_boundaries": "tables/t0/c21/p1/group_boundaries",
+              "payload": "tables/t0/c21/p1/payload",
+              "offsets": "tables/t0/c21/p1/offsets",
+              "crc32": "tables/t0/c21/p1/crc32",
+              "block_count": 486,
+              "component_bit_width_histogram": {
+                "12": 6,
+                "4": 10,
+                "8": 470
+              },
+              "complex_sample_bit_width_histogram": {
+                "12": 132096,
+                "4": 245760,
+                "8": 11550720
+              },
+              "logical_bytes_before_secondary_compression": {
+                "lossless_component_bytes": 0,
+                "packed_code_bytes": 23743488,
+                "exception_position_bytes": 221240,
+                "exception_value_bytes": 442480,
+                "header_bytes": 7776,
+                "flagged_exception_samples": 0,
+                "nonfinite_exception_samples": 0,
+                "signed_zero_exception_samples": 0,
+                "outlier_exception_samples": 55310
+              },
+              "serialized_block_bytes": 22236486,
+              "index_bytes": 5840,
+              "bucket_reference": null,
+              "buckets": [],
+              "grouping": {
+                "method": "amplitude",
+                "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                "group_size_histogram": {
+                  "80": 1,
+                  "96": 1,
+                  "128": 484
+                },
+                "group_count": 486,
+                "partial_group_count": 2
+              },
+              "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+            },
+            {
+              "permutation": "tables/t0/c21/p2/permutation",
+              "group_boundaries": "tables/t0/c21/p2/group_boundaries",
+              "payload": "tables/t0/c21/p2/payload",
+              "offsets": "tables/t0/c21/p2/offsets",
+              "crc32": "tables/t0/c21/p2/crc32",
+              "block_count": 486,
+              "component_bit_width_histogram": {
+                "12": 6,
+                "4": 10,
+                "8": 470
+              },
+              "complex_sample_bit_width_histogram": {
+                "12": 132096,
+                "4": 245760,
+                "8": 11550720
+              },
+              "logical_bytes_before_secondary_compression": {
+                "lossless_component_bytes": 0,
+                "packed_code_bytes": 23743488,
+                "exception_position_bytes": 214352,
+                "exception_value_bytes": 428704,
+                "header_bytes": 7776,
+                "flagged_exception_samples": 0,
+                "nonfinite_exception_samples": 0,
+                "signed_zero_exception_samples": 0,
+                "outlier_exception_samples": 53588
+              },
+              "serialized_block_bytes": 22128479,
+              "index_bytes": 5840,
+              "bucket_reference": null,
+              "buckets": [],
+              "grouping": {
+                "method": "amplitude",
+                "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                "group_size_histogram": {
+                  "80": 1,
+                  "96": 1,
+                  "128": 484
+                },
+                "group_count": 486,
+                "partial_group_count": 2
+              },
+              "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+            },
+            {
+              "permutation": "tables/t0/c21/p3/permutation",
+              "group_boundaries": "tables/t0/c21/p3/group_boundaries",
+              "payload": "tables/t0/c21/p3/payload",
+              "offsets": "tables/t0/c21/p3/offsets",
+              "crc32": "tables/t0/c21/p3/crc32",
+              "block_count": 486,
+              "component_bit_width_histogram": {
+                "16": 2,
+                "float32": 1,
+                "4": 8,
+                "8": 293,
+                "12": 182
+              },
+              "complex_sample_bit_width_histogram": {
+                "16": 49152,
+                "float32": 18432,
+                "4": 196608,
+                "8": 7200768,
+                "12": 4463616
+              },
+              "logical_bytes_before_secondary_compression": {
+                "lossless_component_bytes": 147456,
+                "packed_code_bytes": 28185600,
+                "exception_position_bytes": 131824,
+                "exception_value_bytes": 263648,
+                "header_bytes": 7776,
+                "flagged_exception_samples": 0,
+                "nonfinite_exception_samples": 0,
+                "signed_zero_exception_samples": 0,
+                "outlier_exception_samples": 32956
+              },
+              "serialized_block_bytes": 27051903,
+              "index_bytes": 5840,
+              "bucket_reference": null,
+              "buckets": [],
+              "grouping": {
+                "method": "amplitude",
+                "classes": "autocorrelations first, then cross-correlations; no-valid samples separate",
+                "group_size_histogram": {
+                  "80": 1,
+                  "96": 1,
+                  "128": 484
+                },
+                "group_count": 486,
+                "partial_group_count": 2
+              },
+              "permutation_direction": "perm[j] is original row index at archived baseline position j; restored[perm,:]=decoded"
+            }
+          ],
+          "timings_seconds": {
+            "input_reading": 0.7310140831395984,
+            "amplitude_statistics": 0.7113180533051491,
+            "baseline_sorting_and_grouping": 0.05088326195254922,
+            "payload_writing": 0.28518069302663207,
+            "parallel_block_pipeline_wall": 4.981183708179742,
+            "quality_accounting": 0.8097462668083608
+          },
+          "worker_timings_seconds": {
+            "quantization_and_scale_estimation": 11.64600775577128,
+            "native_candidate_search": 81.77644680347294,
+            "native_search_quantization_cpu": 22.399431847999992,
+            "native_search_compression_cpu": 58.38485812000004,
+            "candidate_reconstruction_and_error_checks": 21.615196709055454,
+            "codec_total": 118.35743073746562,
+            "memory_gathering": 1.375589955598116
+          },
+          "worker_count": 24
+        }
+      },
+      "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."
+    },
+    "flag_policy": {
+      "burn_flag": false,
+      "discarded_main_columns": [],
+      "original_main_flag_values_preserved": true,
+      "export": "original flag values",
+      "reflagging_performed": false,
+      "subtable_flags": "preserved exactly",
+      "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+      "warning": null
+    },
+    "verification_scope": "declared archive policy; intentionally discarded flags are not checked for source-value equality",
+    "CASA_workflow": "not run",
+    "scientific_products": "not tested",
+    "elapsed_seconds": 11.200941107235849
+  },
+  "source_files_unchanged": true,
+  "source_file_sha256": {
+    "ANTENNA/table.dat": "5a666806538598d6699b7d4e68079fcf6511c546d0aeb4c44234eb2685b7c398",
+    "ANTENNA/table.f0": "001850eb028a438c9a9747f60483b86f5f7b3322454d1822d723ecb5fe0206ab",
+    "ANTENNA/table.f0i": "fbdb98183ff6fdf98e3da03cc7719060d2bca477544ce1947f63aab3362308a2",
+    "ANTENNA/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "ANTENNA/table.lock": "99851db28d98e3203218894e46078943cc18251000e427fdc71e8fe42fdc8e1b",
+    "DATA_DESCRIPTION/table.dat": "6f0ae3c8296e4379a2b53d13814207d1a88a901ac242124f30aa9ce18de55891",
+    "DATA_DESCRIPTION/table.f0": "05b9d855ccff92cd84527263c86f3a141a50e5629725fdb0fadaac511d72a1a0",
+    "DATA_DESCRIPTION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "DATA_DESCRIPTION/table.lock": "b8f29be34da82b35422ee390735fa721a1eb4b5a3eb3e8a03f9f8afd728a10bf",
+    "FEED/table.dat": "2934bc18a2a8169a6c19973e338ae7e812da7029adf25a263d5bf4bf01cb283e",
+    "FEED/table.f0": "335a4822764f35b5b5f4e65e14a44fee73ddc1114bca4906867497493b300f0c",
+    "FEED/table.f0i": "ad81a1a837bbd1b6271325c5be8a07d77ec6e049ad7774a88e524ffa952e001a",
+    "FEED/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FEED/table.lock": "7e71fa1fa9fed383b75a6ba8c065ccf8988de57c21bfcbd948b23a4383f15024",
+    "FIELD/table.dat": "243a151981b68b778d0d9d44334171243e8568e9820b90597ffb406b2e31d295",
+    "FIELD/table.f0": "e36bd4ab4bc9dd660d236a7d23fd0890d737857c556bb3b64208acce6530f538",
+    "FIELD/table.f0i": "81d0111a13fac24d09e1c5236002dee87393544e3a0e6517a4b12df99f630983",
+    "FIELD/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FIELD/table.lock": "445ffd354621db6c3b67eb35fa74b728ee152e3594c01ffc604c283b23a77869",
+    "FLAG_CMD/table.dat": "99b3bb71369b7d4ff57b37edc7044c309db88a1434fe68386ee7a77d86fb55ba",
+    "FLAG_CMD/table.f0": "264a9bd34dab35b58c0e3cc7156062a5cd27de5079d03247b3559292762baccc",
+    "FLAG_CMD/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FLAG_CMD/table.lock": "c3e12a988982337bb24f3294df38531380ab98d3fac3568d6768cade43f70fe3",
+    "HISTORY/table.dat": "3bf593e58435c0609b75007f249751fd9b7afc09deabc1c1f9612b075f2eeda7",
+    "HISTORY/table.f0": "8851f68182f506c528b1d614662b605549febd12cbfd41c275e5e257669c7afc",
+    "HISTORY/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "HISTORY/table.lock": "77e684e6205bbe7056d80347417d71df498503bc1e7770f33aa1e63469e17cf4",
+    "OBSERVATION/table.dat": "32df07b0c6ac68bcb4cbcabd098bce578aa86e39d4167e1e207289405e28c996",
+    "OBSERVATION/table.f0": "6fd212abf030bdc1a4aaa9251c25a4a2fb2d51ceff22a9178cfe3538d7bd43be",
+    "OBSERVATION/table.f0i": "51805705d71837fe516c48eeed2b9db9d062375c34e90b91b570b2e59fa9353d",
+    "OBSERVATION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "OBSERVATION/table.lock": "445ffd354621db6c3b67eb35fa74b728ee152e3594c01ffc604c283b23a77869",
+    "POINTING/table.dat": "d8a52f3a451d75dc8cccc3ecae8f98a4483c2783b52789112aad47c83788ea36",
+    "POINTING/table.f0": "c287fdbed7066e41d81601b96115b3fdab19930234a6805423b3695d98fc3c83",
+    "POINTING/table.f0i": "a02c7a228ec02a8b994a3d4d34df006dfa47f8f70c8c496f1ed833030d7d2966",
+    "POINTING/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "POINTING/table.lock": "77e684e6205bbe7056d80347417d71df498503bc1e7770f33aa1e63469e17cf4",
+    "POLARIZATION/table.dat": "32382be664563b67f38100275151f483034367adca94da8fb3fda3954756157f",
+    "POLARIZATION/table.f0": "c63154ed7a69ba5831617729887e2bb313c2877a08aa125841746dd2c57981a9",
+    "POLARIZATION/table.f0i": "a371ee9da6585310303f8b546747c0d45f938704ca2f66d0d0510b3fd72c5e47",
+    "POLARIZATION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "POLARIZATION/table.lock": "25b35105b98eae2b7dbfb011c657aa04cbc6dd4f303e7ea31b7063d3b5d2c868",
+    "PROCESSOR/table.dat": "9715aaeae6d6ef61d2232859dceb47872d86fa769ca8148c37ad34b9bf26b849",
+    "PROCESSOR/table.f0": "717689985fa9414b8b2f2d13f4563513f3f073b477ba494925f3103852c321e1",
+    "PROCESSOR/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "PROCESSOR/table.lock": "8613f971f02ee3a04a7ba328bde6af8cbbb56948d677a720589cb54aa13404dd",
+    "SOURCE/table.dat": "d62004aff093b2347fb2f071b3e450fb2c11fa9d0667277e65329bd3c1e671fb",
+    "SOURCE/table.f0": "3c6dba25e29704f385927df6e240a3c6d642693e4175dcea3e2a4ab2d61007d5",
+    "SOURCE/table.f0i": "07c3070f85e19d53a372afa3b494538509c9e42a4efe121b4149502d88c6df6a",
+    "SOURCE/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "SOURCE/table.lock": "0cde0e7b51951b5a1de75ade17a8432cd5fa96ab0317b8e25357b2d6e2492c1a",
+    "SPECTRAL_WINDOW/table.dat": "ce5ba70381c0c3d291a18e9c23794017c51e8ae75cda1f020c867c88c16ccbac",
+    "SPECTRAL_WINDOW/table.f0": "c8acd075831b9a596e9479433b4803bd1bc3dcd46abb8483c1882a87c28142ff",
+    "SPECTRAL_WINDOW/table.f0i": "ed2fd1c5750f31879fc6ec750c1c07022bd484a0c1d72979ca4bad73a11172f2",
+    "SPECTRAL_WINDOW/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "SPECTRAL_WINDOW/table.lock": "f94efaec34302e90787ce38a63021e19462711b36a379f4818183306e512229f",
+    "STATE/table.dat": "7ee1973bbec76d6939bdc989c48f3aff3ed34fd6ad4b4fb2770a7dd1d1c558ba",
+    "STATE/table.f0": "b802c0447388aec363ffce0275e995baa0381462762023a7b37829567086105c",
+    "STATE/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "STATE/table.lock": "7d44d15bca2e23c0739e04c4828f85729da65663a8c73e0110802c09c91a94e3",
+    "table.dat": "bbfa808032d1c88dfaef394be8be1120599016e29e12ca6bfc0446b3ac054888",
+    "table.f0": "2088f2c9e1b88e292813b7dddceb71ab80bf0208da19f6554fc577e985554a7e",
+    "table.f0i": "461a49341b6fb90d030418aedd05277951a0c5bddd82a003cbeaaa8614489444",
+    "table.info": "e8c27a5fbb307d21dc44e1e6de91d8e2beeee2009a46e69cf468057206405e81",
+    "table.lock": "84205ef1af6590e8c5975e2bb160f2f71f482800a5697e401ba23d498a5cb390"
+  },
+  "imaging": {
+    "schema": "varquanms.wsclean-comparison/1",
+    "status": "measured",
+    "reference": "results/wsclean-grouping/reference-single",
+    "candidate": "results/midrise-20261023/wsclean",
+    "parameters": {
+      "size": 2048,
+      "scale": "4amin",
+      "polarizations": "I",
+      "weighting": "briggs 0",
+      "multiscale": true,
+      "mgain": 0.8,
+      "niter": 10000,
+      "auto_mask": 5,
+      "auto_threshold": 1,
+      "threads": 1,
+      "memory_gb": 8,
+      "restoring_beam": {
+        "major_arcsec": 666.0489741755111,
+        "minor_arcsec": 517.0156754893128,
+        "position_angle_deg": 43.3244852231235
+      }
+    },
+    "container_id": "sha256:03ffbf70c829e220707b9843e96765f5886005b4b05a26344a0b5bb4d9ece8c6",
+    "products": {
+      "image-dirty.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-dirty.fits",
+        "candidate": "results/midrise-20261023/wsclean/image-dirty.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 5.355802351413321e-08,
+            "difference_bias": 1.2126712697250072e-11,
+            "difference_max_abs": 2.9768943932140246e-07,
+            "difference_p99_abs": 1.3784847396891564e-07,
+            "difference_p999_abs": 1.7600253340788053e-07,
+            "reference_rms": 2.697672053241035e-05,
+            "relative_rms_difference": 0.001985342267596522,
+            "reference_abs_peak": 0.0014151980867609382,
+            "rms_normalized_to_reference_peak": 3.784489536494157e-05
+          },
+          "bright_reference": {
+            "pixels": 1538,
+            "difference_rms": 5.0706132571723847e-08,
+            "difference_bias": -4.012912971431435e-09,
+            "difference_max_abs": 1.624284777790308e-07,
+            "difference_p99_abs": 1.3054101145826276e-07,
+            "difference_p999_abs": 1.5602511120960116e-07,
+            "reference_rms": 0.0005098237588472618,
+            "relative_rms_difference": 9.945815920068745e-05,
+            "reference_abs_peak": 0.0014151980867609382,
+            "rms_normalized_to_reference_peak": 3.582970684180225e-05
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 4.982556068146189e-08,
+            "difference_bias": -7.48384211744581e-10,
+            "difference_max_abs": 1.3702083379030228e-07,
+            "difference_p99_abs": 1.240568235516547e-07,
+            "difference_p999_abs": 1.3572443276643748e-07,
+            "reference_rms": 0.001269647619894375,
+            "relative_rms_difference": 3.9243613661566187e-05,
+            "reference_abs_peak": 0.0014151980867609382,
+            "rms_normalized_to_reference_peak": 3.520748165756859e-05
+          }
+        },
+        "reference_peak_yx": [
+          601,
+          839
+        ],
+        "candidate_peak_yx": [
+          601,
+          839
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 0.0014151980867609382,
+        "candidate_at_reference_peak": 0.0014151741052046418,
+        "relative_change_at_reference_peak": -1.6945724079684718e-05,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.06213427544571459,
+          "candidate_sum_pixels": 0.06213423877488822,
+          "relative_sum_change": -5.901867546121625e-07,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": null,
+          "candidate_iterations": null,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "fb4ad6cc02475f7be31d7217739e2fc161c262707909e0c241463e28d597af9f",
+        "candidate_file_sha256": "4de1ac0759bdb2f29dfcc9e9a95c02d6b70ecdac947baa987c3188dc479a97fd"
+      },
+      "image-image.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-image.fits",
+        "candidate": "results/midrise-20261023/wsclean/image-image.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 2.7778445189941933e-07,
+            "difference_bias": -3.1793436118640866e-08,
+            "difference_max_abs": 6.476322596427053e-06,
+            "difference_p99_abs": 8.330990931426625e-07,
+            "difference_p999_abs": 1.9001927284989269e-06,
+            "reference_rms": 2.4931457844496838e-05,
+            "relative_rms_difference": 0.011141925740244474,
+            "reference_abs_peak": 0.0010093206074088812,
+            "rms_normalized_to_reference_peak": 0.00027521924139896944
+          },
+          "bright_reference": {
+            "pixels": 3016,
+            "difference_rms": 1.3078109180656497e-06,
+            "difference_bias": -6.946411979429804e-08,
+            "difference_max_abs": 6.2041799537837505e-06,
+            "difference_p99_abs": 4.171158798271787e-06,
+            "difference_p999_abs": 5.395745829446245e-06,
+            "reference_rms": 0.00027011754180516427,
+            "relative_rms_difference": 0.004841636382908347,
+            "reference_abs_peak": 0.0010093206074088812,
+            "rms_normalized_to_reference_peak": 0.0012957338911597676
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 1.6069172011833647e-06,
+            "difference_bias": 7.056894864202762e-07,
+            "difference_max_abs": 4.289671778678894e-06,
+            "difference_p99_abs": 3.762254491448398e-06,
+            "difference_p999_abs": 4.236930049955843e-06,
+            "reference_rms": 0.0008854279324662887,
+            "relative_rms_difference": 0.0018148481002936347,
+            "reference_abs_peak": 0.0010093206074088812,
+            "rms_normalized_to_reference_peak": 0.0015920780665606622
+          }
+        },
+        "reference_peak_yx": [
+          599,
+          839
+        ],
+        "candidate_peak_yx": [
+          599,
+          839
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 0.0010093206074088812,
+        "candidate_at_reference_peak": 0.0010112760355696082,
+        "relative_change_at_reference_peak": 0.0019373706891281867,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.04325591429369524,
+          "candidate_sum_pixels": 0.043290493078529835,
+          "relative_sum_change": 0.0007994001606303709,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": 10000.0,
+          "candidate_iterations": 10000.0,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "3bcd5792523cd7b326aa2cddf2ef240f3104a843064c6a5d1667414466081f3a",
+        "candidate_file_sha256": "0309093cd709ed815dd13d46ee430606daed5113da0cf0718b58483ede3610ae"
+      },
+      "image-model.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-model.fits",
+        "candidate": "results/midrise-20261023/wsclean/image-model.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/PIXEL",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 1.7724697660960187e-07,
+            "difference_bias": -2.8339669169252148e-09,
+            "difference_max_abs": 4.773372347699478e-05,
+            "difference_p99_abs": 2.363257215165501e-07,
+            "difference_p999_abs": 9.296020634792391e-07,
+            "reference_rms": 1.6524506218386083e-06,
+            "relative_rms_difference": 0.1072631001901812,
+            "reference_abs_peak": 0.00023257313296198845,
+            "rms_normalized_to_reference_peak": 0.0007621128646814547
+          },
+          "bright_reference": {
+            "pixels": 951,
+            "difference_rms": 6.46212659346903e-06,
+            "difference_bias": -4.4156806436023413e-07,
+            "difference_max_abs": 4.2765579109982355e-05,
+            "difference_p99_abs": 3.392047008787813e-05,
+            "difference_p999_abs": 4.2230888993799426e-05,
+            "reference_rms": 7.06363063947751e-05,
+            "relative_rms_difference": 0.09148449180444444,
+            "reference_abs_peak": 0.00023257313296198845,
+            "rms_normalized_to_reference_peak": 0.027785352981959416
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 1.6197210386673192e-06,
+            "difference_bias": -1.4760631269642284e-07,
+            "difference_max_abs": 7.20027310308069e-06,
+            "difference_p99_abs": 5.110524944029731e-06,
+            "difference_p999_abs": 6.991298287175588e-06,
+            "reference_rms": 0.00010631306015129562,
+            "relative_rms_difference": 0.015235390989237553,
+            "reference_abs_peak": 0.00023257313296198845,
+            "rms_normalized_to_reference_peak": 0.006964351462436742
+          }
+        },
+        "reference_peak_yx": [
+          596,
+          835
+        ],
+        "candidate_peak_yx": [
+          596,
+          835
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 0.00023257313296198845,
+        "candidate_at_reference_peak": 0.00022537285985890776,
+        "relative_change_at_reference_peak": -0.03095917835125649,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.004853784521401394,
+          "candidate_sum_pixels": 0.0048465518120792694,
+          "relative_sum_change": -0.0014901175135060337,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": 10000.0,
+          "candidate_iterations": 10000.0,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "2fa646b1ec23d7c1381533de4c8899a271a01af1ddd902248ae38ce350c71a1e",
+        "candidate_file_sha256": "8b9e905fc0bce0d8730449657123ada3cffb51d848a20081d4ca336576a8be27"
+      },
+      "image-psf.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-psf.fits",
+        "candidate": "results/midrise-20261023/wsclean/image-psf.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 0.0,
+            "difference_bias": 0.0,
+            "difference_max_abs": 0.0,
+            "difference_p99_abs": 0.0,
+            "difference_p999_abs": 0.0,
+            "reference_rms": 0.0014807079909149876,
+            "relative_rms_difference": 0.0,
+            "reference_abs_peak": 1.0,
+            "rms_normalized_to_reference_peak": 0.0
+          },
+          "bright_reference": {
+            "pixels": 19,
+            "difference_rms": 0.0,
+            "difference_bias": 0.0,
+            "difference_max_abs": 0.0,
+            "difference_p99_abs": 0.0,
+            "difference_p999_abs": 0.0,
+            "reference_rms": 0.4318453258525549,
+            "relative_rms_difference": 0.0,
+            "reference_abs_peak": 1.0,
+            "rms_normalized_to_reference_peak": 0.0
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 0.0,
+            "difference_bias": 0.0,
+            "difference_max_abs": 0.0,
+            "difference_p99_abs": 0.0,
+            "difference_p999_abs": 0.0,
+            "reference_rms": 0.26994671002644793,
+            "relative_rms_difference": 0.0,
+            "reference_abs_peak": 1.0,
+            "rms_normalized_to_reference_peak": 0.0
+          }
+        },
+        "reference_peak_yx": [
+          1024,
+          1024
+        ],
+        "candidate_peak_yx": [
+          1024,
+          1024
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 1.0,
+        "candidate_at_reference_peak": 1.0,
+        "relative_change_at_reference_peak": 0.0,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 6.135321920970455,
+          "candidate_sum_pixels": 6.135321920970455,
+          "relative_sum_change": 0.0,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": null,
+          "candidate_iterations": null,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "9c89a17fb1b057cf63a0c50cc39828bd4adc939ce581cc610c6c0676d87104a4",
+        "candidate_file_sha256": "9c89a17fb1b057cf63a0c50cc39828bd4adc939ce581cc610c6c0676d87104a4"
+      },
+      "image-residual.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-residual.fits",
+        "candidate": "results/midrise-20261023/wsclean/image-residual.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 5.421048557750763e-07,
+            "difference_bias": -1.261171517204397e-08,
+            "difference_max_abs": 4.1665000026114285e-05,
+            "difference_p99_abs": 1.8368535847912405e-06,
+            "difference_p999_abs": 5.7950582995542825e-06,
+            "reference_rms": 2.1877499753534797e-05,
+            "relative_rms_difference": 0.02477910464551541,
+            "reference_abs_peak": 0.00010236151138087735,
+            "rms_normalized_to_reference_peak": 0.005295983309175226
+          },
+          "bright_reference": {
+            "pixels": 1464055,
+            "difference_rms": 6.007595831554002e-07,
+            "difference_bias": -1.3146471418950619e-08,
+            "difference_max_abs": 4.1665000026114285e-05,
+            "difference_p99_abs": 2.034897406701926e-06,
+            "difference_p999_abs": 6.981117479881501e-06,
+            "reference_rms": 2.7181532794116713e-05,
+            "relative_rms_difference": 0.022101755177155836,
+            "reference_abs_peak": 0.00010236151138087735,
+            "rms_normalized_to_reference_peak": 0.00586899875794166
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 2.2064719376732555e-07,
+            "difference_bias": -3.0664792501163306e-08,
+            "difference_max_abs": 4.2467490857234225e-07,
+            "difference_p99_abs": 4.2413052142364904e-07,
+            "difference_p999_abs": 4.246204698574729e-07,
+            "reference_rms": 4.606554065656574e-05,
+            "relative_rms_difference": 0.004789853556964095,
+            "reference_abs_peak": 0.00010236151138087735,
+            "rms_normalized_to_reference_peak": 0.002155567955091231
+          }
+        },
+        "reference_peak_yx": [
+          734,
+          445
+        ],
+        "candidate_peak_yx": [
+          678,
+          492
+        ],
+        "peak_shift_pixels": 73.10950690573696,
+        "reference_peak_value": 0.00010236151138087735,
+        "candidate_at_reference_peak": 0.00010265108721796423,
+        "relative_change_at_reference_peak": 0.002828952339414004,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.0014119211307388468,
+          "candidate_sum_pixels": 0.0014104185559062898,
+          "relative_sum_change": -0.0010642059247110472,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": 10000.0,
+          "candidate_iterations": 10000.0,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "a607c7026114d1fcec5b2f17efc94dc17593782dc748848c6b7c5c69c1dbf389",
+        "candidate_file_sha256": "17f47e67880a1c78aa8fc48c7e97399218d6b644dc7618ad6496e343e8c209a1"
+      }
+    },
+    "limitations": [
+      "No scientific acceptance thresholds have been approved; measured does not mean scientifically accepted",
+      "Dirty, restored, residual and model images include sky structure; image RMS is not thermal noise",
+      "Automatic masks and nonlinear CLEAN paths may differ; compare the repeated lossless reference",
+      "Celestial WCS validity excludes SIN projection corners; this is not a primary-beam or sky mask",
+      "No calibration-solution, solar-identification, absolute-flux or temporal validation is implied"
+    ]
+  },
+  "imaging_run": {
+    "status": "complete",
+    "container_id": "sha256:03ffbf70c829e220707b9843e96765f5886005b4b05a26344a0b5bb4d9ece8c6",
+    "wsclean_version": "WSClean version 3.7 (2026-02-16)\nGit commit hash: v3.7-79-g2d5c1ed8\nThis software package is released under the GPL version 3.\nAuthor: Andr\u00e9 Offringa (offringa@gmail.com).\n\nEveryBeam is available.\nIDG is available.\nWGridder is available.",
+    "parameters": {
+      "size": 2048,
+      "scale": "4amin",
+      "polarizations": "I",
+      "weighting": "briggs 0",
+      "multiscale": true,
+      "mgain": 0.8,
+      "niter": 10000,
+      "auto_mask": 5,
+      "auto_threshold": 1,
+      "threads": 1,
+      "memory_gb": 8,
+      "restoring_beam": {
+        "major_arcsec": 666.0489741755111,
+        "minor_arcsec": 517.0156754893128,
+        "position_angle_deg": 43.3244852231235
+      }
+    },
+    "elapsed_seconds": 258.6453625969589,
+    "source_unchanged": true
+  },
+  "limits": "One integration, engineering bounds with no validated noise model; Stokes I imaging only, fixed beam, 10,000-iteration CLEAN cap. No calibrated solar peak/weak-polarization, calibration-solution, narrow-feature or temporal acceptance. Timings exclude verification, export and imaging."
+}

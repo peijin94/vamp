@@ -8,6 +8,7 @@ from pathlib import Path
 DEFAULT_BITS = (4, 8, 12, 16)
 # Legacy widths stay explicit opt-ins so old experiment configurations still work.
 SUPPORTED_BITS = (2, 4, 6, 8, 12, 16)
+CODEBOOK_IDS = {"uniform-symmetric-v1": 0, "uniform-midrise-v1": 1}
 
 
 @dataclass
@@ -81,8 +82,8 @@ class Config:
             raise ValueError("length_reference_m must be positive and finite")
         if type(self.antenna_endpoint) is not int or self.antenna_endpoint not in (1, 2):
             raise ValueError("antenna_endpoint must be 1 or 2 (ordered MS antenna columns)")
-        if self.codebook != "uniform-symmetric-v1":
-            raise ValueError("Only uniform-symmetric-v1 is currently implemented")
+        if self.codebook not in CODEBOOK_IDS:
+            raise ValueError("Unsupported uniform codebook")
         if self.rounding not in ("nearest-even", "stochastic-pcg64-v1"):
             raise ValueError("Unsupported rounding; subtractive dithering is not implemented")
         if not isinstance(self.bits, list) or not self.bits or any(type(b) is not int or b not in SUPPORTED_BITS for b in self.bits) or len(set(self.bits)) != len(self.bits):

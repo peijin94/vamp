@@ -82,7 +82,7 @@ Each block starts with the 16-byte little-endian structure `<BBHIIf`:
 | --- | --- | --- |
 | bits | uint8 | 0 for exact complex64; otherwise 4, 8, 12 or 16 per component (legacy 2/6 supported) |
 | compression | uint8 | 0 uncompressed body; 1 zlib-wrapped DEFLATE body |
-| reserved | uint16 | Must be zero |
+| mapping | uint16 | 0: `uniform-symmetric-v1`; 1: `uniform-midrise-v1`; exact blocks require 0 |
 | samples | uint32 | Number of complex samples, 1 through 262,144 |
 | exceptions | uint32 | Number of exact exception samples |
 | step | float32 | Nonnegative stored uniform step, or zero for an exact block |
@@ -96,6 +96,8 @@ For b bits, let `M = 2**(b-1)-1`. Codes 0 through 2M reconstruct signed integer
 levels -M through M. The final code `2**b-1` is reserved and rejected. Thus the
 codebook is exactly symmetric and represents zero, at the cost of one unused
 bit pattern. The immutable codec identifier is `uniform-symmetric-v1`.
+Mapping 0 is the original header's zero reserved field. Existing archives and
+their numerical interpretation are unchanged. Old decoders reject mapping 1.
 The default candidate ladder is 4/8/12/16 bits per component. Legacy 2/6-bit
 archives and explicitly selected legacy configurations remain supported. Adding
 12/16-bit widths does not change existing codebooks, block headers or packed
@@ -114,6 +116,40 @@ Nonfinite reconstruction outside the exception stream is rejected. For a zero
 step, encoded ordinary zeros use code M. Signed zeros that would change bits are
 exact exceptions. Float32 escape blocks contain the original little-endian
 complex64 bits and require no exception stream.
+
+### Optional full-range unsigned mapping
+
+`uniform-midrise-v1` uses mapping 1 and every unsigned code, including all ones:
+
+```text
+N = 2**b
+C = (N - 1) / 2                       # exact half-integer, not an integer
+step = ceil_float32(cutoff / C)       # upward float32 rounding, not integer ceil
+code = rint_even(float64(x) / float64(step) + C)
+coefficient = float32(code) - float32(C)
+component = coefficient * stored_float32_step  # separate float32 multiply
+```
+
+Codes lie in `[0,N-1]`; reconstruction levels span `[-C*step,+C*step]`.
+Values outside this interval use exact exceptions, with no silent clipping.
+The stored step serves both components and the existing actual-byte selection,
+error checks, and exact fallback still apply. The manifest codebook must agree
+with every quantized block's mapping; exact blocks use mapping 0 under either
+codebook. Unknown mappings fail explicitly.
+
+Nonzero-step levels straddle zero. With nearest-even, ordinary positive zero
+encodes as `N/2` and reconstructs as `+step/2` for supported widths. This is an
+explicit opt-in loss of ordinary zero, which can bias zero-rich data. Negative
+zero samples, flagged samples and nonfinite values remain exact exceptions.
+Zero-step blocks encode ordinary zeros as `N/2` and reconstruct positive zero.
+Stochastic rounding operates on the shifted code coordinate above with the same
+independent component streams as the symmetric codec; no decoder RNG is needed.
+Exception placeholders also use `N/2` before their original bits are restored.
+
+All packing, byte order, maximum block size and exception rules below are shared.
+There is no extra sign bit, exponent field, or separately stored offset. At a
+common cutoff the step ratio to the default codec is `(N-2)/(N-1)`, a small
+improvement at high precision. This codec is optional, not a default replacement.
 
 The quantized raw body contains:
 
@@ -136,7 +172,7 @@ quantization is scaled integer quantization, not IEEE float16 or lossless storag
 
 Scale candidates use the maximum absolute real/imag component of each eligible
 sample and configured quantiles of that statistic. Step is the cutoff divided
-by M, rounded to float32 and advanced to the next float32 when necessary to cover
+by M (or C for midrise), rounded to float32 and advanced to the next float32 when necessary to cover
 the cutoff. One step serves both components. Outliers become exact exceptions;
 there is no silent saturation. Candidates are evaluated using the actual decoder
 and stored step. Total serialized header/body bytes plus the fixed index cost

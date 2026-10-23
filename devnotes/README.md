@@ -1,5 +1,6 @@
 # Development notes
 
+- [Full-range unsigned quantization and zero-bias validation](uint-midrise.md)
 - [Two-level MXFP microscaling experiment](microscaling.md)
 - [Profiling and the under-15-second encoder](performance.md)
 - [Methods paper and reproducible figures](../docs/paper/varquantMS.md)

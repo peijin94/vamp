@@ -35,6 +35,13 @@ require a custom scaled-FP16 format. A tighter-error uniform control is 19.50%
 smaller in serialized component bytes with 7.34× lower component MSE; this MX
 configuration does not improve the measured visibility rate–distortion tradeoff.
 
+A corrected full-range unsigned codebook uses all $2^b$ codes at the cost of
+losing the zero level. At matched grouping and error ceilings its full-MS
+component MSE is 0.223% lower, but whole-archive size is essentially unchanged
+at 106.732 MB. Median encoding time is 13.04 s in a new three-repeat comparison.
+Zero-rich autocorrelations acquire imaginary bias, so the codebook remains
+optional and the zero-preserving mapping remains the default.
+
 ## 1. Scope and relationship to earlier work
 
 The goal is to reduce archive size without time/channel averaging or regeneration
@@ -301,6 +308,58 @@ imaging comparisons in this paper**. Since the current source flags are constant
 burning them saved only 13,008 whole-archive bytes in a separate lossless test,
 not their approximately 95 MB of unpacked logical size.
 [Flag policy and measurements](../../devnotes/burn-flag.md)
+
+### 4.4 Full-range unsigned alternative
+
+The zero-preserving codec uses $2^b-1$ of the $2^b$ unsigned codes: the unused
+capacity is **one code**, not a separate sign bit. Setting $M_b=2^b-1$ and then
+using codes $0,\ldots,2M_b-1$ would require $b+1$ total component bits (30 codes
+at nominal $b=4$). A corrected full-range mapping, implemented separately as
+`uniform-midrise-v1`, defines
+
+$$
+L_b=2^b,\qquad C_b=\frac{L_b-1}{2},\qquad
+\Delta_{bq}=\operatorname{ceil}_{\mathrm{float32}}(t_q/C_b),
+$$
+
+$$
+q_b(x)=\operatorname{rint}_{\mathrm{even}}(x/\Delta_{bq}+C_b),
+\qquad q_b\in\{0,\ldots,L_b-1\},
+$$
+
+$$
+\widehat{x}=\operatorname{float32}\left[
+\operatorname{float32}\left(\operatorname{float32}(q_b)-
+\operatorname{float32}(C_b)\right)\Delta_{\mathrm{stored}}\right].
+$$
+
+The exact half-integer $C_b$ is determined by the bit width; it costs no stored
+offset. Outliers outside $[-C_b\Delta,+C_b\Delta]$ remain exact exceptions.
+Positive ordinary zero in a nonzero-step block reconstructs as $+\Delta/2$
+under nearest-even rounding. Negative-zero samples and other protected values
+still retain their original bits; all-zero blocks use a zero step and remain
+exact. Ordinary-zero loss is thus explicit and opt-in. Stochastic rounding can
+remove its bias in expectation, but does not eliminate the added zero-component
+variance; the measurements below use nearest-even.
+
+At the same cutoff, ignoring float32 rounding,
+
+$$
+\frac{\Delta_{\mathrm{midrise}}}{\Delta_{\mathrm{symmetric}}}
+=\frac{2^b-2}{2^b-1}.
+$$
+
+The high-resolution uniform-error approximation predicts a squared-error ratio
+equal to the square of this step ratio, approximately 0.8711 at 4 bits and
+0.9922 at 8 bits. This approximation is not an error guarantee for structured
+visibilities, especially zero-rich autocorrelations. Both codecs evaluate the
+actual reconstruction against the same configured bounds and exact fallback.
+
+![Full-range and zero-preserving unsigned levels](figs/uint-levels.png)
+
+*Schematic: both codebooks use four total bits per component. The full-range
+alternative adds one level while losing the zero level. [SVG](figs/uint-levels.svg),
+[PDF](figs/uint-levels.pdf).*
 
 ## 5. Choosing precision by measured error and actual bytes
 
@@ -713,7 +772,74 @@ advantage for these formats, scale rules and error ceilings. Details and evidenc
 are in the [microscaling note](../../devnotes/microscaling.md) and
 [machine-readable study](../../reports/microscaling-evaluation.json).
 
-## 11. Limits and conclusions
+## 11. Full-range unsigned-code comparison
+
+After the MX experiment, the scaled unsigned-integer route remains the primary
+implementation. Section 4.4's `uniform-midrise-v1` is an independently decodable
+alternative within the existing archive, with a distinct block mapping identifier.
+It does not add an exponent stream, complex offset or new container.
+
+We compare it against `uniform-symmetric-v1` on the complete inspected MS with
+the same per-product amplitude ordering, 128×192×1 blocks, scale candidates,
+4/8/12/16 ladder, error bounds and lossless auxiliary-column policies. The two
+codecs alternate in six sequential fresh-process runs, three each, with 24 workers
+and no concurrent imaging. Verification is separately timed and passes for all
+six outputs. The shared-host cache was not evicted; these are not cold-cache
+measurements. Each run includes startup, inspection, encoding, quality accounting,
+all archive writes and integrity publication, as in Section 9.
+
+| Measurement | Symmetric, zero-preserving | Full-range midrise |
+| --- | ---: | ---: |
+| Whole archive, first repeat (MB) | 106.731246 | 106.732004 |
+| Serialized visibility blocks (MB) | 97.058796 | 97.081093 |
+| Aggregate component MSE | `2.811694574e-8` | `2.805425666e-8` |
+| 4-bit / 8-bit blocks | 38 / 1,556 | 40 / 1,557 |
+| 12-bit / 16-bit / exact blocks | 344 / 6 / 0 | 341 / 4 / 2 |
+| Encode time, each repeat (s) | 12.997 / 12.945 / 13.295 | 13.069 / 13.039 / 12.210 |
+| Median encode time (s) | 12.997 | 13.039 |
+
+There are 1,944 blocks per run. Scientific dataset hashes are identical across
+repetitions of each codec; small file-length variations reflect recorded timing
+and provenance metadata. The 22,297-byte increase in serialized visibility records
+fits in unchanged HDF5 payload allocation. The final archive is about 758 bytes
+larger in the first repeat; no storage advantage is demonstrated. Component MSE
+is 0.223% lower overall, but equal ceilings do not imply identical achieved error.
+Both codecs continue to meet the 15-second target in this experiment.
+
+![Unsigned-code archive, error and encoding-time comparison](figs/uint-comparison.png)
+
+*Measured full-MS comparison with identical configured error ceilings. Runtime
+points are separate processes; horizontal marks show medians. [SVG](figs/uint-comparison.svg),
+[PDF](figs/uint-comparison.pdf).*
+
+The full-product XX/YY imaginary biases change from `-1.4032e-7` / `1.9476e-9`
+to `1.1083e-6` / `9.1734e-7`. This is consistent with the missing zero level in
+zero-rich parallel-hand autocorrelations. All configured bias/error checks still
+pass, with two exact-block escapes. The zero-preserving codebook therefore stays
+the default; the new mapping is an opt-in experiment, not a general improvement.
+Detailed byte categories, per-product and baseline-class errors, source hashes
+and reproducible configuration are in the [unsigned-code report](../../reports/uint-midrise-evaluation.json)
+and [development note](../../devnotes/uint-midrise.md).
+
+The exported MS preserves all 132 checked non-DATA entries and metadata exactly,
+and all 65 source file hashes are unchanged. With the same pinned WSClean setup
+as Section 8 (2048², 4 arcmin, Briggs 0, multiscale, Stokes I, one worker, fixed
+reference beam), dirty/restored relative RMS differences are **0.1985% / 1.1142%**.
+Model/residual differences are 10.7263% / 2.4779%; the PSF difference is zero.
+The run reaches the 10,000-component cap, so CLEAN convergence is not established.
+The existing symmetric reconstruction's restored difference is 0.7137%; the small
+visibility-MSE improvement therefore does not imply improved CLEAN agreement.
+WSClean uses the 61,776 cross-correlation rows; this does not validate the
+autocorrelation imaginary offsets. Separate CASA, weak-polarization, calibration
+and temporal acceptance checks were not performed for this mapping.
+
+![Full-range unsigned-code WSClean comparison](figs/uint-wsclean.png)
+
+*Original and midrise restored Stokes I images and their actual difference, using
+the same beam. The difference panel has its own color scale. The matching
+[image report](../../reports/wsclean-midrise.json) records full masks and metrics.*
+
+## 12. Limits and conclusions
 
 The results demonstrate a reconstructible prototype, not a final archive policy.
 Grouping can reduce whole-archive bytes, but overhead and unequal measured error
@@ -736,7 +862,7 @@ provide a 106.730 MB archive for this 409.595 MB input under the stated engineer
 constraints. The original resolution and scientific context are retained; the
 quantized visibility precision is not. The default encoder remains lossless.
 
-## 12. Reproduction and evidence
+## 13. Reproduction and evidence
 
 Install the validation dependencies and run from the repository root:
 
@@ -758,6 +884,11 @@ python scripts/summarize_runtime.py results/new-performance-run/results.json \
 
 # Diagrams/charts; image panels additionally require the local generated FITS files.
 python scripts/build_paper_figures.py
+
+# Matched unsigned-code comparison; use a fresh result directory.
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+  --matrix configs/benchmark-midrise.json --output results/new-uint-comparison
+python scripts/report_midrise.py --figures-only
 ```
 
 Use `--force` only to regenerate existing paper figures. For a checkout without
@@ -791,6 +922,8 @@ Primary local evidence:
 - [Output identity and independent verification](../../reports/performance-profile.json)
 - [Two-level MX study and component-byte accounting](../../reports/microscaling-evaluation.json)
 - [MX image-domain comparison](../../reports/wsclean-mx.json)
+- [Full-range unsigned-code comparison](../../reports/uint-midrise-evaluation.json)
+- [Full-range unsigned-code imaging](../../reports/wsclean-midrise.json)
 - [Archive/codec format](../format.md)
 
 All flow diagrams, measured charts and image panels are in [figs/](figs/).

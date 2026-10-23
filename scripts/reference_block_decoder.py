@@ -1,4 +1,4 @@
-"""Independent standard-library decoder for one uniform-symmetric-v1 block.
+"""Independent standard-library decoder for a versioned uniform codec block.
 
 This small conformance implementation returns little-endian complex64 bytes.
 The complete HDF5-to-MS decoder is `python -m varquanms decode`.
@@ -15,11 +15,11 @@ def decode(blob, rows, channels):
     header = struct.Struct("<BBHIIf")
     if len(blob) < header.size:
         raise ValueError("Truncated header")
-    bits, compression, reserved, count, exceptions, step = header.unpack_from(blob)
-    if reserved or count != rows * channels or not 0 < count <= 262144:
+    bits, compression, mapping, count, exceptions, step = header.unpack_from(blob)
+    if mapping not in (0, 1) or count != rows * channels or not 0 < count <= 262144:
         raise ValueError("Invalid sample count/header")
     if bits == 0:
-        if exceptions or step != 0:
+        if mapping or exceptions or step != 0:
             raise ValueError("Invalid exact header")
         expected = count * 8
     elif bits in (2, 4, 6, 8, 12, 16) and 0 <= exceptions <= count and 0 <= step < float("inf"):
@@ -43,13 +43,13 @@ def decode(blob, rows, channels):
     if tail and body[code_bytes - 1] >> tail:
         raise ValueError("Nonzero bit padding")
     result = bytearray(count * 8)
-    maximum = 2**(bits - 1) - 1
+    maximum = (2**bits - 1)/2 if mapping else 2**(bits - 1) - 1
     for component in range(count * 2):
         position = component * bits
         byte, shift = divmod(position, 8)
         span = (shift + bits + 7) // 8
         code = (int.from_bytes(body[byte:byte + span], "little") >> shift) & (2**bits - 1)
-        if code == 2**bits - 1:
+        if not mapping and code == 2**bits - 1:
             raise ValueError("Reserved code")
         struct.pack_into("<f", result, component * 4, (code - maximum) * step)
     previous = -1

@@ -210,7 +210,7 @@ def write_visibility(writer, t, column, prefix, config, inspection):
     names = inspection["layout"]["configurations"][0]["correlation_names"]
     reconstructed = np.empty_like(values)
     spec = {"encoding": "quantized", "row_count": rows, "cell_shape": [channels, products],
-            "dtype": "<c8", "codec": "uniform-symmetric-v1", "channel_segment": config.channel_segment,
+            "dtype": "<c8", "codec": config.codebook, "channel_segment": config.channel_segment,
             "product_names": names, "products": [],
             "statistics": writer.put(prefix + "/amplitude_medians", statistics, "quantization_statistics"),
             "valid_counts": writer.put(prefix + "/valid_counts", counts, "quantization_statistics")}
@@ -291,7 +291,7 @@ def write_visibility(writer, t, column, prefix, config, inspection):
 
 
 def _product_layout(reader, spec, p):
-    if spec.get("codec") != "uniform-symmetric-v1" or not 0 <= p < len(spec["products"]):
+    if spec.get("codec") not in ("uniform-symmetric-v1", "uniform-midrise-v1") or not 0 <= p < len(spec["products"]):
         raise ValueError("Unsupported codec/product")
     product = spec["products"][p]
     rows = spec["row_count"]
@@ -327,7 +327,7 @@ def read_visibility_block(reader, spec, product_index, block_index, layout=None)
     blob = payload[int(offsets[block_index]):int(offsets[block_index + 1])].tobytes()
     if zlib.crc32(blob) != checksums[block_index]:
         raise ValueError("Visibility block CRC32 mismatch")
-    return rows, lo, hi, decode_block(blob, (len(rows), hi - lo))
+    return rows, lo, hi, decode_block(blob, (len(rows), hi - lo), spec["codec"])
 
 
 def read_visibility(reader, spec):

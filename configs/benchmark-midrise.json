@@ -1,0 +1,24 @@
+{
+  "schema": "varquanms.benchmark/1",
+  "base": {
+    "mode": "adaptive", "columns": ["DATA"], "workers": 24,
+    "baseline_group": 128, "channel_segment": 192,
+    "ordering": "amplitude", "shared_order": false,
+    "bits": [4, 8, 12, 16], "scale_quantiles": [1.0, 0.995],
+    "max_component_mse": 1e-7, "max_baseline_component_mse": 2e-7,
+    "max_complex_error": 0.003, "max_complex_bias": 0.0003,
+    "noise": null, "burn_flag": false,
+    "compression": "gzip", "compression_level": 1
+  },
+  "experiments": [
+    {"name": "symmetric-1", "config": {"codebook": "uniform-symmetric-v1"}},
+    {"name": "midrise-1", "config": {"codebook": "uniform-midrise-v1"}},
+    {"name": "symmetric-2", "config": {"codebook": "uniform-symmetric-v1"}},
+    {"name": "midrise-2", "config": {"codebook": "uniform-midrise-v1"}},
+    {"name": "symmetric-3", "config": {"codebook": "uniform-symmetric-v1"}},
+    {"name": "midrise-3", "config": {"codebook": "uniform-midrise-v1"}}
+  ],
+  "export_ms": false,
+  "cache_methodology": "Previously read source; no cache eviction. Sequential fresh processes, alternating codecs, three repetitions each. Shared host, no affinity or cold-cache claim.",
+  "notes": "Matched grouping and error thresholds; 24 workers, OPENBLAS_NUM_THREADS=1 and OMP_NUM_THREADS=1. Full archive encode includes inspection, preserved columns, error accounting and publication. Verification separately timed. No imaging runs concurrently with timed encodes. Compare measured error as well as total bytes; identical ceilings do not imply equal achieved error."
+}

@@ -1,0 +1,246 @@
+{
+  "schema": "varquanms.precision-ladder-validation/1",
+  "date_utc": "2026-10-23",
+  "implementation_commit": "1e92833d3d0a54c9c827a86637e3cdc85ba0832a",
+  "source": "20260904_190008_59MHz.ms",
+  "configuration": {
+    "mode": "adaptive",
+    "columns": [
+      "DATA"
+    ],
+    "deduplicate": true,
+    "burn_flag": false,
+    "compression": "gzip",
+    "compression_level": 1,
+    "io_chunk_rows": 1024,
+    "baseline_group": 128,
+    "channel_segment": 192,
+    "ordering": "amplitude",
+    "shared_order": false,
+    "bucket_reference": null,
+    "orientation_bins": 24,
+    "length_reference_m": 1,
+    "antenna_endpoint": 1,
+    "bits": [
+      4,
+      8,
+      12,
+      16
+    ],
+    "codebook": "uniform-symmetric-v1",
+    "rounding": "nearest-even",
+    "seed": 0,
+    "scale_quantiles": [
+      1,
+      0.995
+    ],
+    "max_component_mse": 1e-7,
+    "max_complex_error": 0.003,
+    "max_complex_bias": 0.0003,
+    "max_baseline_component_mse": 2e-7,
+    "max_p99_error": null,
+    "product_bounds": {},
+    "noise": null,
+    "max_visibility_bytes": 2147483648
+  },
+  "configuration_changes_vs_old_profile": {
+    "bits": {
+      "old": [
+        2,
+        4,
+        6,
+        8
+      ],
+      "new": [
+        4,
+        8,
+        12,
+        16
+      ]
+    }
+  },
+  "command": "visarchive benchmark data/working/20260904_190008_59MHz.ms --matrix configs/benchmark-grouping.json --experiments amplitude-g128-192 --output results/precision-4-8-12-16-20261023",
+  "archive_bytes": 106730115,
+  "whole_archive_ratio": 3.8376688528818694,
+  "old_ladder_archive_bytes": 136920951,
+  "archive_bytes_saved_vs_old_ladder": 30190836,
+  "archive_percent_smaller_vs_old_ladder": 22.049829320861203,
+  "stored_bytes_by_category": {
+    "coordinates": 988098,
+    "flags_weights": 98,
+    "auxiliary_columns": 184,
+    "quantization_statistics": 1676751,
+    "permutations": 488354,
+    "visibility_indexes": 25572,
+    "visibility_block_payload": 99615100,
+    "visibility_quality": 3350424,
+    "subtables": 9944,
+    "container_and_manifest_overhead": 575590
+  },
+  "component_bit_width_block_counts": {
+    "4": 38,
+    "8": 1556,
+    "12": 344,
+    "16": 6
+  },
+  "complex_sample_counts_by_block_precision": {
+    "4": 933888,
+    "8": 38240256,
+    "12": 8404992,
+    "16": 135168
+  },
+  "complex_sample_percent_by_block_precision": {
+    "4": 1.957249549317538,
+    "8": 80.14421838784445,
+    "12": 17.615245943857843,
+    "16": 0.28328611898017
+  },
+  "visibility_quality": {
+    "by_product": {
+      "XX": {
+        "valid_samples": 11928576,
+        "component_mse": 3.450006456982429e-8,
+        "real_mse": 3.456241806735582e-8,
+        "imag_mse": 3.443771107229289e-8,
+        "bias_real": 2.5708917935047918e-8,
+        "bias_imag": -1.4031556964419529e-7,
+        "complex_bias_abs": 1.4265134961144266e-7,
+        "max_complex_error": 0.0007737967887591865,
+        "p99_error": 0.0005971821906497005,
+        "max_baseline_component_mse": 1.1524460752120946e-7
+      },
+      "XY": {
+        "valid_samples": 11928576,
+        "component_mse": 2.660277332019967e-8,
+        "real_mse": 2.66104064561881e-8,
+        "imag_mse": 2.6595140184211166e-8,
+        "bias_real": -3.145532405997917e-8,
+        "bias_imag": 4.860542141505502e-8,
+        "complex_bias_abs": 5.789580643408807e-8,
+        "max_complex_error": 0.0007542472416511174,
+        "p99_error": 0.00043944582088300047,
+        "max_baseline_component_mse": 1.0693926124921878e-7
+      },
+      "YX": {
+        "valid_samples": 11928576,
+        "component_mse": 2.603448152712432e-8,
+        "real_mse": 2.6033560321111152e-8,
+        "imag_mse": 2.6035402733137413e-8,
+        "bias_real": 7.158231238798731e-8,
+        "bias_imag": -6.706578458404475e-8,
+        "complex_bias_abs": 9.809101339411728e-8,
+        "max_complex_error": 0.0007433888409991838,
+        "p99_error": 0.00043649128835422234,
+        "max_baseline_component_mse": 1.045410893266224e-7
+      },
+      "YY": {
+        "valid_samples": 11928576,
+        "component_mse": 2.5330463540355713e-8,
+        "real_mse": 2.5457686102432976e-8,
+        "imag_mse": 2.5203240978278434e-8,
+        "bias_real": 1.8597920392677936e-8,
+        "bias_imag": 1.9475958083801102e-9,
+        "complex_bias_abs": 1.869961957808783e-8,
+        "max_complex_error": 0.0007694688188751957,
+        "p99_error": 0.0005639329651762844,
+        "max_baseline_component_mse": 1.125714442102961e-7
+      }
+    },
+    "protected_sample_count": 0,
+    "protected_sample_bits": "exact",
+    "metric_domain": "unflagged finite input samples",
+    "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+    "science_validation": "not performed"
+  },
+  "overall_component_mse": 2.8116945739376e-8,
+  "verification_status": "passed",
+  "column_check_counts": {
+    "bitwise_exact": 264,
+    "measured_error_bounds_passed": 1,
+    "exactly_matches_archive_reconstruction": 1
+  },
+  "python_casacore_reopen": "passed",
+  "encode_seconds": 170.91809886833653,
+  "source_unchanged": {
+    "sha256_matched_files": 65,
+    "reference_inventory": "reports/sample-copy-after-grouping.json"
+  },
+  "local_tests_passed": 55,
+  "github_ci": "https://github.com/peijin94/varquanMS/actions/runs/39910973807",
+  "interpretation": "One previously measured grouping re-run with the new ladder at the same absolute-error ceilings, not a grouping sweep or validated science tolerance. Precision percentages count samples by block precision; exact exceptions within quantized blocks are separate.",
+  "environment": {
+    "varquanMS": "0.2.0.dev0",
+    "python": "3.11.5",
+    "numpy": "1.26.4",
+    "python_casacore": "3.5.2",
+    "h5py": "3.10.0",
+    "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu_count": 48,
+    "threads_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": null
+    },
+    "implementation_files_sha256": {
+      "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "archive.py": "1d8596a0a23da7b20a09bf653e3a65f1499c977e296c27bf1d7f1e3ec56dd0a8",
+      "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+      "cli.py": "27300b3772d301bed4b419bd4ba357cc28d008e2cd8cdaebd3b6cedc4d338acd",
+      "codec.py": "a94b4e8f7687e4d4920e35c473be531cf042c6d7a6783620cc51846066a3a11d",
+      "config.py": "4b82d5fbd02ddc6523c35d663e2eccd158a16f1d2d19eda9a680576a34b14d93",
+      "container.py": "385d4a27a08752b38886165c48dc2a0f9e20803f898ae9467cf34d8ccce77d63",
+      "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+      "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+      "inspection.py": "314d49827b08a2c5d48e8f8c19df65d1b458cd32fa5b9ba2efa9afe0e3d73390",
+      "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+      "ordering.py": "70bca30710c17cce02d3db0dac4fd2a25f44a2674c4e3ce36e2f4bf123e406dc",
+      "visibility.py": "4f80e3ece8a93869b9dc2dd5c275269a2008cc550a190a19fe54b30c382a2dbc"
+    }
+  },
+  "imaging": {
+    "status": "measured",
+    "report": "reports/wsclean-precision-4-8-12-16.json",
+    "plot": "reports/wsclean-precision-4-8-12-16.png",
+    "parameters": {
+      "size": 2048,
+      "scale": "4amin",
+      "polarizations": "I",
+      "weighting": "briggs 0",
+      "multiscale": true,
+      "mgain": 0.8,
+      "niter": 10000,
+      "auto_mask": 5,
+      "auto_threshold": 1,
+      "threads": 1,
+      "memory_gb": 8,
+      "restoring_beam": {
+        "major_arcsec": 666.0489741755111,
+        "minor_arcsec": 517.0156754893128,
+        "position_angle_deg": 43.3244852231235
+      }
+    },
+    "container_id": "sha256:03ffbf70c829e220707b9843e96765f5886005b4b05a26344a0b5bb4d9ece8c6",
+    "wsclean_version": "WSClean version 3.7 (2026-02-16)\nGit commit hash: v3.7-79-g2d5c1ed8\nThis software package is released under the GPL version 3.\nAuthor: André Offringa (offringa@gmail.com).\n\nEveryBeam is available.\nIDG is available.\nWGridder is available.",
+    "source_unchanged": true,
+    "elapsed_seconds": 269.9278787956573,
+    "relative_rms_difference": {
+      "image-dirty.fits": 0.0019962850864034226,
+      "image-image.fits": 0.007136616910675335,
+      "image-model.fits": 0.048562894423070546,
+      "image-psf.fits": 0,
+      "image-residual.fits": 0.015334585049998774
+    },
+    "restored_peak_relative_change": -0.00039757794638476274,
+    "restored_peak_shift_pixels": 0,
+    "restored_peak_aperture_relative_change": -0.00011766028600700898,
+    "clean": {
+      "reference_iterations": 10000,
+      "candidate_iterations": 10000,
+      "reference_iteration_limit": 10000,
+      "candidate_iteration_limit": 10000
+    },
+    "notes": "Only Stokes I, one integration, fixed restoring beam and 10000-iteration cap. No new polarization/calibration/temporal validation or science acceptance."
+  }
+}

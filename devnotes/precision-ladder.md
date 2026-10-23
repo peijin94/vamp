@@ -66,3 +66,72 @@ differences used `[2,4,6,8]`. They are not measurements of the new ladder.
 Historical reports retain their exact configurations; changing example files
 does not retroactively change those results. Scientific tolerances remain
 unapproved, and higher precision alone is not a science-fidelity guarantee.
+
+## Full-MS regression with the new ladder
+
+The 128-baseline × 192-channel, per-product amplitude configuration was rerun on
+the original 59 MHz MS. Only `bits` changed relative to its earlier settings;
+the numeric ceilings, grouping, scale candidates and flag preservation matched.
+This is one regression profile, not a new sweep of all grouping methods.
+
+| Ladder | Whole archive bytes | Source/archive ratio |
+| --- | ---: | ---: |
+| Earlier 2/4/6/8 | 136,920,951 | 2.991× |
+| New 4/8/12/16 | 106,730,115 | 3.838× |
+
+The archive is 30,190,836 bytes (22.05%) smaller for this configuration. Local
+12/16-bit blocks replace the previous lossless blocks; this is not evidence that
+higher-bit payloads are intrinsically smaller. Selection still counts actual
+compressed block bytes, exceptions and headers.
+
+| Selected component precision | Blocks | Share of complex samples by block precision |
+| --- | ---: | ---: |
+| 4 | 38 | 1.957% |
+| 8 | 1,556 | 80.144% |
+| 12 | 344 | 17.615% |
+| 16 | 6 | 0.283% |
+| Lossless components | 0 | 0% |
+
+Exact exception values can still occur inside these quantized blocks. Overall
+per-component MSE was `2.8116945739376e-8`; maximum complex error was
+`0.0007737967887591865`, in input DATA units. All configured checks passed.
+UVW/metadata/flags/weights and protected values passed their exact checks; the
+exported visibilities matched archive reconstruction. All 65 original source
+file hashes remained unchanged. All 55 tests and GitHub Actions passed.
+
+WSClean used the same pinned container as the earlier comparisons: 2048×2048,
+4-arcmin pixels, Stokes I, Briggs 0, multiscale, one thread, fixed restoring beam,
+auto-mask 5, auto-threshold 1 and 10,000 iterations. Both reference and candidate
+hit the iteration cap; convergence is not claimed. The imaging input MS hash
+inventory was unchanged after the run, which used a private working copy.
+
+| Image comparison against the original MS | Earlier ladder | New ladder |
+| --- | ---: | ---: |
+| Dirty-image relative RMS difference | 0.2045% | 0.1996% |
+| Restored-image relative RMS difference | 0.6934% | 0.7137% |
+| PSF relative RMS difference | 0% | 0% |
+
+The new restored-image peak at the fixed reference position changed by
+−0.03976%, with no peak-pixel shift. The fixed radius-four-pixel aperture sum
+changed by −0.01177%. These are not identified solar peak/integrated flux
+measurements. FITS units are software-labeled Jy/beam; absolute calibration is
+not independently established. The comparison covers the finite celestial SIN
+footprint and excludes invalid projection corners. Model and residual relative
+RMS differences were 4.856% and 1.533%, respectively; nonlinear CLEAN responses
+must not be summarized as only the dirty-image error. Q/U/V, calibration
+solutions and temporal behavior were not newly tested.
+
+The 22.05% smaller archive has slightly larger restored-image differences under
+these controls. This is a rate/distortion observation, not proof that every
+science product is preserved or that this grouping is optimal for the new ladder.
+
+Machine-readable evidence:
+
+- [Archive/configuration/quality and imaging summary](../reports/precision-ladder-4-8-12-16.json)
+- [Full WSClean comparison](../reports/wsclean-precision-4-8-12-16.json)
+- [Restored-image comparison plot](../reports/wsclean-precision-4-8-12-16.png)
+
+Generated archives and exports are under ignored
+`results/precision-4-8-12-16-20261023/`; imaging outputs and invocation logs are
+under `results/wsclean-precision-4-8-12-16/`. The initial reference is
+`results/wsclean-grouping/reference-single/`.

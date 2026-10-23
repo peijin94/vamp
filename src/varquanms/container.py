@@ -12,6 +12,7 @@ import numpy as np
 
 from .metadata import dumps, portable
 from .flags import burned_columns
+from .calibrated import validate_manifest
 
 FORMAT = "varquanms.hdf5"
 SCHEMA_VERSION = 1
@@ -138,6 +139,7 @@ class Reader:
             if self.manifest.get("schema") != "varquanms.archive/1":
                 raise ValueError("Unsupported scientific schema")
             burned_columns(self.manifest)
+            validate_manifest(self.manifest)
             self.entries = {entry["path"]: entry for entry in self.manifest["inventory"]}
             if len(self.entries) != len(self.manifest["inventory"]):
                 raise ValueError("Duplicate dataset inventory entries")

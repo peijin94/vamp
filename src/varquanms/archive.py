@@ -18,6 +18,9 @@ import numpy as np
 
 from . import __version__
 from .config import Config
+from .calibrated import CalibratedView, OMITTED, descriptor as calibrated_descriptor, marker as calibrated_marker
+from .calibrated import DATA_KEYWORD, data_marker, materialize_ms_v2_data
+from .weights import COLUMNS as WEIGHT_COLUMNS, ENCODING as WEIGHT_ENCODING, read_weights, write_weights, verify_weights
 from .container import Reader, Writer, new_output
 from .flags import (ENCODING as BURNED_FLAGS, FLAG_COLUMNS, POLICY_KEYWORD,
                     burned_columns, export_marker, policy_summary,
@@ -40,8 +43,17 @@ def discover_tables(source):
             raise ValueError(f"Unsupported external/symlink table: {path}")
         with _open(path) as t:
             description = t.getdesc()
-            if description.get("_private_keywords_"):
-                raise ValueError("Nonempty private casacore table keywords are not yet supported")
+            for name, value in description.get("_private_keywords_", {}).items():
+                # Standard casacore hypercolumn declarations are descriptive,
+                # and the table constructor restores them with StandardStMan.
+                # Unknown private extensions still fail before archive creation.
+                if (not name.startswith("Hypercolumn_") or not isinstance(value, dict)
+                        or set(value) != {"ndim", "data", "coord", "id"}
+                        or type(value["ndim"]) is not int or value["ndim"] < 1
+                        or any(not isinstance(value[k], (list, np.ndarray))
+                               or any(c not in t.colnames() for c in value[k])
+                               for k in ("data", "coord", "id"))):
+                    raise ValueError("Unsupported private casacore table keyword: " + name)
             for column in t.colnames():
                 if t.getcoldesc(column)["valueType"] not in SUPPORTED_TYPES:
                     raise ValueError(f"Unsupported column type: {path.name}/{column}")
@@ -128,6 +140,8 @@ def read_column(reader, spec, start, stop):
     encoding = spec["encoding"]
     if encoding == BURNED_FLAGS:
         return read_burned_flags(reader, spec, start, stop)
+    if encoding == WEIGHT_ENCODING:
+        return read_weights(reader, spec, start, stop)
     if encoding == "empty":
         return []
     if encoding == "dense":
@@ -183,6 +197,17 @@ def encode(source, output, config=None, inspection=None):
     if report["source"] != str(source) or report["selected_visibility_columns"] != config.columns:
         raise ValueError("Inspection does not match the requested source/columns")
     schemas = discover_tables(source)
+    removed_columns = []
+    if config.keep_calib_only:
+        main_schema = schemas[source]
+        removed_columns = [c for c in main_schema["column_names"] if c in OMITTED]
+        main_schema["column_names"] = [c for c in main_schema["column_names"] if c not in OMITTED]
+        main_schema["descriptor"] = pack(calibrated_descriptor(unpack(main_schema["descriptor"]), config.to_dict()))
+        if config.weight_bits == 4:
+            for name in WEIGHT_COLUMNS:
+                info = report["main"]["columns"].get(name)
+                if info is not None and (info["undefined_cells"] or len(info["cell_shapes"]) != 1 or info["numpy_dtypes"] != [np.dtype("float32").str]):
+                    raise ValueError("Four-bit weights require homogeneous defined float32 cells; use weight_bits=32 for " + name)
     if config.burn_flag:
         main = report["main"]
         columns = [name for name in main["columns"] if name in FLAG_COLUMNS]
@@ -210,7 +235,8 @@ def encode(source, output, config=None, inspection=None):
         "created_utc": datetime.now(timezone.utc).isoformat(), "config": config.to_dict(),
         "source": {"name": source.name, "physical_file_bytes": report["storage"]["file_bytes"],
                    "selected_visibility_logical_bytes": sum(report["main"]["columns"][c]["logical_array_bytes"] for c in config.columns),
-                   "layout": report["layout"], "main_row_count": report["main"]["row_count"]},
+                   "layout": report["layout"], "main_row_count": report["main"]["row_count"],
+                   "omitted_visibility_columns": removed_columns},
         "environment": _environment(), "tables": [], "timings_seconds": {"inspection_preflight": preflight_seconds},
         "provenance": {"source_modified": False, "source_loss_history": "Unknown; original storage-manager assignments are recorded per table",
                        "compression_generation": 1, "noise_model": config.noise,
@@ -227,9 +253,13 @@ def encode(source, output, config=None, inspection=None):
             if scan is None:
                 raise ValueError("Nested subtable is not covered by the inspection profile")
             with _open(path) as t:
+                if table_name == "." and config.keep_calib_only:
+                    t = CalibratedView(t, config.to_dict())
                 for column_index, column in enumerate(t.colnames()):
                     prefix = f"tables/t{table_index}/c{column_index}"
-                    if table_name == "." and config.burn_flag and column in FLAG_COLUMNS:
+                    if table_name == "." and config.keep_calib_only and config.weight_bits == 4 and column in WEIGHT_COLUMNS:
+                        item["columns"][column] = write_weights(writer, t, column, prefix, config, scan["columns"][column])
+                    elif table_name == "." and config.burn_flag and column in FLAG_COLUMNS:
                         item["columns"][column] = write_burned_flags(
                             writer, t, column, prefix, scan["columns"][column], config)
                     elif table_name == "." and column in config.columns and config.mode != "lossless":
@@ -242,6 +272,7 @@ def encode(source, output, config=None, inspection=None):
                             role, config.deduplicate and role != "visibility_lossless")
             manifest["tables"].append(item)
         manifest["provenance"]["flag_policy"] = policy_summary(manifest)
+        manifest["provenance"]["calibrated_only_policy"] = calibrated_marker() if config.keep_calib_only else None
         manifest["timings_seconds"]["column_encoding_and_writing"] = time.perf_counter() - exact_started
         manifest["peak_process_rss_bytes"] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
         manifest["timings_seconds"]["before_integrity_finalization"] = time.perf_counter() - started
@@ -266,7 +297,10 @@ def archive_summary(path, manifest, elapsed=None):
             "stored_bytes_by_category": categories, "elapsed_seconds": elapsed,
             "mode": manifest["config"]["mode"], "deduplicate": manifest["config"]["deduplicate"],
             "flag_policy": policy_summary(manifest),
-            "exact_ms_round_trip": manifest["config"]["mode"] == "lossless" and not manifest["config"].get("burn_flag", False),
+            "keep_calib_only": manifest["config"].get("keep_calib_only", False),
+            "omitted_visibility_columns": manifest["source"].get("omitted_visibility_columns", []),
+            "weights_quality": {c: s["quality"] for t in manifest["tables"] if t["path"] == "." for c,s in t["columns"].items() if s["encoding"] == WEIGHT_ENCODING},
+            "exact_ms_round_trip": manifest["config"]["mode"] == "lossless" and not manifest["config"].get("burn_flag", False) and not manifest["config"].get("keep_calib_only", False),
             "timings_seconds": manifest["timings_seconds"],
             "peak_process_rss_bytes": manifest["peak_process_rss_bytes"],
             "visibility_quality": {c: s.get("quality_summary") for t in manifest["tables"] if t["path"] == "." for c, s in t["columns"].items() if s["encoding"] == "quantized"},
@@ -277,10 +311,14 @@ def archive_summary(path, manifest, elapsed=None):
             "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."}
 
 
-def decode(archive, output):
+def decode(archive, output, ms_v2_data=None):
     output = new_output(output, archive)
     started = time.perf_counter()
     with Reader(archive) as reader:
+        if ms_v2_data is None:
+            ms_v2_data = reader.manifest['config'].get('keep_calib_only', False)
+        if ms_v2_data and not reader.manifest['config'].get('keep_calib_only', False):
+            raise ValueError('--ms-v2-data is only for a calibrated-only archive')
         staged = Path(tempfile.mkdtemp(prefix=output.name + ".", suffix=".partial", dir=output.parent))
         schemas = reader.manifest["tables"]
         # Create the entire table graph before restoring any table references.
@@ -292,7 +330,6 @@ def decode(archive, output):
             target.parent.mkdir(parents=True, exist_ok=True)
             description = unpack(spec["descriptor"])
             description.pop("_keywords_", None)
-            description.pop("_private_keywords_", None)
             for name in spec["column_names"]:
                 description[name] = dict(description[name])
                 description[name].pop("keywords", None)
@@ -323,6 +360,11 @@ def decode(archive, output):
                                 for index, value in enumerate(values):
                                     if value is not None:
                                         cell = value.item() if isinstance(value, np.ndarray) and value.ndim == 0 else value
+                                        if isinstance(cell, np.ndarray) and cell.size == 0 and description[name]["valueType"] == "string":
+                                            # casacore returns an untyped [] for empty string
+                                            # vectors; np.asarray([]) is float64. Restore the
+                                            # declared column type when crossing its API.
+                                            cell = np.asarray([], dtype="U1").reshape(cell.shape)
                                         t.putcell(name, start + index, cell)
         for spec in schemas:
             with table(str(staged / spec["path"]), readonly=False, ack=False) as t:
@@ -332,6 +374,8 @@ def decode(archive, output):
                     t.putcolkeywords(name, casacore_keywords(description[name].get("keywords", {})))
                 if spec["path"] == "." and reader.manifest["config"].get("burn_flag", False):
                     t.putkeyword(POLICY_KEYWORD, export_marker(burned_columns(reader.manifest)))
+        if ms_v2_data:
+            materialize_ms_v2_data(staged)
         # Reopen every table prior to publication; reconstruction references must resolve.
         for spec in schemas:
             with _open(staged / spec["path"]) as t:
@@ -341,6 +385,7 @@ def decode(archive, output):
             raise FileExistsError(f"Refusing to overwrite {output}")
         staged.rename(output)
     return {"output": str(output), "status": "exported", "elapsed_seconds": time.perf_counter() - started,
+            "derived_calibrated_DATA": ms_v2_data,
             "python_casacore_reopen": "passed", "CASA_workflow": "not run",
             "flag_policy": policy_summary(reader.manifest)}
 
@@ -376,11 +421,18 @@ def verify(archive, source=None, restored=None):
                 continue
             root = Path(source).resolve()
             with _open(root / spec["path"]) as t:
+                if spec["path"] == "." and reader.manifest["config"].get("keep_calib_only", False):
+                    t = CalibratedView(t, reader.manifest["config"])
                 expected = unpack(spec["descriptor"])
                 actual = relocate(t.getdesc(), root)
                 if t.nrows() != spec["row_count"] or t.colnames() != spec["column_names"] or not equal(logical_descriptor(expected), logical_descriptor(actual)) or not equal(unpack(spec["info"]), t.info()):
                     raise ValueError(f"Source schema/metadata mismatch: {spec['path']}")
                 for column, encoding in spec["columns"].items():
+                    if encoding["encoding"] == WEIGHT_ENCODING:
+                        quality = verify_weights(reader, encoding, t, column, reader.manifest["config"])
+                        checks.append({"table": spec["path"], "column": column,
+                                       "status": "bitwise_exact" if quality["original_bits_exact"] else "weight_error_bound_passed", "quality": quality})
+                        continue
                     if encoding["encoding"] == "quantized":
                         from .visibility import verify_visibility
                         quality = verify_visibility(reader, encoding, t, column, reader.manifest["config"])
@@ -393,9 +445,12 @@ def verify(archive, source=None, restored=None):
         if restored is not None:
             if source is None:
                 raise ValueError("--restored comparison requires --source")
+            lossy_weights = [c for t in reader.manifest["tables"] if t["path"] == "." for c,s in t["columns"].items() if s["encoding"] == WEIGHT_ENCODING and not s["quality"]["original_bits_exact"]]
             checks.extend(compare_ms(source, restored,
-                                     reader.manifest["config"]["columns"] if reader.manifest["config"]["mode"] != "lossless" else [],
-                                     burned_flag_columns=burned_columns(reader.manifest)))
+                                     (reader.manifest["config"]["columns"] if reader.manifest["config"]["mode"] != "lossless" else []) + lossy_weights,
+                                     burned_flag_columns=burned_columns(reader.manifest),
+                                     keep_calib_only=reader.manifest["config"].get("keep_calib_only", False),
+                                     calib_config=reader.manifest["config"]))
             for spec in reader.manifest["tables"]:
                 if spec["path"] != ".":
                     continue
@@ -404,7 +459,7 @@ def verify(archive, source=None, restored=None):
                         if column["encoding"] == BURNED_FLAGS:
                             _check_column(reader, column, exported, name)
                             checks.append({"table": ".", "column": name, "export": "all_false_shapes_and_presence_preserved"})
-                        if column["encoding"] == "quantized":
+                        if column["encoding"] in ("quantized", WEIGHT_ENCODING):
                             values = read_column(reader, column, 0, spec["row_count"])
                             for start in range(0, spec["row_count"], 1024):
                                 expected = values[start:start + 1024]
@@ -422,7 +477,7 @@ def verify(archive, source=None, restored=None):
     return result
 
 
-def compare_ms(source, restored, approximate_columns=(), burned_flag_columns=()):
+def compare_ms(source, restored, approximate_columns=(), burned_flag_columns=(), keep_calib_only=False, calib_config=None):
     if set(burned_flag_columns) - set(FLAG_COLUMNS):
         raise ValueError("Only MAIN flag columns can be intentionally discarded")
     source, restored = Path(source).resolve(), Path(restored).resolve()
@@ -434,11 +489,27 @@ def compare_ms(source, restored, approximate_columns=(), burned_flag_columns=())
     for path, schema in schemas.items():
         relative = schema["path"]
         with _open(path) as a, _open(restored / relative) as b:
+            if relative == "." and keep_calib_only:
+                a = CalibratedView(a, calib_config)
             expected = relocate(a.getdesc(), source)
+            names = a.colnames()
+            derived = relative == '.' and keep_calib_only and DATA_KEYWORD in b.getkeywords()
+            if derived:
+                if not equal(b.getkeyword(DATA_KEYWORD), data_marker()):
+                    raise ValueError('Invalid derived DATA provenance')
+                expected['DATA'] = expected['CORRECTED_DATA']
+                expected.setdefault('_keywords_', {})[DATA_KEYWORD] = data_marker()
+                names = names + ['DATA']
             if relative == "." and burned_flag_columns:
                 expected.setdefault("_keywords_", {})[POLICY_KEYWORD] = export_marker(burned_flag_columns)
-            if a.nrows() != b.nrows() or a.colnames() != b.colnames() or not equal(logical_descriptor(expected), logical_descriptor(relocate(b.getdesc(), restored))) or not equal(a.info(), b.info()):
+            if a.nrows() != b.nrows() or names != b.colnames() or not equal(logical_descriptor(expected), logical_descriptor(relocate(b.getdesc(), restored))) or not equal(a.info(), b.info()):
                 raise ValueError(f"Exported schema/metadata differs: {relative}")
+            if derived:
+                for start in range(0, b.nrows(), 1024):
+                    count = min(1024, b.nrows()-start)
+                    if not equal(b.getcol('DATA', start, count), b.getcol('CORRECTED_DATA', start, count)):
+                        raise ValueError('Derived DATA differs from decoded CORRECTED_DATA')
+                result.append({'table':'.','column':'DATA','export':'derived_calibrated_copy_matches_CORRECTED_DATA_bits'})
             for column in a.colnames():
                 burned = relative == "." and column in burned_flag_columns
                 if relative == "." and column in approximate_columns and not burned:

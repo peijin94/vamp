@@ -38,7 +38,9 @@ def policy_summary(manifest):
             "original_main_flag_values_preserved": not enabled,
             "export": "all defined MAIN flag cells false; undefined cells remain undefined" if enabled else "original flag values",
             "reflagging_performed": False, "subtable_flags": "preserved exactly",
-            "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+            "flagged_visibility_values": ("discarded; CORRECTED_DATA reconstructs as complex positive zero"
+                                          if manifest["config"].get("keep_calib_only", False)
+                                          else "preserved bitwise using source flags during encoding"),
             "warning": "Destructive flag policy; reflag before scientific use. Recomputed flags may differ from the original." if enabled else None}
 
 

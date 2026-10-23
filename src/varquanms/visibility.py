@@ -281,6 +281,8 @@ def write_visibility(writer, t, column, prefix, config, inspection):
             spec["products"][-1]["power_gamma_block_histogram"] = dict(gamma_histogram)
     stamp = time.perf_counter()
     summary, arrays = quality(values, reconstructed, flags, names, workers=config.workers)
+    if config.keep_calib_only:
+        summary["protected_sample_bits"] = "exact after replacing source-flagged values with complex positive zero; original flagged values discarded"
     for name, metrics in summary["by_product"].items():
         if not within_bounds(metrics, config.bounds(name)):
             raise ValueError(f"Whole-product error criteria failed for {name}; no complete archive was published")
@@ -361,6 +363,8 @@ def verify_visibility(reader, spec, t, column, configuration):
     original, flags = np.asarray(t.getcol(column)), _flags(t)
     method = spec["quality_summary"].get("calculation", "numpy-v1")
     summary, arrays = quality(original, decoded, flags, spec["product_names"], method, config.workers)
+    if config.keep_calib_only:
+        summary["protected_sample_bits"] = "exact after replacing source-flagged values with complex positive zero; original flagged values discarded"
     numerical_fallback = method == "native-moments-v2" and _native is None
     if numerical_fallback:
         # The portable verification path has a different floating reduction

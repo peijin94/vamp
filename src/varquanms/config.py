@@ -17,6 +17,9 @@ class Config:
     columns: list = field(default_factory=lambda: ["DATA"])
     deduplicate: bool = True
     burn_flag: bool = False
+    keep_calib_only: bool = False
+    weight_bits: int = 4
+    weight_max_relative_error: float = .01
     compression: str = "gzip"
     compression_level: int = 1
     io_chunk_rows: int = 1024
@@ -54,6 +57,8 @@ class Config:
         if unknown:
             raise ValueError(f"Unknown configuration options: {', '.join(sorted(unknown))}")
         data.update(overrides)
+        if data.get("keep_calib_only") and "columns" not in data:
+            data["columns"] = ["CORRECTED_DATA"]
         result = cls(**data)
         result.validate()
         return result
@@ -63,9 +68,15 @@ class Config:
             raise ValueError("mode must be lossless, fixed or adaptive")
         if not isinstance(self.columns, list) or not self.columns or any(c not in ("DATA", "CORRECTED_DATA", "MODEL_DATA") for c in self.columns) or len(set(self.columns)) != len(self.columns):
             raise ValueError("columns must be a unique nonempty list of complex visibility columns")
-        for name in ("deduplicate", "shared_order", "burn_flag"):
+        for name in ("deduplicate", "shared_order", "burn_flag", "keep_calib_only"):
             if type(getattr(self, name)) is not bool:
                 raise ValueError(f"{name} must be boolean")
+        if self.keep_calib_only and (self.burn_flag or self.columns != ["CORRECTED_DATA"]):
+            raise ValueError("keep_calib_only requires columns=[CORRECTED_DATA] and preserved flags (burn_flag=false)")
+        if type(self.weight_bits) is not int or self.weight_bits not in (4, 32):
+            raise ValueError("weight_bits must be 4 or 32 (exact)")
+        if type(self.weight_max_relative_error) not in (float, int) or not math.isfinite(self.weight_max_relative_error) or not 0 <= self.weight_max_relative_error < 1:
+            raise ValueError("weight_max_relative_error must be finite in [0,1)")
         for name, lower, upper in (("io_chunk_rows", 1, 65536), ("baseline_group", 1, 4096), ("channel_segment", 1, 65536), ("compression_level", 0, 9), ("seed", 0, 2**64 - 1), ("max_visibility_bytes", 1, 64 * 1024**3)):
             value = getattr(self, name)
             if type(value) is not int or not lower <= value <= upper:

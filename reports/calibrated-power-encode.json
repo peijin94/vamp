@@ -1,0 +1,26 @@
+{
+  "bundle": "/data1/users/pz47/varquanMS/results/calibrated-20261023/power-calib.bundle",
+  "partitions": 15,
+  "row_count": 931920,
+  "archive_bytes": 634658559,
+  "source_physical_bytes": 4428203949,
+  "whole_archive_ratio": 6.9773012373413845,
+  "stored_bytes_by_category": {
+    "coordinates": 19584840,
+    "flags_weights": 225768,
+    "reconstruction": 4742748,
+    "auxiliary_columns": 2760,
+    "quantization_statistics": 21076884,
+    "permutations": 6185493,
+    "visibility_indexes": 384652,
+    "visibility_block_payload": 440403600,
+    "visibility_quality": 40619190,
+    "subtables": 83014380,
+    "container_and_manifest_overhead": 17706769,
+    "bundle_manifest_and_verification": 711475
+  },
+  "sum_encode_seconds_excluding_inspection": 146.7576998602599,
+  "sum_inspection_seconds": 28.198846395593137,
+  "sum_partition_copy_seconds": 50.900405298918486,
+  "elapsed_seconds_including_copy_inspection_verification": 396.5067065269686
+}

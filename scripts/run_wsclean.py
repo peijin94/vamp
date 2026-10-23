@@ -32,6 +32,7 @@ def main():
     parser.add_argument("--niter", type=int, default=10000)
     parser.add_argument("--threads", type=int, default=8)
     parser.add_argument("--polarizations", default="I", choices=("I", "I,Q,U,V"))
+    parser.add_argument("--data-column", default="DATA", choices=("DATA", "CORRECTED_DATA", "MODEL_DATA"))
     parser.add_argument("--beam-from", type=Path, help="use this reference FITS restoring beam for every product")
     args = parser.parse_args()
     source, output = args.ms.resolve(), args.output.resolve()
@@ -39,6 +40,10 @@ def main():
         raise ValueError("Use an existing MS and a new output directory outside it")
     if args.size < 16 or args.niter < 1 or args.threads < 1:
         raise ValueError("Invalid size, iteration count or thread count")
+    from casacore.tables import table
+    with table(str(source), readonly=True, ack=False, lockoptions="usernoread") as t:
+        if args.data_column not in t.colnames():
+            raise ValueError(f"Missing requested imaging column: {args.data_column}")
     info = json.loads(subprocess.check_output(["docker", "image", "inspect", args.container], text=True))[0]
     image_id = info["Id"]
     docker = ["docker", "run", "--rm", "--network", "none", "--user", f"{os.getuid()}:{os.getgid()}"]
@@ -50,7 +55,7 @@ def main():
     shutil.copytree(source, working)
     (output / "tmp").mkdir()
     options = ["-j", str(args.threads), "-abs-mem", "8", "-no-update-model-required",
-               "-temp-dir", "/work/tmp", "-name", "/work/image", "-data-column", "DATA",
+               "-temp-dir", "/work/tmp", "-name", "/work/image", "-data-column", args.data_column,
                "-size", str(args.size), str(args.size), "-scale", args.scale,
                "-weight", "briggs", "0", "-pol", args.polarizations,
                "-multiscale", "-mgain", "0.8", "-niter", str(args.niter),
@@ -66,7 +71,8 @@ def main():
     record = {"schema": "varquanms.wsclean/1", "status": "running", "source_ms": str(source),
               "container": args.container, "container_id": image_id, "container_digests": info.get("RepoDigests", []),
               "wsclean_version": version.strip(), "command": command, "options": options,
-              "parameters": {"size": args.size, "scale": args.scale, "polarizations": args.polarizations,
+              "requested_restoring_beam": beam,
+              "parameters": {"size": args.size, "scale": args.scale, "polarizations": args.polarizations, "data_column": args.data_column,
                              "weighting": "briggs 0", "multiscale": True, "mgain": .8, "niter": args.niter,
                              "auto_mask": 5, "auto_threshold": 1, "threads": args.threads, "memory_gb": 8, "restoring_beam": beam},
               "source_sha256": before,
@@ -79,6 +85,14 @@ def main():
                   fits_files=[p.name for p in sorted(output.glob("*.fits"))])
     if not record["source_unchanged"] or not record["fits_files"]:
         record["status"] = "failed"
+    if record["status"] == "complete":
+        from astropy.io import fits
+        header = fits.getheader(next(output.glob("image*-image.fits")))
+        # Compare the beam actually written to FITS, retaining the request above.
+        record["parameters"]["restoring_beam"] = {
+            "major_arcsec": float(header["BMAJ"]) * 3600,
+            "minor_arcsec": float(header["BMIN"]) * 3600,
+            "position_angle_deg": float(header["BPA"])}
     _write_new(output / "complete.json", json.dumps(record, indent=2) + "\n")
     print(json.dumps({k: record[k] for k in ("status", "returncode", "elapsed_seconds", "source_unchanged", "fits_files")}, indent=2))
     return 0 if record["status"] == "complete" else 1

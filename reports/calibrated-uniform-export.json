@@ -1,0 +1,857 @@
+{
+  "schema": "varquanms.partition-export-verification/1",
+  "status": "passed",
+  "source": "data/working/lwa-15slot-flat.ms",
+  "restored": "results/calibrated-20261023/uniform-calib.ms",
+  "export": {
+    "status": "existing_export_verified_below",
+    "output": "results/calibrated-20261023/uniform-calib.ms",
+    "elapsed_seconds": null,
+    "note": "Export occurred in an earlier decoder invocation; its wall time was not retained."
+  },
+  "column_checks": [
+    {
+      "table": ".",
+      "column": "UVW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG_CATEGORY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "WEIGHT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "SIGMA",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ANTENNA1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ANTENNA2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ARRAY_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "DATA_DESC_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "EXPOSURE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FEED1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FEED2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FIELD_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "OBSERVATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "PROCESSOR_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "SCAN_NUMBER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "STATE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "TIME_CENTROID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "OFFSET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "POSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "DISH_DIAMETER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "MOUNT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "STATION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "POLARIZATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "BEAM_OFFSET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POLARIZATION_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POL_RESPONSE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "RECEPTOR_ANGLE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "ANTENNA_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "BEAM_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "FEED_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "NUM_RECEPTORS",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "APPLIED",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "COMMAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "LEVEL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "REASON",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "SEVERITY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "DELAY_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "PHASE_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "REFERENCE_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "CODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "NUM_POLY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "SOURCE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "APP_PARAMS",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "CLI_COMMAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "APPLICATION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "MESSAGE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "OBJECT_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "OBSERVATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "ORIGIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "PRIORITY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "TIME_RANGE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "LOG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "SCHEDULE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "OBSERVER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "PROJECT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "RELEASE_DATE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "SCHEDULE_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "TELESCOPE_NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "CORR_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "CORR_PRODUCT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "NUM_CORR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "MODE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "TYPE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "SUB_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "MEAS_FREQ_REF",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "CHAN_FREQ",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "REF_FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "CHAN_WIDTH",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "EFFECTIVE_BW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "RESOLUTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FREQ_GROUP",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FREQ_GROUP_NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "IF_CONV_CHAIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NET_SIDEBAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NUM_CHAN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "TOTAL_BANDWIDTH",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "CAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "LOAD",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "OBS_MODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "REF",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "SIG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "SUB_SCAN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "DIRECTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "PROPER_MOTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "CALIBRATION_GROUP",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "CODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "NUM_LINES",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SOURCE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "TRANSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "REST_FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SYSVEL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "ANTENNA_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "NUM_POLY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TIME_ORIGIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "DIRECTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TARGET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TRACKING",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_KIND_NAME",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_KIND_NAME",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "ANTENNA1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "ANTENNA2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    }
+  ],
+  "quantized_columns_match_archive_decoder_bitwise": [
+    "CORRECTED_DATA"
+  ],
+  "partitions_verified_against_source_at_encode": 15,
+  "keep_calib_only": true,
+  "source_files_unchanged": true,
+  "source_file_sha256": {
+    "ANTENNA/table.dat": "c265052b2cf8c1fd22307ed9c7cac9033ff92a9945793c7d7c2ab547f1d2ac8f",
+    "ANTENNA/table.f0": "1cb6e94936903110fcaf19770821f12c1467182bdf172cfe3fdcf6c0fc29af2f",
+    "ANTENNA/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "ANTENNA/table.lock": "784442d11b393e232dce3be86af059505379cb2203b891ee63b843b2a50464e5",
+    "DATA_DESCRIPTION/table.dat": "6f0ae3c8296e4379a2b53d13814207d1a88a901ac242124f30aa9ce18de55891",
+    "DATA_DESCRIPTION/table.f0": "0ca3b05656e0357a38cf1fefaadad6aa92b86feca4113296f885e39ee9a14ce1",
+    "DATA_DESCRIPTION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "DATA_DESCRIPTION/table.lock": "8d2cc0e98f74ab06464482e90a9174141f033185630c866cf1d9eab24e98e076",
+    "FEED/table.dat": "88b0fd7f873e7d96f158d6a90d5e4f092cce3a5f56596f60df1e39e4fe1d7f85",
+    "FEED/table.f0": "e1d594ae75db6fd5477a6bab8b84f4b3eef62b0dfbe4ed4d93625c2ab5048594",
+    "FEED/table.f0i": "4c6f4ccbf1d5c9cc85156cda3e2c67812ce82c82f71c6195bd210451cf907432",
+    "FEED/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FEED/table.lock": "9943654e688f1f848cdadaf72a8baa1634e6c4c20a34adcc0fd8232cf7ac2132",
+    "FIELD/table.dat": "32fec5b5fb0ef36bef8b3109f9de37e6a813675fd3a1637075a11f39f1eb7815",
+    "FIELD/table.f0": "126165bceaa08dda86c89a0b08fe0348076f69fba0a9f9ee71a2d1b4dd51bf3a",
+    "FIELD/table.f0i": "1b17b725b8099a64f6a986cd2126fe15b66db0d475c1690634dc16dadc97d4b4",
+    "FIELD/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FIELD/table.lock": "38ddc4f5afb147bba7bcc95e07c4097d365e4950ab4c46eb5af20bdf530fd6b5",
+    "FLAG_CMD/table.dat": "6bda6890204651f8705a8b385edf22870382622446d094d7aac88e931f26dda4",
+    "FLAG_CMD/table.f0": "4032ba2427f09a414258cc382ab23277ed72be91679882ea7a9217efd1f0c990",
+    "FLAG_CMD/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FLAG_CMD/table.lock": "feeb2e81948fd13079abd9d44070d595730b10c2ea4b5aa6f076618bdcda2956",
+    "HISTORY/table.dat": "f6757e242960e622af52e65e61de7cd2e8ff2cb9ff13230f623d61ff0db22ea1",
+    "HISTORY/table.f0": "146ea457351d5686b5f7ca42e9fd86b77b66d9ab9eda9b30d7f7690c17b89bd3",
+    "HISTORY/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "HISTORY/table.lock": "33797aece05cf22dcf845731512134825972e2aa52f2c94025900e132dd178a2",
+    "OBSERVATION/table.dat": "53e88e856826eb4b2f5018b7ae05008cad61b2dc930e75be4409299956678988",
+    "OBSERVATION/table.f0": "4df36abe58ff132705114f803d6f6721ab33ac8c28454049cb6c81af8cc5b042",
+    "OBSERVATION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "OBSERVATION/table.lock": "38ddc4f5afb147bba7bcc95e07c4097d365e4950ab4c46eb5af20bdf530fd6b5",
+    "POINTING/table.dat": "d8a52f3a451d75dc8cccc3ecae8f98a4483c2783b52789112aad47c83788ea36",
+    "POINTING/table.f0": "c287fdbed7066e41d81601b96115b3fdab19930234a6805423b3695d98fc3c83",
+    "POINTING/table.f0i": "a02c7a228ec02a8b994a3d4d34df006dfa47f8f70c8c496f1ed833030d7d2966",
+    "POINTING/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "POINTING/table.lock": "0bf74d3077c253f0b05b4ecdc8e30ad9391caf2552db45e549ad4a08122d51e5",
+    "POLARIZATION/table.dat": "0874c240e307481f9392deff027de88664e39ca258c1ef6a257f9a522e52c372",
+    "POLARIZATION/table.f0": "c024e70d2d743ea736d188c16d35158c30f2bb41e9da00f21034134daf8bd582",
+    "POLARIZATION/table.f0i": "a371ee9da6585310303f8b546747c0d45f938704ca2f66d0d0510b3fd72c5e47",
+    "POLARIZATION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "POLARIZATION/table.lock": "3db80f372ca025f642e55509b60ad8039808c584f848146ba4a1eeb23f8eafe1",
+    "PROCESSOR/table.dat": "56ced49ad145bef59f74da937dcbd820f1b8e5c03ce5d6a12bf298661bf6df9e",
+    "PROCESSOR/table.f0": "6fb2e4e85a0a1b62623048469c75a7d06b9bf4c9d9307c28a3671dcb76352d59",
+    "PROCESSOR/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "PROCESSOR/table.lock": "70e0f1b570477c30d9ccd0a60d4af956adcb1669fbb705a55582904c5e8941a3",
+    "QUALITY_BASELINE_STATISTIC/table.dat": "41274384188bad2ae2b3f5c08a8f114003e6dcffbdcc60f87aac1b1adef07b45",
+    "QUALITY_BASELINE_STATISTIC/table.f0": "3b6bb420a851b4fe7e0a90bc06f8ed1d3c2f431a51dbf8fc3c3c58f3107f57be",
+    "QUALITY_BASELINE_STATISTIC/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "QUALITY_BASELINE_STATISTIC/table.lock": "eb1a1c6c1f5531b2232686d69a7a9ce950e84e7617ff6ddb1dec2507d64ee53e",
+    "QUALITY_FREQUENCY_STATISTIC/table.dat": "5694101b35deedb498c3be830562195bc42736905447049811afde08e6897504",
+    "QUALITY_FREQUENCY_STATISTIC/table.f0": "d9f84f47442d5333e4247da8870e3c8ed7a6b8c4e9c8d8d25197b826093f6756",
+    "QUALITY_FREQUENCY_STATISTIC/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "QUALITY_FREQUENCY_STATISTIC/table.lock": "674fd7dd8b8d16a14ad6511572b7cd2c78cfbc2dd9fae617eaf5dc8244cce633",
+    "QUALITY_KIND_NAME/table.dat": "cd95b515621b97ac1ed2622aa8bb7dc563669ce8a4a1847f2f02fb3071be5401",
+    "QUALITY_KIND_NAME/table.f0": "424d41eaec87f72c240f479d624063d6c26fbe470a06667cf1c0b4d7cd9e2417",
+    "QUALITY_KIND_NAME/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "QUALITY_KIND_NAME/table.lock": "46074c5897e95268594eda27cd4d19ce3cbc09011c784e81c1155478320678b3",
+    "QUALITY_TIME_STATISTIC/table.dat": "e825f521a644eae263a9269a35a07bc9eb9b04051e6b789ef1333efb4e52bb5a",
+    "QUALITY_TIME_STATISTIC/table.f0": "c8b2466389283197d387b7295d827f13213cf05e2731393a5084424c0b84f88a",
+    "QUALITY_TIME_STATISTIC/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "QUALITY_TIME_STATISTIC/table.lock": "c5b3399dcec21bb0b2ddd303cb31b2dbcd8ca13c41e29b378d89e15f13cb4bea",
+    "SOURCE/table.dat": "d5cbf643e33d796cee06ef5a902aad19b88e189024da8bf6b4048c0a292ccde5",
+    "SOURCE/table.f0": "976667c4beec6a4f0cdc97f80f992e299dc5c93c5e8aca71137c219d2705eb0d",
+    "SOURCE/table.f0i": "2dc2cf6e5096ed05f5515c7d9151ad4cf71c81682caebb6426f626820c196b40",
+    "SOURCE/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "SOURCE/table.lock": "31e3b0b9c05e1c0db5dfe0fa2894906fa2b9588ab3aeab303736f867237388b0",
+    "SPECTRAL_WINDOW/table.dat": "a50a0172208e2e3c71c4aaf9b473050566644f33596bf7bc3caf9ba442fc1aa3",
+    "SPECTRAL_WINDOW/table.f0": "93db2907689994a11cd448104a3e158637696e87c755a61894e9f46317bcbcee",
+    "SPECTRAL_WINDOW/table.f0i": "99dff3f9bb143cd7757821d660cb6a96e4f4fe74013fef1d3d0e75b40d25b0a1",
+    "SPECTRAL_WINDOW/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "SPECTRAL_WINDOW/table.lock": "22a6ccf5a4809534f9572bb44b804eae355435a3a06d18bce5dfa6f30be8494f",
+    "STATE/table.dat": "8733f2570f5bb1bfc308eb44b40c6647cc02711c628e66de663207cc0f8886a6",
+    "STATE/table.f0": "ad737ef6c117ebb2a2fbad24fe817404647f5231e48c6ae31511753cabfaf8eb",
+    "STATE/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "STATE/table.lock": "7d44d15bca2e23c0739e04c4828f85729da65663a8c73e0110802c09c91a94e3",
+    "table.dat": "cd49f6bcfdbfb72fbaaa3055fc4186cacf764ad11896f3e8d05664b429453ff7",
+    "table.f0": "24b80c1dfeb808f842e071bd7afc2aaa4734ee785a2820d064a1a43ed2647304",
+    "table.f0_TSM0": "29d87c55c3fe2a995ae7363f8405c75538b68f38f7c318ef809e067bc1f7341e",
+    "table.f1": "e3d3897da80d3dda82cf35fdc2475a050a3b03f2d4c0b489b3e974e465b31cb5",
+    "table.f10": "bf07cb09d92c1cf5d264c13e16597881a04dc6b375925eb2033fe12c6e5dcdce",
+    "table.f11": "bf07cb09d92c1cf5d264c13e16597881a04dc6b375925eb2033fe12c6e5dcdce",
+    "table.f12": "bf07cb09d92c1cf5d264c13e16597881a04dc6b375925eb2033fe12c6e5dcdce",
+    "table.f13": "7f613ddd6102f752afd34c4b235095ca4435c41a76ca6f8bf124eedf32060902",
+    "table.f14": "0c145b16fbf8ff9d21e78628abb1c65bc15220335a32ff54a390afca720d47c3",
+    "table.f15": "8dddaed2baf7ae8ebbf997b18b378bf548e66385bbc0d71dc10d7068bc7524a8",
+    "table.f16": "bf07cb09d92c1cf5d264c13e16597881a04dc6b375925eb2033fe12c6e5dcdce",
+    "table.f17": "49d70c6570eb35732489869b15c045643c5361ad8ce6e6dcc2c8f81eae964f58",
+    "table.f18": "c485b259a4fc64f12ab2949fbdf3885c80d9a9b1474e23bd1a1ca4e82ce9dd77",
+    "table.f19": "edbfdcf93d92430efd62a7bfa21cdc46c856bf7e43c0451a4bd1bf7fb5fae6fd",
+    "table.f1_TSM1": "1a8f7530739787bda3e8e969a67ca5f5ca0dfc21fdb510c7722d7973a26dd336",
+    "table.f2": "15818689b0597781fe13836870e7bd2d7cc6736e622417611cbbec32d5c58a33",
+    "table.f20": "cc200c2cf8e3cd2416ca3be5e477f92a5151872db9be99a3c88132c75db3f955",
+    "table.f21": "d83ba8a0598cc50e4bea69ddbcd3e37a699d4c82a1efa5e7ae7fadd2eeed4094",
+    "table.f21_TSM1": "a3b8248f058e68559dbaa9eafce51a200172e48eba23030324119e9c6ef5dfa9",
+    "table.f22": "91e1aeca086c3470ab1f2b4151e2d9c9fb24b0ce0a2dea3894ffda428fdd3cea",
+    "table.f22_TSM1": "389a5e99f371116df24c59bf926972c1e929f0026786c7c22525e90dbc0e09ac",
+    "table.f23": "ea434928acb6a32e074807a121a95b8a0d48d2b2041616ec1149bfe004af0e27",
+    "table.f23i": "3edd86cd3ae5eb1e63523ae6f051678686f9cde6bb503769da826ca46308abff",
+    "table.f3": "4f4d079216974a1f02983302ca6c53a4ac29919ccf2a915f92398379acb165a3",
+    "table.f3_TSM1": "84d1f09b309c02b1eb395e01a57831c5619c9e0373f2e175d4bc22207a17ba61",
+    "table.f4": "72aad696a617a4da8463cf6d83b48b0bf946409c4ad8bb697e350c59f516d368",
+    "table.f4_TSM1": "7e9bf0464bd2e8e393bec2bf3a2ffa5409ef28a9c00e0fe7b899be991eeec167",
+    "table.f5": "907ab38da39a8577fc0bcb8f3622c94cd4ca89f138a00ecbca3f7121e2f4a415",
+    "table.f6": "f1fe38e7cadcdc3b0aec02bd6465f262425b4b21e242a9fe6faaeac8713950b3",
+    "table.f7": "bf07cb09d92c1cf5d264c13e16597881a04dc6b375925eb2033fe12c6e5dcdce",
+    "table.f8": "b465a2e4c46367ea6f1b6ce3ae384553faec49cb274266605657329171fe0db3",
+    "table.f9": "0c145b16fbf8ff9d21e78628abb1c65bc15220335a32ff54a390afca720d47c3",
+    "table.info": "04b3b5a24a2ad2e2e3d3bf2bc84d979a3c9eac9ea7083b42a8ffaa0ed3ad1e9f",
+    "table.lock": "d553cad4d6925b96ade64d79a05117e4e6f62a037e15c91058a3ae4013429e54"
+  },
+  "elapsed_seconds_including_export_and_verification": 54.16007478395477,
+  "scope": "All declared exact metadata and auxiliary columns compared bitwise against the full source; selected columns match the independently decoded archives. CASA and imaging are separate checks."
+}

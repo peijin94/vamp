@@ -56,11 +56,18 @@ def main(argv=None):
     encode_parser.add_argument("--workers", type=int, help="bounded CPU worker count; default 1 or config value")
     encode_parser.add_argument("--burn-flag", "--burn_flag", action="store_true", default=None,
                                help="destructive: discard MAIN flags; export defined flag cells as all-false (no reflagging)")
+    encode_parser.add_argument("--keep-calib-only", "--keep_calib_only", action="store_true", default=None,
+                               help="keep only CORRECTED_DATA; omit DATA/FLOAT_DATA/MODEL_DATA and zero flagged values; flags exact, weights default to 4 bits")
+    encode_parser.add_argument("--weight-bits", type=int, choices=(4, 32), help="calibrated-only weights: packed 4-bit codebooks (default) or exact float32")
+    encode_parser.add_argument("--weight-max-relative-error", type=float, help="calibrated-only weights: maximum relative error (default 0.01); failing chunks use float32")
     encode_parser.add_argument("--report", type=Path)
     decode_parser = sub.add_parser("decode", help="restore a new MS without overwriting an existing path")
     decode_parser.add_argument("input", type=Path)
     decode_parser.add_argument("output", type=Path)
     decode_parser.add_argument("--report", type=Path)
+    data_export = decode_parser.add_mutually_exclusive_group()
+    data_export.add_argument("--ms-v2-data", action="store_true", default=None, help="default for calibrated-only archives: add DATA as a copy of decoded CORRECTED_DATA; does not recover raw DATA")
+    data_export.add_argument("--no-ms-v2-data", dest="ms_v2_data", action="store_false", default=None, help="export a CORRECTED_DATA-only projection (not compatible with the CASA imager)")
     verify_parser = sub.add_parser("verify", help="verify integrity and compare original/exported values")
     verify_parser.add_argument("input", type=Path)
     verify_parser.add_argument("--source", type=Path)
@@ -87,13 +94,21 @@ def main(argv=None):
                 overrides = {} if args.burn_flag is None else {"burn_flag": True}
                 if args.workers is not None:
                     overrides["workers"] = args.workers
+                if args.keep_calib_only:
+                    overrides.update(keep_calib_only=True, columns=["CORRECTED_DATA"])
+                if args.weight_bits is not None:
+                    overrides["weight_bits"] = args.weight_bits
+                if args.weight_max_relative_error is not None:
+                    overrides["weight_max_relative_error"] = args.weight_max_relative_error
                 configuration = Config.load(args.config, **overrides)
+                if not configuration.keep_calib_only and (args.weight_bits is not None or args.weight_max_relative_error is not None):
+                    raise ValueError("Weight precision options require --keep-calib-only")
                 if configuration.burn_flag:
                     print("WARNING: burn_flag discards MAIN FLAG/FLAG_CATEGORY/FLAG_ROW values. "
                           "Export resets them to false; no flagging algorithm is run.", file=sys.stderr)
                 result = encode(args.input, args.output, configuration)
             elif args.command == "decode":
-                result = decode(args.input, args.output)
+                result = decode(args.input, args.output, ms_v2_data=args.ms_v2_data)
             else:
                 result = verify(args.input, args.source, args.restored)
             serialized = json.dumps(result, indent=2, allow_nan=False) + "\n"

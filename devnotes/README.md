@@ -1,5 +1,6 @@
 # Development notes
 
+- [Calibrated-only archives, four-bit weights and the 15-slot imaging test](calibrated-imaging.md)
 - [Median offset and adaptive power-law quantization](power-quantization.md)
 - [Full-range unsigned quantization and zero-bias validation](uint-midrise.md)
 - [Two-level MXFP microscaling experiment](microscaling.md)

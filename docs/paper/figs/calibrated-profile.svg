@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="560" viewBox="0 0 1100 560">
+<defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9" fill="#496579"/></marker></defs>
+<rect width="1100" height="560" fill="white"/>
+<g font-family="DejaVu Sans,Arial,sans-serif" fill="#20374a" text-anchor="middle">
+<text x="550" y="30" font-size="24" font-weight="bold">Calibrated-only archive: explicit removal, bounded quantization</text>
+<rect x="135" y="48" width="830" height="65" rx="10" fill="#edf3f8" stroke="#496579"/>
+<text x="550" y="75" font-size="19">Input: 15 integrations × 62,128 rows × 48 channels × 4 correlations</text>
+<text x="550" y="99" font-size="17">DATA, CORRECTED_DATA, MODEL_DATA, flags, weights, coordinates and subtables</text>
+<path d="M550 113 V144" stroke="#496579" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="70" y="148" width="960" height="70" rx="10" fill="#fff3e5" stroke="#be823b"/>
+<text x="550" y="176" font-size="19" font-weight="bold">--keep-calib-only</text>
+<text x="550" y="202" font-size="17">Remove raw/model columns · replace flagged values with +0 · retain original flags and UVW</text>
+<path d="M550 218 V238 H295 V265 M550 238 H825 V265" fill="none" stroke="#496579" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="60" y="270" width="470" height="126" rx="10" fill="#eaf5f0" stroke="#43866c"/>
+<text x="295" y="297" font-size="19" font-weight="bold">CORRECTED_DATA per integration</text>
+<text x="295" y="323" font-size="17">128 baselines × 48 channels × 1 correlation</text>
+<text x="295" y="349" font-size="17">Local median, range, gamma (power candidate)</text>
+<text x="295" y="375" font-size="17">Measured choice: 4 / 8 / 12 / 16 bits or float32</text>
+<rect x="570" y="270" width="470" height="126" rx="10" fill="#edf3f8" stroke="#496579"/>
+<text x="805" y="297" font-size="19" font-weight="bold">WEIGHT / optional WEIGHT_SPECTRUM</text>
+<text x="805" y="323" font-size="17">Packed 4-bit codes + stored float32 codebooks</text>
+<text x="805" y="349" font-size="17">Relative error ≤ 1%; failing chunks use float32</text>
+<text x="805" y="375" font-size="17">This MS: three distinct weights, zero weight error</text>
+<path d="M295 396 V420 H550 V443 M805 396 V420 H550" fill="none" stroke="#496579" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="135" y="448" width="830" height="67" rx="10" fill="#edf3f8" stroke="#496579"/>
+<text x="550" y="474" font-size="19">15 standalone archives + checksummed row-range manifest</text>
+<text x="550" y="500" font-size="17">Independent full-MS reconstruction → matched WSClean 2048², 4 arcmin, multiscale CLEAN</text>
+<text x="550" y="544" font-size="16">No averaging. Default archive policy is unchanged. Engineering error limits do not establish science acceptance.</text>
+</g></svg>

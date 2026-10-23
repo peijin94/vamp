@@ -319,9 +319,10 @@ Source snapshots must be frozen. The prototype holds selected quantized columns
 in RAM, with a configurable size limit (2 GiB per column by default); it is not
 an out-of-core visibility encoder. Error budgets are required for lossy modes.
 The provided engineering budgets do not validate thermal noise or science.
-Nonuniform codebooks, complex offsets, subtractive dithering, scale quantization,
-predictors, BDA, implicit Stokes conversion and a virtual MS storage manager are
-not implemented; unsupported codebook/rounding names are rejected.
+The optional median/power codebook supplies a complex offset and nonuniform
+levels. Subtractive dithering, scale quantization, predictors, BDA, implicit
+Stokes conversion and a virtual MS storage manager are not implemented;
+unsupported codebook/rounding names are rejected.
 
 Incomplete archives carry `.partial` filenames and `complete=false`. An archive
 is published only after metadata and inventory finalization. Export creates a
@@ -333,3 +334,60 @@ Literal conformance bytes are in `tests/fixtures/codec-v1.json`. The independent
 standard-library block decoder in `scripts/reference_block_decoder.py` is tested
 against the NumPy decoder, including exact special-value exceptions. The full
 reference MS reconstruction path lives in `src/varquanms/archive.py`.
+
+## Calibrated-only extension and ordered partition bundles
+
+The explicit `keep_calib_only` configuration/CLI option omits MAIN DATA,
+FLOAT_DATA and MODEL_DATA, selects CORRECTED_DATA, and replaces values selected
+by FLAG OR FLAG_ROW with positive complex zero before encoding. Row/cell shape,
+presence, flag bits and original UVW are retained. The original flagged values
+cannot be recovered. This option is incompatible with `burn_flag`; the default
+archive profile is unchanged. Exported descriptors contain the
+`VARQUANMS_CALIBRATED_ONLY` and `VARQUANMS_WEIGHT_POLICY` provenance records.
+
+By default, decoding this profile adds a DATA column as an exact copy of decoded
+CORRECTED_DATA, with a `VARQUANMS_DERIVED_DATA` record stating that original raw
+DATA was not restored. This supplies the nominal data column required by MS v2
+and the installed CASA imager. It adds no DATA payload to the archive.
+`--no-ms-v2-data` requests the limited CORRECTED_DATA-only projection explicitly;
+WSClean can image it with `-data-column CORRECTED_DATA`. Verification checks both
+the declared source projection and bitwise equality of the derived DATA copy.
+
+For this profile, WEIGHT and WEIGHT_SPECTRUM use `weight-codebook4-v1` by default.
+Each column specification records dtype `<f4`, cell shape, total row count and
+contiguous independently decoded chunk records. A `codebook4` record contains
+`start`, `stop`, the exact scalar `count`, and inventory paths to a float32
+codebook (1–16 entries) and a packed byte array. Scalars are flattened in C order;
+the first code occupies the low nibble. Unused high-nibble padding must be zero.
+Decoding is the exact float32 lookup `book[code]`, with no decoder fitting or
+floating arithmetic. Codes outside the codebook, inconsistent counts and
+missing/overlapping chunks are errors. The alternative `float32` chunk kind
+references an exact dense float32 array with the expected row/cell shape.
+
+For at most 16 distinct original float32 bit patterns, the encoder stores those
+patterns, ordered by their unsigned little-endian uint32 values. Otherwise it
+tries 16 stored float32 representatives uniformly spanning the finite nonnegative
+range. It chooses the nearest stored representative, with ties to the even code.
+The default maximum relative error per positive weight is .01; zero and special
+weights must stay exact, and positive weights must remain positive. Failure uses
+float32. `weight_bits=32` selects the existing exact column encodings;
+`weight_max_relative_error=0` forbids any numerical weight error. SIGMA and
+SIGMA_SPECTRUM remain exact. Quality records include achieved error extrema,
+lossy/exact/fallback counts and packed byte counts. HDF5 inventory/chunk checksums
+cover codebooks and codes. This is a numerical storage policy, not a validated
+noise or sensitivity model.
+
+The experimental `varquanms.ordered-partitions/1` directory bundle stores an
+ordered list of ordinary archives with contiguous `[start,stop)` source row
+ranges, archive lengths, SHA-256 hashes and checksummed verification reports.
+`manifest.sha256` covers `manifest.json`; the complete directory is published
+only when every partition succeeds. Each partition repeats the full exact
+subtable graph. Decode checks coverage, row counts, archive configurations,
+logical descriptors, subtable content hashes and every archive inventory before
+assembling the rows. It needs no original MS. The wrapper supports at most 4,096
+contiguous context runs, and each run must satisfy the ordinary archive preflight.
+Repeated subtable bytes and all outer manifest/report overhead count toward
+bundle size. No time or channel averaging occurs.
+
+Detailed policy, commands and calibration caveats are in
+[the calibrated imaging development note](../devnotes/calibrated-imaging.md).

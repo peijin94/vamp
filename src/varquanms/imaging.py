@@ -138,7 +138,7 @@ def plot_comparison(reference_path, candidate_path, output):
     delta = candidate - reference
     extent = max(float(np.max(np.abs(reference[valid]))), float(np.max(np.abs(candidate[valid])))) or 1.0
     fig, axes = plt.subplots(1, 3, figsize=(13, 4.4), constrained_layout=True)
-    for ax, data, title in zip(axes[:2], (reference, candidate), ("Lossless reference", "Quantized reconstruction")):
+    for ax, data, title in zip(axes[:2], (reference, candidate), ("Lossless reference", "Archive reconstruction")):
         im = ax.imshow(np.where(valid, data, np.nan), origin="lower", cmap="RdBu_r",
                        norm=SymLogNorm(linthresh=extent * .01, vmin=-extent, vmax=extent))
         ax.set_title(title)

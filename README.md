@@ -25,8 +25,15 @@ The [performance preset](configs/performance-adaptive.json) uses 24 CPU workers
 and optional compiled kernels; see [measured timings and setup](devnotes/performance.md).
 Optional `encode --burn-flag` discards MAIN flags and exports them as all-false;
 no reflagging is performed. See [the destructive flag policy](devnotes/burn-flag.md).
+Optional `encode --keep-calib-only` retains `CORRECTED_DATA`, removes raw/model
+visibility columns, and zeros flagged values while preserving flags. Weights use
+4-bit codebooks by default, with checked float32 fallback; see the
+[calibrated profile and 15-slot test](devnotes/calibrated-imaging.md).
+Export recreates `DATA` from decoded calibrated values for MS compatibility;
+the discarded raw `DATA` is not recovered.
 The current quantized profile supports one integration/configuration with
-channels inside complex64 cells; unsupported layouts fail explicitly.
+channels inside complex64 cells; the experimental partition-bundle script handles
+contiguous integrations. Unsupported layouts fail explicitly.
 
 ```bash
 python -m pip install -e '.[validation]'

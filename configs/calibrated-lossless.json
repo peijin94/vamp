@@ -1,0 +1,5 @@
+{
+  "mode": "lossless", "columns": ["CORRECTED_DATA"],
+  "keep_calib_only": true, "burn_flag": false,
+  "compression": "gzip", "compression_level": 1
+}

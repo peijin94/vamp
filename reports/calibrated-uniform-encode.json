@@ -1,0 +1,26 @@
+{
+  "bundle": "/data1/users/pz47/varquanMS/results/calibrated-20261023/uniform-calib.bundle",
+  "partitions": 15,
+  "row_count": 931920,
+  "archive_bytes": 634554109,
+  "source_physical_bytes": 4428203949,
+  "whole_archive_ratio": 6.978449727444756,
+  "stored_bytes_by_category": {
+    "coordinates": 19584840,
+    "flags_weights": 225768,
+    "reconstruction": 4742748,
+    "auxiliary_columns": 2760,
+    "quantization_statistics": 21076884,
+    "permutations": 6185493,
+    "visibility_indexes": 384652,
+    "visibility_block_payload": 440403600,
+    "visibility_quality": 40528233,
+    "subtables": 83014380,
+    "container_and_manifest_overhead": 17705164,
+    "bundle_manifest_and_verification": 699587
+  },
+  "sum_encode_seconds_excluding_inspection": 132.67654548585415,
+  "sum_inspection_seconds": 27.91751267714426,
+  "sum_partition_copy_seconds": 43.370408991817385,
+  "elapsed_seconds_including_copy_inspection_verification": 369.43023314327
+}

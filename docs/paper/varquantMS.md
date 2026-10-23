@@ -1,4 +1,4 @@
-# varquanMS: local-scale, adaptive-precision archives for single-integration Measurement Sets
+# varquanMS: local-scale, adaptive-precision archives for Measurement Sets
 
 **Working methods and experiment paper — 23 October 2026.** This document describes
 implemented behavior and measured results, not an approved archival science profile.
@@ -48,6 +48,18 @@ It produces a 104.657 MB archive under the original bounds, with component MSE
 control with different block ceilings produces 102.534 MB at `4.1503e-8`; the
 power codec therefore does not establish an aggregate rate–distortion advantage.
 Its measured encoding median is 14.44 s, with one of three runs above 15 s.
+
+A second, calibrated 15-integration dataset tests an explicitly destructive
+calibrated-only profile. Original raw/model columns and flagged visibility values
+are discarded; flags and original UVW remain exact. Four-bit weight codebooks
+preserve this dataset's three distinct weights exactly. Its same-policy lossless
+visibility control occupies 1,079.629 MB, compared with 634.554 MB for uniform
+quantization and 634.659 MB for the median/power candidate. The lossless control
+reproduces the reference images exactly. Quantized dirty-image RMS differences
+are 0.0071% and 0.0075%, but restored-image differences after the 10,000-iteration
+CLEAN cap are 5.13% and 6.89%. These results do not establish scientific equivalence
+or an advantage for the power candidate. Section 15 gives the complete policy,
+timing scope, image comparisons and compatibility checks.
 
 ## 1. Scope and relationship to earlier work
 
@@ -1106,3 +1118,219 @@ All flow diagrams, measured charts and image panels are in [figs/](figs/).
 Figures 1–2 are explicitly schematic. Numerical figures derive from the linked
 reports; image panels derive from the actual matched FITS outputs. Observation
 payloads, archives, exported MSs and FITS files remain outside Git.
+
+## 15. Calibrated-only archival and a 15-integration imaging test
+
+### 15.1 Input, removal policy and reconstruction
+
+The supplied `lwa-15slot-flat.ms.tar` was already local on inti. The copied tar
+and all 108 extracted files matched its supplied SHA-256 manifest. Inspection
+found 931,920 rows, comprising 15 contiguous integrations of 62,128 ordered
+antenna pairs, **48 channels**, and XX, XY, YX, YY. Channel centres span
+63.965576–68.463623 MHz. Each of DATA, CORRECTED_DATA and MODEL_DATA contains
+1,431.429 MB of logical complex64 values; the original MS occupies 4,428.204 MB.
+The combined FLAG/FLAG_ROW mask excludes 41,752,612 of 178,928,640 samples.
+HISTORY records CASA `applycal`; the selected imaging column is CORRECTED_DATA.
+This provenance does not independently validate its calibration or flux scale.
+
+The user-selected `--keep-calib-only` profile removes DATA, FLOAT_DATA and
+MODEL_DATA when present. Original flagged visibility values are discarded and
+reconstruct as positive complex zero. Flags and row/cell presence remain exact;
+unflagged special values keep the ordinary exact-exception policy. Original
+float64 UVW, TIME/centroid values, correlations and frequency ordering are
+preserved without averaging or coordinate regeneration. SIGMA columns and
+supported subtables remain exact. This policy is separate from the default
+archive profile and cannot be combined with `burn_flag`.
+
+![Calibrated-only profile and precision paths](figs/calibrated-profile.svg)
+
+**Figure 15.** Explicit removal and compression paths. Weight codebooks and
+visibility quantization are independent. Error limits are engineering settings;
+the diagram does not imply scientific acceptance.
+
+Each integration is stored in an independently decoded ordinary archive. A
+checksummed outer manifest records contiguous original row ranges; all rows are
+reassembled in their original order. Full subtables are repeated in every
+partition, and their repeated bytes are counted. The bundle decoder requires no
+source MS. Tests cover source-independent reconstruction, corrupt members and
+invalid row mappings. This wrapper does not generalize to every irregular MS.
+
+MS v2 calls for DATA, FLOAT_DATA or LAG_DATA. The initial CORRECTED_DATA-only
+projection was accepted by WSClean but rejected by the installed CASA imager.
+Following the user's explicit choice, the default calibrated-only export now
+creates DATA as a **bitwise copy of decoded CORRECTED_DATA** and records this in
+`VARQUANMS_DERIVED_DATA`. Original raw DATA is neither stored nor recovered.
+The limited projection remains available with `--no-ms-v2-data`.
+[MS v2 data-column specification](https://casacore.github.io/casacore-notes/229.html)
+
+### 15.2 Four-bit weight storage
+
+WEIGHT and optional WEIGHT_SPECTRUM default to packed four-bit unsigned codes.
+Within each bounded row chunk, up to 16 distinct float32 bit patterns form an
+exact stored dictionary. Otherwise, the candidate codebook is
+
+$$
+d_j=\operatorname{float32}\left[w_{\min}
+      +\frac{j}{15}(w_{\max}-w_{\min})\right],\qquad j=0,\ldots,15,
+$$
+
+with nearest stored-level assignment and even-code ties. For each finite positive
+weight, the stored reconstruction must satisfy
+
+$$
+\frac{|\widehat w_i-w_i|}{w_i}\leq\eta_w,\qquad \eta_w=0.01
+$$
+
+by default. Zero/special values must remain exact and positive weights must stay
+positive; failing chunks use float32. A zero relative-error budget requires exact
+weights, and `weight_bits=32` selects exact array storage. No noise-model claim
+follows from these settings.
+
+This MS has only three distinct weights, approximately 3.9591246e-8,
+3.9799620e-8 and 4.0007993e-8. All **915 chunks are exact four-bit dictionaries**,
+with no float32 fallback or lossy weight chunks. The 14.911 MB logical WEIGHT
+array becomes 1.864 MB of packed codes before secondary compression. Stored
+codebook and code datasets total 66,728 bytes, excluding container overhead.
+The imaging tests therefore exercise visibility quantization with **zero weight
+error**, not the more general lossy-weight path.
+
+### 15.3 Matched archive measurements
+
+All three experiments use the same column-removal, flag and weight policies.
+The quantized runs use amplitude ordering per product, 128-baseline × 48-channel
+blocks, one correlation per block, 4/8/12/16-bit components, max/.995 range
+candidates, and 24 workers. Stored-unit bounds are component MSE 1,
+per-baseline component MSE 2, maximum complex error 10 and complex bias 1.
+The power candidate uses component medians and gamma 1 or 1/2. No validated
+thermal-noise budget is supplied.
+
+| Calibrated-only experiment | Complete bundle (MB) | Component MSE | Visibility dataset ratio |
+| --- | ---: | ---: | ---: |
+| Lossless visibility control | 1,079.629 | 0 | 1.498× |
+| Uniform symmetric | 634.554 | 0.672812 | 2.815× |
+| Median/power | 634.659 | 0.764378 | 2.814× |
+
+Visibility ratios include indexes, mappings and quality/statistic datasets but
+exclude container-wide overhead. Complete bundle sizes include every byte.
+Relative to the same-policy lossless control, uniform quantization reduces
+whole-bundle size by about 1.70×. The roughly 6.98× ratio to the original source
+also includes **intentional column/value removal**, so it is not a pure
+quantization-compression ratio.
+
+![Calibrated-only archive bytes and measured visibility distortion](figs/calibrated-rate.png)
+
+**Figure 16.** The uniform candidate has lower aggregate visibility MSE at slightly
+lower complete-bundle size. These are measured points under the stated bounds,
+not an optimized rate–distortion frontier or a new grouping-size sweep.
+
+| Mapping | 4-bit blocks | 8-bit blocks | 12-bit blocks | 16-bit blocks | Float32 blocks |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Uniform | 0 | 0 | 20,892 | 1,334 | 6,998 |
+| Median/power | 0 | 0 | 20,884 | 1,372 | 6,968 |
+
+Float32 selection includes cheaply compressed all-flagged zero blocks; it is
+not a count of failed error checks. The power candidate chooses gamma 1 for
+14,889 quantized blocks and gamma 1/2 for 7,367. Maximum measured complex errors
+are 2.46115 (uniform) and 4.93801 (power), within the configured limit of 10.
+
+For the uniform bundle, allocated visibility payload is 440.404 MB; repeated
+subtables occupy 83.014 MB, quality arrays 40.528 MB, amplitude statistics
+21.077 MB, coordinates 19.585 MB, and permutations 6.185 MB. Remaining indexes,
+exact columns and container/manifest/report overhead are included in the linked
+machine-readable accounting. The equal allocated payload totals of the two
+quantized candidates include HDF5 stream-chunk padding; they do not mean their
+individual encoded block lengths are identical.
+
+### 15.4 Calibrated image comparison
+
+The original-input reference and three reconstructed candidates use the same
+pinned WSClean 3.7 image: 2048² pixels, 4-arcmin cells, Stokes I, Briggs robust 0,
+multiscale CLEAN, mgain .8, automask 5, threshold 1 and one thread. The common
+restoring beam is 643.149452 × 463.096951 arcsec at PA 43.436339 degrees.
+All runs reached the 10,000-iteration cap. Pixel comparisons use the 2,320,513
+finite pixels with valid celestial WCS coordinates.
+
+The calibrated-only lossless control gives **identical dirty, restored, model,
+residual and PSF pixels**. Both quantized candidates also have identical PSFs.
+Relative RMS differences below mean difference RMS divided by the corresponding
+reference-image RMS; they are not thermal-noise increases.
+
+| Product | Uniform relative RMS difference | Median/power relative RMS difference |
+| --- | ---: | ---: |
+| Dirty | 0.007089% | 0.007537% |
+| Restored | 5.1252% | 6.8909% |
+| Model | 5.6456% | 6.6382% |
+| Residual | 8.7828% | 12.8460% |
+| PSF | 0 | 0 |
+
+Restored difference RMS is 0.098868 and 0.132928 Jy/beam, respectively, compared
+with reference RMS 1.929042 Jy/beam. Maximum absolute differences are 13.6999
+and 26.6953 Jy/beam. At the brightest reference pixel, changes are −0.1954%
+and −0.00956%, with no peak-position shift; fixed four-pixel-radius aperture
+sums change by −0.0377% and −0.1288%. The peak is not identified as the Sun,
+and the aperture sums are not an independent flux calibration.
+
+![Reference and median/power reconstructed calibrated image](figs/calibrated-power.png)
+
+**Figure 17.** Actual calibrated restored images and their full-range difference.
+Each image panel has its shown scale; small areas of larger differences can be
+hard to see at this full-field display scale.
+
+![Expanded display of calibrated dirty and restored differences](figs/calibrated-differences.png)
+
+**Figure 18.** Diagnostic contrast enhancement: each color range is clipped at
+the 99.9th percentile of absolute difference, so the largest 0.1% saturate.
+Full, unclipped maxima and RMS values are annotated; no clipping is used in
+any reported numerical metric.
+
+Small dirty-image perturbations lead to substantially larger differences after
+this nonlinear, automatically masked, iteration-capped CLEAN procedure. The
+lossless repeat is exact, so these changes cannot be dismissed as ordinary
+repeat-run variation in this test. The result does not certify equivalent
+deconvolved science products. It also does not establish convergence, per-frame
+light-curve fidelity, Q/U/V fidelity, calibration-solution stability or a
+general guarantee for four-bit approximate weights.
+
+Full exports pass 146 exact column checks for the lossless projection and 145
+for each quantized projection, including original UVW, flags and weights. A
+separate default-compatible power export checks the derived DATA copy and
+reopens with installed CASA 5.4.1. A 64², 600-arcsec-cell, natural-weight Stokes I
+dirty-image smoke workflow using CORRECTED_DATA passes with that installation's
+data path configured. This compatibility check is separate from the WSClean
+fidelity comparison and is not a calibration or CASA 6 validation.
+
+### 15.5 Timing scope and reproducibility
+
+These three bundle jobs ran concurrently on the shared host. Per-partition
+encoding, inspection and copying are timed separately; complete-bundle wall
+time also includes source verification, integrity checks and member hashing.
+These are workload observations without an isolated or cold-cache claim.
+
+| Experiment | Sum of encoding time (s) | Inspection (s) | Partition copying (s) | Complete verified bundle (s) |
+| --- | ---: | ---: | ---: | ---: |
+| Lossless visibility control | 90.29 | 26.84 | 30.90 | 318.19 |
+| Uniform | 132.68 | 27.92 | 43.37 | 369.43 |
+| Median/power | 146.76 | 28.20 | 50.90 | 396.51 |
+
+Encoding times include complete per-archive writing/publication but exclude the
+separately measured inspection. None of these timings demonstrates a 15-second
+conversion of this larger, 15-integration observation. The earlier single-MS
+speed experiment has different data and timing scope. MS export and imaging
+are outside this table; the independently reconstructed compatible power export
+took 54.23 s before its source comparison.
+
+Use `scripts/timeslot_archive.py` with `configs/calibrated-lossless.json`,
+`configs/calibrated-uniform.json` or `configs/calibrated-power.json`, then
+`scripts/validate_partition_export.py`. Default calibrated-only export creates
+the compatible DATA copy; the recorded WSClean runs used the equivalent
+CORRECTED_DATA-only intermediate and explicitly selected that column.
+`scripts/report_calibrated.py` collects the measured results and plots.
+
+Evidence: [inspection](../../reports/calibrated-inspection.json),
+[complete calibrated experiment](../../reports/calibrated-evaluation.json),
+[lossless image control](../../reports/wsclean-calibrated-lossless.json),
+[uniform images](../../reports/wsclean-calibrated-uniform.json),
+[power images](../../reports/wsclean-calibrated-power.json),
+[compatible export verification](../../reports/calibrated-power-compatible-export.json),
+[CASA smoke workflow](../../reports/casa-calibrated-power.json), and
+[implementation/reproduction notes](../../devnotes/calibrated-imaging.md).

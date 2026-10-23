@@ -1,0 +1,22 @@
+{
+  "bundle": "/data1/users/pz47/varquanMS/results/calibrated-20261023/lossless-calib.bundle",
+  "partitions": 15,
+  "row_count": 931920,
+  "archive_bytes": 1079628707,
+  "source_physical_bytes": 4428203949,
+  "whole_archive_ratio": 4.10159892960312,
+  "stored_bytes_by_category": {
+    "coordinates": 19584840,
+    "flags_weights": 225768,
+    "reconstruction": 4742748,
+    "auxiliary_columns": 2760,
+    "visibility_lossless": 955399752,
+    "subtables": 83014380,
+    "container_and_manifest_overhead": 16344175,
+    "bundle_manifest_and_verification": 314284
+  },
+  "sum_encode_seconds_excluding_inspection": 90.29054687172174,
+  "sum_inspection_seconds": 26.83958305278793,
+  "sum_partition_copy_seconds": 30.900166236795485,
+  "elapsed_seconds_including_copy_inspection_verification": 318.1880713449791
+}

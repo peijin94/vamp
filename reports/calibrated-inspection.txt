@@ -1,0 +1,14 @@
+Inspection: lwa-15slot-flat.ms
+Rows: 931,920; organization: channels_inside_cells
+Selected visibility columns: CORRECTED_DATA
+DDID 0: 48 channels, 4 products (XX, XY, YX, YY), 62,128 ordered antenna pairs
+TIME: 15 bitwise-distinct value(s); [5268786625.260147, 5268786635.291167, 5268786645.322187, 5268786655.353209, 5268786665.384229, 5268786675.415249, 5268786685.44627, 5268786695.47729, 5268786705.50831, 5268786715.5393305, 5268786725.570351, 5268786735.601371, 5268786745.632392, 5268786755.663412, 5268786765.694432]; reference {'type': 'epoch', 'Ref': 'UTC'}
+TIME_CENTROID: 15 bitwise-distinct value(s); [5268786630.275657, 5268786640.306678, 5268786650.337698, 5268786660.368718, 5268786670.399739, 5268786680.430759, 5268786690.46178, 5268786700.4928, 5268786710.523821, 5268786720.554841, 5268786730.585861, 5268786740.616881, 5268786750.647902, 5268786760.678923, 5268786770.709943]; reference {'type': 'epoch', 'Ref': 'UTC'}
+Autocorrelation rows: 5,280; duplicate row keys: 0
+UVW: 926,641 bitwise-distinct vectors; 22,366,080 logical bytes; {'type': 'uvw', 'Ref': 'ITRF'}
+Physical file lengths: 4,428,203,949 bytes; allocated file blocks: 4,428,529,664 bytes
+MAIN logical arrays: 4,597,161,360 bytes; subtables: 22,654,939 bytes
+CORRECTED_DATA: 1,431,429,120 logical bytes; 41,752,612 flagged samples; 0 nonfinite samples; 17,791,688 signed-zero components
+Initial regular-profile issues: Mixed row contexts require separate partitions; Multiple TIME values require later multi-integration support
+Storage files may contain multiple columns; logical repetition does not establish physical savings.
+This inspection alone establishes no compression ratio, noise guarantee, scientific fidelity or CASA workflow compatibility.

@@ -180,12 +180,17 @@ def _scan_table(t, chunk_rows, include_rows=False):
         "columns": {c: _scan_column(t, c, chunk_rows) for c in t.colnames()},
     }
     result["logical_array_bytes"] = sum(c["logical_array_bytes"] for c in result["columns"].values())
-    if include_rows:
+    # Quality-statistic subtables can contain millions of records. Their full
+    # column scans/checksums remain in the report; duplicating every cell as JSON
+    # is unbounded and is not needed to preserve them in the archive.
+    if include_rows and t.nrows() <= 4096 and result["logical_array_bytes"] <= 4 * 1024**2:
         result["rows"] = [
             {c: json_value(np.asarray(t.getcell(c, row))) if t.iscelldefined(c, row)
              else {"undefined": True} for c in t.colnames()}
             for row in range(t.nrows())
         ]
+    elif include_rows:
+        result["row_values_omitted"] = "Above 4096 rows or 4 MiB: every column was scanned; descriptors, statistics and exact value-byte digests are retained. Archive preservation is unaffected."
     return result
 
 

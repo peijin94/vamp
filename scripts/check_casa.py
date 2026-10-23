@@ -18,10 +18,12 @@ def main():
     parser.add_argument("ms")
     parser.add_argument("--report", required=True)
     parser.add_argument("--image", help="new image path for a 64x64 natural-weight Stokes I dirty image")
+    parser.add_argument("--data-column", default="DATA", choices=("DATA", "CORRECTED_DATA"))
     args = parser.parse_args()
     if os.path.exists(args.report) or args.image and os.path.exists(args.image):
         raise ValueError("CASA check outputs must be new")
     result = {"schema": "varquanms.casa-check/1", "ms": os.path.abspath(args.ms),
+              "data_column": args.data_column,
               "python_executable": sys.executable, "table_reopen": "not run",
               "imaging": "not run", "science_acceptance": "not established by this smoke workflow"}
     started = time.time()
@@ -42,10 +44,12 @@ def main():
         try:
             tb.open(working, nomodify=True)
             result.update(table_reopen="passed", row_count=int(tb.nrows()), column_names=tb.colnames(),
-                          casa_data_cell_shape=list(tb.getcell("DATA", 0).shape))
+                          casa_data_cell_shape=list(tb.getcell(args.data_column, 0).shape))
         finally:
             tb.close()
         if args.image:
+            if not any(c in result['column_names'] for c in ('DATA', 'FLOAT_DATA')):
+                raise ValueError('CASA imager requires DATA or FLOAT_DATA; use the calibrated DATA compatibility export')
             stamp = time.time()
             im = Imager()
             try:
@@ -53,7 +57,7 @@ def main():
                 im.selectvis(field="0", spw="0")
                 im.defineimage(nx=64, ny=64, cellx="600arcsec", celly="600arcsec", stokes="I", mode="mfs")
                 im.weight(type="natural")
-                im.makeimage(type="observed", image=os.path.abspath(args.image))
+                im.makeimage(type="corrected" if args.data_column == "CORRECTED_DATA" else "observed", image=os.path.abspath(args.image))
             finally:
                 im.close()
             ia = Image()
@@ -67,7 +71,7 @@ def main():
                               image_min=float(pixels.min()), image_max=float(pixels.max()),
                               image_rms=float(np.sqrt(np.mean(pixels.astype(np.float64)**2))),
                               imaging_seconds=time.time() - stamp,
-                              imaging_parameters={"nx": 64, "ny": 64, "cell": "600arcsec", "stokes": "I", "mode": "mfs", "weighting": "natural", "type": "observed/dirty"})
+                              imaging_parameters={"nx": 64, "ny": 64, "cell": "600arcsec", "stokes": "I", "mode": "mfs", "weighting": "natural", "type": args.data_column + "/dirty"})
             finally:
                 ia.close()
     except Exception as error:

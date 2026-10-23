@@ -1,5 +1,6 @@
 # Development notes
 
+- [Methods paper and reproducible figures](../docs/paper/varquantMS.md)
 - [Design and experiment specification](design.md)
 - [Initial source inspection findings](initial-findings.md)
 - [Initial measured archive and CASA results](experiment-results.md)

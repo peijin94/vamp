@@ -1,0 +1,20 @@
+{
+  "schema": "varquanms.benchmark/1",
+  "cache_methodology": "Three sequential fresh-process adaptive repeats after prior source reads, plus one lossless control. OS caches are not evicted; warm/unspecified cache on a shared host. OMP/OPENBLAS/MKL threads set to 1. No concurrent varquanMS encode or imaging job is launched by this experiment.",
+  "notes": "Encode-process wall time includes Python startup, source inspection, encoding, writing, integrity finalization and report serialization. Source verification is separately timed and excluded. No MS export or imaging is included in encode time. Paper figure generation and small synthetic unit tests may run concurrently; shared-host interference is not controlled.",
+  "export_ms": false,
+  "base": {
+    "mode": "adaptive", "columns": ["DATA"], "baseline_group": 128,
+    "channel_segment": 192, "ordering": "amplitude", "shared_order": false,
+    "bits": [4, 8, 12, 16], "scale_quantiles": [1.0, 0.995],
+    "max_component_mse": 1e-7, "max_baseline_component_mse": 2e-7,
+    "max_complex_error": 0.003, "max_complex_bias": 0.0003,
+    "noise": null, "burn_flag": false, "compression": "gzip", "compression_level": 1
+  },
+  "experiments": [
+    {"name": "lossless-control", "config": {"mode": "lossless"}},
+    {"name": "adaptive-repeat-1", "config": {}},
+    {"name": "adaptive-repeat-2", "config": {}},
+    {"name": "adaptive-repeat-3", "config": {}}
+  ]
+}

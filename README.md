@@ -34,6 +34,7 @@ visarchive benchmark INPUT.ms --matrix configs/benchmark-grouping.json --output 
 
 ## Documentation
 
+- [Methods paper, diagrams, imaging results and timing](docs/paper/varquantMS.md)
 - [Archive and codec format](docs/format.md)
 - [Development notes and experiment results](devnotes/README.md)
 - [Initial MS inspection](reports/initial-inspection.txt)

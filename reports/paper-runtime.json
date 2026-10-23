@@ -1,0 +1,598 @@
+{
+  "schema": "varquanms.paper-runtime/1",
+  "status": "complete",
+  "created_utc": "2026-10-23T06:51:39.449734+00:00",
+  "source": "/data1/users/pz47/varquanMS/data/working/20260904_190008_59MHz.ms",
+  "cache_methodology": "Three sequential fresh-process adaptive repeats after prior source reads, plus one lossless control. OS caches are not evicted; warm/unspecified cache on a shared host. OMP/OPENBLAS/MKL threads set to 1. No concurrent varquanMS encode or imaging job is launched by this experiment.",
+  "methodology": "Encode-process wall time includes Python startup, source inspection, encoding, writing, integrity finalization and report serialization. Source verification is separately timed and excluded. No MS export or imaging is included in encode time. Paper figure generation may run concurrently; shared-host interference is not controlled.",
+  "records": [
+    {
+      "name": "lossless-control",
+      "mode": "lossless",
+      "configuration": {
+        "mode": "lossless",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "archive_bytes": 331220418,
+      "source_physical_file_bytes": 409594838,
+      "selected_visibility_logical_bytes": 381714432,
+      "encode_process_seconds": 33.6574481157586,
+      "encode_function_seconds": 33.350609987042844,
+      "verification_process_seconds": 8.724829190876335,
+      "peak_process_rss_bytes": 193036288,
+      "exclusive_encode_stages_seconds": {
+        "inspection_preflight": 5.418854285031557,
+        "input_reading": 0.0,
+        "amplitude_statistics": 0.0,
+        "baseline_sorting_and_grouping": 0.0,
+        "memory_gathering": 0.0,
+        "quantization_and_scale_estimation": 0.0,
+        "packing_and_secondary_compression": 0.0,
+        "candidate_reconstruction_and_error_checks": 0.0,
+        "payload_writing": 0.0,
+        "quality_accounting": 0.0,
+        "integrity_finalization_and_publication": 5.045277263969183,
+        "other_exact_columns_and_uninstrumented_overhead": 22.886478438042104
+      },
+      "source_MB_per_second": 12.169515543521717,
+      "visibility_Mcomplex_samples_per_second": 1.4176447315879515,
+      "verification_status": "passed"
+    },
+    {
+      "name": "adaptive-repeat-1",
+      "mode": "adaptive",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "archive_bytes": 106730113,
+      "source_physical_file_bytes": 409594838,
+      "selected_visibility_logical_bytes": 381714432,
+      "encode_process_seconds": 181.00647589704022,
+      "encode_function_seconds": 180.4994644690305,
+      "verification_process_seconds": 33.30071588372812,
+      "peak_process_rss_bytes": 2292867072,
+      "exclusive_encode_stages_seconds": {
+        "inspection_preflight": 4.195426692254841,
+        "input_reading": 1.1159784710034728,
+        "amplitude_statistics": 4.351677054073662,
+        "baseline_sorting_and_grouping": 0.05127178691327572,
+        "memory_gathering": 0.32753924699500203,
+        "quantization_and_scale_estimation": 24.994281092192978,
+        "packing_and_secondary_compression": 87.46875219698995,
+        "candidate_reconstruction_and_error_checks": 33.2899600318633,
+        "payload_writing": 0.15990242594853044,
+        "quality_accounting": 16.536141752265394,
+        "integrity_finalization_and_publication": 4.182097342796624,
+        "other_exact_columns_and_uninstrumented_overhead": 3.826436375733465
+      },
+      "source_MB_per_second": 2.262873943985214,
+      "visibility_Mcomplex_samples_per_second": 0.26360550783354714,
+      "verification_status": "passed"
+    },
+    {
+      "name": "adaptive-repeat-2",
+      "mode": "adaptive",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "archive_bytes": 106730111,
+      "source_physical_file_bytes": 409594838,
+      "selected_visibility_logical_bytes": 381714432,
+      "encode_process_seconds": 170.62046329071745,
+      "encode_function_seconds": 170.35303862579167,
+      "verification_process_seconds": 34.98925901390612,
+      "peak_process_rss_bytes": 2293424128,
+      "exclusive_encode_stages_seconds": {
+        "inspection_preflight": 4.650707616005093,
+        "input_reading": 0.6386066889390349,
+        "amplitude_statistics": 4.407594987656921,
+        "baseline_sorting_and_grouping": 0.0386606021784246,
+        "memory_gathering": 0.3108961032703519,
+        "quantization_and_scale_estimation": 23.74011505348608,
+        "packing_and_secondary_compression": 84.13637051125988,
+        "candidate_reconstruction_and_error_checks": 31.93156960653141,
+        "payload_writing": 0.15404377225786448,
+        "quality_accounting": 15.494544598273933,
+        "integrity_finalization_and_publication": 0.6227822410874069,
+        "other_exact_columns_and_uninstrumented_overhead": 4.227146844845265
+      },
+      "source_MB_per_second": 2.4006196566357807,
+      "visibility_Mcomplex_samples_per_second": 0.2796517081230776,
+      "verification_status": "passed"
+    },
+    {
+      "name": "adaptive-repeat-3",
+      "mode": "adaptive",
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 128,
+        "channel_segment": 192,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "archive_bytes": 106730116,
+      "source_physical_file_bytes": 409594838,
+      "selected_visibility_logical_bytes": 381714432,
+      "encode_process_seconds": 168.6878156340681,
+      "encode_function_seconds": 168.45314027834684,
+      "verification_process_seconds": 38.79895074525848,
+      "peak_process_rss_bytes": 2295144448,
+      "exclusive_encode_stages_seconds": {
+        "inspection_preflight": 4.385814249981195,
+        "input_reading": 0.6291541461832821,
+        "amplitude_statistics": 3.6307781022042036,
+        "baseline_sorting_and_grouping": 0.040744069032371044,
+        "memory_gathering": 0.30049819173291326,
+        "quantization_and_scale_estimation": 23.151367434766144,
+        "packing_and_secondary_compression": 83.07792864507064,
+        "candidate_reconstruction_and_error_checks": 31.92719247750938,
+        "payload_writing": 0.14982983423396945,
+        "quality_accounting": 16.931777758989483,
+        "integrity_finalization_and_publication": 0.4625099743716419,
+        "other_exact_columns_and_uninstrumented_overhead": 3.765545394271612
+      },
+      "source_MB_per_second": 2.4281234329842043,
+      "visibility_Mcomplex_samples_per_second": 0.2828556634078771,
+      "verification_status": "passed"
+    }
+  ],
+  "adaptive_summary": {
+    "encode_process_seconds": {
+      "count": 3,
+      "median": 170.62046329071745,
+      "minimum": 168.6878156340681,
+      "maximum": 181.00647589704022,
+      "mean": 173.43825160727525,
+      "sample_stddev": 6.625126105692579
+    },
+    "encode_function_seconds": {
+      "count": 3,
+      "median": 170.35303862579167,
+      "minimum": 168.45314027834684,
+      "maximum": 180.4994644690305,
+      "mean": 173.10188112438968,
+      "sample_stddev": 6.476540970173544
+    },
+    "verification_process_seconds": {
+      "count": 3,
+      "median": 34.98925901390612,
+      "minimum": 33.30071588372812,
+      "maximum": 38.79895074525848,
+      "mean": 35.696308547630906,
+      "sample_stddev": 2.8164846760620375
+    },
+    "archive_bytes": {
+      "count": 3,
+      "median": 106730113,
+      "minimum": 106730111,
+      "maximum": 106730116,
+      "mean": 106730113.33333333,
+      "sample_stddev": 2.516611478423583
+    },
+    "peak_process_rss_bytes": {
+      "count": 3,
+      "median": 2293424128,
+      "minimum": 2292867072,
+      "maximum": 2295144448,
+      "mean": 2293811882.6666665,
+      "sample_stddev": 1187171.2692300691
+    },
+    "source_MB_per_second": {
+      "count": 3,
+      "median": 2.4006196566357807,
+      "minimum": 2.262873943985214,
+      "maximum": 2.4281234329842043,
+      "mean": 2.3638723445350664,
+      "sample_stddev": 0.08854164056294273
+    },
+    "visibility_Mcomplex_samples_per_second": {
+      "count": 3,
+      "median": 0.2796517081230776,
+      "minimum": 0.26360550783354714,
+      "maximum": 0.2828556634078771,
+      "mean": 0.2753709597881673,
+      "sample_stddev": 0.01031434569612173
+    },
+    "exclusive_encode_stages_seconds": {
+      "inspection_preflight": {
+        "count": 3,
+        "median": 4.385814249981195,
+        "minimum": 4.195426692254841,
+        "maximum": 4.650707616005093,
+        "mean": 4.41064951941371,
+        "sample_stddev": 0.2286542648597655
+      },
+      "input_reading": {
+        "count": 3,
+        "median": 0.6386066889390349,
+        "minimum": 0.6291541461832821,
+        "maximum": 1.1159784710034728,
+        "mean": 0.7945797687085966,
+        "sample_stddev": 0.2783795646572502
+      },
+      "amplitude_statistics": {
+        "count": 3,
+        "median": 4.351677054073662,
+        "minimum": 3.6307781022042036,
+        "maximum": 4.407594987656921,
+        "mean": 4.1300167146449285,
+        "sample_stddev": 0.4332563882251027
+      },
+      "baseline_sorting_and_grouping": {
+        "count": 3,
+        "median": 0.040744069032371044,
+        "minimum": 0.0386606021784246,
+        "maximum": 0.05127178691327572,
+        "mean": 0.04355881937469045,
+        "sample_stddev": 0.006760370531363345
+      },
+      "memory_gathering": {
+        "count": 3,
+        "median": 0.3108961032703519,
+        "minimum": 0.30049819173291326,
+        "maximum": 0.32753924699500203,
+        "mean": 0.31297784733275574,
+        "sample_stddev": 0.013640194689880713
+      },
+      "quantization_and_scale_estimation": {
+        "count": 3,
+        "median": 23.74011505348608,
+        "minimum": 23.151367434766144,
+        "maximum": 24.994281092192978,
+        "mean": 23.961921193481732,
+        "sample_stddev": 0.9412657223055647
+      },
+      "packing_and_secondary_compression": {
+        "count": 3,
+        "median": 84.13637051125988,
+        "minimum": 83.07792864507064,
+        "maximum": 87.46875219698995,
+        "mean": 84.89435045110683,
+        "sample_stddev": 2.2914478082492105
+      },
+      "candidate_reconstruction_and_error_checks": {
+        "count": 3,
+        "median": 31.93156960653141,
+        "minimum": 31.92719247750938,
+        "maximum": 33.2899600318633,
+        "mean": 32.38290737196803,
+        "sample_stddev": 0.7855336948100531
+      },
+      "payload_writing": {
+        "count": 3,
+        "median": 0.15404377225786448,
+        "minimum": 0.14982983423396945,
+        "maximum": 0.15990242594853044,
+        "mean": 0.15459201081345478,
+        "sample_stddev": 0.005058626305375548
+      },
+      "quality_accounting": {
+        "count": 3,
+        "median": 16.536141752265394,
+        "minimum": 15.494544598273933,
+        "maximum": 16.931777758989483,
+        "mean": 16.320821369842935,
+        "sample_stddev": 0.7424162847621391
+      },
+      "integrity_finalization_and_publication": {
+        "count": 3,
+        "median": 0.6227822410874069,
+        "minimum": 0.4625099743716419,
+        "maximum": 4.182097342796624,
+        "mean": 1.7557965194185574,
+        "sample_stddev": 2.102765694035682
+      },
+      "other_exact_columns_and_uninstrumented_overhead": {
+        "count": 3,
+        "median": 3.826436375733465,
+        "minimum": 3.765545394271612,
+        "maximum": 4.227146844845265,
+        "mean": 3.9397095382834473,
+        "sample_stddev": 0.25078293763428405
+      }
+    }
+  },
+  "timer_scope": {
+    "encode_process": "Fresh Python process: startup + inspect + encode + integrity/final publication + report serialization; no verification/export/imaging",
+    "encode_function": "encode() entry through complete archive publication, including input inspection; excludes CLI startup/report serialization",
+    "stages": "Exclusive measured regions plus residual. codec_total and before_integrity_finalization are nested/cumulative and are NOT summed. Stage medians need not sum to median total.",
+    "writing": "payload_writing covers visibility payload writes only. quality_accounting includes quality-array writes. Exact-column/index/statistic writes and miscellaneous setup are included in the residual; integrity stage includes flushing, checksums, manifest and fsync/publication.",
+    "measurement_limits": "Shared host; no cache eviction, CPU affinity, resource isolation or cold-cache claim. Packing and secondary compression are a combined timer."
+  },
+  "run_environments": [
+    {
+      "name": "lossless-control",
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1"
+        },
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "archive.py": "1d8596a0a23da7b20a09bf653e3a65f1499c977e296c27bf1d7f1e3ec56dd0a8",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "27300b3772d301bed4b419bd4ba357cc28d008e2cd8cdaebd3b6cedc4d338acd",
+          "codec.py": "a94b4e8f7687e4d4920e35c473be531cf042c6d7a6783620cc51846066a3a11d",
+          "config.py": "4b82d5fbd02ddc6523c35d663e2eccd158a16f1d2d19eda9a680576a34b14d93",
+          "container.py": "385d4a27a08752b38886165c48dc2a0f9e20803f898ae9467cf34d8ccce77d63",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "314d49827b08a2c5d48e8f8c19df65d1b458cd32fa5b9ba2efa9afe0e3d73390",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "70bca30710c17cce02d3db0dac4fd2a25f44a2674c4e3ce36e2f4bf123e406dc",
+          "visibility.py": "4f80e3ece8a93869b9dc2dd5c275269a2008cc550a190a19fe54b30c382a2dbc"
+        }
+      }
+    },
+    {
+      "name": "adaptive-repeat-1",
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1"
+        },
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "archive.py": "1d8596a0a23da7b20a09bf653e3a65f1499c977e296c27bf1d7f1e3ec56dd0a8",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "27300b3772d301bed4b419bd4ba357cc28d008e2cd8cdaebd3b6cedc4d338acd",
+          "codec.py": "a94b4e8f7687e4d4920e35c473be531cf042c6d7a6783620cc51846066a3a11d",
+          "config.py": "4b82d5fbd02ddc6523c35d663e2eccd158a16f1d2d19eda9a680576a34b14d93",
+          "container.py": "385d4a27a08752b38886165c48dc2a0f9e20803f898ae9467cf34d8ccce77d63",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "314d49827b08a2c5d48e8f8c19df65d1b458cd32fa5b9ba2efa9afe0e3d73390",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "70bca30710c17cce02d3db0dac4fd2a25f44a2674c4e3ce36e2f4bf123e406dc",
+          "visibility.py": "4f80e3ece8a93869b9dc2dd5c275269a2008cc550a190a19fe54b30c382a2dbc"
+        }
+      }
+    },
+    {
+      "name": "adaptive-repeat-2",
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1"
+        },
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "archive.py": "1d8596a0a23da7b20a09bf653e3a65f1499c977e296c27bf1d7f1e3ec56dd0a8",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "27300b3772d301bed4b419bd4ba357cc28d008e2cd8cdaebd3b6cedc4d338acd",
+          "codec.py": "a94b4e8f7687e4d4920e35c473be531cf042c6d7a6783620cc51846066a3a11d",
+          "config.py": "4b82d5fbd02ddc6523c35d663e2eccd158a16f1d2d19eda9a680576a34b14d93",
+          "container.py": "385d4a27a08752b38886165c48dc2a0f9e20803f898ae9467cf34d8ccce77d63",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "314d49827b08a2c5d48e8f8c19df65d1b458cd32fa5b9ba2efa9afe0e3d73390",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "70bca30710c17cce02d3db0dac4fd2a25f44a2674c4e3ce36e2f4bf123e406dc",
+          "visibility.py": "4f80e3ece8a93869b9dc2dd5c275269a2008cc550a190a19fe54b30c382a2dbc"
+        }
+      }
+    },
+    {
+      "name": "adaptive-repeat-3",
+      "environment": {
+        "varquanMS": "0.2.0.dev0",
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "python_casacore": "3.5.2",
+        "h5py": "3.10.0",
+        "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+        "machine": "x86_64",
+        "cpu_count": 48,
+        "threads_environment": {
+          "OMP_NUM_THREADS": "1",
+          "OPENBLAS_NUM_THREADS": "1",
+          "MKL_NUM_THREADS": "1"
+        },
+        "implementation_files_sha256": {
+          "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+          "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+          "archive.py": "1d8596a0a23da7b20a09bf653e3a65f1499c977e296c27bf1d7f1e3ec56dd0a8",
+          "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+          "cli.py": "27300b3772d301bed4b419bd4ba357cc28d008e2cd8cdaebd3b6cedc4d338acd",
+          "codec.py": "a94b4e8f7687e4d4920e35c473be531cf042c6d7a6783620cc51846066a3a11d",
+          "config.py": "4b82d5fbd02ddc6523c35d663e2eccd158a16f1d2d19eda9a680576a34b14d93",
+          "container.py": "385d4a27a08752b38886165c48dc2a0f9e20803f898ae9467cf34d8ccce77d63",
+          "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+          "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+          "inspection.py": "314d49827b08a2c5d48e8f8c19df65d1b458cd32fa5b9ba2efa9afe0e3d73390",
+          "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+          "ordering.py": "70bca30710c17cce02d3db0dac4fd2a25f44a2674c4e3ce36e2f4bf123e406dc",
+          "visibility.py": "4f80e3ece8a93869b9dc2dd5c275269a2008cc550a190a19fe54b30c382a2dbc"
+        }
+      }
+    }
+  ],
+  "adaptive_repeat_dataset_identity": {
+    "status": "passed",
+    "archives_compared": 3,
+    "scope": "All inventoried dataset paths, shapes, dtypes and SHA-256 values match; manifest timestamps/timings/environment are excluded"
+  },
+  "shared_host_activity_note": "Paper figure generation and small synthetic unit tests ran during this task; no other full-observation encoding or imaging job was launched concurrently. Shared-host interference is not controlled.",
+  "hardware": {
+    "cpu_model": "Intel(R) Xeon(R) Silver 4214 CPU @ 2.20GHz",
+    "memory_total_kib": 394837068
+  },
+  "source_unchanged": {
+    "sha256_matched_files": 65,
+    "reference_inventory": "reports/sample-copy-after-grouping.json"
+  },
+  "benchmark_report": "results/paper-runtime-20261023/results.json"
+}

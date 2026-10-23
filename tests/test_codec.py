@@ -1,4 +1,6 @@
 from dataclasses import replace
+import json
+from pathlib import Path
 import struct
 import unittest
 import zlib
@@ -6,7 +8,7 @@ import zlib
 import numpy as np
 
 from varquanms.codec import HEADER, decode_block, encode_block, error_metrics, pack_codes, unpack_codes, within_bounds
-from varquanms.config import Config
+from varquanms.config import Config, SUPPORTED_BITS
 from varquanms.ordering import amplitude_statistics, all_orders, make_order
 
 
@@ -20,13 +22,15 @@ class CodecTests(unittest.TestCase):
 
     def test_every_packing_width_and_literal_fixtures(self):
         fixtures = [(2, [0, 1, 2, 3], "e4"), (4, [1, 2, 15], "210f"),
-                    (6, [0, 1, 63, 32], "40f083"), (8, [1, 255], "01ff")]
+                    (6, [0, 1, 63, 32], "40f083"), (8, [1, 255], "01ff"),
+                    (12, [1, 4095, 2048], "01f0ff0008"),
+                    (16, [1, 65535, 32768], "0100ffff0080")]
         for bits, codes, expected in fixtures:
             self.assertEqual(pack_codes(np.asarray(codes), bits).hex(), expected)
         rng = np.random.default_rng(123)
-        for bits in (2, 4, 6, 8):
+        for bits in SUPPORTED_BITS:
             for size in (0, 1, 3, 7, 31, 192):
-                codes = rng.integers(0, 2**bits, size=size, dtype=np.uint8)
+                codes = rng.integers(0, 2**bits, size=size, dtype=np.uint16)
                 encoded = pack_codes(codes, bits)
                 self.assertEqual(len(encoded), (size * bits + 7) // 8)
                 np.testing.assert_array_equal(unpack_codes(encoded, bits, size), codes)
@@ -36,15 +40,65 @@ class CodecTests(unittest.TestCase):
     def test_corrupt_padding_reserved_codes_and_truncated_blocks(self):
         with self.assertRaisesRegex(ValueError, "padding"):
             unpack_codes(b"\xf1", 2, 1)
-        bad = HEADER.pack(2, 0, 0, 1, 0, 1.0) + pack_codes(np.asarray([3, 1]), 2)
-        with self.assertRaisesRegex(ValueError, "Reserved"):
-            decode_block(bad, (1, 1))
+        with self.assertRaisesRegex(ValueError, "padding"):
+            unpack_codes(bytes.fromhex("01f0"), 12, 1)
+        for bits in SUPPORTED_BITS:
+            bad = HEADER.pack(bits, 0, 0, 1, 0, 1.0) + pack_codes(np.asarray([2**bits - 1, 1]), bits)
+            with self.assertRaisesRegex(ValueError, "Reserved"):
+                decode_block(bad, (1, 1))
         config = self.config()
         values = np.ones((8, 32), dtype=np.complex64)
         block = encode_block(values, np.zeros_like(values, dtype=bool), config, config.bounds())
         for truncated in (block.blob[:3], block.blob[:-1]):
             with self.assertRaises((ValueError, zlib.error)):
                 decode_block(truncated, values.shape)
+
+    def test_default_ladder_and_current_example_configs(self):
+        self.assertEqual(Config().bits, [4, 8, 12, 16])
+        self.assertEqual(Config().mode, "lossless")
+        root = Path(__file__).resolve().parents[1]
+        self.assertEqual(Config.load(root / "configs/engineering-adaptive.json").bits, [4, 8, 12, 16])
+        for name in ("benchmark-smoke.json", "benchmark-grouping.json"):
+            matrix = json.loads((root / "configs" / name).read_text())
+            self.assertEqual(matrix["base"]["bits"], [4, 8, 12, 16])
+            for entry in matrix["experiments"]:
+                Config.load(None, **{**matrix["base"], **entry["config"]})
+
+    def test_wide_codes_round_trip_extremes_without_signed_overflow(self):
+        for bits in (12, 16):
+            maximum = 2**(bits - 1) - 1
+            codes = np.asarray([0, maximum, 2 * maximum, maximum + 1], dtype=np.uint16)
+            blob = HEADER.pack(bits, 0, 0, 2, 0, .5) + pack_codes(codes, bits)
+            values = decode_block(blob, (1, 2)).view(np.float32).ravel()
+            np.testing.assert_array_equal(values, [-maximum * .5, 0, maximum * .5, .5])
+            for bad in (blob[:-1], blob + b"\x00"):
+                with self.assertRaisesRegex(ValueError, "byte count"):
+                    decode_block(bad, (1, 2))
+
+    def test_new_widths_encode_protected_samples_and_exact_payload_size(self):
+        rng = np.random.default_rng(2026)
+        original = (rng.uniform(-1, 1, (8, 32)) + 1j * rng.uniform(-1, 1, (8, 32))).astype(np.complex64)
+        original.view(np.uint32).flat[:6] = [0x7FC12345, 0x80000000, 0x7F800000, 0xFF800000, 0x80000000, 0]
+        flags = np.zeros(original.shape, dtype=bool)
+        flags[0, 3] = True
+        for bits in (12, 16):
+            config = self.config(mode="fixed", bits=[bits], scale_quantiles=[1.0])
+            block = encode_block(original, flags, config, config.bounds())
+            self.assertEqual(block.bits, bits)
+            self.assertEqual(block.accounting["packed_code_bytes"], original.size * 2 * bits // 8)
+            self.assertEqual(block.decoded[0, :4].tobytes(), original[0, :4].tobytes())
+            self.assertEqual(decode_block(block.blob, original.shape).tobytes(), block.decoded.tobytes())
+            self.assertTrue(within_bounds(block.metrics, config.bounds()))
+
+    def test_adaptive_promotes_to_12_and_16_then_exact_when_required(self):
+        rng = np.random.default_rng(93)
+        values = (rng.uniform(-1, 1, (8, 32)) + 1j * rng.uniform(-1, 1, (8, 32))).astype(np.complex64)
+        flags = np.zeros(values.shape, dtype=bool)
+        for mse, maximum, expected_bits in ((1e-7, 0.001, 12), (1e-10, 0.00003, 16), (0, 0, 0)):
+            config = self.config(scale_quantiles=[1.0], max_component_mse=mse, max_complex_error=maximum)
+            block = encode_block(values, flags, config, config.bounds())
+            self.assertEqual(block.bits, expected_bits)
+            self.assertTrue(within_bounds(block.metrics, config.bounds()))
 
     def test_zero_and_all_flagged_blocks_are_exact(self):
         config = self.config()

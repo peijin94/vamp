@@ -22,7 +22,7 @@ def decode(blob, rows, channels):
         if exceptions or step != 0:
             raise ValueError("Invalid exact header")
         expected = count * 8
-    elif bits in (2, 4, 6, 8) and 0 <= exceptions <= count and 0 <= step < float("inf"):
+    elif bits in (2, 4, 6, 8, 12, 16) and 0 <= exceptions <= count and 0 <= step < float("inf"):
         code_bytes = (2 * count * bits + 7) // 8
         expected = code_bytes + exceptions * 12
     else:
@@ -47,10 +47,8 @@ def decode(blob, rows, channels):
     for component in range(count * 2):
         position = component * bits
         byte, shift = divmod(position, 8)
-        code = body[byte] >> shift
-        if shift + bits > 8:
-            code |= body[byte + 1] << (8 - shift)
-        code &= 2**bits - 1
+        span = (shift + bits + 7) // 8
+        code = (int.from_bytes(body[byte:byte + span], "little") >> shift) & (2**bits - 1)
         if code == 2**bits - 1:
             raise ValueError("Reserved code")
         struct.pack_into("<f", result, component * 4, (code - maximum) * step)

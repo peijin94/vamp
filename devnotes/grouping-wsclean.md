@@ -136,8 +136,10 @@ authoritative for reconstruction.
 
 ## Matched compression configurations
 
-`configs/benchmark-grouping.json` fixes adaptive 2/4/6/8-bit candidates, exact
+The measured version of `configs/benchmark-grouping.json` fixed adaptive
+2/4/6/8-bit candidates (the current file now defaults to 4/8/12/16), exact
 fallback, stored float32 steps, quantile candidates and numerical ceilings.
+Historical report configurations remain authoritative for these measurements.
 The ceilings are engineering examples, not validated thermal-noise/science budgets.
 Except for the single-baseline control, baseline groups have at most 32 rows.
 The main ordering comparisons use 64-channel segments. Amplitude sorting also

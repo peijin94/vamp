@@ -9,7 +9,7 @@
     "baseline_group": 32,
     "channel_segment": 64,
     "ordering": "original",
-    "bits": [2, 4, 6, 8],
+    "bits": [4, 8, 12, 16],
     "scale_quantiles": [1.0, 0.995],
     "max_component_mse": 0.0000001,
     "max_baseline_component_mse": 0.0000002,
@@ -19,9 +19,10 @@
   },
   "experiments": [
     {"name": "lossless-no-dedup", "config": {"mode": "lossless", "deduplicate": false}},
-    {"name": "per-baseline-6bit", "config": {"mode": "fixed", "bits": [6], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
     {"name": "per-baseline-4bit", "config": {"mode": "fixed", "bits": [4], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
     {"name": "per-baseline-8bit", "config": {"mode": "fixed", "bits": [8], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
+    {"name": "per-baseline-12bit", "config": {"mode": "fixed", "bits": [12], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
+    {"name": "per-baseline-16bit", "config": {"mode": "fixed", "bits": [16], "baseline_group": 1, "channel_segment": 192, "scale_quantiles": [1.0]}},
     {"name": "grouped-original", "config": {}},
     {"name": "grouped-amplitude", "config": {"ordering": "amplitude"}},
     {"name": "grouped-buckets", "config": {"ordering": "buckets"}}

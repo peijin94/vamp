@@ -80,7 +80,7 @@ Each block starts with the 16-byte little-endian structure `<BBHIIf`:
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| bits | uint8 | 0 for exact complex64; otherwise 2, 4, 6 or 8 per component |
+| bits | uint8 | 0 for exact complex64; otherwise 4, 8, 12 or 16 per component (legacy 2/6 supported) |
 | compression | uint8 | 0 uncompressed body; 1 zlib-wrapped DEFLATE body |
 | reserved | uint16 | Must be zero |
 | samples | uint32 | Number of complex samples, 1 through 262,144 |
@@ -96,11 +96,15 @@ For b bits, let `M = 2**(b-1)-1`. Codes 0 through 2M reconstruct signed integer
 levels -M through M. The final code `2**b-1` is reserved and rejected. Thus the
 codebook is exactly symmetric and represents zero, at the cost of one unused
 bit pattern. The immutable codec identifier is `uniform-symmetric-v1`.
+The default candidate ladder is 4/8/12/16 bits per component. Legacy 2/6-bit
+archives and explicitly selected legacy configurations remain supported. Adding
+12/16-bit widths does not change existing codebooks, block headers or packed
+bytes at older widths; older decoders reject unsupported widths explicitly.
 
 Decode each real and imaginary component separately in this exact order:
 
 ```text
-signed = int16(code) - M
+signed = int32(code) - M
 component = float32(signed) * stored_float32_step   # one float32 multiplication
 ```
 
@@ -124,6 +128,9 @@ codes really occupy six bits. Exceptions replace whole complex samples after
 ordinary reconstruction. Flags/FLAG_ROW, NaN/Inf, signed zeros and out-of-range
 samples bypass scale estimation as applicable and retain their original bits.
 Ordinary representable zeros need no exception.
+Twelve-bit codes really occupy twelve bits (three bytes per complex sample);
+sixteen-bit codes occupy two little-endian bytes per component. Sixteen-bit
+quantization is scaled integer quantization, not IEEE float16 or lossless storage.
 
 ## Encoder choices and error domain
 

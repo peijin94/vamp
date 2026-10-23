@@ -1,6 +1,6 @@
 # varquanMS
 
-Adaptive 2/4/6/8-bit visibility compression for CASA Measurement Sets, with exact
+Adaptive 4/8/12/16-bit visibility compression for CASA Measurement Sets, with exact
 float32 fallback and reconstruction to a new MS. Experiments group samples by
 baseline geometry, antenna, amplitude and frequency segment.
 

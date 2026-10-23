@@ -5,6 +5,9 @@ The first lossless/adaptive measurements are in `experiment-results.md`. This
 specification still describes the broader planned experiment, and its future
 steps must not be mistaken for implemented or validated capabilities.
 
+The original precision proposal below used 2/4/6/8 bits per component. Current
+defaults changed to 4/8/12/16 on 2026-10-23; see [the update](precision-ladder.md).
+
 ## Objective and hard requirements
 
 Build an independently decodable archive that expands into a valid CASA MS v2.

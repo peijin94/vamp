@@ -8,7 +8,7 @@ import h5py
 import numpy as np
 
 from varquanms.archive import decode, encode, verify
-from varquanms.config import Config
+from varquanms.config import Config, SUPPORTED_BITS
 from varquanms.container import Reader
 from varquanms.visibility import read_visibility, read_visibility_block
 from test_inspection import make_ms, snapshot
@@ -58,7 +58,7 @@ class QuantizedArchiveTests(unittest.TestCase):
 
     def test_all_fixed_bit_widths_and_independent_last_block(self):
         source = self.source(special=False)
-        for bits in (2, 4, 6, 8):
+        for bits in SUPPORTED_BITS:
             archive = self.root / f"fixed{bits}.h5"
             encode(source, archive, self.config(mode="fixed", bits=[bits]))
             with Reader(archive) as reader:

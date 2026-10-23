@@ -5,8 +5,8 @@ import unittest
 
 import numpy as np
 
-from varquanms.codec import decode_block, encode_block
-from varquanms.config import Config
+from varquanms.codec import decode_block, encode_block, pack_codes
+from varquanms.config import Config, SUPPORTED_BITS
 
 root = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("reference_block_decoder", root / "scripts/reference_block_decoder.py")
@@ -17,6 +17,8 @@ spec.loader.exec_module(reference)
 class ReferenceDecoderTests(unittest.TestCase):
     def test_literal_conformance_and_independent_decoder(self):
         fixtures = json.loads((root / "tests/fixtures/codec-v1.json").read_text())
+        for fixture in fixtures["packing"]:
+            self.assertEqual(pack_codes(np.asarray(fixture["codes"]), fixture["bits"]).hex(), fixture["hex"])
         for fixture in fixtures["blocks"]:
             blob = bytes.fromhex(fixture["block_hex"])
             expected = bytes.fromhex(fixture["complex64_hex"])
@@ -27,9 +29,10 @@ class ReferenceDecoderTests(unittest.TestCase):
         values.view(np.uint32).flat[0:2] = [0x7FC12345, 0x80000000]
         flags = np.zeros(values.shape, dtype=bool)
         flags[2, 2] = True
-        for bits in (2, 4, 6, 8):
+        for bits in SUPPORTED_BITS:
             config = Config(mode="fixed", bits=[bits], max_component_mse=1.0, max_complex_error=5.0)
             block = encode_block(values, flags, config, config.bounds())
+            self.assertEqual(block.bits, bits)
             self.assertEqual(reference.decode(block.blob, *values.shape), block.decoded.tobytes())
 
 

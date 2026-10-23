@@ -16,11 +16,12 @@ import zlib
 
 import numpy as np
 
+from .config import SUPPORTED_BITS
 from .metadata import portable
 
 HEADER = struct.Struct("<BBHIIf")
 MAX_SAMPLES = 262144
-ALLOWED_BITS = (2, 4, 6, 8)
+ALLOWED_BITS = SUPPORTED_BITS
 
 
 def pack_codes(codes, bits):
@@ -29,8 +30,8 @@ def pack_codes(codes, bits):
     a = np.asarray(codes)
     if a.dtype.kind not in "iu" or np.any(a < 0) or np.any(a >= 2**bits):
         raise ValueError("Code is outside its bit width")
-    a = a.astype(np.uint8, copy=False).ravel()
-    unpacked = ((a[:, None] >> np.arange(bits, dtype=np.uint8)) & 1).ravel()
+    a = a.astype(np.uint16, copy=False).ravel()
+    unpacked = ((a[:, None] >> np.arange(bits, dtype=np.uint16)) & 1).ravel()
     return np.packbits(unpacked, bitorder="little").tobytes()
 
 
@@ -44,7 +45,8 @@ def unpack_codes(payload, bits, count):
     if remainder and payload[-1] >> remainder:
         raise ValueError("Nonzero code padding bits")
     values = np.unpackbits(np.frombuffer(payload, dtype=np.uint8), bitorder="little", count=count * bits).reshape(count, bits)
-    return np.sum(values.astype(np.uint16) << np.arange(bits, dtype=np.uint16), axis=1).astype(np.uint8)
+    dtype = np.uint8 if bits <= 8 else np.uint16
+    return np.sum(values.astype(np.uint16) << np.arange(bits, dtype=np.uint16), axis=1).astype(dtype)
 
 
 def error_metrics(original, decoded, valid, percentile=True):
@@ -124,7 +126,7 @@ def decode_block(blob, shape):
     if np.any(codes == 2**bits - 1):
         raise ValueError("Reserved uniform code encountered")
     maximum = 2**(bits - 1) - 1
-    signed = codes.astype(np.int16) - maximum
+    signed = codes.astype(np.int32) - maximum
     with np.errstate(over="ignore", invalid="ignore"):
         components = signed.astype(np.float32) * np.float32(step)
     if not np.all(np.isfinite(components)):
@@ -208,7 +210,7 @@ def encode_block(original, flags, config, bounds, stream=()):
             if np.any(np.abs(rounded) > maximum):
                 times["quantization_and_scale_estimation"] += time.perf_counter() - stamp
                 continue
-            codes = (rounded.astype(np.int16) + maximum).astype(np.uint8).ravel()
+            codes = (rounded.astype(np.int32) + maximum).astype(np.uint16).ravel()
             positions = np.flatnonzero(exception_mask).astype("<u4")
             values = original.ravel()[positions]
             times["quantization_and_scale_estimation"] += time.perf_counter() - stamp

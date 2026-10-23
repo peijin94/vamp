@@ -4,9 +4,13 @@
     {"bits": 2, "codes": [0, 1, 2, 3], "hex": "e4"},
     {"bits": 4, "codes": [1, 2, 15], "hex": "210f"},
     {"bits": 6, "codes": [0, 1, 63, 32], "hex": "40f083"},
-    {"bits": 8, "codes": [1, 255], "hex": "01ff"}
+    {"bits": 8, "codes": [1, 255], "hex": "01ff"},
+    {"bits": 12, "codes": [1, 4095, 2048], "hex": "01f0ff0008"},
+    {"bits": 16, "codes": [1, 65535, 32768], "hex": "0100ffff0080"}
   ],
   "blocks": [
-    {"rows": 1, "channels": 2, "block_hex": "0200000002000000000000000000003f24", "complex64_hex": "000000bf000000000000003f000000bf"}
+    {"rows": 1, "channels": 2, "block_hex": "0200000002000000000000000000003f24", "complex64_hex": "000000bf000000000000003f000000bf"},
+    {"rows": 1, "channels": 2, "block_hex": "0c00000002000000000000000000003f00f07ffe0f80", "complex64_hex": "00e07fc40000000000e07f440000003f"},
+    {"rows": 1, "channels": 2, "block_hex": "1000000002000000000000000000003f0000ff7ffeff0080", "complex64_hex": "00fe7fc60000000000fe7f460000003f"}
   ]
 }

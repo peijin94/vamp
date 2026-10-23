@@ -19,6 +19,9 @@ import numpy as np
 from . import __version__
 from .config import Config
 from .container import Reader, Writer, new_output
+from .flags import (ENCODING as BURNED_FLAGS, FLAG_COLUMNS, POLICY_KEYWORD,
+                    burned_columns, export_marker, policy_summary,
+                    read_burned_flags, write_burned_flags)
 from .inspection import _batches, _open, inspect_ms, unique_bits
 from .metadata import casacore_keywords, dumps, equal, logical_descriptor, pack, portable, references, relocate, unpack
 
@@ -123,6 +126,8 @@ def read_column(reader, spec, start, stop):
     if not 0 <= start <= stop <= spec["row_count"]:
         raise ValueError("Column row bounds out of range")
     encoding = spec["encoding"]
+    if encoding == BURNED_FLAGS:
+        return read_burned_flags(reader, spec, start, stop)
     if encoding == "empty":
         return []
     if encoding == "dense":
@@ -176,6 +181,15 @@ def encode(source, output, config=None, inspection=None):
     if report["source"] != str(source) or report["selected_visibility_columns"] != config.columns:
         raise ValueError("Inspection does not match the requested source/columns")
     schemas = discover_tables(source)
+    if config.burn_flag:
+        main = report["main"]
+        columns = [name for name in main["columns"] if name in FLAG_COLUMNS]
+        for name in columns:
+            if main["descriptor"][name]["valueType"] != "boolean":
+                raise ValueError(f"burn_flag requires Boolean column {name}")
+        existing = unpack(schemas[source]["descriptor"]).get("_keywords_", {}).get(POLICY_KEYWORD)
+        if existing is not None and not equal(existing, export_marker(columns)):
+            raise ValueError(f"Cannot overwrite existing {POLICY_KEYWORD} provenance keyword")
     if config.mode != "lossless":
         issues = report["layout"]["initial_regular_profile_issues"]
         if issues or report["layout"]["organization"] != "channels_inside_cells":
@@ -213,7 +227,10 @@ def encode(source, output, config=None, inspection=None):
             with _open(path) as t:
                 for column_index, column in enumerate(t.colnames()):
                     prefix = f"tables/t{table_index}/c{column_index}"
-                    if table_name == "." and column in config.columns and config.mode != "lossless":
+                    if table_name == "." and config.burn_flag and column in FLAG_COLUMNS:
+                        item["columns"][column] = write_burned_flags(
+                            writer, t, column, prefix, scan["columns"][column], config)
+                    elif table_name == "." and column in config.columns and config.mode != "lossless":
                         from .visibility import write_visibility
                         item["columns"][column] = write_visibility(writer, t, column, prefix, config, report)
                     else:
@@ -222,6 +239,7 @@ def encode(source, output, config=None, inspection=None):
                             writer, t, column, prefix, scan["columns"][column], config,
                             role, config.deduplicate and role != "visibility_lossless")
             manifest["tables"].append(item)
+        manifest["provenance"]["flag_policy"] = policy_summary(manifest)
         manifest["timings_seconds"]["column_encoding_and_writing"] = time.perf_counter() - exact_started
         manifest["peak_process_rss_bytes"] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024
         manifest["timings_seconds"]["before_integrity_finalization"] = time.perf_counter() - started
@@ -245,6 +263,8 @@ def archive_summary(path, manifest, elapsed=None):
             "visibility_dataset_ratio_including_maps_statistics": visibility_logical / visibility_stored if visibility_stored else None,
             "stored_bytes_by_category": categories, "elapsed_seconds": elapsed,
             "mode": manifest["config"]["mode"], "deduplicate": manifest["config"]["deduplicate"],
+            "flag_policy": policy_summary(manifest),
+            "exact_ms_round_trip": manifest["config"]["mode"] == "lossless" and not manifest["config"].get("burn_flag", False),
             "timings_seconds": manifest["timings_seconds"],
             "peak_process_rss_bytes": manifest["peak_process_rss_bytes"],
             "visibility_quality": {c: s.get("quality_summary") for t in manifest["tables"] if t["path"] == "." for c, s in t["columns"].items() if s["encoding"] == "quantized"},
@@ -305,6 +325,8 @@ def decode(archive, output):
                 t.putkeywords(casacore_keywords(description.get("_keywords_", {})))
                 for name in spec["column_names"]:
                     t.putcolkeywords(name, casacore_keywords(description[name].get("keywords", {})))
+                if spec["path"] == "." and reader.manifest["config"].get("burn_flag", False):
+                    t.putkeyword(POLICY_KEYWORD, export_marker(burned_columns(reader.manifest)))
         # Reopen every table prior to publication; reconstruction references must resolve.
         for spec in schemas:
             with _open(staged / spec["path"]) as t:
@@ -314,7 +336,30 @@ def decode(archive, output):
             raise FileExistsError(f"Refusing to overwrite {output}")
         staged.rename(output)
     return {"output": str(output), "status": "exported", "elapsed_seconds": time.perf_counter() - started,
-            "python_casacore_reopen": "passed", "CASA_workflow": "not run"}
+            "python_casacore_reopen": "passed", "CASA_workflow": "not run",
+            "flag_policy": policy_summary(reader.manifest)}
+
+
+def _check_column(reader, spec, t, column, shapes_only=False):
+    """Check exact reconstruction, or only shapes/presence for discarded source flags."""
+    def matches(actual, expected):
+        if shapes_only:
+            return actual.shape == expected.shape and actual.dtype == expected.dtype
+        return equal(actual, expected)
+
+    for start in range(0, t.nrows(), 1024):
+        stop = min(t.nrows(), start + 1024)
+        values = read_column(reader, spec, start, stop)
+        if isinstance(values, np.ndarray):
+            actual = np.asarray(t.getcol(column, startrow=start, nrow=stop - start))
+            if not matches(actual, values):
+                raise ValueError(f"Column reconstruction mismatch: {column}, rows {start}:{stop}")
+        else:
+            for index, value in enumerate(values):
+                row = start + index
+                defined = t.iscelldefined(column, row)
+                if defined != (value is not None) or defined and not matches(np.asarray(t.getcell(column, row)), value):
+                    raise ValueError(f"Column reconstruction mismatch: {column}, row {row}")
 
 
 def verify(archive, source=None, restored=None):
@@ -336,28 +381,24 @@ def verify(archive, source=None, restored=None):
                         quality = verify_visibility(reader, encoding, t, column, reader.manifest["config"])
                         checks.append({"table": spec["path"], "column": column, "status": "measured_error_bounds_passed", "quality": quality})
                         continue
-                    for start in range(0, t.nrows(), 1024):
-                        stop = min(t.nrows(), start + 1024)
-                        values = read_column(reader, encoding, start, stop)
-                        if isinstance(values, np.ndarray):
-                            if not equal(np.asarray(t.getcol(column, startrow=start, nrow=stop - start)), values):
-                                raise ValueError(f"Exact column mismatch: {spec['path']}/{column}, rows {start}:{stop}")
-                            continue
-                        for index, value in enumerate(values):
-                            row = start + index
-                            defined = t.iscelldefined(column, row)
-                            if defined != (value is not None) or defined and not equal(np.asarray(t.getcell(column, row)), value):
-                                raise ValueError(f"Exact column mismatch: {spec['path']}/{column}, row {row}")
-                    checks.append({"table": spec["path"], "column": column, "status": "bitwise_exact"})
+                    burned = encoding["encoding"] == BURNED_FLAGS
+                    _check_column(reader, encoding, t, column, shapes_only=burned)
+                    checks.append({"table": spec["path"], "column": column,
+                                   "status": "intentionally_discarded_shapes_preserved" if burned else "bitwise_exact"})
         if restored is not None:
             if source is None:
                 raise ValueError("--restored comparison requires --source")
-            checks.extend(compare_ms(source, restored, reader.manifest["config"]["columns"] if reader.manifest["config"]["mode"] != "lossless" else []))
+            checks.extend(compare_ms(source, restored,
+                                     reader.manifest["config"]["columns"] if reader.manifest["config"]["mode"] != "lossless" else [],
+                                     burned_flag_columns=burned_columns(reader.manifest)))
             for spec in reader.manifest["tables"]:
                 if spec["path"] != ".":
                     continue
                 with _open(Path(restored).resolve()) as exported:
                     for name, column in spec["columns"].items():
+                        if column["encoding"] == BURNED_FLAGS:
+                            _check_column(reader, column, exported, name)
+                            checks.append({"table": ".", "column": name, "export": "all_false_shapes_and_presence_preserved"})
                         if column["encoding"] == "quantized":
                             values = read_column(reader, column, 0, spec["row_count"])
                             for start in range(0, spec["row_count"], 1024):
@@ -369,12 +410,16 @@ def verify(archive, source=None, restored=None):
                   "archive": str(archive), "integrity": "all inventory SHA-256 and HDF5 chunk checksums passed",
                   "source": str(source) if source else None, "restored": str(restored) if restored else None,
                   "column_checks": checks, "summary": archive_summary(archive, reader.manifest),
+                  "flag_policy": policy_summary(reader.manifest),
+                  "verification_scope": "declared archive policy; intentionally discarded flags are not checked for source-value equality",
                   "CASA_workflow": "not run", "scientific_products": "not tested",
                   "elapsed_seconds": time.perf_counter() - started}
     return result
 
 
-def compare_ms(source, restored, approximate_columns=()):
+def compare_ms(source, restored, approximate_columns=(), burned_flag_columns=()):
+    if set(burned_flag_columns) - set(FLAG_COLUMNS):
+        raise ValueError("Only MAIN flag columns can be intentionally discarded")
     source, restored = Path(source).resolve(), Path(restored).resolve()
     schemas = discover_tables(source)
     output_schemas = discover_tables(restored)
@@ -384,12 +429,24 @@ def compare_ms(source, restored, approximate_columns=()):
     for path, schema in schemas.items():
         relative = schema["path"]
         with _open(path) as a, _open(restored / relative) as b:
-            if a.nrows() != b.nrows() or a.colnames() != b.colnames() or not equal(logical_descriptor(relocate(a.getdesc(), source)), logical_descriptor(relocate(b.getdesc(), restored))) or not equal(a.info(), b.info()):
+            expected = relocate(a.getdesc(), source)
+            if relative == "." and burned_flag_columns:
+                expected.setdefault("_keywords_", {})[POLICY_KEYWORD] = export_marker(burned_flag_columns)
+            if a.nrows() != b.nrows() or a.colnames() != b.colnames() or not equal(logical_descriptor(expected), logical_descriptor(relocate(b.getdesc(), restored))) or not equal(a.info(), b.info()):
                 raise ValueError(f"Exported schema/metadata differs: {relative}")
             for column in a.colnames():
-                if relative == "." and column in approximate_columns:
+                burned = relative == "." and column in burned_flag_columns
+                if relative == "." and column in approximate_columns and not burned:
                     # Archive-vs-source measured errors are checked separately.
                     continue
+                def matches(original_values, exported_values):
+                    if burned:
+                        return (original_values.shape == exported_values.shape
+                                and original_values.dtype == exported_values.dtype == np.dtype(bool)
+                                and not exported_values.any())
+                    return equal(original_values, exported_values)
+
+                label = "flag reconstruction" if burned else "exact column"
                 for start in range(0, a.nrows(), 1024):
                     stop = min(a.nrows(), start + 1024)
                     try:
@@ -398,10 +455,11 @@ def compare_ms(source, restored, approximate_columns=()):
                     except RuntimeError:
                         for row in range(start, stop):
                             defined_a, defined_b = a.iscelldefined(column, row), b.iscelldefined(column, row)
-                            if defined_a != defined_b or defined_a and not equal(np.asarray(a.getcell(column, row)), np.asarray(b.getcell(column, row))):
-                                raise ValueError(f"Exported exact column differs: {relative}/{column}, row {row}")
+                            if defined_a != defined_b or defined_a and not matches(np.asarray(a.getcell(column, row)), np.asarray(b.getcell(column, row))):
+                                raise ValueError(f"Exported {label} differs: {relative}/{column}, row {row}")
                     else:
-                        if not equal(original_values, exported_values):
-                            raise ValueError(f"Exported exact column differs: {relative}/{column}, rows {start}:{stop}")
-                result.append({"table": relative, "column": column, "export": "bitwise_exact"})
+                        if not matches(original_values, exported_values):
+                            raise ValueError(f"Exported {label} differs: {relative}/{column}, rows {start}:{stop}")
+                result.append({"table": relative, "column": column,
+                               "export": "all_false_shapes_and_presence_preserved" if burned else "bitwise_exact"})
     return result

@@ -53,6 +53,8 @@ def main(argv=None):
     encode_parser.add_argument("input", type=Path)
     encode_parser.add_argument("output", type=Path)
     encode_parser.add_argument("--config", type=Path)
+    encode_parser.add_argument("--burn-flag", "--burn_flag", action="store_true", default=None,
+                               help="destructive: discard MAIN flags; export defined flag cells as all-false (no reflagging)")
     encode_parser.add_argument("--report", type=Path)
     decode_parser = sub.add_parser("decode", help="restore a new MS without overwriting an existing path")
     decode_parser.add_argument("input", type=Path)
@@ -81,7 +83,12 @@ def main(argv=None):
             protected_source = args.source if args.command == "verify" and args.source else args.input
             report_path = _check_output(args.report, protected_source.resolve()) if args.report else None
             if args.command == "encode":
-                result = encode(args.input, args.output, Config.load(args.config))
+                overrides = {} if args.burn_flag is None else {"burn_flag": True}
+                configuration = Config.load(args.config, **overrides)
+                if configuration.burn_flag:
+                    print("WARNING: burn_flag discards MAIN FLAG/FLAG_CATEGORY/FLAG_ROW values. "
+                          "Export resets them to false; no flagging algorithm is run.", file=sys.stderr)
+                result = encode(args.input, args.output, configuration)
             elif args.command == "decode":
                 result = decode(args.input, args.output)
             else:

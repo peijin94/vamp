@@ -1,0 +1,223 @@
+{
+  "schema": "varquanms.burn-flag-validation/1",
+  "date_utc": "2026-10-23",
+  "source": "20260904_190008_59MHz.ms",
+  "source_layout": "channels_inside_cells",
+  "source_physical_file_bytes": 409594838,
+  "source_flag_true_counts": {
+    "FLAG": 0,
+    "FLAG_CATEGORY": 0,
+    "FLAG_ROW": 0
+  },
+  "source_unchanged": {
+    "status": "passed",
+    "sha256_matched_files": 65,
+    "reference_inventory": "reports/sample-copy-after-grouping.json"
+  },
+  "command": "visarchive benchmark data/working/20260904_190008_59MHz.ms --matrix configs/benchmark-burn-flag.json --output results/burn-flag-20261023",
+  "experiments": [
+    {
+      "name": "preserve",
+      "configuration": {
+        "mode": "lossless",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 1,
+        "channel_segment": 192,
+        "ordering": "original",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1,
+          0.995
+        ],
+        "max_component_mse": null,
+        "max_complex_error": null,
+        "max_complex_bias": null,
+        "max_baseline_component_mse": null,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "archive_bytes": 331220418,
+      "stored_bytes_by_category": {
+        "coordinates": 988098,
+        "flags_weights": 98,
+        "auxiliary_columns": 184,
+        "visibility_lossless": 328163545,
+        "subtables": 9944,
+        "container_and_manifest_overhead": 2058549
+      },
+      "flag_policy": {
+        "burn_flag": false,
+        "discarded_main_columns": [],
+        "original_main_flag_values_preserved": true,
+        "export": "original flag values",
+        "reflagging_performed": false,
+        "subtable_flags": "preserved exactly",
+        "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+        "warning": null
+      },
+      "main_flag_dataset_stored_bytes": {
+        "FLAG": 21,
+        "FLAG_CATEGORY": 21,
+        "FLAG_ROW": 13
+      },
+      "exact_ms_round_trip": true,
+      "verification_status": "passed",
+      "column_check_counts": {
+        "bitwise_exact": 266
+      },
+      "python_casacore_reopen": "passed",
+      "process_timings_seconds": {
+        "encode_process": 35.678310236893594,
+        "decode_and_export_process": 37.10138826537877,
+        "verification_process": 11.590086945332587
+      }
+    },
+    {
+      "name": "burn",
+      "configuration": {
+        "mode": "lossless",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": true,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 1,
+        "channel_segment": 192,
+        "ordering": "original",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1,
+        "antenna_endpoint": 1,
+        "bits": [
+          2,
+          4,
+          6,
+          8
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1,
+          0.995
+        ],
+        "max_component_mse": null,
+        "max_complex_error": null,
+        "max_complex_bias": null,
+        "max_baseline_component_mse": null,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648
+      },
+      "archive_bytes": 331207410,
+      "stored_bytes_by_category": {
+        "coordinates": 988098,
+        "flags_weights": 43,
+        "auxiliary_columns": 184,
+        "visibility_lossless": 328163545,
+        "subtables": 9944,
+        "container_and_manifest_overhead": 2045596
+      },
+      "flag_policy": {
+        "burn_flag": true,
+        "discarded_main_columns": [
+          "FLAG",
+          "FLAG_CATEGORY",
+          "FLAG_ROW"
+        ],
+        "original_main_flag_values_preserved": false,
+        "export": "all defined MAIN flag cells false; undefined cells remain undefined",
+        "reflagging_performed": false,
+        "subtable_flags": "preserved exactly",
+        "flagged_visibility_values": "preserved bitwise using source flags during encoding",
+        "warning": "Destructive flag policy; reflag before scientific use. Recomputed flags may differ from the original."
+      },
+      "main_flag_dataset_stored_bytes": {
+        "FLAG": 0,
+        "FLAG_CATEGORY": 0,
+        "FLAG_ROW": 0
+      },
+      "exact_ms_round_trip": false,
+      "verification_status": "passed",
+      "column_check_counts": {
+        "bitwise_exact": 260,
+        "intentionally_discarded_shapes_preserved": 3,
+        "all_false_shapes_and_presence_preserved": 6
+      },
+      "python_casacore_reopen": "passed",
+      "process_timings_seconds": {
+        "encode_process": 40.20605916297063,
+        "decode_and_export_process": 15.323466408997774,
+        "verification_process": 11.921695322263986
+      }
+    }
+  ],
+  "whole_archive_saved_bytes": 13008,
+  "whole_archive_saved_percent": 0.003927294119893297,
+  "main_flag_dataset_saved_bytes": 55,
+  "environment": {
+    "varquanMS": "0.2.0.dev0",
+    "python": "3.11.5",
+    "numpy": "1.26.4",
+    "python_casacore": "3.5.2",
+    "h5py": "3.10.0",
+    "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu_count": 48,
+    "threads_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": null
+    },
+    "implementation_files_sha256": {
+      "__init__.py": "4b68f78144e71420296c474e67168cd8204d89a942d1d2548eccfcbf39544511",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "archive.py": "1d8596a0a23da7b20a09bf653e3a65f1499c977e296c27bf1d7f1e3ec56dd0a8",
+      "benchmark.py": "2a45721e590c497064557ef53229fa0bdfeef32cbdf727e95b857943a957914f",
+      "cli.py": "27300b3772d301bed4b419bd4ba357cc28d008e2cd8cdaebd3b6cedc4d338acd",
+      "codec.py": "b65c3641920ffa1c0feb150a0b334454c3ac9d318a88d94e4611d59874d1ba37",
+      "config.py": "1b02a7dc1e4715427352dcdf8dd3dc41dd6cc5653507f6ffdb8062bdd3472bc1",
+      "container.py": "385d4a27a08752b38886165c48dc2a0f9e20803f898ae9467cf34d8ccce77d63",
+      "flags.py": "8b39a40e4e6d0f85afbe6929f63708253a8c53f4616fc65d7ff3064554d7b04d",
+      "imaging.py": "9ca5b7cb136fa7383bcb7315c281bce51b3331580433a311b049c97cee72da27",
+      "inspection.py": "314d49827b08a2c5d48e8f8c19df65d1b458cd32fa5b9ba2efa9afe0e3d73390",
+      "metadata.py": "5d4ea9bb2bf9a4fd05697f1e5684a63e76dadab1c6896ad7afd58e7754dad264",
+      "ordering.py": "70bca30710c17cce02d3db0dac4fd2a25f44a2674c4e3ce36e2f4bf123e406dc",
+      "visibility.py": "4f80e3ece8a93869b9dc2dd5c275269a2008cc550a190a19fe54b30c382a2dbc"
+    }
+  },
+  "unit_tests": {
+    "status": "passed",
+    "count": 51,
+    "command": "PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m unittest discover -s tests -v"
+  },
+  "cache_methodology": "Sequential preserve/burn pair on a shared host; filesystem caches are not evicted. Not an isolated throughput benchmark.",
+  "scientific_products": "No new imaging or calibration run; this test isolates flag-storage policy using lossless visibilities. Existing WSClean results do not validate dropping nonzero flags."
+}

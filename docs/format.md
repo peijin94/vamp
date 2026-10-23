@@ -48,7 +48,31 @@ Numeric arrays include dtype, shape and base64 C-order bits. Numeric scalar kind
 and special bits are retained. Table references are relative tokens rebased to
 the new output table graph. Export materializes columns using StandardStMan;
 storage layout is outside exactness. Table/column logical descriptors, keywords,
-units, references, subtable relations and supported values remain exact.
+units, references, subtable relations and supported auxiliary values remain exact,
+except for the explicitly enabled destructive flag profile below.
+
+### Optional destructive MAIN flags (`burned-flags-v1`)
+
+Configuration `burn_flag: true` replaces MAIN `FLAG`, `FLAG_CATEGORY` and
+`FLAG_ROW` values with reconstruction-only column specifications. Each contains
+`encoding: "burned-flags-v1"`, `row_count`, `dtype: "|b1"`, and either a common
+`cell_shape` or `shape_chunks`. A shape chunk records `start`, `stop` and an
+inventoried JSON dataset `path`; its per-row values are dimension lists or null
+for undefined cells. No original Boolean payload is stored. Decoding fills
+defined cells with false and leaves undefined cells undefined. Empty defined
+cells retain their shape. Subtable flags are outside this policy and stay exact.
+Readers reject a mismatch between the opt-in and column encodings; older readers
+that lack this encoding fail rather than silently recover an exact flag mask.
+
+The archive config and provenance and all reports disclose the flag policy.
+Export adds MAIN keyword `VARQUANMS_FLAG_POLICY` with the encoding identifier,
+affected columns, reconstruction description and `reflagging_performed: false`.
+Verification permits exactly this metadata addition and checks generated flags
+against the declared reconstruction, not source flag-value equality. Other
+metadata and weights remain exact. A lossless visibility mode plus burned flags
+is not a lossless MS round trip. Quantization still protects source-flagged
+visibility values and computes metrics using source flags; only the masks are
+discarded. See [development notes](../devnotes/burn-flag.md) for use and risks.
 
 ## Uniform block header
 
@@ -137,7 +161,7 @@ to its ingredients. Reports make this distinction explicit.
 
 ## Support boundaries and durable reconstruction
 
-Lossless mode preserves both channel organizations, heterogeneous cells,
+With default flag preservation, lossless mode preserves both channel organizations, heterogeneous cells,
 duplicates, missing row records and mixed fields/configurations through original
 table rows and explicit cells. Quantized mode currently requires one integration,
 one data description, one distinguishing row context, uniform complex64 visibility

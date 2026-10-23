@@ -1,0 +1,11 @@
+{
+  "schema": "varquanms.benchmark/1",
+  "base": {"mode": "lossless"},
+  "export_ms": true,
+  "cache_methodology": "Sequential preserve/burn pair on a shared host; filesystem caches are not evicted. Not an isolated throughput benchmark.",
+  "notes": "Compare actual whole-file bytes. burn_flag intentionally discards MAIN flags; lossless refers only to visibility encoding in that case. No reflagging or new imaging validation.",
+  "experiments": [
+    {"name": "preserve", "config": {"burn_flag": false}},
+    {"name": "burn", "config": {"burn_flag": true}}
+  ]
+}

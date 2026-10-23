@@ -70,6 +70,28 @@ class QuantizedArchiveTests(unittest.TestCase):
                 self.assertTrue(set(product["component_bit_width_histogram"]).issubset({str(bits), "float32"}))
             self.assertEqual(verify(archive, source)["status"], "passed")
 
+    def test_burn_flag_preserves_same_quantized_values_and_protected_samples(self):
+        source = self.source()
+        with table(str(source), readonly=False, ack=False) as t:
+            t.putcell("FLAG_ROW", 3, True)
+        original = snapshot(source)
+        decoded = []
+        summaries = []
+        for burn in (False, True):
+            archive, output = self.root / f"burn-{burn}.h5", self.root / f"burn-{burn}.ms"
+            summary = encode(source, archive, self.config(burn_flag=burn))
+            summaries.append(summary["visibility_quality"])
+            decode(archive, output)
+            self.assertEqual(verify(archive, source, output)["status"], "passed")
+            with table(str(output), readonly=True, lockoptions="usernoread", ack=False) as t:
+                decoded.append(t.getcol("DATA").tobytes())
+                if burn:
+                    self.assertFalse(t.getcol("FLAG").any())
+                    self.assertFalse(t.getcol("FLAG_ROW").any())
+        self.assertEqual(decoded[0], decoded[1])
+        self.assertEqual(summaries[0], summaries[1])
+        self.assertEqual(snapshot(source), original)
+
     def test_zero_budget_and_shared_stochastic_order(self):
         source = self.source()
         archive = self.root / "shared.h5"

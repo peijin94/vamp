@@ -4,7 +4,7 @@ Adaptive 2/4/6/8-bit visibility compression for CASA Measurement Sets, with exac
 float32 fallback and reconstruction to a new MS. Experiments group samples by
 baseline geometry, antenna, amplitude and frequency segment.
 
-The research prototype preserves original UVW, metadata, flags, weights and
+By default, the research prototype preserves original UVW, metadata, flags, weights and
 protected sample bits exactly. Quantized visibilities are lossy. Default encoding
 is lossless; science-ready tolerances have not been established.
 
@@ -21,6 +21,8 @@ visarchive verify archive.h5 --source INPUT.ms --restored RESTORED.ms --report v
 ```
 
 Use `configs/engineering-adaptive.json` for an explicitly lossy experiment.
+Optional `encode --burn-flag` discards MAIN flags and exports them as all-false;
+no reflagging is performed. See [the destructive flag policy](devnotes/burn-flag.md).
 The current quantized profile supports one integration/configuration with
 channels inside complex64 cells; unsupported layouts fail explicitly.
 

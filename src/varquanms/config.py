@@ -11,6 +11,7 @@ class Config:
     mode: str = "lossless"
     columns: list = field(default_factory=lambda: ["DATA"])
     deduplicate: bool = True
+    burn_flag: bool = False
     compression: str = "gzip"
     compression_level: int = 1
     io_chunk_rows: int = 1024
@@ -54,7 +55,7 @@ class Config:
             raise ValueError("mode must be lossless, fixed or adaptive")
         if not isinstance(self.columns, list) or not self.columns or any(c not in ("DATA", "CORRECTED_DATA", "MODEL_DATA") for c in self.columns) or len(set(self.columns)) != len(self.columns):
             raise ValueError("columns must be a unique nonempty list of complex visibility columns")
-        for name in ("deduplicate", "shared_order"):
+        for name in ("deduplicate", "shared_order", "burn_flag"):
             if type(getattr(self, name)) is not bool:
                 raise ValueError(f"{name} must be boolean")
         for name, lower, upper in (("io_chunk_rows", 1, 65536), ("baseline_group", 1, 4096), ("channel_segment", 1, 65536), ("compression_level", 0, 9), ("seed", 0, 2**64 - 1), ("max_visibility_bytes", 1, 64 * 1024**3)):

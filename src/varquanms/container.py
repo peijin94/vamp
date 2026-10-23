@@ -11,6 +11,7 @@ import h5py
 import numpy as np
 
 from .metadata import dumps, portable
+from .flags import burned_columns
 
 FORMAT = "varquanms.hdf5"
 SCHEMA_VERSION = 1
@@ -133,6 +134,7 @@ class Reader:
             self.manifest = json.loads(encoded)
             if self.manifest.get("schema") != "varquanms.archive/1":
                 raise ValueError("Unsupported scientific schema")
+            burned_columns(self.manifest)
             self.entries = {entry["path"]: entry for entry in self.manifest["inventory"]}
             if len(self.entries) != len(self.manifest["inventory"]):
                 raise ValueError("Duplicate dataset inventory entries")

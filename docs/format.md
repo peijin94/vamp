@@ -82,7 +82,7 @@ Each block starts with the 16-byte little-endian structure `<BBHIIf`:
 | --- | --- | --- |
 | bits | uint8 | 0 for exact complex64; otherwise 4, 8, 12 or 16 per component (legacy 2/6 supported) |
 | compression | uint8 | 0 uncompressed body; 1 zlib-wrapped DEFLATE body |
-| mapping | uint16 | 0: `uniform-symmetric-v1`; 1: `uniform-midrise-v1`; exact blocks require 0 |
+| mapping | uint16 | 0: `uniform-symmetric-v1`; 1: `uniform-midrise-v1`; 2: `power-midrise-v1`; exact blocks require 0 |
 | samples | uint32 | Number of complex samples, 1 through 262,144 |
 | exceptions | uint32 | Number of exact exception samples |
 | step | float32 | Nonnegative stored uniform step, or zero for an exact block |
@@ -169,6 +169,73 @@ sixteen-bit codes occupy two little-endian bytes per component. Sixteen-bit
 quantization is scaled integer quantization, not IEEE float16 or lossless storage.
 
 ## Encoder choices and error domain
+
+### Median-centered power-law blocks
+
+`power-midrise-v1` uses mapping 2. The base header's final float32 stores the
+nonnegative residual **range t**, not a quantization step. Three additional
+little-endian float32 values immediately follow the base header, uncompressed:
+`center_real, center_imag, gamma`. Total header size is **28 bytes**. The packed
+codes/exception body has the same layout and compression identifiers as above,
+starting at byte 28. Exact blocks still use the original 16-byte mapping-0 header.
+All unsigned codes `0,...,2**b-1` are valid. Unknown/nonfinite centers, negative or
+nonfinite t, unsupported gamma, malformed lengths and nonfinite decoded values
+are rejected.
+
+For each quantization block (one correlation product), the default center is the
+componentwise median over eligible samples: separate real/imaginary medians of
+unflagged, finite, non-negative-zero-protected samples. Medians are calculated in
+float64 and stored as float32 **before** residual/scale estimation. `power_center:
+"zero"` is a control. The range candidates are max/.995 (or configured quantiles)
+of `max(abs(real residual),abs(imag residual))`, rounded upward to float32. A
+sample beyond ±t in either component is stored as a complete exact exception.
+No implicit clipping occurs. An empty eligible domain uses center=(0,0), t=0.
+
+Write `M=2**b-1`. In exact arithmetic the signed compander is
+`y=sign(x-center)*abs((x-center)/t)**gamma`, with unsigned coordinate
+`(y+1)*M/2`. Gamma below 1 increases level density near the center; it is not
+statistical skewness and does not favor one sign. Initially gamma is a unique
+configured subset of **[1, 0.5, 0.25]**, stored exactly as float32. Other powers
+fail explicitly. The default candidate set is [1, 0.5]. Its inverse requires
+only fixed products and no external codebooks or implementation-dependent pow.
+
+Decode each component in exactly this order, IEEE round-to-nearest/even:
+
+```text
+u = float64(2*integer_code - M) / float64(M)
+a = abs(u)
+if gamma != 1: a = float64(a*a)
+if gamma == 0.25: a = float64(a*a)
+r = float64(copysign(a,u) * float64(stored_t))
+x_hat = float32(float64(r + float64(stored_component_center)))
+```
+
+Multiplication/addition are separate, not fused. Only the final result is rounded
+to float32. t=0 encodes the constant component centers with code `2**(b-1)`.
+For t=0 the decoder copies each stored center's float32 bits directly, bypassing
+the arithmetic above (including preserving a negative-zero center).
+There is no exact center level at nonzero t in ideal arithmetic; its two nearest
+levels lie at `center ± t/M**(1/gamma)`. Final float32 rounding can collapse
+nearby levels. Ordinary positive-zero values may change, as with the opt-in
+midrise codec; source negative zeros, flags and nonfinite bits remain protected.
+
+The encoder forms the companded coordinate in float64 using zero, one or two
+square roots. It evaluates both bracketing codes with the actual decoder and
+selects the nearest **original-value-space** result; distance ties choose an
+even code. Thus `nearest-even` denotes nearest reconstructed value here, not
+rounding the companded coordinate. This is deliberate: transformed-space rounding
+does not minimize visibility-domain squared error. Stochastic rounding is not
+implemented for this codec and is rejected before writing an archive.
+
+Search order is ascending bits, configured scale quantiles, then configured
+gammas. Actual compressed header+body size decides among candidates satisfying
+all existing measured bounds; the first wins exact byte ties. Exact float32
+always competes. Product summaries record gamma/block counts, all 28-byte headers,
+exception bytes and remaining archive categories. The public decoder uses only
+archive contents and these operations. Defaults remain the original codebook;
+select `configs/power-adaptive.json` for this experiment.
+
+### Uniform encoder choices
 
 Scale candidates use the maximum absolute real/imag component of each eligible
 sample and configured quantiles of that statistic. Step is the cutoff divided

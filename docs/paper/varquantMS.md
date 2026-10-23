@@ -42,6 +42,13 @@ at 106.732 MB. Median encoding time is 13.04 s in a new three-repeat comparison.
 Zero-rich autocorrelations acquire imaginary bias, so the codebook remains
 optional and the zero-preserving mapping remains the default.
 
+A further median-centered signed power codec selects gamma 1 or 1/2 per block.
+It produces a 104.657 MB archive under the original bounds, with component MSE
+`4.3364e-8`. The size reduction is accompanied by higher achieved error. A uniform
+control with different block ceilings produces 102.534 MB at `4.1503e-8`; the
+power codec therefore does not establish an aggregate rate–distortion advantage.
+Its measured encoding median is 14.44 s, with one of three runs above 15 s.
+
 ## 1. Scope and relationship to earlier work
 
 The goal is to reduce archive size without time/channel averaging or regeneration
@@ -360,6 +367,88 @@ actual reconstruction against the same configured bounds and exact fallback.
 *Schematic: both codebooks use four total bits per component. The full-range
 alternative adds one level while losing the zero level. [SVG](figs/uint-levels.svg),
 [PDF](figs/uint-levels.pdf).*
+
+### 4.5 Median offset and signed power-law level spacing
+
+The optional `power-midrise-v1` codec implements a complex offset and a shared
+power-law parameter per quantization block. For eligible, unflagged finite
+samples, define the **componentwise** median, not a median of amplitudes:
+
+$$
+C_{\mathrm{mid}}=\operatorname{float32}\bigl(\operatorname{median}\Re V\bigr)
++i\operatorname{float32}\bigl(\operatorname{median}\Im V\bigr),
+\qquad R_i=V_i-C_{\mathrm{mid}}.
+$$
+
+Residual subtraction uses the already stored float32 medians and float64
+arithmetic. Negative-zero-protected samples are also excluded from estimation.
+The shared component range is
+
+$$
+t_q=\operatorname{ceil}_{\mathrm{float32}}Q_q\left(
+\max\{ |\Re R_i|,|\Im R_i|\}\right),\qquad q\in\{1,0.995\}.
+$$
+
+For either real or imaginary component, let $c$ be its stored median and
+$r=x-c$. For $|r|\le t_q$, the continuous signed compander and code coordinate are
+
+$$
+y=\operatorname{sgn}(r)\left|\frac{r}{t_q}\right|^\gamma,
+\qquad M_b=2^b-1,\qquad q_* = \frac{M_b}{2}(1+y).
+$$
+
+For a stored unsigned integer $k\in\{0,\ldots,M_b\}$, define
+
+$$
+u_k=\frac{2k-M_b}{M_b},\qquad
+\widehat x_k=c+t_q\operatorname{sgn}(u_k)|u_k|^{1/\gamma}.
+$$
+
+The encoder compares the actual decoded values at the two codes bracketing
+$q_*$ and chooses the nearest to the original component; ties choose an even
+code. Simply rounding $q_*$ minimizes distance in transformed space, which is
+not generally the same as minimizing visibility-domain squared error. The
+implementation evaluates the inverse using fixed float64 operations and one
+final float32 rounding, without fused multiplication/addition.
+
+**Gamma below one increases sampling density near the median.** Gamma one is
+the uniform control; gamma above one would do the opposite. The approximate
+local spacing for nonzero residuals is
+
+$$
+\delta x\simeq\frac{2t_q}{\gamma M_b}
+\left|\frac{r}{t_q}\right|^{1-\gamma}.
+$$
+
+Gamma controls symmetric level density; it is not a statistical skewness
+estimate. This is an instance of companding, which has established use in
+nonuniform quantization. [AudioLabs quantization tutorial](https://www.audiolabs-erlangen.de/resources/MIR/FMP/C2/C2S2_DigitalSignalQuantization.html)
+Nonlinear visibility quantization itself is prior art, as discussed in Section 1.
+
+The initial supported gamma set is $\{1,1/2,1/4\}$, with candidate defaults
+$\{1,1/2\}$. These exactly representable values give inverse powers 1, 2 and 4,
+evaluated by specified multiplication steps. Arbitrary exponents are rejected in
+this version. This makes reconstruction independent of a generic power-function
+implementation. The most central levels have residual magnitude
+$t_q/M_b^{1/\gamma}$: for 4 bits, gamma 1/2 puts them 15 times closer to the
+median than gamma 1, while spreading the outer levels further apart.
+
+![Median-centered power-law reconstruction levels](figs/power-levels.png)
+
+*Schematic, 4-bit unsigned codes. Decreasing gamma concentrates levels near the
+median, at the cost of larger outer spacings. [SVG](figs/power-levels.svg),
+[PDF](figs/power-levels.pdf).*
+
+Each quantized block stores $c_{\Re}$, $c_{\Im}$, $t_q$, gamma and the bit width
+$b$; $M_b$ is derived exactly from $b$. The 28-byte header is 12 bytes larger
+than the earlier header. The scales and medians are not quantized further.
+Every configured bit width, range and gamma candidate is reconstructed and
+checked against the existing error bounds; actual bytes including metadata,
+exceptions and secondary compression decide the winner. Gamma is therefore
+chosen by a measured constrained search, not inferred from median amplitude.
+Out-of-range samples, flags, nonfinite values and source negative-zero bits keep
+their exact exception policy. Constant blocks use $t_q=0$ and recover their
+stored component medians exactly. Exact float32 remains a competing fallback.
 
 ## 5. Choosing precision by measured error and actual bytes
 
@@ -839,7 +928,86 @@ and temporal acceptance checks were not performed for this mapping.
 the same beam. The difference panel has its own color scale. The matching
 [image report](../../reports/wsclean-midrise.json) records full masks and metrics.*
 
-## 12. Limits and conclusions
+## 12. Median and power-law experiment
+
+Section 4.5's implemented codec stores one complex componentwise median, one
+residual range and gamma per quantization block. The controlled experiment uses
+the same 128×192×1 amplitude-sorted blocks, product domains, scale quantiles,
+4/8/12/16 candidate widths, exact exceptions and auxiliary-column policies as
+the preceding comparison. Separate center and gamma controls avoid attributing
+an offset benefit to nonlinear spacing.
+
+| Variant | Whole archive (MB) | Component MSE |
+| --- | ---: | ---: |
+| Original symmetric | 106.731363 | `2.811694574e-8` |
+| Zero center, gamma 1 | 106.732296 | `2.805425551e-8` |
+| Median center, gamma 1 | 106.733067 | `2.782965100e-8` |
+| Zero center, adaptive gamma | 104.656037 | `4.343666348e-8` |
+| Median center, adaptive gamma | 104.656745 | `4.336359607e-8` |
+| Uniform control, ceilings ×1.5 | 101.484000 | `4.379775723e-8` |
+| Uniform control, ceilings ×1.4 | 102.533698 | `4.150311716e-8` |
+
+The first five profiles share Section 5's engineering ceilings. The last two
+multiply the block/component and per-baseline MSE ceilings by 1.5 and 1.4,
+respectively, retaining the absolute-error and bias ceilings. They are empirical
+aggregate-error controls, not equivalent guarantees for every block or product.
+
+Median plus adaptive gamma selects **1,449 blocks with gamma 1 and 495 with
+gamma 1/2**. Its 4/8/12/16-bit histogram is **40/1,552/348/4**; no exact escape
+is selected on this source, although exact fallback remains available and tested.
+All 1,944 headers and their 23,328 extra metadata bytes are included. Gamma 1/4
+is supported but not included in this full-MS candidate grid.
+
+![Median and power-law byte/error controls](figs/power-comparison.png)
+
+*Whole-archive measurements and aggregate visibility rate–distortion points.
+The final uniform control has different block MSE ceilings; it must not be
+described as passing the power profile's original block limits. [SVG](figs/power-comparison.svg),
+[PDF](figs/power-comparison.pdf).*
+
+At identical ceilings, the combined profile is about **1.94% smaller**, but its
+aggregate MSE is about **54.23% higher** than the original symmetric profile.
+Centering alone has little effect on this observation's total bytes. The
+different-ceiling uniform control is smaller and has lower aggregate MSE than
+the combined power result. These measurements do not establish a universal
+advantage for power-law levels, nor do they rank every product or maximum-error
+constraint. The implementation is retained as an opt-in experiment.
+In particular, cross-correlation XY/YX component MSEs are about `5.1143e-8` /
+`5.1202e-8`; concentrating levels near a median does not itself establish
+preservation of weak polarization.
+
+The final speed test uses three sequential fresh processes, 24 CPU workers,
+previously read source data and no concurrent imaging. End-to-end encoding times
+are **19.852, 14.404 and 14.436 s**, median **14.436 s**. They include startup,
+inspection, median/range/gamma selection, all preserved columns, quality checks,
+writing and integrity publication; source verification, export and imaging are
+separate. Every timed archive verifies, and stored scientific dataset hashes
+are identical across repeated runs. The host and filesystem are shared; caches
+are not evicted. **One run exceeds 15 s**, so these results do not establish a
+15-second bound for every encode.
+
+See the [machine-readable study](../../reports/power-evaluation.json) for complete
+byte accounting, per-product errors and software/provenance, and the
+[development note](../../devnotes/power-quantization.md) for reproduction details.
+
+The combined median/power archive reopens after export in python-casacore and
+preserves all 132 checked non-DATA entries and metadata exactly. WSClean reads
+the exported MS successfully. With the same 2048², 4-arcmin, multiscale Stokes I
+setup, single thread and reference restoring beam, dirty/restored relative RMS
+differences are **0.2315% / 1.1477%**. Model/residual differences are
+10.9560% / 2.5704%; the PSF is unchanged. CLEAN reaches the 10,000-component cap.
+These results do not improve on the existing strict symmetric profile's 0.7137%
+restored difference. The relaxed uniform controls were not imaged, so their
+aggregate visibility-MSE ranking does not establish an imaging ranking.
+
+![Median and power-law WSClean comparison](figs/power-wsclean.png)
+
+*Original and median/power restored Stokes I images and actual difference. The
+difference has its own color scale. [Full image metrics](../../reports/wsclean-power.json).
+This cross-correlation imaging test does not validate autocorrelation offsets,
+weak polarization, calibration solutions, solar flux or temporal behavior.*
+
+## 13. Limits and conclusions
 
 The results demonstrate a reconstructible prototype, not a final archive policy.
 Grouping can reduce whole-archive bytes, but overhead and unequal measured error
@@ -862,7 +1030,7 @@ provide a 106.730 MB archive for this 409.595 MB input under the stated engineer
 constraints. The original resolution and scientific context are retained; the
 quantized visibility precision is not. The default encoder remains lossless.
 
-## 13. Reproduction and evidence
+## 14. Reproduction and evidence
 
 Install the validation dependencies and run from the repository root:
 
@@ -889,6 +1057,12 @@ python scripts/build_paper_figures.py
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
   --matrix configs/benchmark-midrise.json --output results/new-uint-comparison
 python scripts/report_midrise.py --figures-only
+
+# Median-centered adaptive power-law quantization and its controls.
+visarchive encode INPUT.ms NEW-POWER.h5 --config configs/power-adaptive.json
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+  --matrix configs/benchmark-power.json --output results/new-power-controls
+python scripts/report_power.py --figures-only
 ```
 
 Use `--force` only to regenerate existing paper figures. For a checkout without
@@ -924,6 +1098,8 @@ Primary local evidence:
 - [MX image-domain comparison](../../reports/wsclean-mx.json)
 - [Full-range unsigned-code comparison](../../reports/uint-midrise-evaluation.json)
 - [Full-range unsigned-code imaging](../../reports/wsclean-midrise.json)
+- [Median and power-law controls](../../reports/power-evaluation.json)
+- [Median and power-law imaging](../../reports/wsclean-power.json)
 - [Archive/codec format](../format.md)
 
 All flow diagrams, measured charts and image panels are in [figs/](figs/).

@@ -1,0 +1,25 @@
+{
+  "schema": "varquanms.benchmark/1",
+  "base": {
+    "mode": "adaptive", "columns": ["DATA"], "workers": 24,
+    "baseline_group": 128, "channel_segment": 192,
+    "ordering": "amplitude", "shared_order": false,
+    "codebook": "power-midrise-v1", "power_center": "median", "power_gammas": [1.0, 0.5],
+    "bits": [4, 8, 12, 16], "scale_quantiles": [1.0, 0.995],
+    "max_component_mse": 1e-7, "max_baseline_component_mse": 2e-7,
+    "max_complex_error": 0.003, "max_complex_bias": 0.0003,
+    "noise": null, "burn_flag": false, "compression": "gzip", "compression_level": 1
+  },
+  "experiments": [
+    {"name": "symmetric", "config": {"codebook": "uniform-symmetric-v1"}},
+    {"name": "zero-uniform", "config": {"power_center": "zero", "power_gammas": [1.0]}},
+    {"name": "median-uniform", "config": {"power_gammas": [1.0]}},
+    {"name": "zero-power", "config": {"power_center": "zero"}},
+    {"name": "median-power-1", "config": {}},
+    {"name": "median-power-2", "config": {}},
+    {"name": "median-power-3", "config": {}}
+  ],
+  "export_ms": false,
+  "cache_methodology": "Previously read source, sequential fresh processes, no cache eviction or affinity. Shared host. Three repetitions for the median+adaptive-gamma proposal; other controls have one run.",
+  "notes": "Same 128x192x1 blocks, amplitude order per product, 4/8/12/16 bits and numeric error ceilings. Test centering and gamma independently. Gamma=1 control uses the same new header/decoder arithmetic. All metadata, exact exceptions and auxiliary columns counted. Twenty-four workers, OMP_NUM_THREADS=1 and OPENBLAS_NUM_THREADS=1. No concurrent imaging during timed encoding. Verification/export/imaging excluded from encode timings. Equal bounds do not imply equal achieved error."
+}

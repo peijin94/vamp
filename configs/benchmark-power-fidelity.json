@@ -1,0 +1,17 @@
+{
+  "schema": "varquanms.benchmark/1",
+  "base": {
+    "mode": "adaptive", "columns": ["DATA"], "workers": 24,
+    "baseline_group": 128, "channel_segment": 192,
+    "ordering": "amplitude", "shared_order": false,
+    "codebook": "uniform-symmetric-v1",
+    "bits": [4, 8, 12, 16], "scale_quantiles": [1.0, 0.995],
+    "max_component_mse": 1.4e-7, "max_baseline_component_mse": 2.8e-7,
+    "max_complex_error": 0.003, "max_complex_bias": 0.0003,
+    "noise": null, "burn_flag": false, "compression": "gzip", "compression_level": 1
+  },
+  "experiments": [{"name": "symmetric-comparable", "config": {}}],
+  "export_ms": false,
+  "cache_methodology": "One sequential fresh process on a previously read source; no cache eviction, no simultaneous imaging, shared host.",
+  "notes": "Supplemental uniform fidelity control: 1.4e-7 MSE ceiling, below the 1.5e-7 control, to compare achieved MSE/bytes with the median+power codec. All other policies match. Not claimed to match every product or imaging error."
+}

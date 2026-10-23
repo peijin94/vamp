@@ -269,15 +269,127 @@ fail_quality:
     PyBuffer_Release(&a);PyBuffer_Release(&b);PyBuffer_Release(&f);return NULL;
 }
 
+/* Power levels are evaluated with the same ordered binary64 operations as the
+ * reference decoder. No pow(), cached external codebook, or fused arithmetic. */
+static float power_value(int q,int maximum,float radius,float center,float gamma) {
+    double u=(double)(2*q-maximum)/maximum,magnitude=fabs(u);
+    if(gamma!=1) {magnitude=magnitude*magnitude;if(gamma==.25f) magnitude=magnitude*magnitude;}
+    double residual=copysign(magnitude,u)*(double)radius;
+    return (float)(residual+(double)center);
+}
+
+static int power_code(double residual,double target,int maximum,float radius,float center,float gamma,float *value) {
+    if(radius==0) {*value=center;return (maximum+1)/2;}
+    double u=residual/(double)radius,magnitude=fabs(u);
+    if(gamma!=1) {magnitude=sqrt(magnitude);if(gamma==.25f) magnitude=sqrt(magnitude);}
+    double coordinate=(copysign(magnitude,u)+1)*(maximum/2.0);
+    int lo=(int)floor(coordinate);if(lo<0) lo=0;if(lo>maximum) lo=maximum;
+    int hi=lo<maximum?lo+1:maximum;
+    float a=power_value(lo,maximum,radius,center,gamma),b=power_value(hi,maximum,radius,center,gamma);
+    double da=fabs((double)a-target),db=fabs((double)b-target);
+    if(db<da||(db==da&&hi%2==0)) {*value=b;return hi;}
+    *value=a;return lo;
+}
+
+static PyObject *power_search(PyObject *self,PyObject *args) {
+    Py_buffer a={0},f={0},widths={0},parameters={0},bounds={0};int channels,level;
+    if(!PyArg_ParseTuple(args,"y*y*y*y*y*ii",&a,&f,&widths,&parameters,&bounds,&channels,&level)) return NULL;
+    Py_ssize_t n=a.len/8,candidates=widths.len;
+    int valid=a.len%8==0&&n>0&&n<=262144&&f.len==n&&channels>0&&n%channels==0&&candidates>0&&candidates<=4096&&
+        parameters.len==16*candidates&&bounds.len==32&&level>=-1&&level<=9&&fegetround()==FE_TONEAREST;
+    const uint8_t *width=(const uint8_t *)widths.buf;
+    const float *params=(const float *)parameters.buf;
+    for(Py_ssize_t k=0;k<candidates&&valid;k++) {
+        const float *p=params+4*k;
+        valid=(width[k]==2||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16)&&
+              isfinite(p[0])&&p[0]>=0&&isfinite(p[1])&&isfinite(p[2])&&(p[3]==1||p[3]==.5f||p[3]==.25f);
+    }
+    if(!valid) {PyErr_SetString(PyExc_ValueError,"Invalid native power search buffers/parameters");goto cleanup_power;}
+    uint8_t *raw=malloc(16*n),*compressed=malloc(compressBound(16*n)),*best=malloc(8*n+28);
+    float *decoded=malloc(8*n),*best_decoded=malloc(8*n);
+    if(!raw||!compressed||!best||!decoded||!best_decoded) {
+        free(raw);free(compressed);free(best);free(decoded);free(best_decoded);PyErr_NoMemory();goto cleanup_power;
+    }
+    const float *x=(const float *)a.buf;const uint8_t *flags=(const uint8_t *)f.buf;const double *bound=(const double *)bounds.buf;
+    size_t best_size=8*n+16;int failed=0;double quant_cpu=0,compress_cpu=0,stamp;
+    Py_BEGIN_ALLOW_THREADS
+    header(best,0,0,(uint32_t)n,0,0,0);memcpy(best+16,a.buf,8*n);memcpy(best_decoded,a.buf,8*n);
+    if(level>=0) {stamp=thread_cpu();uLongf size=compressBound(8*n);
+        if(compress2(compressed,&size,(const Bytef *)a.buf,8*n,level)!=Z_OK) failed=1;
+        else if(size<(size_t)8*n) {header(best,0,1,(uint32_t)n,0,0,0);memcpy(best+16,compressed,size);best_size=size+16;}
+        compress_cpu+=thread_cpu()-stamp;}
+    for(Py_ssize_t k=0;k<candidates&&!failed;k++) {
+        int bits=width[k],maximum=(1<<bits)-1;const float *p=params+4*k;
+        float radius=p[0],cr=p[1],ci=p[2],gamma=p[3];
+        size_t packed=(2*n*bits+7)/8,ne=0,byte=0;uint32_t *positions=(uint32_t *)(raw+4*n);
+        double sum=0,sum_r=0,sum_i=0,row_sum=0,max_square=0,max_row=0;
+        Py_ssize_t count=0,row_count=0;uint64_t accumulator=0;int available=0,rejected=0;
+        stamp=thread_cpu();
+        for(Py_ssize_t j=0;j<n;j++) {
+            float r=x[2*j],im=x[2*j+1];int finite=isfinite(r)&&isfinite(im);
+            double rr=(double)r-cr,ri=(double)im-ci;
+            int exact=flags[j]||!finite||(r==0&&signbit(r))||(im==0&&signbit(im))||fabs(rr)>radius||fabs(ri)>radius;
+            uint32_t pair[2];
+            pair[0]=power_code(exact?0:rr,exact?cr:r,maximum,radius,cr,gamma,decoded+2*j);
+            pair[1]=power_code(exact?0:ri,exact?ci:im,maximum,radius,ci,gamma,decoded+2*j+1);
+            if(!isfinite(decoded[2*j])||!isfinite(decoded[2*j+1])) {rejected=1;break;}
+            for(int h=0;h<2;h++) {accumulator|=(uint64_t)pair[h]<<available;available+=bits;
+                while(available>=8) {raw[byte++]=(uint8_t)accumulator;accumulator>>=8;available-=8;}}
+            if(exact) {positions[ne++]=(uint32_t)j;memcpy(decoded+2*j,x+2*j,8);}
+            if(!flags[j]&&finite) {
+                double er=(double)decoded[2*j]-r,ei=(double)decoded[2*j+1]-im,square=er*er+ei*ei;
+                sum+=square;sum_r+=er;sum_i+=ei;row_sum+=square;count++;row_count++;
+                if(square>max_square) max_square=square;
+                /* Prefix sums have only nonnegative terms. Full cell/block
+                 * counts overestimate valid denominators: safe early rejection. */
+                if(square>bound[1]*bound[1]*(1+1e-9)||sum>bound[0]*(2*n)*(1+1e-9)||row_sum>bound[3]*(2*channels)*(1+1e-9)) {rejected=1;break;}
+            }
+            if((j+1)%channels==0) {double mse=row_count?row_sum/(2*row_count):0;if(mse>max_row) max_row=mse;row_sum=0;row_count=0;}
+        }
+        if(rejected) {quant_cpu+=thread_cpu()-stamp;continue;}
+        if(available) raw[byte++]=(uint8_t)accumulator;
+        double max_error=sqrt(max_square),mse=count?sum/(2*count):0,bias=count?hypot(sum_r/count,sum_i/count):0;
+        if(mse>bound[0]*(1+1e-9)||max_error>bound[1]*(1+1e-9)||max_row>bound[3]*(1+1e-9)||bias>bound[2]+max_error*1e-9) {quant_cpu+=thread_cpu()-stamp;continue;}
+        memmove(raw+packed,positions,4*ne);
+        for(size_t j=0;j<ne;j++) {uint32_t index;memcpy(&index,raw+packed+4*j,4);memcpy(raw+packed+4*ne+8*j,x+2*index,8);}
+        size_t body_size=packed+12*ne;uint8_t *body=raw;int compressed_id=0;
+        quant_cpu+=thread_cpu()-stamp;stamp=thread_cpu();
+        if(level>=0 && best_size>29 && body_size>1) {
+            /* A compressed candidate must beat BOTH its raw representation and
+             * the current winner including the 28-byte header. A bounded
+             * output buffer stops deflate once it cannot win; Z_BUF_ERROR is
+             * an ordinary losing candidate, not a damaged archive. */
+            uLongf size=body_size-1;
+            if(size>best_size-29) size=best_size-29;
+            int rc=compress2(compressed,&size,raw,body_size,level);
+            if(rc==Z_OK) {body=compressed;body_size=size;compressed_id=1;}
+            else if(rc!=Z_BUF_ERROR) {failed=1;break;}
+        }
+        compress_cpu+=thread_cpu()-stamp;
+        if(body_size+28<best_size) {best_size=body_size+28;header(best,bits,compressed_id,(uint32_t)n,(uint32_t)ne,radius,2);
+            memcpy(best+16,p+1,12);memcpy(best+28,body,body_size);memcpy(best_decoded,decoded,8*n);}
+    }
+    Py_END_ALLOW_THREADS
+    PyObject *result=NULL;
+    if(failed) PyErr_SetString(PyExc_RuntimeError,"Native power compression failed");
+    else result=Py_BuildValue("y#y#dd",best,(Py_ssize_t)best_size,best_decoded,(Py_ssize_t)(8*n),quant_cpu,compress_cpu);
+    free(raw);free(compressed);free(best);free(decoded);free(best_decoded);
+    PyBuffer_Release(&a);PyBuffer_Release(&f);PyBuffer_Release(&widths);PyBuffer_Release(&parameters);PyBuffer_Release(&bounds);return result;
+cleanup_power:
+    PyBuffer_Release(&a);PyBuffer_Release(&f);PyBuffer_Release(&widths);PyBuffer_Release(&parameters);PyBuffer_Release(&bounds);return NULL;
+}
+
 static PyMethodDef methods[]={
     {"candidate",candidate,METH_VARARGS,"Fused deterministic quantization, packing and conservative error precheck."},
     {"search",search,METH_VARARGS,"Complete adaptive candidate search with zlib, without holding the GIL."},
     {"quality",quality_kernel,METH_VARARGS,"Streaming error moments, paired covariances and protected-value checks."},
+    {"power_search",power_search,METH_VARARGS,"Median-centered signed-power quantization with strict error selection."},
     {NULL,NULL,0,NULL}
 };
 static struct PyModuleDef module={PyModuleDef_HEAD_INIT,"_native",NULL,-1,methods};
 PyMODINIT_FUNC PyInit__native(void) {
     PyObject *m=PyModule_Create(&module);
     if(m && PyModule_AddIntConstant(m,"MIDRISE_V1",1)<0) {Py_DECREF(m);return NULL;}
+    if(m && PyModule_AddIntConstant(m,"POWER_V1",1)<0) {Py_DECREF(m);return NULL;}
     return m;
 }

@@ -162,6 +162,9 @@ def decode_block(blob, shape, codebook=None):
         raise ValueError("Invalid block sample count/header")
     if codebook is not None and (codebook not in CODEBOOK_IDS or (bits and mapping != CODEBOOK_IDS[codebook])):
         raise ValueError("Block mapping disagrees with declared codebook")
+    if mapping == 2:
+        from .power import decode_power
+        return decode_power(blob, shape)
     if bits == 0:
         if mapping or exceptions or step != 0:
             raise ValueError("Invalid exact block header")
@@ -198,6 +201,7 @@ class EncodedBlock:
     metrics: dict
     accounting: dict
     timings: dict = field(default_factory=dict)
+    parameters: dict = field(default_factory=dict)
 
 
 def _native_encode_block(original, flags, config, bounds):
@@ -262,6 +266,9 @@ def encode_block(original, flags, config, bounds, stream=()):
         raise ValueError("Codec expects bounded complex64[baseline,channel] blocks")
     mapping = CODEBOOK_IDS[config.codebook]
     native_supported = _native is not None and (not mapping or getattr(_native, "MIDRISE_V1", 0) == 1)
+    if mapping == 2:
+        from .power import encode_power
+        return encode_power(original, flags, config, bounds)
     if native_supported and config.rounding == "nearest-even" and bounds["max_p99_error"] is None:
         accelerated = _native_encode_block(original, flags, config, bounds)
         if accelerated is not None:

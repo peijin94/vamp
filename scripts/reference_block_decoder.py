@@ -1,10 +1,11 @@
-"""Independent standard-library decoder for a versioned uniform codec block.
+"""Independent standard-library decoder for uniform and signed-power blocks.
 
 This small conformance implementation returns little-endian complex64 bytes.
 The complete HDF5-to-MS decoder is `python -m varquanms decode`.
 """
 
 import argparse
+import math
 import os
 from pathlib import Path
 import struct
@@ -16,7 +17,7 @@ def decode(blob, rows, channels):
     if len(blob) < header.size:
         raise ValueError("Truncated header")
     bits, compression, mapping, count, exceptions, step = header.unpack_from(blob)
-    if mapping not in (0, 1) or count != rows * channels or not 0 < count <= 262144:
+    if mapping not in (0, 1, 2) or count != rows * channels or not 0 < count <= 262144:
         raise ValueError("Invalid sample count/header")
     if bits == 0:
         if mapping or exceptions or step != 0:
@@ -27,7 +28,15 @@ def decode(blob, rows, channels):
         expected = code_bytes + exceptions * 12
     else:
         raise ValueError("Unsupported block header")
-    body = blob[header.size:]
+    offset = header.size
+    if mapping == 2:
+        if len(blob) < offset+12:
+            raise ValueError("Truncated power metadata")
+        cr, ci, gamma = struct.unpack_from("<fff", blob, offset)
+        if not math.isfinite(cr) or not math.isfinite(ci) or gamma not in (1., .5, .25):
+            raise ValueError("Invalid power parameters")
+        offset += 12
+    body = blob[offset:]
     if compression == 1:
         decoder = zlib.decompressobj()
         body = decoder.decompress(body, expected + 1)
@@ -51,7 +60,19 @@ def decode(blob, rows, channels):
         code = (int.from_bytes(body[byte:byte + span], "little") >> shift) & (2**bits - 1)
         if not mapping and code == 2**bits - 1:
             raise ValueError("Reserved code")
-        struct.pack_into("<f", result, component * 4, (code - maximum) * step)
+        if mapping == 2:
+            u = (2*code-(2**bits-1))/(2**bits-1)
+            magnitude = abs(u)
+            if gamma != 1:
+                magnitude = magnitude*magnitude
+                if gamma == .25:
+                    magnitude = magnitude*magnitude
+            residual = math.copysign(magnitude, u)*step
+            center = cr if component % 2 == 0 else ci
+            value = center if step == 0 else residual+center
+        else:
+            value = (code-maximum)*step
+        struct.pack_into("<f", result, component * 4, value)
     previous = -1
     for index in range(exceptions):
         position = struct.unpack_from("<I", body, code_bytes + index * 4)[0]

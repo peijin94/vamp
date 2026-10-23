@@ -9,7 +9,7 @@ import zlib
 import numpy as np
 
 from .codec import _native, decode_block, encode_block, error_metrics, within_bounds
-from .config import Config
+from .config import CODEBOOK_IDS, Config
 from .metadata import equal
 from .ordering import all_orders
 
@@ -233,6 +233,7 @@ def write_visibility(writer, t, column, prefix, config, inspection):
         payload = writer.create_stream(payload_path, "visibility_block_payload")
         offsets, crc = [0], []
         histogram, sample_histogram, accounting = Counter(), Counter(), Counter()
+        gamma_histogram = Counter()
         buffered, buffered_size, written = [], 0, 0
         pipeline_start = time.perf_counter()
         previous_writes = timings["payload_writing"]
@@ -247,6 +248,8 @@ def write_visibility(writer, t, column, prefix, config, inspection):
             histogram[label] += 1
             sample_histogram[label] += chosen.decoded.size
             accounting.update(chosen.accounting)
+            if "gamma" in chosen.parameters:
+                gamma_histogram[str(chosen.parameters["gamma"])] += 1
             buffered.append(chosen.blob)
             buffered_size += len(chosen.blob)
             if buffered_size >= 1024 * 1024:
@@ -274,6 +277,8 @@ def write_visibility(writer, t, column, prefix, config, inspection):
                                  "bucket_reference": order["bucket_reference"], "buckets": order["buckets"],
                                  "grouping": order["grouping"],
                                  "permutation_direction": order["permutation_direction"]})
+        if config.codebook == "power-midrise-v1":
+            spec["products"][-1]["power_gamma_block_histogram"] = dict(gamma_histogram)
     stamp = time.perf_counter()
     summary, arrays = quality(values, reconstructed, flags, names, workers=config.workers)
     for name, metrics in summary["by_product"].items():
@@ -291,7 +296,7 @@ def write_visibility(writer, t, column, prefix, config, inspection):
 
 
 def _product_layout(reader, spec, p):
-    if spec.get("codec") not in ("uniform-symmetric-v1", "uniform-midrise-v1") or not 0 <= p < len(spec["products"]):
+    if spec.get("codec") not in CODEBOOK_IDS or not 0 <= p < len(spec["products"]):
         raise ValueError("Unsupported codec/product")
     product = spec["products"][p]
     rows = spec["row_count"]

@@ -8,7 +8,7 @@ from pathlib import Path
 DEFAULT_BITS = (4, 8, 12, 16)
 # Legacy widths stay explicit opt-ins so old experiment configurations still work.
 SUPPORTED_BITS = (2, 4, 6, 8, 12, 16)
-CODEBOOK_IDS = {"uniform-symmetric-v1": 0, "uniform-midrise-v1": 1}
+CODEBOOK_IDS = {"uniform-symmetric-v1": 0, "uniform-midrise-v1": 1, "power-midrise-v1": 2}
 
 
 @dataclass
@@ -33,6 +33,8 @@ class Config:
     rounding: str = "nearest-even"
     seed: int = 0
     scale_quantiles: list = field(default_factory=lambda: [1.0, 0.995])
+    power_center: str = "median"
+    power_gammas: list = field(default_factory=lambda: [1.0, 0.5])
     max_component_mse: float | None = None
     max_complex_error: float | None = None
     max_complex_bias: float | None = None
@@ -83,7 +85,13 @@ class Config:
         if type(self.antenna_endpoint) is not int or self.antenna_endpoint not in (1, 2):
             raise ValueError("antenna_endpoint must be 1 or 2 (ordered MS antenna columns)")
         if self.codebook not in CODEBOOK_IDS:
-            raise ValueError("Unsupported uniform codebook")
+            raise ValueError("Unsupported codebook")
+        if self.power_center not in ("median", "zero"):
+            raise ValueError("power_center must be median or zero (control)")
+        if not isinstance(self.power_gammas, list) or not self.power_gammas or any(type(g) not in (int, float) or g not in (1., .5, .25) for g in self.power_gammas) or len(set(self.power_gammas)) != len(self.power_gammas):
+            raise ValueError("power_gammas must be a unique nonempty subset of [1, 0.5, 0.25]")
+        if self.codebook == "power-midrise-v1" and self.rounding != "nearest-even":
+            raise ValueError("power-midrise-v1 currently supports nearest-even in reconstructed-value space only")
         if self.rounding not in ("nearest-even", "stochastic-pcg64-v1"):
             raise ValueError("Unsupported rounding; subtractive dithering is not implemented")
         if not isinstance(self.bits, list) or not self.bits or any(type(b) is not int or b not in SUPPORTED_BITS for b in self.bits) or len(set(self.bits)) != len(self.bits):

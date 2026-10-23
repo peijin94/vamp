@@ -29,6 +29,12 @@ integrity checks; verification, MS export and imaging are timed separately.
 It uses a shared host with warm/unspecified cache. Section 9 describes the test
 conditions, individual runs and output validation.
 
+A separate 32×24 two-level MX experiment uses an outer float32 factor and
+32-real-component micro scales. Under the tested bounds, 89.65% of components
+require a custom scaled-FP16 format. A tighter-error uniform control is 19.50%
+smaller in serialized component bytes with 7.34× lower component MSE; this MX
+configuration does not improve the measured visibility rate–distortion tradeoff.
+
 ## 1. Scope and relationship to earlier work
 
 The goal is to reduce archive size without time/channel averaging or regeneration
@@ -48,7 +54,8 @@ standalone reconstruction; no matched Dysco benchmark has yet been run.
 QLoRA motivates engineering comparisons such as distribution-adapted codebooks
 and quantized scales, but neither language-model quality nor NF4's design is a
 visibility-fidelity guarantee. The present codec is uniform, without NF4 or scale
-quantization. [Dettmers et al. (2023)](https://arxiv.org/abs/2305.14314)
+quantization in the production archive path. Section 10 separately evaluates
+experimental MX floating-point elements. [Dettmers et al. (2023)](https://arxiv.org/abs/2305.14314)
 XRADIO/MS v4 illustrates labeled-array schemas and homogeneous configurations;
 this archive does not claim MS v4 conformance and exports MS v2.
 [XRADIO overview](https://xradio.readthedocs.io/en/latest/measurement_set/overview.html)
@@ -600,20 +607,127 @@ The full configurations, per-run measurements and validation evidence are retain
 in the [speed benchmark report](../../reports/performance-runtime.json) and
 [validation summary](../../reports/performance-profile.json).
 
-## 10. Limits and conclusions
+## 10. Exploratory two-level MX scaling
+
+We also tested a smaller **32-baseline × 24-channel × 1-correlation megablock**
+with two levels of scaling. Each megablock holds 768 complex samples. For each
+channel, real and imaginary components separately form 32-baseline microblocks:
+48 microblocks in total. The tested ordering is independent amplitude order,
+with the same auto/cross separation and exact row reconstruction as above.
+
+The [OCP MX specification](https://www.opencompute.org/wp-content/uploads/2026/10/OCP_MicroXcaling_Spec_v1.1.0-1.pdf)
+defines FP4 E2M1, FP6 E2M3/E3M2 and FP8 E4M3/E5M2, with one UE8M0 power-of-two
+scale per 32 real elements. Its specified formats do not include MXFP16. Our
+16-bit candidate is explicitly **custom scaled IEEE binary16**, with an exact
+float32 escape. A float32 outer factor and adaptive format tags make the overall
+record a custom extension. Related macroblock scaling has been studied for
+neural networks; those accuracy results do not establish visibility fidelity.
+[Chhugani et al.](https://arxiv.org/html/2603.08713v1)
+
+For element value $c_{gmi}$ and micro exponent $e_{gm}$, reconstruction is
+
+$$
+\widehat x_{gmi}=\operatorname{float32}\left[
+\operatorname{float64}(S_g)\,
+\operatorname{ldexp}(\operatorname{float64}(c_{gmi}),e_{gm})\right].
+$$
+
+The outer factor is either one or the maximum absolute unprotected component
+in the megablock, stored as float32. Micro exponents cover the corresponding
+component range. Candidates use nearest-even rounding and the original exact
+exception policy. Tests compare one format per megablock with a conservative
+per-microblock allocation. Every assembled candidate must pass the measured
+megablock and per-baseline error criteria, and compete in actual serialized bytes
+with exact storage. This is not an exhaustive search of all mixed allocations.
+
+![Two-level microscaling layout](figs/mx-grouping.png)
+
+*Figure 8. Experimental megablocks contain 48 independently scaled vectors of
+32 real components. Real/imaginary components have separate micro scales. The
+outer factor is shared by the whole megablock. [SVG](figs/mx-grouping.svg).*
+
+All full runs cover the original 47,714,304 complex samples in 62,144 megablocks.
+The uniform controls use the same 32×24 grouping. The tighter control changes
+only the component/per-baseline MSE ceilings to $10^{-8}/(2\times10^{-8})$.
+
+| Codec / allocation | Serialized blocks MB | Component file MB | Component MSE |
+| --- | ---: | ---: | ---: |
+| Uniform 4/8/12/16, original ceilings | 101.569 | 107.935 | $3.1149\times10^{-8}$ |
+| MX with unit outer factor, mixed | 172.260 | 179.268 | $5.0988\times10^{-9}$ |
+| MX with float32 outer factor, mixed | 171.725 | 178.222 | $5.2093\times10^{-9}$ |
+| Uniform 4/8/12/16, tighter MSE ceilings | 138.239 | 144.653 | $7.0993\times10^{-10}$ |
+
+These component files are **not complete MS archives**. They hold DATA records,
+permutations, maps, quality arrays and configuration; MS export obtains exact
+auxiliary information from the original source. Serialized block bytes include
+headers, scales, tags and exceptions after actual secondary compression. The
+full-archive results in Sections 7 and 9 use a different 128×192 grouping and
+must not be compared as though these columns had the same preservation scope.
+
+The tighter uniform control is **19.50% smaller** in serialized bytes than
+outer-scale MX, with **7.34× lower component MSE**. Its maximum complex error is
+0.00025058 versus 0.00282696; maximum within-block per-baseline MSE and block bias
+are also lower. Adding the outer factor to MX saves only **0.311%** of serialized
+bytes relative to unit-factor MX, with slightly higher aggregate MSE.
+
+Outer-scale MX selects 4/6/8/16/exact32 for **2.398/4.027/3.650/89.649/0.275%**
+of real components. Most components therefore need the custom FP16 rung under
+these absolute bounds. Code bytes dominate: 179.711 MB before secondary
+compression, compared with 2.975 MB of micro scales, 0.685 MB of format tags and
+1.989 MB of headers. The outer factors are already included in those headers.
+
+![MX and uniform component comparisons](figs/mx-comparison.png)
+
+*Figure 9. Measured full-data component rate–distortion points and precision
+shares at the same 32×24 block shape. Points are not interpolated into an
+equal-error curve. Exact32 denotes lossless components. [SVG](figs/mx-comparison.svg).*
+
+Single-worker diagnostic component-experiment times are 132.50 s for the uniform
+control, 165.05 s for unit-factor MX and 167.73 s for outer-factor MX. They include
+inspection, writing and per-block source-error checks; separate file decoding,
+MS export and imaging are excluded. Each is one warm/unspecified-cache run on
+the shared host. The tighter uniform run overlapped imaging and is not used for
+latency comparison. These scopes and worker counts differ from Section 9; the
+reference MX implementation has not demonstrated a complete archive within 15 s.
+
+Matched WSClean 2048², 4-arcmin, multiscale Stokes-I imaging gives **0.06655% dirty**
+and **0.70078% restored** relative RMS differences over the valid celestial
+footprint. Model/residual differences are 4.93611%/1.56852%; the PSF is identical.
+Both images reach the 10,000-iteration cap, so convergence is not established.
+The tighter uniform control has not been imaged and no image-domain superiority
+is claimed for it. Thermal noise, calibration, weak polarization and temporal
+behavior remain unvalidated. [Imaging evidence](../../reports/wsclean-mx.json)
+
+![MX restored-image comparison](figs/mx-wsclean.png)
+
+*Figure 10. Original, outer-scale MX and difference restored images, using the
+same valid celestial footprint and matched restoring beam. Difference values
+have their own color scale; lower visibility MSE does not ensure proportionally
+smaller changes after nonlinear CLEAN.*
+
+The outer-scale MX export preserves all 132 checked non-DATA column entries and
+metadata exactly, including original UVW, flags and weights. A fresh component
+decode matches encode-time reconstruction bitwise. The experiment demonstrates
+that the proposed representation is feasible, but does not establish a storage
+advantage for these formats, scale rules and error ceilings. Details and evidence
+are in the [microscaling note](../../devnotes/microscaling.md) and
+[machine-readable study](../../reports/microscaling-evaluation.json).
+
+## 11. Limits and conclusions
 
 The results demonstrate a reconstructible prototype, not a final archive policy.
 Grouping can reduce whole-archive bytes, but overhead and unequal measured error
 matter; amplitude sorting has not been shown universally superior to buckets or
 per-baseline scaling. The new ladder reduced exact-block fallback for one tested
-grouping, not for an exhaustive new-ladder grid. Scale metadata is not quantized.
+grouping, not for an exhaustive new-ladder grid. Production scale metadata is not
+quantized; Section 10's separate MX component experiment uses exponent micro scales.
 
 Important unavailable checks remain: matched Dysco settings, calibrated thermal
 noise, weak Q/U/V products, calibration-solution changes, identified solar flux,
 narrow spectral features and multi-frame temporal behavior. One integration
 cannot establish transient/light-curve fidelity. No science-approved error
 ceilings have been selected. Stochastic rounding is implemented and tested, but
-these measurements use nearest-even rounding; subtractive dithering, nonuniform
+these measurements use nearest-even rounding; subtractive dithering, NF4
 codebooks and learned/model residual codecs are not implemented.
 
 The practical conclusion is limited: independent local scaling, measured
@@ -622,7 +736,7 @@ provide a 106.730 MB archive for this 409.595 MB input under the stated engineer
 constraints. The original resolution and scientific context are retained; the
 quantized visibility precision is not. The default encoder remains lossless.
 
-## 11. Reproduction and evidence
+## 12. Reproduction and evidence
 
 Install the validation dependencies and run from the repository root:
 
@@ -675,6 +789,8 @@ Primary local evidence:
 - [Historical timing measurements](../../reports/paper-runtime.json)
 - [Current encoding-speed benchmark](../../reports/performance-runtime.json)
 - [Output identity and independent verification](../../reports/performance-profile.json)
+- [Two-level MX study and component-byte accounting](../../reports/microscaling-evaluation.json)
+- [MX image-domain comparison](../../reports/wsclean-mx.json)
 - [Archive/codec format](../format.md)
 
 All flow diagrams, measured charts and image panels are in [figs/](figs/).

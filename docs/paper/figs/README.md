@@ -15,6 +15,9 @@ numerical charts have PNG, SVG and PDF versions; FITS panels are PNG.
 | `encoding-speed` | Paper benchmark: historical medians/ranges and three current repeats | `reports/paper-runtime.json`, `reports/performance-runtime.json` |
 | `runtime` | Historical phase timings retained for development notes | `reports/paper-runtime.json` |
 | `performance` | Profiling chart retained for development notes | `reports/performance-runtime.json`, `reports/performance-profile.json` |
+| `mx-grouping` | 32×24 megablock and 32-real-component microscaling schematic | Experimental codec definition |
+| `mx-comparison` | Full-data MX and uniform controls, including stricter uniform bounds | `reports/microscaling-evaluation.json` |
+| `mx-wsclean` | Original/MX restored images and difference | `reports/wsclean-mx.json`, measured FITS files |
 
 From the repository root:
 
@@ -29,3 +32,4 @@ Use `--speed-only` to regenerate just the encoding-speed benchmark figure.
 Regenerate the performance figure from versioned runtime reports with
 `python scripts/report_performance.py --plot-only --force`. Generating a fresh
 profiling report additionally reads trusted local `.prof` files retained outside Git.
+The MX figures and study are generated separately with `python scripts/report_mx.py`.

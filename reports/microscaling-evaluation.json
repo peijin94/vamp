@@ -1,0 +1,2900 @@
+{
+  "schema": "varquanms.mx-study/1",
+  "date_utc": "2026-10-23",
+  "ocp_specification": "https://www.opencompute.org/wp-content/uploads/2026/10/OCP_MicroXcaling_Spec_v1.1.0-1.pdf",
+  "scope": "Experimental DATA component records, not whole standalone MS archives. Standard MX element formats plus custom outer scale, variable formats, binary16 and exact escapes.",
+  "sample_runs": [
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "max-mega",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 16,
+      "selection": "evenly spaced amplitude ranks including extremes",
+      "ordering": "amplitude",
+      "block_count": 512,
+      "complex_samples": 380928,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 2786540,
+      "serialized_block_bytes": 1404597,
+      "block_offsets_bytes": 4104,
+      "record_map_bytes": 10240,
+      "accounting_before_joint_compression": {
+        "header": 16384,
+        "format_tags": 0,
+        "micro_scales": 23808,
+        "codes": 1565184,
+        "exceptions": 0,
+        "raw_body": 1588992,
+        "stored_body": 1388213
+      },
+      "real_component_format_counts": {
+        "exact32": 24576,
+        "E2M3": 30720,
+        "custom-scaled-FP16": 688128,
+        "E5M2": 18432
+      },
+      "fixed_format_passing_blocks": {
+        "E2M1": 0,
+        "E2M3": 32,
+        "E3M2": 12,
+        "E4M3": 32,
+        "E5M2": 12,
+        "custom-scaled-FP16": 496
+      },
+      "measured_errors": {
+        "component_mse": 3.6256006207683183e-09,
+        "max_complex_error": 0.0015226362557300664,
+        "max_within_block_baseline_mse": 1.8954712602643262e-07,
+        "max_block_bias": 2.8324059011112e-05
+      },
+      "quality": null,
+      "timings_seconds": {
+        "inspection_and_read": 3.746556819882244,
+        "ordering": 2.6363679179921746,
+        "gathering": 0.006375396158546209,
+        "candidate_selection_packing_compression": 0.6444960776716471,
+        "decode_and_source_checks": 0.29437636584043503,
+        "payload_writing": 0.0031099896878004074,
+        "complete_component_experiment": 7.513794539961964
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes export and imaging; not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "df5bf61eb67ab19026de7f6ec461a064d51564a9d058b4d052154b97188b1129",
+      "experiment": "sample-max-mega",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook"
+    },
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "max-micro",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 16,
+      "selection": "evenly spaced amplitude ranks including extremes",
+      "ordering": "amplitude",
+      "block_count": 512,
+      "complex_samples": 380928,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 2786540,
+      "serialized_block_bytes": 1399499,
+      "block_offsets_bytes": 4104,
+      "record_map_bytes": 10240,
+      "accounting_before_joint_compression": {
+        "header": 16384,
+        "format_tags": 5040,
+        "micro_scales": 23808,
+        "codes": 1557688,
+        "exceptions": 0,
+        "raw_body": 1586536,
+        "stored_body": 1383115
+      },
+      "real_component_format_counts": {
+        "exact32": 24576,
+        "E2M3": 32928,
+        "custom-scaled-FP16": 681184,
+        "E4M3": 4736,
+        "E5M2": 18432
+      },
+      "fixed_format_passing_blocks": {
+        "E2M1": 0,
+        "E2M3": 32,
+        "E3M2": 12,
+        "E4M3": 32,
+        "E5M2": 12,
+        "custom-scaled-FP16": 496,
+        "mixed": 512
+      },
+      "measured_errors": {
+        "component_mse": 4.414529352256647e-09,
+        "max_complex_error": 0.0015226362557300664,
+        "max_within_block_baseline_mse": 1.8954712602643262e-07,
+        "max_block_bias": 2.8324059011112e-05
+      },
+      "quality": null,
+      "timings_seconds": {
+        "inspection_and_read": 3.878084091003984,
+        "ordering": 2.4970904449000955,
+        "gathering": 0.006481928750872612,
+        "candidate_selection_packing_compression": 0.9041259731166065,
+        "decode_and_source_checks": 0.31627690652385354,
+        "payload_writing": 0.003455346915870905,
+        "complete_component_experiment": 7.7939904583618045
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes export and imaging; not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "d5f67704b0b7f119adb9a3ce63ed7dba708ffad3a5e62f545dbcaccfffe8cdd8",
+      "experiment": "sample-max-micro",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook"
+    },
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "uniform",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 16,
+      "selection": "evenly spaced amplitude ranks including extremes",
+      "ordering": "amplitude",
+      "block_count": 512,
+      "complex_samples": 380928,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 1737960,
+      "serialized_block_bytes": 822494,
+      "block_offsets_bytes": 4104,
+      "record_map_bytes": 10240,
+      "accounting_before_joint_compression": {
+        "lossless_component_bytes": 0,
+        "packed_code_bytes": 873216,
+        "exception_position_bytes": 688,
+        "exception_value_bytes": 1376,
+        "header_bytes": 8192,
+        "flagged_exception_samples": 0,
+        "nonfinite_exception_samples": 0,
+        "signed_zero_exception_samples": 0,
+        "outlier_exception_samples": 172
+      },
+      "real_component_format_counts": {
+        "16": 24576,
+        "8": 563712,
+        "12": 173568
+      },
+      "fixed_format_passing_blocks": {},
+      "measured_errors": {
+        "component_mse": 3.041442486638176e-08,
+        "max_complex_error": 0.0007745695266384756,
+        "max_within_block_baseline_mse": 1.373734092783044e-07,
+        "max_block_bias": 2.905198442748268e-05
+      },
+      "quality": null,
+      "timings_seconds": {
+        "inspection_and_read": 8.982443696353585,
+        "ordering": 2.588820848148316,
+        "gathering": 0.006932595279067755,
+        "candidate_selection_packing_compression": 0.8661944442428648,
+        "decode_and_source_checks": 0.13070077216252685,
+        "payload_writing": 0.0019912137649953365,
+        "complete_component_experiment": 12.760377017315477
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes export and imaging; not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "c8af9dfe6c8a160394d7d19c9635186a5f4504e218dbe0022547ba7be41d07d2",
+      "experiment": "sample-uniform",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook"
+    },
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "unit-mega",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 16,
+      "selection": "evenly spaced amplitude ranks including extremes",
+      "ordering": "amplitude",
+      "block_count": 512,
+      "complex_samples": 380928,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 2786540,
+      "serialized_block_bytes": 1408974,
+      "block_offsets_bytes": 4104,
+      "record_map_bytes": 10240,
+      "accounting_before_joint_compression": {
+        "header": 16384,
+        "format_tags": 0,
+        "micro_scales": 23808,
+        "codes": 1563648,
+        "exceptions": 0,
+        "raw_body": 1587456,
+        "stored_body": 1392590
+      },
+      "real_component_format_counts": {
+        "exact32": 24576,
+        "E2M3": 36864,
+        "custom-scaled-FP16": 688128,
+        "E5M2": 12288
+      },
+      "fixed_format_passing_blocks": {
+        "E2M1": 0,
+        "E2M3": 32,
+        "E3M2": 8,
+        "E4M3": 32,
+        "E5M2": 8,
+        "custom-scaled-FP16": 496
+      },
+      "measured_errors": {
+        "component_mse": 3.2389668929920616e-09,
+        "max_complex_error": 0.002027601591297313,
+        "max_within_block_baseline_mse": 1.8960868079126948e-07,
+        "max_block_bias": 2.1981167554979933e-05
+      },
+      "quality": null,
+      "timings_seconds": {
+        "inspection_and_read": 5.327746805734932,
+        "ordering": 2.5253466996364295,
+        "gathering": 0.006649899762123823,
+        "candidate_selection_packing_compression": 0.6382052381522954,
+        "decode_and_source_checks": 0.2975436672568321,
+        "payload_writing": 0.003363889642059803,
+        "complete_component_experiment": 8.985751644708216
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes export and imaging; not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "d76274356ce36bac9cf47c07449e2e67c6eaf21211ade69c722927f206ba5193",
+      "experiment": "sample-unit-mega",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook"
+    },
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "unit-micro",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 16,
+      "selection": "evenly spaced amplitude ranks including extremes",
+      "ordering": "amplitude",
+      "block_count": 512,
+      "complex_samples": 380928,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 2786540,
+      "serialized_block_bytes": 1404309,
+      "block_offsets_bytes": 4104,
+      "record_map_bytes": 10240,
+      "accounting_before_joint_compression": {
+        "header": 16384,
+        "format_tags": 4848,
+        "micro_scales": 23808,
+        "codes": 1556736,
+        "exceptions": 0,
+        "raw_body": 1585392,
+        "stored_body": 1387925
+      },
+      "real_component_format_counts": {
+        "exact32": 24576,
+        "E2M3": 38656,
+        "custom-scaled-FP16": 681664,
+        "E4M3": 4672,
+        "E5M2": 12288
+      },
+      "fixed_format_passing_blocks": {
+        "E2M1": 0,
+        "E2M3": 32,
+        "E3M2": 8,
+        "E4M3": 32,
+        "E5M2": 8,
+        "custom-scaled-FP16": 496,
+        "mixed": 512
+      },
+      "measured_errors": {
+        "component_mse": 3.9834968431501905e-09,
+        "max_complex_error": 0.002027601591297313,
+        "max_within_block_baseline_mse": 1.8960868079126948e-07,
+        "max_block_bias": 2.1981167554979933e-05
+      },
+      "quality": null,
+      "timings_seconds": {
+        "inspection_and_read": 7.183021238073707,
+        "ordering": 2.525514901150018,
+        "gathering": 0.006889690645039082,
+        "candidate_selection_packing_compression": 0.9002765784971416,
+        "decode_and_source_checks": 0.30618581362068653,
+        "payload_writing": 0.0033722328953444958,
+        "complete_component_experiment": 11.11412929976359
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes export and imaging; not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "371bf53f370a87d1848b281aa331856c5c384d1cf1003c3e73d82b5c3bdbb2cb",
+      "experiment": "sample-unit-micro",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook"
+    }
+  ],
+  "full_runs": [
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "max-micro",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 0,
+      "selection": "all source samples",
+      "ordering": "amplitude",
+      "block_count": 62144,
+      "complex_samples": 47714304,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 178222366,
+      "serialized_block_bytes": 171725498,
+      "block_offsets_bytes": 497160,
+      "record_map_bytes": 1242880,
+      "accounting_before_joint_compression": {
+        "header": 1988608,
+        "format_tags": 684576,
+        "micro_scales": 2974944,
+        "codes": 179711176,
+        "exceptions": 0,
+        "raw_body": 183370696,
+        "stored_body": 169736890
+      },
+      "real_component_format_counts": {
+        "exact32": 262656,
+        "E2M1": 2288832,
+        "E2M3": 3841888,
+        "E3M2": 1408,
+        "E5M2": 2706432,
+        "custom-scaled-FP16": 85550688,
+        "E4M3": 776704
+      },
+      "fixed_format_passing_blocks": {
+        "E2M1": 1303,
+        "E2M3": 5407,
+        "E3M2": 3506,
+        "E4M3": 5478,
+        "E5M2": 3506,
+        "custom-scaled-FP16": 61968,
+        "mixed": 62123
+      },
+      "measured_errors": {
+        "component_mse": 5.2093394128550645e-09,
+        "max_complex_error": 0.0028269554617758306,
+        "max_within_block_baseline_mse": 1.9987595704204599e-07,
+        "max_block_bias": 3.753228435516931e-05
+      },
+      "quality": {
+        "by_product": {
+          "XX": {
+            "valid_samples": 11928576,
+            "component_mse": 4.84738381670058e-09,
+            "real_mse": 4.829447796392941e-09,
+            "imag_mse": 4.86531983700822e-09,
+            "bias_real": -3.81808411745801e-08,
+            "bias_imag": 2.4130096962538058e-08,
+            "complex_bias_abs": 4.5166782176949464e-08,
+            "max_complex_error": 0.0028269554617758306,
+            "max_baseline_component_mse": 1.203471010297718e-07,
+            "p99_error": 0.0004886583495016813
+          },
+          "XY": {
+            "valid_samples": 11928576,
+            "component_mse": 5.482831321716298e-09,
+            "real_mse": 5.499984362414998e-09,
+            "imag_mse": 5.465678281017599e-09,
+            "bias_real": 1.589732098714486e-08,
+            "bias_imag": -6.526316813150944e-09,
+            "complex_bias_abs": 1.7184807991767994e-08,
+            "max_complex_error": 0.0026912354083928336,
+            "max_baseline_component_mse": 1.1277083140244857e-07,
+            "p99_error": 0.000518945958340447
+          },
+          "YX": {
+            "valid_samples": 11928576,
+            "component_mse": 6.62287904469084e-09,
+            "real_mse": 6.6336579210779916e-09,
+            "imag_mse": 6.612100168303689e-09,
+            "bias_real": 2.8828741616004704e-08,
+            "bias_imag": -2.3315217985163782e-08,
+            "complex_bias_abs": 3.707688947117957e-08,
+            "max_complex_error": 0.00265394293452595,
+            "max_baseline_component_mse": 1.1627176563562078e-07,
+            "p99_error": 0.0005497478983186668
+          },
+          "YY": {
+            "valid_samples": 11928576,
+            "component_mse": 3.8842634683077724e-09,
+            "real_mse": 3.89641550570635e-09,
+            "imag_mse": 3.872111430909196e-09,
+            "bias_real": -1.0102445356031954e-08,
+            "bias_imag": 1.1601600227163199e-08,
+            "complex_bias_abs": 1.53836448867791e-08,
+            "max_complex_error": 0.002047397196292877,
+            "max_baseline_component_mse": 1.0882722823593406e-07,
+            "p99_error": 0.000442393370280766
+          }
+        },
+        "protected_sample_count": 0,
+        "protected_sample_bits": "exact",
+        "metric_domain": "unflagged finite input samples",
+        "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+        "science_validation": "not performed",
+        "calculation": "native-moments-v2"
+      },
+      "timings_seconds": {
+        "inspection_and_read": 4.106678616255522,
+        "ordering": 3.200823598075658,
+        "gathering": 0.8466891134157777,
+        "candidate_selection_packing_compression": 114.81041176430881,
+        "decode_and_source_checks": 40.060896640177816,
+        "payload_writing": 0.4518791427835822,
+        "whole_product_quality": 4.02686078613624,
+        "separate_component_read_decode": 39.89222184987739,
+        "complete_component_experiment": 167.72807868523523,
+        "ms_export_and_exact_comparison": 8.39639578666538
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes export and imaging; not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "8bbd2ff62aeb3280c0f2380641890b6aa7e5e45ce8285d08cee50fc48e0b97e7",
+      "export_comparison": [
+        {
+          "table": ".",
+          "column": "UVW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "FLAG",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "FLAG_CATEGORY",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "WEIGHT",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "SIGMA",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "ANTENNA1",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "ANTENNA2",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "ARRAY_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "DATA_DESC_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "EXPOSURE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "FEED1",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "FEED2",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "FIELD_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "INTERVAL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "OBSERVATION_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "PROCESSOR_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "SCAN_NUMBER",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "STATE_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "TIME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": ".",
+          "column": "TIME_CENTROID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "OFFSET",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "POSITION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "TYPE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "DISH_DIAMETER",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "MOUNT",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "NAME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "ANTENNA",
+          "column": "STATION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "DATA_DESCRIPTION",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "DATA_DESCRIPTION",
+          "column": "POLARIZATION_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "DATA_DESCRIPTION",
+          "column": "SPECTRAL_WINDOW_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "POSITION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "BEAM_OFFSET",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "POLARIZATION_TYPE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "POL_RESPONSE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "RECEPTOR_ANGLE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "ANTENNA_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "BEAM_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "FEED_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "INTERVAL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "NUM_RECEPTORS",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "SPECTRAL_WINDOW_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FEED",
+          "column": "TIME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "DELAY_DIR",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "PHASE_DIR",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "REFERENCE_DIR",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "CODE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "NAME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "NUM_POLY",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "SOURCE_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FIELD",
+          "column": "TIME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "TIME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "INTERVAL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "TYPE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "REASON",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "LEVEL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "SEVERITY",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "APPLIED",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "FLAG_CMD",
+          "column": "COMMAND",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "TIME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "OBSERVATION_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "MESSAGE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "PRIORITY",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "ORIGIN",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "OBJECT_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "APPLICATION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "CLI_COMMAND",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "HISTORY",
+          "column": "APP_PARAMS",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "TIME_RANGE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "LOG",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "SCHEDULE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "OBSERVER",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "PROJECT",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "RELEASE_DATE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "SCHEDULE_TYPE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "OBSERVATION",
+          "column": "TELESCOPE_NAME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "ANTENNA_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "TIME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "INTERVAL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "NAME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "NUM_POLY",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "TIME_ORIGIN",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "DIRECTION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "TARGET",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POINTING",
+          "column": "TRACKING",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POLARIZATION",
+          "column": "CORR_TYPE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POLARIZATION",
+          "column": "CORR_PRODUCT",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POLARIZATION",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "POLARIZATION",
+          "column": "NUM_CORR",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "PROCESSOR",
+          "column": "TYPE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "PROCESSOR",
+          "column": "SUB_TYPE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "PROCESSOR",
+          "column": "TYPE_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "PROCESSOR",
+          "column": "MODE_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "PROCESSOR",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "PROCESSOR",
+          "column": "SETTINGS",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "DIRECTION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "PROPER_MOTION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "CALIBRATION_GROUP",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "CODE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "INTERVAL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "NAME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "NUM_LINES",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "SOURCE_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "SPECTRAL_WINDOW_ID",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "TIME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "TRANSITION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "REST_FREQUENCY",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SOURCE",
+          "column": "SYSVEL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "MEAS_FREQ_REF",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "CHAN_FREQ",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "REF_FREQUENCY",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "CHAN_WIDTH",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "EFFECTIVE_BW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "RESOLUTION",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "FREQ_GROUP",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "FREQ_GROUP_NAME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "IF_CONV_CHAIN",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "NAME",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "NET_SIDEBAND",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "NUM_CHAN",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "SPECTRAL_WINDOW",
+          "column": "TOTAL_BANDWIDTH",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "STATE",
+          "column": "SIG",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "STATE",
+          "column": "REF",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "STATE",
+          "column": "CAL",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "STATE",
+          "column": "LOAD",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "STATE",
+          "column": "SUB_SCAN",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "STATE",
+          "column": "OBS_MODE",
+          "export": "bitwise_exact"
+        },
+        {
+          "table": "STATE",
+          "column": "FLAG_ROW",
+          "export": "bitwise_exact"
+        }
+      ],
+      "experiment": "full-max-micro",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook",
+      "covariance_summary": {
+        "cross_product_real": [
+          [
+            9.694765593362517e-09,
+            6.2322701530481405e-12,
+            -4.383295162536625e-12,
+            -1.0042549987295646e-12
+          ],
+          [
+            6.2322701530481405e-12,
+            1.096566234811398e-08,
+            1.058811888246442e-11,
+            1.8265918958003508e-12
+          ],
+          [
+            -4.383295162536625e-12,
+            1.058811888246442e-11,
+            1.3245756714685801e-08,
+            1.288699656550809e-11
+          ],
+          [
+            -1.0042549987295646e-12,
+            1.8265918958003508e-12,
+            1.288699656550809e-11,
+            7.768526699959064e-09
+          ]
+        ],
+        "cross_product_imag": [
+          [
+            -9.354733930761012e-32,
+            2.159209623611196e-12,
+            -5.521234442056873e-12,
+            -1.4518830004819246e-12
+          ],
+          [
+            -2.159209623611196e-12,
+            3.450454025471576e-33,
+            8.559023388344217e-12,
+            2.6502114263257434e-12
+          ],
+          [
+            5.521234442056873e-12,
+            -8.559023388344217e-12,
+            -3.4621098119054996e-32,
+            -2.1883266959623686e-12
+          ],
+          [
+            1.4518830004819246e-12,
+            -2.6502114263257434e-12,
+            2.1883266959623686e-12,
+            -1.7282085117702976e-33
+          ]
+        ],
+        "maximum_absolute_adjacent_channel_covariance_by_product": [
+          3.608809292853442e-10,
+          2.7704297618867506e-10,
+          3.4330080606864524e-10,
+          3.0069077728489036e-10
+        ],
+        "maximum_channel_component_mse_by_product": [
+          1.2662453665773167e-08,
+          1.0371579162269225e-08,
+          1.6299111253941763e-08,
+          6.27715262880191e-09
+        ]
+      }
+    },
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "uniform",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 0,
+      "selection": "all source samples",
+      "ordering": "amplitude",
+      "block_count": 62144,
+      "complex_samples": 47714304,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 107934931,
+      "serialized_block_bytes": 101568602,
+      "block_offsets_bytes": 497160,
+      "record_map_bytes": 1242880,
+      "accounting_before_joint_compression": {
+        "lossless_component_bytes": 0,
+        "packed_code_bytes": 104773632,
+        "exception_position_bytes": 74628,
+        "exception_value_bytes": 149256,
+        "header_bytes": 994304,
+        "flagged_exception_samples": 0,
+        "nonfinite_exception_samples": 0,
+        "signed_zero_exception_samples": 0,
+        "outlier_exception_samples": 18657
+      },
+      "real_component_format_counts": {
+        "16": 270336,
+        "4": 1918464,
+        "8": 73171968,
+        "12": 20067840
+      },
+      "fixed_format_passing_blocks": {},
+      "measured_errors": {
+        "component_mse": 3.1148690971447036e-08,
+        "max_complex_error": 0.0007887180461150397,
+        "max_within_block_baseline_mse": 1.5647674906695633e-07,
+        "max_block_bias": 4.489101129588222e-05
+      },
+      "quality": {
+        "by_product": {
+          "XX": {
+            "valid_samples": 11928576,
+            "component_mse": 3.6886079079857544e-08,
+            "real_mse": 3.692384069430158e-08,
+            "imag_mse": 3.684831746541351e-08,
+            "bias_real": 8.885898868947003e-08,
+            "bias_imag": -1.0329141764383186e-07,
+            "complex_bias_abs": 1.3625357547524344e-07,
+            "max_complex_error": 0.0007887180461150397,
+            "max_baseline_component_mse": 9.252048618522826e-08,
+            "p99_error": 0.0006210213402758723
+          },
+          "XY": {
+            "valid_samples": 11928576,
+            "component_mse": 2.745258892535195e-08,
+            "real_mse": 2.7465995286871535e-08,
+            "imag_mse": 2.7439182563832362e-08,
+            "bias_real": 3.087240150870537e-08,
+            "bias_imag": 6.519843462456555e-09,
+            "complex_bias_abs": 3.155334425523943e-08,
+            "max_complex_error": 0.000774797011575985,
+            "max_baseline_component_mse": 9.179083441529027e-08,
+            "p99_error": 0.0004996001032902516
+          },
+          "YX": {
+            "valid_samples": 11928576,
+            "component_mse": 2.7003018776645938e-08,
+            "real_mse": 2.6996907830276697e-08,
+            "imag_mse": 2.700912972301519e-08,
+            "bias_real": -1.385519878400668e-07,
+            "bias_imag": -1.886793860963754e-08,
+            "complex_bias_abs": 1.3983079933194643e-07,
+            "max_complex_error": 0.0007765215751194663,
+            "max_baseline_component_mse": 9.523339787961366e-08,
+            "p99_error": 0.0005056084192631376
+          },
+          "YY": {
+            "valid_samples": 11928576,
+            "component_mse": 3.325307710390391e-08,
+            "real_mse": 3.3309687360546074e-08,
+            "imag_mse": 3.319646684726175e-08,
+            "bias_real": 4.3957902453969e-08,
+            "bias_imag": 5.3616699527955646e-08,
+            "complex_bias_abs": 6.933287572590461e-08,
+            "max_complex_error": 0.0007870583297189757,
+            "max_baseline_component_mse": 9.943864358866358e-08,
+            "p99_error": 0.0006100783934168171
+          }
+        },
+        "protected_sample_count": 0,
+        "protected_sample_bits": "exact",
+        "metric_domain": "unflagged finite input samples",
+        "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+        "science_validation": "not performed",
+        "calculation": "native-moments-v2"
+      },
+      "timings_seconds": {
+        "inspection_and_read": 4.126991983037442,
+        "ordering": 3.522694144397974,
+        "gathering": 0.871958443429321,
+        "candidate_selection_packing_compression": 103.9582668445073,
+        "decode_and_source_checks": 14.953040308319032,
+        "payload_writing": 0.30780650675296783,
+        "whole_product_quality": 4.386921520344913,
+        "separate_component_read_decode": 13.615132908336818,
+        "complete_component_experiment": 132.50094215478748
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes separate file decode, export and imaging; diagnostic timing with possible documentation/synthetic-test work, not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "2ec26ced25268756100b8c1fa79c2e4f6613b94eb7e82b05d8451ad3745399fd",
+      "experiment": "full-uniform",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook",
+      "covariance_summary": {
+        "cross_product_real": [
+          [
+            7.37721395946638e-08,
+            -6.320670983831236e-14,
+            2.04491713781592e-12,
+            -6.0788151450553746e-12
+          ],
+          [
+            -6.320670983831236e-14,
+            5.4905176855082464e-08,
+            -1.7650192195006057e-12,
+            6.077396476564392e-12
+          ],
+          [
+            2.04491713781592e-12,
+            -1.7650192195006057e-12,
+            5.400601800063279e-08,
+            3.664719376946364e-12
+          ],
+          [
+            -6.0788151450553746e-12,
+            6.077396476564392e-12,
+            3.664719376946364e-12,
+            6.650614940074996e-08
+          ]
+        ],
+        "cross_product_imag": [
+          [
+            -2.2237934266191227e-31,
+            -2.167933228265623e-11,
+            2.3427638436395692e-11,
+            2.3160357226823923e-11
+          ],
+          [
+            2.167933228265623e-11,
+            1.0842535520820306e-32,
+            -1.710739772401525e-11,
+            -2.4512013242877127e-11
+          ],
+          [
+            -2.3427638436395692e-11,
+            1.710739772401525e-11,
+            -8.413838525821403e-32,
+            -1.79282618105906e-11
+          ],
+          [
+            -2.3160357226823923e-11,
+            2.4512013242877127e-11,
+            1.79282618105906e-11,
+            1.1800276286305417e-31
+          ]
+        ],
+        "maximum_absolute_adjacent_channel_covariance_by_product": [
+          8.544521749225449e-10,
+          7.111743702538793e-10,
+          5.401619105508084e-10,
+          8.268110024098837e-10
+        ],
+        "maximum_channel_component_mse_by_product": [
+          4.463783897914564e-08,
+          3.2477016184189523e-08,
+          2.9566531682050502e-08,
+          3.743012117177772e-08
+        ]
+      }
+    },
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "uniform",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 0,
+      "selection": "all source samples",
+      "ordering": "amplitude",
+      "block_count": 62144,
+      "complex_samples": 47714304,
+      "bounds": {
+        "max_component_mse": 1e-08,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-08,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-08,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-08,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 144653418,
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook",
+      "serialized_block_bytes": 138239045,
+      "block_offsets_bytes": 497160,
+      "record_map_bytes": 1242880,
+      "accounting_before_joint_compression": {
+        "lossless_component_bytes": 98304,
+        "packed_code_bytes": 138552960,
+        "exception_position_bytes": 11520,
+        "exception_value_bytes": 23040,
+        "header_bytes": 994304,
+        "flagged_exception_samples": 0,
+        "nonfinite_exception_samples": 0,
+        "signed_zero_exception_samples": 0,
+        "outlier_exception_samples": 2880
+      },
+      "real_component_format_counts": {
+        "16": 292608,
+        "0": 24576,
+        "4": 299520,
+        "8": 8799744,
+        "12": 86012160
+      },
+      "fixed_format_passing_blocks": {},
+      "measured_errors": {
+        "component_mse": 7.099330494428891e-10,
+        "max_complex_error": 0.0002505799877872647,
+        "max_within_block_baseline_mse": 1.5313509593684337e-08,
+        "max_block_bias": 1.2159142897216654e-05
+      },
+      "quality": {
+        "by_product": {
+          "XX": {
+            "valid_samples": 11928576,
+            "component_mse": 9.280442646334683e-10,
+            "real_mse": 9.58357047849417e-10,
+            "imag_mse": 8.977314814175196e-10,
+            "bias_real": -6.221155689036024e-09,
+            "bias_imag": 1.377042715526903e-08,
+            "complex_bias_abs": 1.511050767333103e-08,
+            "max_complex_error": 0.00024763576811134684,
+            "max_baseline_component_mse": 9.941674742700949e-09,
+            "p99_error": 0.00014251507082760616
+          },
+          "XY": {
+            "valid_samples": 11928576,
+            "component_mse": 5.776089627097134e-10,
+            "real_mse": 5.776746393429912e-10,
+            "imag_mse": 5.775432860764355e-10,
+            "bias_real": 7.77380105435235e-09,
+            "bias_imag": 1.3356662243465304e-08,
+            "complex_bias_abs": 1.5454203606742772e-08,
+            "max_complex_error": 0.00024797631238372843,
+            "max_baseline_component_mse": 8.543112147145068e-09,
+            "p99_error": 0.00013704041395780128
+          },
+          "YX": {
+            "valid_samples": 11928576,
+            "component_mse": 6.184518216712752e-10,
+            "real_mse": 6.184094419869537e-10,
+            "imag_mse": 6.184942013555967e-10,
+            "bias_real": -9.569218286966376e-09,
+            "bias_imag": 3.641213205638246e-09,
+            "complex_bias_abs": 1.0238572763453218e-08,
+            "max_complex_error": 0.0002505799877872647,
+            "max_baseline_component_mse": 9.207315508484129e-09,
+            "p99_error": 0.00013597416748125992
+          },
+          "YY": {
+            "valid_samples": 11928576,
+            "component_mse": 7.156271487568787e-10,
+            "real_mse": 7.482361446750005e-10,
+            "imag_mse": 6.83018152838757e-10,
+            "bias_real": 1.452191254983638e-08,
+            "bias_imag": -1.0701752953275971e-08,
+            "complex_bias_abs": 1.803922006013692e-08,
+            "max_complex_error": 0.0002445708082129613,
+            "max_baseline_component_mse": 1.0536036635736915e-08,
+            "p99_error": 0.00012630089610031752
+          }
+        },
+        "protected_sample_count": 0,
+        "protected_sample_bits": "exact",
+        "metric_domain": "unflagged finite input samples",
+        "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+        "science_validation": "not performed",
+        "calculation": "native-moments-v2"
+      },
+      "timings_seconds": {
+        "inspection_and_read": 3.8459039852023125,
+        "ordering": 2.5960233127698302,
+        "gathering": 0.7973877475596964,
+        "candidate_selection_packing_compression": 99.80774377146736,
+        "decode_and_source_checks": 15.69112941622734,
+        "payload_writing": 0.31710817385464907,
+        "whole_product_quality": 3.9712731852196157,
+        "separate_component_read_decode": 15.896066439338028,
+        "complete_component_experiment": 127.24679951509461
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes separate file decode, export and imaging; diagnostic timing with possible documentation/synthetic-test work, not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "bb7272c9395121039a3e2d6a7d1c703e9eac69702ee1ca65ab087014e85a687e",
+      "experiment": "full-uniform-tight",
+      "timing_interference": "This supplemental fidelity-control run overlapped the WSClean MX imaging job; do not compare its latency with other runs.",
+      "covariance_summary": {
+        "cross_product_real": [
+          [
+            1.8560883009394102e-09,
+            1.884839207393515e-13,
+            -7.132810923384015e-13,
+            -6.143820461465022e-13
+          ],
+          [
+            1.884839207393515e-13,
+            1.1552176865868982e-09,
+            -3.389610819367291e-13,
+            -1.3925294925930893e-13
+          ],
+          [
+            -7.132810923384015e-13,
+            -3.389610819367291e-13,
+            1.2369035385140445e-09,
+            -2.4873051485940046e-13
+          ],
+          [
+            -6.143820461465022e-13,
+            -1.3925294925930893e-13,
+            -2.4873051485940046e-13,
+            1.4312539721002346e-09
+          ]
+        ],
+        "cross_product_imag": [
+          [
+            5.5039068040856517e-33,
+            -7.631432023847242e-13,
+            1.3638148609298286e-12,
+            -1.313815586226889e-13
+          ],
+          [
+            7.631432023847242e-13,
+            6.3074364171444e-36,
+            7.404957402814505e-13,
+            2.0884579738596362e-13
+          ],
+          [
+            -1.3638148609298286e-12,
+            -7.404957402814505e-13,
+            -1.9396093645900727e-33,
+            -9.562877202625347e-13
+          ],
+          [
+            1.313815586226889e-13,
+            -2.0884579738596362e-13,
+            9.562877202625347e-13,
+            6.353195851022328e-33
+          ]
+        ],
+        "maximum_absolute_adjacent_channel_covariance_by_product": [
+          3.620061550034083e-11,
+          2.8740524639338576e-11,
+          3.083263272588228e-11,
+          2.565872875151953e-11
+        ],
+        "maximum_channel_component_mse_by_product": [
+          2.8951149959228837e-09,
+          1.6504755966810332e-09,
+          1.7139177614991587e-09,
+          1.3234808679545383e-09
+        ]
+      }
+    },
+    {
+      "schema": "varquanms.mx-evaluation/1",
+      "status": "complete",
+      "variant": "unit-micro",
+      "source": "20260904_190008_59MHz.ms",
+      "source_shape": [
+        62128,
+        192,
+        4
+      ],
+      "component_only": true,
+      "sample_groups_per_product": 0,
+      "selection": "all source samples",
+      "ordering": "amplitude",
+      "block_count": 62144,
+      "complex_samples": 47714304,
+      "bounds": {
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null
+      },
+      "configuration": {
+        "mode": "adaptive",
+        "columns": [
+          "DATA"
+        ],
+        "deduplicate": true,
+        "burn_flag": false,
+        "compression": "gzip",
+        "compression_level": 1,
+        "io_chunk_rows": 1024,
+        "baseline_group": 32,
+        "channel_segment": 24,
+        "ordering": "amplitude",
+        "shared_order": false,
+        "bucket_reference": null,
+        "orientation_bins": 24,
+        "length_reference_m": 1.0,
+        "antenna_endpoint": 1,
+        "bits": [
+          4,
+          8,
+          12,
+          16
+        ],
+        "codebook": "uniform-symmetric-v1",
+        "rounding": "nearest-even",
+        "seed": 0,
+        "scale_quantiles": [
+          1.0,
+          0.995
+        ],
+        "max_component_mse": 1e-07,
+        "max_complex_error": 0.003,
+        "max_complex_bias": 0.0003,
+        "max_baseline_component_mse": 2e-07,
+        "max_p99_error": null,
+        "product_bounds": {},
+        "noise": null,
+        "max_visibility_bytes": 2147483648,
+        "workers": 1
+      },
+      "component_file_bytes": 179268458,
+      "serialized_block_bytes": 172260398,
+      "block_offsets_bytes": 497160,
+      "record_map_bytes": 1242880,
+      "accounting_before_joint_compression": {
+        "header": 1988608,
+        "format_tags": 678576,
+        "micro_scales": 2974944,
+        "codes": 179756904,
+        "exceptions": 0,
+        "raw_body": 183410424,
+        "stored_body": 170271790
+      },
+      "real_component_format_counts": {
+        "exact32": 262656,
+        "E2M1": 2189600,
+        "E3M2": 736,
+        "E2M3": 3901376,
+        "E5M2": 2724864,
+        "E4M3": 787872,
+        "custom-scaled-FP16": 85561504
+      },
+      "fixed_format_passing_blocks": {
+        "E2M1": 1278,
+        "E2M3": 5379,
+        "E3M2": 3415,
+        "E4M3": 5440,
+        "E5M2": 3415,
+        "custom-scaled-FP16": 61968,
+        "mixed": 62126
+      },
+      "measured_errors": {
+        "component_mse": 5.09884030197845e-09,
+        "max_complex_error": 0.002860715197204218,
+        "max_within_block_baseline_mse": 1.9989280958565051e-07,
+        "max_block_bias": 3.971838617182859e-05
+      },
+      "quality": {
+        "by_product": {
+          "XX": {
+            "valid_samples": 11928576,
+            "component_mse": 4.805796125687294e-09,
+            "real_mse": 4.809919858676705e-09,
+            "imag_mse": 4.801672392697883e-09,
+            "bias_real": 4.8777038242918315e-08,
+            "bias_imag": 2.0087053664802746e-09,
+            "complex_bias_abs": 4.881838134351079e-08,
+            "max_complex_error": 0.002563174027919392,
+            "max_baseline_component_mse": 1.2453381050518897e-07,
+            "p99_error": 0.0004736428548175234
+          },
+          "XY": {
+            "valid_samples": 11928576,
+            "component_mse": 5.322541200473134e-09,
+            "real_mse": 5.3036900548737386e-09,
+            "imag_mse": 5.3413923460725306e-09,
+            "bias_real": 4.78701517559122e-09,
+            "bias_imag": -1.1054381421035732e-08,
+            "complex_bias_abs": 1.2046363056669038e-08,
+            "max_complex_error": 0.002860715197204218,
+            "max_baseline_component_mse": 1.1641571304978625e-07,
+            "p99_error": 0.00048555109453473987
+          },
+          "YX": {
+            "valid_samples": 11928576,
+            "component_mse": 6.459302792244863e-09,
+            "real_mse": 6.4806703046565514e-09,
+            "imag_mse": 6.437935279833175e-09,
+            "bias_real": -9.213810020514946e-09,
+            "bias_imag": -5.932232835461783e-09,
+            "complex_bias_abs": 1.0958361260164432e-08,
+            "max_complex_error": 0.0027757998158624343,
+            "max_baseline_component_mse": 1.2129373207896362e-07,
+            "p99_error": 0.0005104012737528751
+          },
+          "YY": {
+            "valid_samples": 11928576,
+            "component_mse": 3.807721089503562e-09,
+            "real_mse": 3.8213124965329315e-09,
+            "imag_mse": 3.7941296824741926e-09,
+            "bias_real": -1.5704549182502247e-08,
+            "bias_imag": -1.30938235621699e-08,
+            "complex_bias_abs": 2.0447031092627302e-08,
+            "max_complex_error": 0.0021866911236929237,
+            "max_baseline_component_mse": 1.1479195497110709e-07,
+            "p99_error": 0.0004434421645922166
+          }
+        },
+        "protected_sample_count": 0,
+        "protected_sample_bits": "exact",
+        "metric_domain": "unflagged finite input samples",
+        "covariance_definition": "E[e_x conj(e_y)] - E[e_x] conj(E[e_y]), restricted to paired valid samples",
+        "science_validation": "not performed",
+        "calculation": "native-moments-v2"
+      },
+      "timings_seconds": {
+        "inspection_and_read": 4.312961393967271,
+        "ordering": 3.0782544617541134,
+        "gathering": 0.8273788820952177,
+        "candidate_selection_packing_compression": 112.53929990809411,
+        "decode_and_source_checks": 39.56428312463686,
+        "payload_writing": 0.440270627848804,
+        "whole_product_quality": 4.0572325978428125,
+        "separate_component_read_decode": 41.522783843800426,
+        "complete_component_experiment": 165.04883028985932
+      },
+      "timing_scope": "one warm/unspecified-cache shared-host process, one worker; includes inspection, selection, packing, writing, independent per-block decode/checks; excludes separate file decode, export and imaging; diagnostic timing with possible documentation/synthetic-test work, not comparable to production encode-only timing",
+      "environment": {
+        "python": "3.11.5",
+        "numpy": "1.26.4",
+        "cpu_count": 48
+      },
+      "component_sha256": "abb8e0bf31f094e2b4cc295765f45facb641952da2c8585654cd3a3b6f2cba8a",
+      "experiment": "full-unit-micro",
+      "configuration_role": "Grouping/error bounds and uniform control; MX formats are defined by variant, not configuration.bits/codebook",
+      "covariance_summary": {
+        "cross_product_real": [
+          [
+            9.611589868139824e-09,
+            2.811517597966926e-12,
+            2.2234363789421243e-12,
+            9.370053553698293e-13
+          ],
+          [
+            2.811517597966926e-12,
+            1.064508225583041e-08,
+            1.6403793686440373e-11,
+            6.654661709081522e-12
+          ],
+          [
+            2.2234363789421243e-12,
+            1.6403793686440373e-11,
+            1.291860546440383e-08,
+            5.822213104608539e-12
+          ],
+          [
+            9.370053553698293e-13,
+            6.654661709081522e-12,
+            5.822213104608539e-12,
+            7.615441760926039e-09
+          ]
+        ],
+        "cross_product_imag": [
+          [
+            -2.7176389132766516e-33,
+            1.8427554878789674e-12,
+            -8.741879405446194e-14,
+            -3.4647877041582536e-12
+          ],
+          [
+            -1.8427554878789674e-12,
+            -6.164312836877031e-34,
+            -3.722212015016378e-12,
+            -4.921272911989966e-12
+          ],
+          [
+            8.741879405446194e-14,
+            3.722212015016378e-12,
+            2.4397512859841755e-33,
+            3.3441601513015294e-12
+          ],
+          [
+            3.4647877041582536e-12,
+            4.921272911989966e-12,
+            -3.3441601513015294e-12,
+            8.738767130179052e-33
+          ]
+        ],
+        "maximum_absolute_adjacent_channel_covariance_by_product": [
+          2.9533760012565256e-10,
+          3.0168456631801486e-10,
+          3.023297184408333e-10,
+          2.657068507317903e-10
+        ],
+        "maximum_channel_component_mse_by_product": [
+          1.095096382939585e-08,
+          1.0116811167059458e-08,
+          1.4491200435940407e-08,
+          6.684166426733873e-09
+        ]
+      }
+    }
+  ],
+  "source_files_checked": 65,
+  "source_files_unchanged": true,
+  "source_file_sha256": {
+    "ANTENNA/table.dat": "5a666806538598d6699b7d4e68079fcf6511c546d0aeb4c44234eb2685b7c398",
+    "ANTENNA/table.f0": "001850eb028a438c9a9747f60483b86f5f7b3322454d1822d723ecb5fe0206ab",
+    "ANTENNA/table.f0i": "fbdb98183ff6fdf98e3da03cc7719060d2bca477544ce1947f63aab3362308a2",
+    "ANTENNA/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "ANTENNA/table.lock": "99851db28d98e3203218894e46078943cc18251000e427fdc71e8fe42fdc8e1b",
+    "DATA_DESCRIPTION/table.dat": "6f0ae3c8296e4379a2b53d13814207d1a88a901ac242124f30aa9ce18de55891",
+    "DATA_DESCRIPTION/table.f0": "05b9d855ccff92cd84527263c86f3a141a50e5629725fdb0fadaac511d72a1a0",
+    "DATA_DESCRIPTION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "DATA_DESCRIPTION/table.lock": "b8f29be34da82b35422ee390735fa721a1eb4b5a3eb3e8a03f9f8afd728a10bf",
+    "FEED/table.dat": "2934bc18a2a8169a6c19973e338ae7e812da7029adf25a263d5bf4bf01cb283e",
+    "FEED/table.f0": "335a4822764f35b5b5f4e65e14a44fee73ddc1114bca4906867497493b300f0c",
+    "FEED/table.f0i": "ad81a1a837bbd1b6271325c5be8a07d77ec6e049ad7774a88e524ffa952e001a",
+    "FEED/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FEED/table.lock": "7e71fa1fa9fed383b75a6ba8c065ccf8988de57c21bfcbd948b23a4383f15024",
+    "FIELD/table.dat": "243a151981b68b778d0d9d44334171243e8568e9820b90597ffb406b2e31d295",
+    "FIELD/table.f0": "e36bd4ab4bc9dd660d236a7d23fd0890d737857c556bb3b64208acce6530f538",
+    "FIELD/table.f0i": "81d0111a13fac24d09e1c5236002dee87393544e3a0e6517a4b12df99f630983",
+    "FIELD/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FIELD/table.lock": "445ffd354621db6c3b67eb35fa74b728ee152e3594c01ffc604c283b23a77869",
+    "FLAG_CMD/table.dat": "99b3bb71369b7d4ff57b37edc7044c309db88a1434fe68386ee7a77d86fb55ba",
+    "FLAG_CMD/table.f0": "264a9bd34dab35b58c0e3cc7156062a5cd27de5079d03247b3559292762baccc",
+    "FLAG_CMD/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "FLAG_CMD/table.lock": "c3e12a988982337bb24f3294df38531380ab98d3fac3568d6768cade43f70fe3",
+    "HISTORY/table.dat": "3bf593e58435c0609b75007f249751fd9b7afc09deabc1c1f9612b075f2eeda7",
+    "HISTORY/table.f0": "8851f68182f506c528b1d614662b605549febd12cbfd41c275e5e257669c7afc",
+    "HISTORY/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "HISTORY/table.lock": "77e684e6205bbe7056d80347417d71df498503bc1e7770f33aa1e63469e17cf4",
+    "OBSERVATION/table.dat": "32df07b0c6ac68bcb4cbcabd098bce578aa86e39d4167e1e207289405e28c996",
+    "OBSERVATION/table.f0": "6fd212abf030bdc1a4aaa9251c25a4a2fb2d51ceff22a9178cfe3538d7bd43be",
+    "OBSERVATION/table.f0i": "51805705d71837fe516c48eeed2b9db9d062375c34e90b91b570b2e59fa9353d",
+    "OBSERVATION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "OBSERVATION/table.lock": "445ffd354621db6c3b67eb35fa74b728ee152e3594c01ffc604c283b23a77869",
+    "POINTING/table.dat": "d8a52f3a451d75dc8cccc3ecae8f98a4483c2783b52789112aad47c83788ea36",
+    "POINTING/table.f0": "c287fdbed7066e41d81601b96115b3fdab19930234a6805423b3695d98fc3c83",
+    "POINTING/table.f0i": "a02c7a228ec02a8b994a3d4d34df006dfa47f8f70c8c496f1ed833030d7d2966",
+    "POINTING/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "POINTING/table.lock": "77e684e6205bbe7056d80347417d71df498503bc1e7770f33aa1e63469e17cf4",
+    "POLARIZATION/table.dat": "32382be664563b67f38100275151f483034367adca94da8fb3fda3954756157f",
+    "POLARIZATION/table.f0": "c63154ed7a69ba5831617729887e2bb313c2877a08aa125841746dd2c57981a9",
+    "POLARIZATION/table.f0i": "a371ee9da6585310303f8b546747c0d45f938704ca2f66d0d0510b3fd72c5e47",
+    "POLARIZATION/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "POLARIZATION/table.lock": "25b35105b98eae2b7dbfb011c657aa04cbc6dd4f303e7ea31b7063d3b5d2c868",
+    "PROCESSOR/table.dat": "9715aaeae6d6ef61d2232859dceb47872d86fa769ca8148c37ad34b9bf26b849",
+    "PROCESSOR/table.f0": "717689985fa9414b8b2f2d13f4563513f3f073b477ba494925f3103852c321e1",
+    "PROCESSOR/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "PROCESSOR/table.lock": "8613f971f02ee3a04a7ba328bde6af8cbbb56948d677a720589cb54aa13404dd",
+    "SOURCE/table.dat": "d62004aff093b2347fb2f071b3e450fb2c11fa9d0667277e65329bd3c1e671fb",
+    "SOURCE/table.f0": "3c6dba25e29704f385927df6e240a3c6d642693e4175dcea3e2a4ab2d61007d5",
+    "SOURCE/table.f0i": "07c3070f85e19d53a372afa3b494538509c9e42a4efe121b4149502d88c6df6a",
+    "SOURCE/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "SOURCE/table.lock": "0cde0e7b51951b5a1de75ade17a8432cd5fa96ab0317b8e25357b2d6e2492c1a",
+    "SPECTRAL_WINDOW/table.dat": "ce5ba70381c0c3d291a18e9c23794017c51e8ae75cda1f020c867c88c16ccbac",
+    "SPECTRAL_WINDOW/table.f0": "c8acd075831b9a596e9479433b4803bd1bc3dcd46abb8483c1882a87c28142ff",
+    "SPECTRAL_WINDOW/table.f0i": "ed2fd1c5750f31879fc6ec750c1c07022bd484a0c1d72979ca4bad73a11172f2",
+    "SPECTRAL_WINDOW/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "SPECTRAL_WINDOW/table.lock": "f94efaec34302e90787ce38a63021e19462711b36a379f4818183306e512229f",
+    "STATE/table.dat": "7ee1973bbec76d6939bdc989c48f3aff3ed34fd6ad4b4fb2770a7dd1d1c558ba",
+    "STATE/table.f0": "b802c0447388aec363ffce0275e995baa0381462762023a7b37829567086105c",
+    "STATE/table.info": "2e6837789cd3ba36bb60a9871db174b4d14842bd7953249d117ccc2cc6f0a271",
+    "STATE/table.lock": "7d44d15bca2e23c0739e04c4828f85729da65663a8c73e0110802c09c91a94e3",
+    "table.dat": "bbfa808032d1c88dfaef394be8be1120599016e29e12ca6bfc0446b3ac054888",
+    "table.f0": "2088f2c9e1b88e292813b7dddceb71ab80bf0208da19f6554fc577e985554a7e",
+    "table.f0i": "461a49341b6fb90d030418aedd05277951a0c5bddd82a003cbeaaa8614489444",
+    "table.info": "e8c27a5fbb307d21dc44e1e6de91d8e2beeee2009a46e69cf468057206405e81",
+    "table.lock": "84205ef1af6590e8c5975e2bb160f2f71f482800a5697e401ba23d498a5cb390"
+  },
+  "reference_decoder_sha256": "6bf972f07e784e8b0eb50e83c7756a640da404e70efc6e019d5d5f292854557d",
+  "sample_selection_caveat": "Stratified deterministic rank sample includes extremes; not a random estimate.",
+  "timing_caveat": "Single diagnostic run per configuration, one worker, warm/unspecified shared-host cache. Includes per-block source checks; excludes separate file decoding/export/imaging. Not directly comparable to the production 24-worker 12.19 s encode benchmark.",
+  "imaging": {
+    "schema": "varquanms.wsclean-comparison/1",
+    "status": "measured",
+    "reference": "results/wsclean-grouping/reference-single",
+    "candidate": "results/mx-20261023/wsclean",
+    "parameters": {
+      "size": 2048,
+      "scale": "4amin",
+      "polarizations": "I",
+      "weighting": "briggs 0",
+      "multiscale": true,
+      "mgain": 0.8,
+      "niter": 10000,
+      "auto_mask": 5,
+      "auto_threshold": 1,
+      "threads": 1,
+      "memory_gb": 8,
+      "restoring_beam": {
+        "major_arcsec": 666.0489741755111,
+        "minor_arcsec": 517.0156754893128,
+        "position_angle_deg": 43.3244852231235
+      }
+    },
+    "container_id": "sha256:03ffbf70c829e220707b9843e96765f5886005b4b05a26344a0b5bb4d9ece8c6",
+    "products": {
+      "image-dirty.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-dirty.fits",
+        "candidate": "results/mx-20261023/wsclean/image-dirty.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 1.7952132688927964e-08,
+            "difference_bias": 4.684533244528757e-12,
+            "difference_max_abs": 8.505867299390957e-08,
+            "difference_p99_abs": 4.6276909415610135e-08,
+            "difference_p999_abs": 5.894887726753931e-08,
+            "reference_rms": 2.697672053241035e-05,
+            "relative_rms_difference": 0.0006654675710993087,
+            "reference_abs_peak": 0.0014151980867609382,
+            "rms_normalized_to_reference_peak": 1.2685243752707619e-05
+          },
+          "bright_reference": {
+            "pixels": 1538,
+            "difference_rms": 1.7037034335560083e-08,
+            "difference_bias": -7.74903678285595e-12,
+            "difference_max_abs": 6.533809937536716e-08,
+            "difference_p99_abs": 4.213157808408141e-08,
+            "difference_p999_abs": 5.378421337809407e-08,
+            "reference_rms": 0.0005098237588472618,
+            "relative_rms_difference": 3.34174977919462e-05,
+            "reference_abs_peak": 0.0014151980867609382,
+            "rms_normalized_to_reference_peak": 1.203862165653002e-05
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 1.9040898706947064e-08,
+            "difference_bias": -7.99939568553652e-09,
+            "difference_max_abs": 3.923196345567703e-08,
+            "difference_p99_abs": 3.817025572061538e-08,
+            "difference_p999_abs": 3.9125792682170864e-08,
+            "reference_rms": 0.001269647619894375,
+            "relative_rms_difference": 1.4996994763421933e-05,
+            "reference_abs_peak": 0.0014151980867609382,
+            "rms_normalized_to_reference_peak": 1.3454582001680971e-05
+          }
+        },
+        "reference_peak_yx": [
+          601,
+          839
+        ],
+        "candidate_peak_yx": [
+          601,
+          839
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 0.0014151980867609382,
+        "candidate_at_reference_peak": 0.0014151872601360083,
+        "relative_change_at_reference_peak": -7.65025407480912e-06,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.06213427544571459,
+          "candidate_sum_pixels": 0.062133883475326,
+          "relative_sum_change": -6.308440643743336e-06,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": null,
+          "candidate_iterations": null,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "fb4ad6cc02475f7be31d7217739e2fc161c262707909e0c241463e28d597af9f",
+        "candidate_file_sha256": "af90c5a60655ea04842a0c131ce1cac258cccf8615857844fa3fab8da022f420"
+      },
+      "image-image.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-image.fits",
+        "candidate": "results/mx-20261023/wsclean/image-image.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 1.747156180563185e-07,
+            "difference_bias": -2.4696086001946428e-08,
+            "difference_max_abs": 4.348368747741915e-06,
+            "difference_p99_abs": 4.9812631914392e-07,
+            "difference_p999_abs": 1.3787113712169165e-06,
+            "reference_rms": 2.4931457844496838e-05,
+            "relative_rms_difference": 0.007007838015171816,
+            "reference_abs_peak": 0.0010093206074088812,
+            "rms_normalized_to_reference_peak": 0.00017310220040473253
+          },
+          "bright_reference": {
+            "pixels": 3016,
+            "difference_rms": 4.883628745969057e-07,
+            "difference_bias": -1.0194229139234322e-07,
+            "difference_max_abs": 3.0924129532650113e-06,
+            "difference_p99_abs": 1.5723162505310016e-06,
+            "difference_p999_abs": 2.4483442393830224e-06,
+            "reference_rms": 0.00027011754180516427,
+            "relative_rms_difference": 0.0018079643081794433,
+            "reference_abs_peak": 0.0010093206074088812,
+            "rms_normalized_to_reference_peak": 0.00048385307008704247
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 5.50429066410036e-07,
+            "difference_bias": -1.4608934977833106e-08,
+            "difference_max_abs": 1.1891825124621391e-06,
+            "difference_p99_abs": 1.187003217637539e-06,
+            "difference_p999_abs": 1.1889645829796792e-06,
+            "reference_rms": 0.0008854279324662887,
+            "relative_rms_difference": 0.0006216531534947851,
+            "reference_abs_peak": 0.0010093206074088812,
+            "rms_normalized_to_reference_peak": 0.0005453461094221514
+          }
+        },
+        "reference_peak_yx": [
+          599,
+          839
+        ],
+        "candidate_peak_yx": [
+          599,
+          839
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 0.0010093206074088812,
+        "candidate_at_reference_peak": 0.0010095031466335058,
+        "relative_change_at_reference_peak": 0.00018085355959713024,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.04325591429369524,
+          "candidate_sum_pixels": 0.04325519845588133,
+          "relative_sum_change": -1.6548900320392926e-05,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": 10000.0,
+          "candidate_iterations": 10000.0,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "3bcd5792523cd7b326aa2cddf2ef240f3104a843064c6a5d1667414466081f3a",
+        "candidate_file_sha256": "3fd4fa4c0b60af3fed0072be8cb525391677df10c36f85112a19bbff59544177"
+      },
+      "image-model.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-model.fits",
+        "candidate": "results/mx-20261023/wsclean/image-model.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/PIXEL",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 8.156679300680878e-08,
+            "difference_bias": -2.2203279961138655e-09,
+            "difference_max_abs": 4.1737344133707666e-05,
+            "difference_p99_abs": 9.77767354015665e-08,
+            "difference_p999_abs": 4.3351301155780554e-07,
+            "reference_rms": 1.6524506218386083e-06,
+            "relative_rms_difference": 0.049361107635429995,
+            "reference_abs_peak": 0.00023257313296198845,
+            "rms_normalized_to_reference_peak": 0.0003507145987500628
+          },
+          "bright_reference": {
+            "pixels": 951,
+            "difference_rms": 3.1108164617281754e-06,
+            "difference_bias": -3.9421812031840466e-07,
+            "difference_max_abs": 4.1737344133707666e-05,
+            "difference_p99_abs": 7.09379673935473e-06,
+            "difference_p999_abs": 4.1681445443941806e-05,
+            "reference_rms": 7.06363063947751e-05,
+            "relative_rms_difference": 0.044039908377178104,
+            "reference_abs_peak": 0.00023257313296198845,
+            "rms_normalized_to_reference_peak": 0.013375648434149118
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 1.0075321690632746e-06,
+            "difference_bias": -9.15759449767671e-08,
+            "difference_max_abs": 6.902570021338761e-06,
+            "difference_p99_abs": 4.133349866606272e-06,
+            "difference_p999_abs": 6.6256480058655035e-06,
+            "reference_rms": 0.00010631306015129562,
+            "relative_rms_difference": 0.009477031021677311,
+            "reference_abs_peak": 0.00023257313296198845,
+            "rms_normalized_to_reference_peak": 0.004332109028380096
+          }
+        },
+        "reference_peak_yx": [
+          596,
+          835
+        ],
+        "candidate_peak_yx": [
+          596,
+          835
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 0.00023257313296198845,
+        "candidate_at_reference_peak": 0.0002256705629406497,
+        "relative_change_at_reference_peak": -0.029679137626214592,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.004853784521401394,
+          "candidate_sum_pixels": 0.004849297300097533,
+          "relative_sum_change": -0.0009244788853061876,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": 10000.0,
+          "candidate_iterations": 10000.0,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "2fa646b1ec23d7c1381533de4c8899a271a01af1ddd902248ae38ce350c71a1e",
+        "candidate_file_sha256": "292b4725ffd3687b990ddad0e285e6478d199e40938c149b7aac9989ecba91ad"
+      },
+      "image-psf.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-psf.fits",
+        "candidate": "results/mx-20261023/wsclean/image-psf.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 0.0,
+            "difference_bias": 0.0,
+            "difference_max_abs": 0.0,
+            "difference_p99_abs": 0.0,
+            "difference_p999_abs": 0.0,
+            "reference_rms": 0.0014807079909149876,
+            "relative_rms_difference": 0.0,
+            "reference_abs_peak": 1.0,
+            "rms_normalized_to_reference_peak": 0.0
+          },
+          "bright_reference": {
+            "pixels": 19,
+            "difference_rms": 0.0,
+            "difference_bias": 0.0,
+            "difference_max_abs": 0.0,
+            "difference_p99_abs": 0.0,
+            "difference_p999_abs": 0.0,
+            "reference_rms": 0.4318453258525549,
+            "relative_rms_difference": 0.0,
+            "reference_abs_peak": 1.0,
+            "rms_normalized_to_reference_peak": 0.0
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 0.0,
+            "difference_bias": 0.0,
+            "difference_max_abs": 0.0,
+            "difference_p99_abs": 0.0,
+            "difference_p999_abs": 0.0,
+            "reference_rms": 0.26994671002644793,
+            "relative_rms_difference": 0.0,
+            "reference_abs_peak": 1.0,
+            "rms_normalized_to_reference_peak": 0.0
+          }
+        },
+        "reference_peak_yx": [
+          1024,
+          1024
+        ],
+        "candidate_peak_yx": [
+          1024,
+          1024
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 1.0,
+        "candidate_at_reference_peak": 1.0,
+        "relative_change_at_reference_peak": 0.0,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 6.135321920970455,
+          "candidate_sum_pixels": 6.135321920970455,
+          "relative_sum_change": 0.0,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": null,
+          "candidate_iterations": null,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "9c89a17fb1b057cf63a0c50cc39828bd4adc939ce581cc610c6c0676d87104a4",
+        "candidate_file_sha256": "9c89a17fb1b057cf63a0c50cc39828bd4adc939ce581cc610c6c0676d87104a4"
+      },
+      "image-residual.fits": {
+        "reference": "results/wsclean-grouping/reference-single/image-residual.fits",
+        "candidate": "results/mx-20261023/wsclean/image-residual.fits",
+        "shape": [
+          2048,
+          2048
+        ],
+        "grid_and_beam": {
+          "NAXIS": 4,
+          "NAXIS1": 2048,
+          "NAXIS2": 2048,
+          "NAXIS3": 1,
+          "NAXIS4": 1,
+          "BUNIT": "JY/BEAM",
+          "BMAJ": 0.185013603937642,
+          "BMIN": 0.143615465413698,
+          "BPA": 43.3244852231235,
+          "EQUINOX": 2000.0,
+          "LONPOLE": 180.0,
+          "CTYPE1": "RA---SIN",
+          "CRPIX1": 1025.0,
+          "CRVAL1": 150.29277504442,
+          "CDELT1": -0.0666666666666667,
+          "CUNIT1": "deg",
+          "CTYPE2": "DEC--SIN",
+          "CRPIX2": 1025.0,
+          "CRVAL2": 37.1824649806474,
+          "CDELT2": 0.0666666666666667,
+          "CUNIT2": "deg",
+          "CTYPE3": "FREQ",
+          "CRPIX3": 1.0,
+          "CRVAL3": 61620849.609375,
+          "CDELT3": 4593750.0,
+          "CUNIT3": "Hz",
+          "CTYPE4": "STOKES",
+          "CRPIX4": 1.0,
+          "CRVAL4": 1.0,
+          "CDELT4": 1.0,
+          "CUNIT4": "",
+          "SPECSYS": "TOPOCENT"
+        },
+        "finite_mask_matches": true,
+        "excluded_pixels": 1873791,
+        "regions": {
+          "celestial_valid": {
+            "pixels": 2320513,
+            "difference_rms": 3.431520808279346e-07,
+            "difference_bias": -9.661742746773993e-09,
+            "difference_max_abs": 4.083210660610348e-05,
+            "difference_p99_abs": 9.947548824129614e-07,
+            "difference_p999_abs": 3.951278224121647e-06,
+            "reference_rms": 2.1877499753534797e-05,
+            "relative_rms_difference": 0.015685159853446724,
+            "reference_abs_peak": 0.00010236151138087735,
+            "rms_normalized_to_reference_peak": 0.0033523545734988093
+          },
+          "bright_reference": {
+            "pixels": 1464055,
+            "difference_rms": 3.6841908033789855e-07,
+            "difference_bias": -9.039479674934675e-09,
+            "difference_max_abs": 4.083210660610348e-05,
+            "difference_p99_abs": 1.0654971629264743e-06,
+            "difference_p999_abs": 4.1421572823310245e-06,
+            "reference_rms": 2.7181532794116713e-05,
+            "relative_rms_difference": 0.013554021516315693,
+            "reference_abs_peak": 0.00010236151138087735,
+            "rms_normalized_to_reference_peak": 0.003599195394517443
+          },
+          "reference_peak_aperture": {
+            "pixels": 49,
+            "difference_rms": 1.857560322389115e-07,
+            "difference_bias": -1.3104152792354342e-07,
+            "difference_max_abs": 4.177491064183414e-07,
+            "difference_p99_abs": 3.8917030906304693e-07,
+            "difference_p999_abs": 4.1489122668281187e-07,
+            "reference_rms": 4.606554065656574e-05,
+            "relative_rms_difference": 0.004032429221308522,
+            "reference_abs_peak": 0.00010236151138087735,
+            "rms_normalized_to_reference_peak": 0.001814705837506943
+          }
+        },
+        "reference_peak_yx": [
+          734,
+          445
+        ],
+        "candidate_peak_yx": [
+          734,
+          445
+        ],
+        "peak_shift_pixels": 0.0,
+        "reference_peak_value": 0.00010236151138087735,
+        "candidate_at_reference_peak": 0.0001022716096485965,
+        "relative_change_at_reference_peak": -0.0008782767181537083,
+        "aperture": {
+          "radius_pixels": 4,
+          "reference_sum_pixels": 0.0014119211307388468,
+          "candidate_sum_pixels": 0.0014055000958705932,
+          "relative_sum_change": -0.00454772913901611,
+          "interpretation": "Fixed pixel aperture around brightest absolute reference pixel; not identified as Sun and not a calibrated integrated-flux measurement"
+        },
+        "clean": {
+          "reference_iterations": 10000.0,
+          "candidate_iterations": 10000.0,
+          "reference_iteration_limit": 10000.0,
+          "candidate_iteration_limit": 10000.0
+        },
+        "reference_file_sha256": "a607c7026114d1fcec5b2f17efc94dc17593782dc748848c6b7c5c69c1dbf389",
+        "candidate_file_sha256": "abe2ffe5b9dc01ba16c4e02b3afb01a341d069d6b373d94bf2e824ed554f93fc"
+      }
+    },
+    "limitations": [
+      "No scientific acceptance thresholds have been approved; measured does not mean scientifically accepted",
+      "Dirty, restored, residual and model images include sky structure; image RMS is not thermal noise",
+      "Automatic masks and nonlinear CLEAN paths may differ; compare the repeated lossless reference",
+      "Celestial WCS validity excludes SIN projection corners; this is not a primary-beam or sky mask",
+      "No calibration-solution, solar-identification, absolute-flux or temporal validation is implied"
+    ]
+  },
+  "imaging_run": {
+    "status": "complete",
+    "container_id": "sha256:03ffbf70c829e220707b9843e96765f5886005b4b05a26344a0b5bb4d9ece8c6",
+    "wsclean_version": "WSClean version 3.7 (2026-02-16)\nGit commit hash: v3.7-79-g2d5c1ed8\nThis software package is released under the GPL version 3.\nAuthor: Andr\u00e9 Offringa (offringa@gmail.com).\n\nEveryBeam is available.\nIDG is available.\nWGridder is available.",
+    "parameters": {
+      "size": 2048,
+      "scale": "4amin",
+      "polarizations": "I",
+      "weighting": "briggs 0",
+      "multiscale": true,
+      "mgain": 0.8,
+      "niter": 10000,
+      "auto_mask": 5,
+      "auto_threshold": 1,
+      "threads": 1,
+      "memory_gb": 8,
+      "restoring_beam": {
+        "major_arcsec": 666.0489741755111,
+        "minor_arcsec": 517.0156754893128,
+        "position_angle_deg": 43.3244852231235
+      }
+    },
+    "elapsed_seconds": 272.5205613281578,
+    "source_unchanged": true
+  }
+}

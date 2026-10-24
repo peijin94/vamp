@@ -152,3 +152,5 @@ Follow-up: [gamma selection from maximum/std](gamma_max_std.md) compares two rat
 Follow-up: [absolute versus relative error limits](absolute_relative_error.md) compares absolute, block-relative and hybrid thresholds at matched sampled payload rates, with full-data archives and repeated CLEAN images.
 
 Follow-up: [fixed 25% visibility-payload budget](fixed25.md) compares five complete finalists, physical byte counts and repeated calibrated images, with an opt-in measured configuration.
+
+Follow-up: [10% visibility-payload budget](fixed10.md) uses the new 3/4/6/8/12/16-bit ladder and compares four full-data archives with two CLEAN runs each, including differences normalized to the reference residual RMS.

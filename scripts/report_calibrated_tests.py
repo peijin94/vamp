@@ -394,6 +394,10 @@ def write_note(result):
     if Path('reports/calibrated-fixed25.json').exists():
         lines += ['Follow-up: [fixed 25% visibility-payload budget](fixed25.md) compares five complete finalists, '
                   'physical byte counts and repeated calibrated images, with an opt-in measured configuration.', '']
+    if Path('reports/calibrated-fixed10.json').exists():
+        lines += ['Follow-up: [10% visibility-payload budget](fixed10.md) uses the new 3/4/6/8/12/16-bit ladder '
+                  'and compares four full-data archives with two CLEAN runs each, including differences normalized '
+                  'to the reference residual RMS.', '']
     Path('devnotes/test_calibrated_dataset.md').write_text('\n'.join(lines))
 
 

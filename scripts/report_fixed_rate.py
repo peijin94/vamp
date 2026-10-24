@@ -17,26 +17,53 @@ MASK=Path('results/calibrated-template/above10deg.fits')
 FIGS=Path('devnotes/figs')
 
 
-def payload_distribution(path):
+def payload_distribution(path, *, by_class=False):
     sizes=Counter();samples=Counter();zero_samples=zero_bytes=0
+    class_samples={'auto':Counter(),'cross':Counter()}
     with h5py.File(path,'r') as h5:
         manifest=json.loads(h5['manifest'][...].tobytes())
         for part in manifest['partitions']:
             group=h5[part['group']]
             spec=json.loads(group['manifest'][...].tobytes())
+            classes={}
+            if by_class:
+                from types import SimpleNamespace
+                from varquanms.archive import read_column
+                reader=SimpleNamespace(h5=group)
+                for table in spec['tables']:
+                    columns=table['columns']
+                    for visibility in columns.values():
+                        if visibility['encoding']!='quantized':continue
+                        auto=(read_column(reader,columns['ANTENNA1'],0,table['row_count'])==
+                              read_column(reader,columns['ANTENNA2'],0,table['row_count']))
+                        segments=(visibility['cell_shape'][0]+visibility['channel_segment']-1)//visibility['channel_segment']
+                        for product in visibility['products']:
+                            perm=group[product['permutation']][...]
+                            boundaries=group[product['group_boundaries']][...]
+                            ordered=auto[perm];labels=[]
+                            for lo,hi in zip(boundaries[:-1],boundaries[1:]):
+                                flags=ordered[int(lo):int(hi)]
+                                assert flags.size and np.all(flags==flags[0])
+                                labels.extend(['auto' if flags[0] else 'cross']*segments)
+                            classes[product['payload']]=labels
             for entry in spec['inventory']:
                 if entry['role']!='visibility_block_payload':continue
                 ds=group[entry['path']]
                 parent=ds.parent;offsets=parent['offsets'][...]
-                for lo,hi in zip(offsets[:-1],offsets[1:]):
+                for index,(lo,hi) in enumerate(zip(offsets[:-1],offsets[1:])):
                     blob=ds[int(lo):int(hi)].tobytes()
                     bits,_,_,count,_,_=HEADER.unpack_from(blob)
                     label=str(bits) if bits else 'float32'
                     sizes[label]+=len(blob);samples[label]+=count
+                    if by_class:class_samples[classes[entry['path']][index]][label]+=count
                     if bits==0 and np.all(decode_block(blob,(count,)).view('<u4')==0):
                         zero_samples+=count;zero_bytes+=len(blob)
-    return dict(serialized_bytes_by_bits=dict(sizes),samples_by_bits=dict(samples),
+    result=dict(serialized_bytes_by_bits=dict(sizes),samples_by_bits=dict(samples),
                 exact_positive_zero_samples=zero_samples,exact_positive_zero_bytes=zero_bytes)
+    if by_class:
+        assert class_samples['auto']+class_samples['cross']==samples
+        result['samples_by_baseline_class_and_bits']={key:dict(value) for key,value in class_samples.items()}
+    return result
 
 
 def fraction(comparison,product='image',region='above_elevation_cut'):
@@ -152,47 +179,57 @@ def collect(partial=False,reuse_preview=False):
     return result
 
 
-def plots(result):
+def plots(result, *, root=ROOT, prefix='fixed25'):
     os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib.colors import SymLogNorm
+    from matplotlib.ticker import StrMethodFormatter
     from astropy.io import fits
     cases=result['experiments']
+    ceiling=100*result['payload_budget_bytes']/result['original_complex64_bytes']
+    residual_rms=result.get('reference_residual_statistics',{}).get('rms')
+    image_fraction=lambda c,product='image': (c['products'][f'image-{product}.fits']['regions']['above_elevation_cut']['difference_rms']/residual_rms
+        if residual_rms else fraction(c,product))
     labels=[f"{e['config']['baseline_group']}×{e['config']['channel_segment']}\n"+
             ('search' if e['config']['power_gamma_policy']=='search' else 'max/std')+'\n'+e['family'] for e in cases]
     fig,axes=plt.subplots(1,2,figsize=(11,4.8),constrained_layout=True)
     for x,e in enumerate(cases):
         axes[0].bar(x,100*e['rate']['fraction'],color='#4393c3')
-        a=100*fraction(e['comparison']);b=100*fraction(e['repeat']['versus_reference'])
+        a=100*image_fraction(e['comparison']);b=100*image_fraction(e['repeat']['versus_reference'])
         axes[1].plot([x,x],[a,b],color='#b2182b',linewidth=2)
         axes[1].scatter([x,x],[a,b],color='#b2182b',label='Restored: two runs' if x==0 else None)
-        axes[1].scatter(x,100*fraction(e['comparison'],'dirty'),marker='s',color='#2166ac',label='Dirty: first run' if x==0 else None)
-    axes[0].axhline(25,color='black',linestyle='--');axes[0].set(ylabel='Serialized visibility bytes / complex64 (%)',ylim=(0,28))
-    axes[1].set(ylabel='RMS difference / reference RMS (%)',yscale='log');axes[1].legend()
+        axes[1].scatter(x,100*image_fraction(e['comparison'],'dirty'),marker='s',color='#2166ac',label='Dirty: first run' if x==0 else None)
+    axes[0].axhline(ceiling,color='black',linestyle='--');axes[0].set(ylabel='Serialized visibility bytes / complex64 (%)',ylim=(0,1.12*ceiling))
+    axes[1].set(ylabel='Difference RMS / reference residual RMS (%)' if residual_rms else 'RMS difference / reference RMS (%)',yscale='log');axes[1].legend()
+    axes[1].yaxis.set_major_formatter(StrMethodFormatter('{x:g}'))
+    axes[1].yaxis.set_minor_formatter(StrMethodFormatter('{x:g}'))
     for ax in axes:ax.set(xticks=range(len(cases)),xticklabels=labels);ax.tick_params(axis='x',labelsize=8);ax.grid(axis='y',alpha=.2)
     fig.suptitle('Fixed visibility-payload budget; same 15-integration MS and above-10° image mask')
-    fig.savefig(FIGS/'fixed25-rate.png',dpi=170);plt.close(fig)
+    fig.savefig(FIGS/(prefix+'-rate.png'),dpi=170);plt.close(fig)
     fig,axes=plt.subplots(1,2,figsize=(13,5),constrained_layout=True);y=np.arange(len(cases))
     for ax,key,title in zip(axes,('samples_by_bits','serialized_bytes_by_bits'),('All complex samples (%)','Serialized payload bytes (%)')):
         left=np.zeros(len(cases))
-        for bits,color in zip(('4','8','12','16','float32'),('#ef8a62','#67a9cf','#2166ac','#542788','#aaa')):
+        for bits,color in zip(('3','4','6','8','12','16','float32'),('#fddbc7','#ef8a62','#92c5de','#4393c3','#2166ac','#542788','#aaa')):
             values=np.array([e['payload_distribution'][key].get(bits,0)/sum(e['payload_distribution'][key].values())*100 for e in cases])
             ax.barh(y,values,left=left,label=bits,color=color);left+=values
         ax.set(yticks=y,yticklabels=labels,xlabel=title,xlim=(0,100));ax.invert_yaxis()
-    axes[1].legend(title='Bits/component; float32 = exact',ncol=5,loc='upper center',bbox_to_anchor=(.5,-.15))
+    axes[1].legend(title='Bits/component; float32 = exact',ncol=7,loc='upper center',bbox_to_anchor=(.5,-.15),fontsize=8)
     fig.suptitle('Bit-size distribution: exact zero blocks can contain many samples but few bytes')
-    fig.savefig(FIGS/'fixed25-bits.png',dpi=170);plt.close(fig)
+    fig.savefig(FIGS/(prefix+'-bits.png'),dpi=170);plt.close(fig)
     reference,_=read_fits(REF/'image-image.fits');mask=fits.getdata(MASK).astype(bool)
-    deltas=[read_fits(ROOT/(e['name']+'-images')/'image-image.fits')[0]-reference for e in cases]
+    deltas=[read_fits(root/(e['name']+'-images')/'image-image.fits')[0]-reference for e in cases]
     y,x=cases[0]['comparison']['products']['image-image.fits']['reference_peak_yx']
     for zoom in (False,True):
         crop=np.s_[y-64:y+64,x-64:x+64] if zoom else np.s_[:,:]
         domain=mask[crop];lim=max(float(np.max(np.abs(d[crop][domain]))) for d in deltas)
-        if len(cases)==5:
-            fig,axes=plt.subplots(2,3,figsize=(12,8),constrained_layout=True)
-            axes=axes.ravel()
+        if len(cases)>=4:
+            rows=(len(cases)+3)//3
+            fig,axes=plt.subplots(rows,3,figsize=(12,4*rows),constrained_layout=True)
+            flat=axes.ravel()
+            for unused in flat[len(cases)+1:]:fig.delaxes(unused)
+            axes=flat[:len(cases)+1]
         else:
             fig,axes=plt.subplots(1,len(cases)+1,figsize=(3.2*(len(cases)+1),4.3),constrained_layout=True)
         scale=float(np.max(np.abs(reference[crop][domain])))
@@ -203,9 +240,9 @@ def plots(result):
         fig.colorbar(im,ax=list(axes[1:]),shrink=.7,label='Difference Jy/beam; common linear scale')
         for ax in axes:ax.set(xlabel='Crop pixel x' if zoom else 'Pixel x',ylabel='Crop pixel y' if zoom else 'Pixel y')
         fig.suptitle('First CLEAN run for every finalist; above 10° only'+(' • reference-peak zoom' if zoom else ''))
-        fig.savefig(FIGS/('fixed25-zoom.png' if zoom else 'fixed25-images.png'),dpi=170);plt.close(fig)
+        fig.savefig(FIGS/(prefix+('-zoom.png' if zoom else '-images.png')),dpi=170);plt.close(fig)
     best=next(e for e in cases if e['name']==result['empirical_best_worst_of_two'])
-    restored,_=read_fits(ROOT/(best['name']+'-images')/'image-image.fits')
+    restored,_=read_fits(root/(best['name']+'-images')/'image-image.fits')
     for zoom in (False,True):
         crop=np.s_[y-64:y+64,x-64:x+64] if zoom else np.s_[:,:]
         domain=mask[crop];a=reference[crop];b=restored[crop];delta=b-a
@@ -222,7 +259,7 @@ def plots(result):
         fig.colorbar(im,ax=axes[2],shrink=.7,label='Difference Jy/beam')
         for ax in axes:ax.set(xlabel='Crop pixel x' if zoom else 'Pixel x',ylabel='Crop pixel y' if zoom else 'Pixel y')
         fig.suptitle(best['layout']+' / '+best['family']+'; first CLEAN run; above 10°'+(' • peak zoom' if zoom else ''))
-        fig.savefig(FIGS/('fixed25-best-zoom.png' if zoom else 'fixed25-best-images.png'),dpi=170);plt.close(fig)
+        fig.savefig(FIGS/(prefix+('-best-zoom.png' if zoom else '-best-images.png')),dpi=170);plt.close(fig)
 
 
 def note(result):

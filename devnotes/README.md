@@ -1,5 +1,6 @@
 # Development notes
 
+- [Ten-percent visibility payload: six-width selection and repeated calibrated images](fixed10.md)
 - [Default 3/4/6/8/12/16-bit ladder and three-bit conformance](precision-ladder-3bit.md)
 - [Selected archive: image difference versus reference residual-map RMS](fixed25-residual-rms.md)
 - [Fixed 25% visibility-payload budget: parameters and repeated calibrated images](fixed25.md)

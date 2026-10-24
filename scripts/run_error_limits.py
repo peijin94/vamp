@@ -80,6 +80,16 @@ def main():
             if not rate['within_target']:
                 raise ValueError(f'{name}: actual payload exceeds target; retain archive and retune before imaging')
         stage('compact','timeslot_archive.py',['compact',bundle,shared,'--report',report('compact')],report('compact'))
+        if 'payload_fraction_target' in case:
+            compact=json.loads(report('compact').read_text())
+            categories=compact['stored_bytes_by_category']
+            rate['physical_payload_bytes']=categories['visibility_block_payload']
+            rate['physical_payload_within_target']=rate['physical_payload_bytes']<=rate['target']*rate['original_complex64_bytes']
+            rate['payload_plus_permutations_and_indexes_bytes']=sum(categories[k] for k in
+                ('visibility_block_payload','permutations','visibility_indexes'))
+            report('rate').write_text(json.dumps(rate,indent=2)+'\n')
+            if not rate['physical_payload_within_target']:
+                raise ValueError(f'{name}: physical payload exceeds target')
         stage('export','validate_partition_export.py',[shared,args.source,ms,'--report',report('export')],report('export'))
         stage('visibility','analyze_visibility_errors.py',[args.source,ms,'--report',report('visibility')],report('visibility'))
         images=args.root/(name+'-images')

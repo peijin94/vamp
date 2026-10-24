@@ -149,6 +149,61 @@ def plot(result):
     for ax in axes.flat: ax.set(xlabel='Pixel x',ylabel='Pixel y')
     fig.suptitle('Jy/beam; >10° mask; common symmetric log difference scale; extremes clipped at max(candidate p99.9)')
     fig.savefig(out/'calibrated-test-differences.png',dpi=170);plt.close(fig)
+    plot_issue_panels(result, out)
+
+
+def plot_issue_panels(result, out):
+    """Show the source neighbourhood and both block/sample precision fractions."""
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import SymLogNorm
+    from astropy.io import fits
+    mask = fits.getdata(ROOT/'above10deg.fits').astype(bool)
+    reference, _ = read_fits(ROOT/'reference/image-image.fits')
+    candidate, _ = read_fits(ROOT/'amplitude256-images/image-image.fits')
+    selected = next(e for e in result['experiments'] if e['name'] == 'amplitude256')
+    cy, cx = selected['comparison']['products']['image-image.fits']['reference_peak_yx']
+    y0, y1 = max(0, cy-64), min(reference.shape[0], cy+64)
+    x0, x1 = max(0, cx-64), min(reference.shape[1], cx+64)
+    crop = np.s_[y0:y1, x0:x1]
+    valid = mask[crop]
+    a, b = reference[crop], candidate[crop]
+    peak = max(float(np.max(np.abs(a[valid]))), float(np.max(np.abs(b[valid]))))
+    delta = b-a
+    limit = float(np.max(np.abs(delta[valid]))) or 1.
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4.6), constrained_layout=True)
+    for ax, values, label in zip(axes, [a, b, delta], ['Reference', 'Amplitude 128×48', 'Decoded − reference']):
+        difference = ax is axes[2]
+        norm = None if difference else SymLogNorm(linthresh=peak*.001, vmin=-peak, vmax=peak)
+        options = dict(vmin=-limit, vmax=limit) if difference else dict(norm=norm)
+        im = ax.imshow(np.where(valid, values, np.nan), origin='lower', cmap='RdBu_r',
+                       extent=(x0-.5, x1-.5, y0-.5, y1-.5), **options)
+        ax.set(title=label, xlabel='Pixel x', ylabel='Pixel y')
+        fig.colorbar(im, ax=ax, shrink=.8, label='Jy/beam')
+    fig.suptitle('128-pixel (8.53°) zoom at masked reference peak; elevation >10°\n'
+                 'Reference/decoded share a symmetric-log scale; difference uses its full linear range')
+    fig.savefig(out/'calibrated-test-zoom.png', dpi=180); plt.close(fig)
+
+    entries = [e for e in result['experiments'] if e.get('block_bits')]
+    widths = ['4', '6', '8', '12', '16', 'float32']
+    colors = ['#9467bd', '#17becf', '#1f77b4', '#2ca02c', '#ff7f0e', '#7f7f7f']
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5.2), constrained_layout=True, sharey=True)
+    y = np.arange(len(entries))
+    for ax, field, title in zip(axes, ['block_bits', 'sample_bits'], ['Fraction of blocks', 'Fraction of complex samples']):
+        totals = np.array([sum(e[field].values()) for e in entries])
+        left = np.zeros(len(entries))
+        for width, color in zip(widths, colors):
+            fractions = np.array([e[field].get(width, 0) for e in entries])/totals*100
+            ax.barh(y, fractions, left=left, color=color, label=width+' bit' if width != 'float32' else 'float32 lossless')
+            left += fractions
+        ax.set(title=title, xlabel='Percent', xlim=(0, 100), yticks=y,
+               yticklabels=[e['name'] for e in entries])
+        ax.grid(axis='x', alpha=.2)
+    axes[0].invert_yaxis()
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc='outside lower center', ncol=6, fontsize=9)
+    fig.suptitle('Selected precision per real/imaginary component, all 15 integrations\n'
+                 'Fractions are not byte shares; lossless includes cheaply compressed all-flagged zero blocks')
+    fig.savefig(out/'calibrated-test-bit-distribution.png', dpi=180); plt.close(fig)
 
 
 def write_note(result):
@@ -215,6 +270,12 @@ def write_note(result):
         'Vertical axis is logarithmic. Black crosses/segments show the two observed candidate runs, not confidence intervals. '
         'The shaded band spans the two lossless/reference controls.', '',
         '![Reference, amplitude256 reconstruction and difference above 10 degrees](figs/calibrated-test-amplitude.png)', '',
+        '![Zoom around the brightest masked reference pixel](figs/calibrated-test-zoom.png)', '',
+        'The 128-pixel zoom spans 8.53 degrees. Reference and decoded panels share their colour scale; '
+        'the difference has a separate linear scale. All panels exclude pixels at or below the elevation cut.', '',
+        '![Selected component bit widths by block and complex sample](figs/calibrated-test-bit-distribution.png)', '',
+        'Precision fractions count blocks or complex samples, not stored bytes. Lossless includes all-flagged zero blocks; '
+        'their compressed cost can be small. No four-bit blocks were selected in amplitude256.', '',
         '[All tested profiles, including the failed bucket configuration](figs/calibrated-test-differences.png). '
         'These diagnostic difference maps share a symmetric-log scale and clip extremes at the largest candidate 99.9th-percentile absolute difference; all numerical metrics are unclipped.', '',
         '## Grouping and precision controls', '',

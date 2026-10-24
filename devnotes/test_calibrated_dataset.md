@@ -53,6 +53,14 @@ Vertical axis is logarithmic. Black crosses/segments show the two observed candi
 
 ![Reference, amplitude256 reconstruction and difference above 10 degrees](figs/calibrated-test-amplitude.png)
 
+![Zoom around the brightest masked reference pixel](figs/calibrated-test-zoom.png)
+
+The 128-pixel zoom spans 8.53 degrees. Reference and decoded panels share their colour scale; the difference has a separate linear scale. All panels exclude pixels at or below the elevation cut.
+
+![Selected component bit widths by block and complex sample](figs/calibrated-test-bit-distribution.png)
+
+Precision fractions count blocks or complex samples, not stored bytes. Lossless includes all-flagged zero blocks; their compressed cost can be small. No four-bit blocks were selected in amplitude256.
+
 [All tested profiles, including the failed bucket configuration](figs/calibrated-test-differences.png). These diagnostic difference maps share a symmetric-log scale and clip extremes at the largest candidate 99.9th-percentile absolute difference; all numerical metrics are unclipped.
 
 ## Grouping and precision controls

@@ -137,6 +137,7 @@ def compact_bundle(source, output):
         source_manifest_sha256=file_sha256(source/'manifest.json'),
         source_bundle_bytes=bundle_summary(source, original)['archive_bytes'],
         scientific_manifests_unchanged=True, requantized=False,
+        payload_storage='Fixed-size contiguous byte streams; original block CRC32 and dataset SHA256 retained',
         equality='Same role, shape and dtype; verified SHA256 plus bitwise comparison before hard linking',
         source_validation_seconds=source_validation_seconds)
     fd, partial = tempfile.mkstemp(prefix=output.name+'.', suffix='.partial', dir=output.parent)
@@ -167,7 +168,22 @@ def compact_bundle(source, output):
                         savings[entry['role']] += entry['stored_bytes']
                         counts['shared_array_references'] += 1
                     else:
-                        reader.h5.copy(reader.h5[name], parent, name=Path(name).name)
+                        source_array = reader.h5[name]
+                        if entry['role'] == 'visibility_block_payload':
+                            # Stream lengths are now known. Avoid the unused tail
+                            # of each extensible 1 MiB HDF5 chunk. Codec block
+                            # CRC32s and inventory SHA256 still protect all bytes;
+                            # contiguous storage permits direct block reads.
+                            target = parent.create_dataset(Path(name).name,
+                                shape=source_array.shape, dtype=source_array.dtype)
+                            for selection in slabs(source_array):
+                                target[selection] = source_array[selection]
+                            for attr, value in source_array.attrs.items():
+                                target.attrs[attr] = value
+                            counts['payload_allocation_bytes_removed'] += (
+                                source_array.id.get_storage_size() - target.id.get_storage_size())
+                        else:
+                            reader.h5.copy(source_array, parent, name=Path(name).name)
                         seen[key] = group.name + '/' + name
                         counts['unique_arrays'] += 1
                     counts['array_references'] += 1

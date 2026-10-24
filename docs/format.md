@@ -457,6 +457,12 @@ signed zeros and NaN payloads remain distinct. No external/soft links, virtual
 datasets, external dataset storage or aliased/cyclic groups are supported.
 Later partitions and their quantization blocks remain directly addressable.
 
+During compaction, visibility byte streams become fixed-size contiguous datasets
+to remove unused allocation at the end of extensible HDF5 chunks. This changes
+no codec bytes or scientific manifests. Block CRC32 and inventory SHA-256 remain
+the integrity checks for those streams; other datasets retain their HDF5 filters.
+New physical payload counts therefore include exactly the serialized block bytes.
+
 The full reader validates links, row coverage, configurations, subtable/schema
 agreement, both levels of manifests, verification reports and every logical
 array before creating an MS. Missing or corrupt members fail before publication.

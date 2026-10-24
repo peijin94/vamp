@@ -75,12 +75,28 @@ class SharedTests(unittest.TestCase):
     def test_calibrated_quantization_export_is_bitwise_unchanged(self):
         source, bundle = self.make_bundle(calibrated=True)
         decode_partitioned(bundle, self.root/'ordinary.ms')
-        compact_bundle(bundle, self.root/'shared.h5')
+        result = compact_bundle(bundle, self.root/'shared.h5')
+        self.assertGreater(result['storage_compaction']['counts']['payload_allocation_bytes_removed'], 0)
+        shared = load_shared(self.root/'shared.h5')
+        for part in shared['partitions']:
+            with partition_reader(self.root/'shared.h5', part) as reader:
+                for entry in reader.entries.values():
+                    if entry['role'] == 'visibility_block_payload':
+                        ds = reader.h5[entry['path']]
+                        self.assertEqual(ds.id.get_storage_size(), entry['logical_bytes'])
         decode_partitioned(self.root/'shared.h5', self.root/'shared.ms')
         self.assertTrue(compare_ms(self.root/'ordinary.ms', self.root/'shared.ms'))
         with table(str(self.root/'shared.ms'), ack=False) as t:
             self.assertNotIn('MODEL_DATA', t.colnames())
             self.assertEqual(t.getcol('DATA').tobytes(), t.getcol('CORRECTED_DATA').tobytes())
+        # Contiguous payloads retain codec CRCs and inventory SHA256 protection.
+        with h5py.File(self.root/'shared.h5', 'r+') as h5:
+            group = h5[shared['partitions'][0]['group']]
+            spec = json.loads(group['manifest'][...].tobytes())
+            entry = next(e for e in spec['inventory'] if e['role'] == 'visibility_block_payload')
+            group[entry['path']][0] ^= np.uint8(1)
+        with self.assertRaisesRegex(ValueError, 'checksum'):
+            load_shared(self.root/'shared.h5')
 
     def test_corruption_and_unsafe_links_fail_before_export(self):
         _, bundle = self.make_bundle()

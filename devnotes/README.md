@@ -1,5 +1,6 @@
 # Development notes
 
+- [Default 3/4/6/8/12/16-bit ladder and three-bit conformance](precision-ladder-3bit.md)
 - [Selected archive: image difference versus reference residual-map RMS](fixed25-residual-rms.md)
 - [Fixed 25% visibility-payload budget: parameters and repeated calibrated images](fixed25.md)
 - [Absolute versus relative error limits: matched-rate calibrated imaging](absolute_relative_error.md)
@@ -16,7 +17,7 @@
 - [Initial measured archive and CASA results](experiment-results.md)
 - [Geometry/antenna/frequency grouping and WSClean validation](grouping-wsclean.md)
 - [Opt-in destructive flag policy (`burn_flag`)](burn-flag.md)
-- [Default 4/8/12/16-bit precision ladder and grouping settings](precision-ladder.md)
+- [Earlier 4/8/12/16-bit ladder and grouping settings](precision-ladder.md)
 - [Repository publishing and workspace arrangement](publishing.md)
 
 Machine-readable measurements are in `../reports/`. Large generated products

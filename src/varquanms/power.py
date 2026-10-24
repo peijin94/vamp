@@ -144,7 +144,9 @@ def encode_power(original, flags, config, bounds):
     components, mandatory, signed_zero, widths, parameters = _parameters(original, flags, config)
     timings = {"quantization_and_scale_estimation": time.perf_counter()-started}
     native = codec._native
-    if native is not None and getattr(native, "POWER_V1", 0) and 0 < len(widths) <= 4096 and bounds["max_p99_error"] is None:
+    if (native is not None and getattr(native, "POWER_V1", 0)
+            and (3 not in config.bits or getattr(native, "THREE_BIT_V1", 0) == 1)
+            and 0 < len(widths) <= 4096 and bounds["max_p99_error"] is None):
         limits = [bounds[k] if bounds[k] is not None else np.inf for k in
                   ("max_component_mse", "max_complex_error", "max_complex_bias", "max_baseline_component_mse")]
         stamp = time.perf_counter()

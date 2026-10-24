@@ -103,7 +103,7 @@ Each block starts with the 16-byte little-endian structure `<BBHIIf`:
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| bits | uint8 | 0 for exact complex64; otherwise 4, 8, 12 or 16 per component (legacy 2/6 supported) |
+| bits | uint8 | 0 for exact complex64; otherwise 3, 4, 6, 8, 12 or 16 per component (legacy 2 supported) |
 | compression | uint8 | 0 uncompressed body; 1 zlib-wrapped DEFLATE body |
 | mapping | uint16 | 0: `uniform-symmetric-v1`; 1: `uniform-midrise-v1`; 2: `power-midrise-v1`; exact blocks require 0 |
 | samples | uint32 | Number of complex samples, 1 through 262,144 |
@@ -121,10 +121,13 @@ codebook is exactly symmetric and represents zero, at the cost of one unused
 bit pattern. The immutable codec identifier is `uniform-symmetric-v1`.
 Mapping 0 is the original header's zero reserved field. Existing archives and
 their numerical interpretation are unchanged. Old decoders reject mapping 1.
-The default candidate ladder is 4/8/12/16 bits per component. Legacy 2/6-bit
-archives and explicitly selected legacy configurations remain supported. Adding
-12/16-bit widths does not change existing codebooks, block headers or packed
-bytes at older widths; older decoders reject unsupported widths explicitly.
+The default candidate ladder is 3/4/6/8/12/16 bits per component. Two-bit archives
+and explicitly selected historical configurations remain supported. Three-bit
+codes pack eight component codes into three bytes, using the same least-significant
+bit order and zero tail padding. Adding a supported width does not change the
+codebook, block header or bytes at older widths. Older decoders reject unsupported
+widths explicitly; the Python encoder falls back to its portable implementation
+if an installed native extension predates three-bit support.
 
 Decode each real and imaginary component separately in this exact order:
 

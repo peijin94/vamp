@@ -23,7 +23,7 @@ def decode(blob, rows, channels):
         if mapping or exceptions or step != 0:
             raise ValueError("Invalid exact header")
         expected = count * 8
-    elif bits in (2, 4, 6, 8, 12, 16) and 0 <= exceptions <= count and 0 <= step < float("inf"):
+    elif bits in (2, 3, 4, 6, 8, 12, 16) and 0 <= exceptions <= count and 0 <= step < float("inf"):
         code_bytes = (2 * count * bits + 7) // 8
         expected = code_bytes + exceptions * 12
     else:

@@ -50,7 +50,7 @@ def pack_codes(codes, bits):
         for j in range(1, per_byte):
             result |= padded[j::per_byte] << (bits * j)
         return result.tobytes()
-    # 6/12-bit streams repeat after four/two codes respectively. Work in
+    # 3/6/12-bit streams repeat after eight/four/two codes respectively. Work in
     # bytes, without the old samples-by-bits temporary array.
     count = (a.size * bits + 7) // 8
     result = np.zeros(count, dtype=np.uint8)
@@ -267,7 +267,8 @@ def encode_block(original, flags, config, bounds, stream=()):
     from .error_budget import resolve_bounds
     bounds = resolve_bounds(original, flags, bounds, config.relative_bounds)
     mapping = CODEBOOK_IDS[config.codebook]
-    native_supported = _native is not None and (not mapping or getattr(_native, "MIDRISE_V1", 0) == 1)
+    native_supported = (_native is not None and (not mapping or getattr(_native, "MIDRISE_V1", 0) == 1)
+                        and (3 not in config.bits or getattr(_native, "THREE_BIT_V1", 0) == 1))
     if mapping == 2:
         from .power import encode_power
         return encode_power(original, flags, config, bounds)

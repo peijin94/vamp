@@ -6,7 +6,7 @@
   "base": {
     "mode": "adaptive", "columns": ["DATA"], "baseline_group": 32,
     "channel_segment": 64, "ordering": "class-original", "shared_order": false,
-    "bits": [4, 8, 12, 16], "scale_quantiles": [1.0, 0.995],
+    "bits": [3, 4, 6, 8, 12, 16], "scale_quantiles": [1.0, 0.995],
     "max_component_mse": 1e-7, "max_baseline_component_mse": 2e-7,
     "max_complex_error": 0.003, "max_complex_bias": 0.0003, "noise": null
   },

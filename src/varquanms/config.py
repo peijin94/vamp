@@ -5,9 +5,9 @@ import json
 import math
 from pathlib import Path
 
-DEFAULT_BITS = (4, 8, 12, 16)
-# Legacy widths stay explicit opt-ins so old experiment configurations still work.
-SUPPORTED_BITS = (2, 4, 6, 8, 12, 16)
+DEFAULT_BITS = (3, 4, 6, 8, 12, 16)
+# Two-bit archives and explicit historical configurations remain supported.
+SUPPORTED_BITS = (2, *DEFAULT_BITS)
 CODEBOOK_IDS = {"uniform-symmetric-v1": 0, "uniform-midrise-v1": 1, "power-midrise-v1": 2}
 
 
@@ -115,7 +115,7 @@ class Config:
         if self.rounding not in ("nearest-even", "stochastic-pcg64-v1"):
             raise ValueError("Unsupported rounding; subtractive dithering is not implemented")
         if not isinstance(self.bits, list) or not self.bits or any(type(b) is not int or b not in SUPPORTED_BITS for b in self.bits) or len(set(self.bits)) != len(self.bits):
-            raise ValueError("bits must be a unique nonempty list selected from 4/8/12/16 (legacy 2/6 also supported)")
+            raise ValueError("bits must be a unique nonempty list selected from 3/4/6/8/12/16 (legacy 2 also supported)")
         if self.mode == "fixed" and len(self.bits) != 1:
             raise ValueError("fixed mode requires exactly one component bit width")
         if not isinstance(self.scale_quantiles, list) or not self.scale_quantiles or any(type(q) not in (int, float) or not math.isfinite(q) or not 0 < q <= 1 for q in self.scale_quantiles):

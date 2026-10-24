@@ -49,7 +49,7 @@ class AccelerationTests(unittest.TestCase):
             a = ((rng.normal(size=(9, 31)) + 1j*rng.normal(size=(9, 31))) * factor).astype(np.complex64)
             a.view(np.uint32).flat[:6] = [0x80000000, 0, 0x7fc12345, 0xff800000, 0x7f800000, 0]
             flags = rng.random(a.shape) < .13
-            for bits in (*[(b,) for b in SUPPORTED_BITS], (4,8,12,16)):
+            for bits in (*[(b,) for b in SUPPORTED_BITS], (3,4,6,8,12,16), (4,8,12,16)):
                 config = Config(mode="adaptive", bits=list(bits), scale_quantiles=[1., .95],
                                 max_component_mse=max(1e-70, factor**2*.001),
                                 max_complex_error=max(1e-35, factor*.1))

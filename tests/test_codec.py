@@ -1,13 +1,16 @@
 from dataclasses import replace
 import json
 from pathlib import Path
+from types import SimpleNamespace
 import struct
 import unittest
 import zlib
+from unittest.mock import patch
 
 import numpy as np
 
 from varquanms.codec import HEADER, decode_block, encode_block, error_metrics, pack_codes, unpack_codes, within_bounds
+from varquanms import codec
 from varquanms.config import Config, SUPPORTED_BITS
 from varquanms.ordering import amplitude_statistics, all_orders, make_order
 
@@ -21,7 +24,7 @@ class CodecTests(unittest.TestCase):
         return result
 
     def test_every_packing_width_and_literal_fixtures(self):
-        fixtures = [(2, [0, 1, 2, 3], "e4"), (4, [1, 2, 15], "210f"),
+        fixtures = [(2, [0, 1, 2, 3], "e4"), (3, list(range(8)), "88c6fa"), (4, [1, 2, 15], "210f"),
                     (6, [0, 1, 63, 32], "40f083"), (8, [1, 255], "01ff"),
                     (12, [1, 4095, 2048], "01f0ff0008"),
                     (16, [1, 65535, 32768], "0100ffff0080")]
@@ -29,7 +32,7 @@ class CodecTests(unittest.TestCase):
             self.assertEqual(pack_codes(np.asarray(codes), bits).hex(), expected)
         rng = np.random.default_rng(123)
         for bits in SUPPORTED_BITS:
-            for size in (0, 1, 3, 7, 31, 192):
+            for size in (*range(17), 31, 192):
                 codes = rng.integers(0, 2**bits, size=size, dtype=np.uint16)
                 encoded = pack_codes(codes, bits)
                 self.assertEqual(len(encoded), (size * bits + 7) // 8)
@@ -42,6 +45,8 @@ class CodecTests(unittest.TestCase):
             unpack_codes(b"\xf1", 2, 1)
         with self.assertRaisesRegex(ValueError, "padding"):
             unpack_codes(bytes.fromhex("01f0"), 12, 1)
+        with self.assertRaisesRegex(ValueError, "padding"):
+            unpack_codes(b"\x87", 3, 1)
         for bits in SUPPORTED_BITS:
             bad = HEADER.pack(bits, 0, 0, 1, 0, 1.0) + pack_codes(np.asarray([2**bits - 1, 1]), bits)
             with self.assertRaisesRegex(ValueError, "Reserved"):
@@ -54,13 +59,13 @@ class CodecTests(unittest.TestCase):
                 decode_block(truncated, values.shape)
 
     def test_default_ladder_and_current_example_configs(self):
-        self.assertEqual(Config().bits, [4, 8, 12, 16])
+        self.assertEqual(Config().bits, [3, 4, 6, 8, 12, 16])
         self.assertEqual(Config().mode, "lossless")
         root = Path(__file__).resolve().parents[1]
-        self.assertEqual(Config.load(root / "configs/engineering-adaptive.json").bits, [4, 8, 12, 16])
+        self.assertEqual(Config.load(root / "configs/engineering-adaptive.json").bits, [3, 4, 6, 8, 12, 16])
         for name in ("benchmark-smoke.json", "benchmark-grouping.json"):
             matrix = json.loads((root / "configs" / name).read_text())
-            self.assertEqual(matrix["base"]["bits"], [4, 8, 12, 16])
+            self.assertEqual(matrix["base"]["bits"], [3, 4, 6, 8, 12, 16])
             for entry in matrix["experiments"]:
                 Config.load(None, **{**matrix["base"], **entry["config"]})
 
@@ -81,7 +86,7 @@ class CodecTests(unittest.TestCase):
         original.view(np.uint32).flat[:6] = [0x7FC12345, 0x80000000, 0x7F800000, 0xFF800000, 0x80000000, 0]
         flags = np.zeros(original.shape, dtype=bool)
         flags[0, 3] = True
-        for bits in (12, 16):
+        for bits in (3, 6, 12, 16):
             config = self.config(mode="fixed", bits=[bits], scale_quantiles=[1.0])
             block = encode_block(original, flags, config, config.bounds())
             self.assertEqual(block.bits, bits)
@@ -89,6 +94,20 @@ class CodecTests(unittest.TestCase):
             self.assertEqual(block.decoded[0, :4].tobytes(), original[0, :4].tobytes())
             self.assertEqual(decode_block(block.blob, original.shape).tobytes(), block.decoded.tobytes())
             self.assertTrue(within_bounds(block.metrics, config.bounds()))
+
+    def test_three_bit_falls_back_when_native_extension_is_older(self):
+        rng = np.random.default_rng(308)
+        a = (rng.normal(size=(3,17)) + 1j*rng.normal(size=(3,17))).astype('c8')
+        flags = np.zeros(a.shape, bool)
+        old_extension = SimpleNamespace(MIDRISE_V1=1, POWER_V1=1)
+        for codebook in ('uniform-symmetric-v1','uniform-midrise-v1','power-midrise-v1'):
+            cfg = self.config(mode='fixed',bits=[3],codebook=codebook)
+            with patch.object(codec,'_native',None):
+                reference = encode_block(a,flags,cfg,cfg.bounds())
+            with patch.object(codec,'_native',old_extension):
+                result = encode_block(a,flags,cfg,cfg.bounds())
+            self.assertEqual(result.bits,3)
+            self.assertEqual(result.blob,reference.blob)
 
     def test_adaptive_promotes_to_12_and_16_then_exact_when_required(self):
         rng = np.random.default_rng(93)
@@ -157,7 +176,7 @@ class CodecTests(unittest.TestCase):
                     self.assertTrue(np.all(selected[:, 0] == selected[:, 1]) or np.all(selected[:, 0] != selected[:, 1]))
 
     def test_strict_config_and_no_implicit_noise_estimation(self):
-        for changes in ({"noise": {"component_variance": 1, "epsilon": .01}}, {"bits": [3]},
+        for changes in ({"noise": {"component_variance": 1, "epsilon": .01}}, {"bits": [5]},
                         {"mode": "fixed"}, {"rounding": "dither"}, {"max_complex_error": None},
                         {"orientation_bins": 0}, {"orientation_bins": True}, {"antenna_endpoint": 3},
                         {"length_reference_m": float("nan")}):

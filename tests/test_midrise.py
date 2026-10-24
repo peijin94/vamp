@@ -101,7 +101,7 @@ class MidriseTests(unittest.TestCase):
             a = ((rng.normal(size=(9, 31)) + 1j*rng.normal(size=(9, 31)))*factor).astype("c8")
             a.view(np.uint32).flat[:6] = [0x80000000, 0, 0x7fc12345, 0xff800000, 0x7f800000, 0]
             flags = rng.random(a.shape) < .1
-            for bits in (*[(b,) for b in SUPPORTED_BITS], (4,8,12,16)):
+            for bits in (*[(b,) for b in SUPPORTED_BITS], (3,4,6,8,12,16), (4,8,12,16)):
                 cfg = self.config(bits=list(bits), compression="gzip", scale_quantiles=[1., .95],
                                   max_component_mse=max(1e-80, factor**2*.01), max_complex_error=max(1e-40, factor*.5))
                 for p99 in (None, cfg.max_complex_error):

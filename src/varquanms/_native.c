@@ -25,7 +25,7 @@ static PyObject *search(PyObject *self,PyObject *args) {
     int valid=a.len%8==0 && n>0 && n<=262144 && f.len==n && channels>0 && n%channels==0 &&
         candidates>0 && candidates<=4096 && scales.len==4*candidates && bounds.len==32 && level>=-1 && level<=9 && (mapping==0||mapping==1) && fegetround()==FE_TONEAREST;
     const uint8_t *width=(const uint8_t *)widths.buf;
-    for(Py_ssize_t k=0;k<candidates && valid;k++) valid=width[k]==2||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16;
+    for(Py_ssize_t k=0;k<candidates && valid;k++) valid=width[k]==2||width[k]==3||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16;
     if(!valid) {PyErr_SetString(PyExc_ValueError,"Invalid native search buffers/parameters");goto cleanup_search;}
     uint8_t *raw=malloc(16*n), *compressed=malloc(compressBound(16*n)), *best=malloc(8*n+16);
     float *decoded=malloc(8*n),*best_decoded=malloc(8*n);
@@ -111,7 +111,7 @@ static PyObject *candidate(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args,"y*y*idi|i",&a,&f,&bits,&step_arg,&channels,&mapping)) return NULL;
     Py_ssize_t n=a.len/8;
     if (a.len%8 || n<1 || n>262144 || f.len!=n || channels<1 || n%channels ||
-        !(bits==2 || bits==4 || bits==6 || bits==8 || bits==12 || bits==16) ||
+        !(bits==2 || bits==3 || bits==4 || bits==6 || bits==8 || bits==12 || bits==16) ||
         !isfinite(step_arg) || step_arg<0 || !(mapping==0||mapping==1) || fegetround()!=FE_TONEAREST) {
         PyBuffer_Release(&a); PyBuffer_Release(&f);
         return PyErr_Format(PyExc_ValueError,"Invalid native candidate buffers/parameters/rounding mode");
@@ -301,7 +301,7 @@ static PyObject *power_search(PyObject *self,PyObject *args) {
     const float *params=(const float *)parameters.buf;
     for(Py_ssize_t k=0;k<candidates&&valid;k++) {
         const float *p=params+4*k;
-        valid=(width[k]==2||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16)&&
+        valid=(width[k]==2||width[k]==3||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16)&&
               isfinite(p[0])&&p[0]>=0&&isfinite(p[1])&&isfinite(p[2])&&(p[3]==1||p[3]==.5f||p[3]==.25f);
     }
     if(!valid) {PyErr_SetString(PyExc_ValueError,"Invalid native power search buffers/parameters");goto cleanup_power;}
@@ -391,5 +391,6 @@ PyMODINIT_FUNC PyInit__native(void) {
     PyObject *m=PyModule_Create(&module);
     if(m && PyModule_AddIntConstant(m,"MIDRISE_V1",1)<0) {Py_DECREF(m);return NULL;}
     if(m && PyModule_AddIntConstant(m,"POWER_V1",1)<0) {Py_DECREF(m);return NULL;}
+    if(m && PyModule_AddIntConstant(m,"THREE_BIT_V1",1)<0) {Py_DECREF(m);return NULL;}
     return m;
 }

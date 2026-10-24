@@ -1,0 +1,111 @@
+{
+  "schema": "varquanms.reference-residual-rms-comparison/1",
+  "status": "measured",
+  "case": "quarter-amplitude128x48-absolute",
+  "units": "JY/BEAM",
+  "comparison_mask": {
+    "path": "results/calibrated-template/above10deg.fits",
+    "sha256": "d2d25dccd02e43027d5f20c1126dd0a9bf7f9949531bcc2416111ab98e530965",
+    "minimum_elevation_deg": 10.0,
+    "time_policy": "all integrations; strict > cut",
+    "pixels": 2245726
+  },
+  "grid_and_beam_equal": true,
+  "source_report": {
+    "path": "reports/calibrated-fixed25.json",
+    "sha256": "14988affa49e00c91a2e9690536ad73325f480cd9cecd555fb4951f130ec5429"
+  },
+  "reference_restored": {
+    "path": "results/calibrated-template/reference/image-image.fits",
+    "sha256": "3d80066c04bcbfb1106eb9c6d9d2375a56366ea5999716fd7e96d65ba375969c"
+  },
+  "reference_residual": {
+    "path": "results/calibrated-template/reference/image-residual.fits",
+    "sha256": "648a7874b9c764ed47c883cb008f962e04d16705e1d8cfae531b7f695187bda6"
+  },
+  "reference_residual_statistics": {
+    "pixels": 2245726,
+    "rms": 1.031244811054661,
+    "standard_deviation": 1.018715249293199,
+    "mean": 0.160265720553897
+  },
+  "definitions": {
+    "restored_difference": "decoded restored image minus uncompressed reference restored image",
+    "rms": "sqrt(mean(x**2)); no mean removal, clipping or source exclusion beyond the fixed above-10-degree mask",
+    "ratio": "RMS(restored difference) / RMS(uncompressed reference residual)",
+    "standard_deviation": "sqrt(mean((x-mean(x))**2)), ddof=0"
+  },
+  "runs": [
+    {
+      "run": "first",
+      "restored": {
+        "path": "results/calibrated-fixed25/quarter-amplitude128x48-absolute-images/image-image.fits",
+        "sha256": "982dff52252fa88d8b0a77df868008bde4b47bb221b8a8d22affa095a61edef2"
+      },
+      "residual": {
+        "path": "results/calibrated-fixed25/quarter-amplitude128x48-absolute-images/image-residual.fits",
+        "sha256": "86c9d0305d018732a3f975948f8bbae6eabbd74308f1ebeee02a69ed0dba40cc"
+      },
+      "restored_difference_statistics": {
+        "pixels": 2245726,
+        "rms": 0.0052379745073828626,
+        "standard_deviation": 0.005196020722599713,
+        "mean": 0.000661623450542003
+      },
+      "quantized_residual_statistics": {
+        "pixels": 2245726,
+        "rms": 1.0310522101009887,
+        "standard_deviation": 1.0185674795025832,
+        "mean": 0.15996546394108807
+      },
+      "residual_difference_statistics": {
+        "pixels": 2245726,
+        "rms": 0.009900161576704671,
+        "standard_deviation": 0.009895607369501085,
+        "mean": -0.0003002566128089866
+      },
+      "restored_difference_over_reference_residual_rms": 0.005079273564563152,
+      "reference_residual_over_restored_difference_rms": 196.87854715618295,
+      "quantized_residual_rms_relative_change": -0.00018676550088569943,
+      "residual_difference_over_reference_residual_rms": 0.009600204985836204
+    },
+    {
+      "run": "repeat",
+      "restored": {
+        "path": "results/calibrated-fixed25/quarter-amplitude128x48-absolute-repeat-images/image-image.fits",
+        "sha256": "4bf8978ae26bb82335ba22f5e105f4d3baa11e2bd3d490df954e7e97f7368fbd"
+      },
+      "residual": {
+        "path": "results/calibrated-fixed25/quarter-amplitude128x48-absolute-repeat-images/image-residual.fits",
+        "sha256": "9c1e0d304383426d2605f902278bc9861c5abe131b24db34625a37f3bb8245ed"
+      },
+      "restored_difference_statistics": {
+        "pixels": 2245726,
+        "rms": 0.004966552259861808,
+        "standard_deviation": 0.004965942488571723,
+        "mean": 7.782384041213981e-05
+      },
+      "quantized_residual_statistics": {
+        "pixels": 2245726,
+        "rms": 1.03127726925054,
+        "standard_deviation": 1.018726021938607,
+        "mean": 0.16040604196224176
+      },
+      "residual_difference_statistics": {
+        "pixels": 2245726,
+        "rms": 0.010308579429139377,
+        "standard_deviation": 0.010307624350413424,
+        "mean": 0.0001403214083446986
+      },
+      "restored_difference_over_reference_residual_rms": 0.004816074909295768,
+      "reference_residual_over_restored_difference_rms": 207.6379663592536,
+      "quantized_residual_rms_relative_change": 3.147477255760478e-05,
+      "residual_difference_over_reference_residual_rms": 0.009996248532486407
+    }
+  ],
+  "limitations": [
+    "Reference residual includes uncleaned sky and deconvolution structure; its full-mask RMS is not a validated thermal-noise estimate.",
+    "Restored differences include compression and independent CLEAN paths. No independent-error or quadrature-addition assumption is made.",
+    "These are existing Stokes I images; no new encoding or CLEAN run was performed."
+  ]
+}

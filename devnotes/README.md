@@ -1,5 +1,6 @@
 # Development notes
 
+- [Selected archive: image difference versus reference residual-map RMS](fixed25-residual-rms.md)
 - [Fixed 25% visibility-payload budget: parameters and repeated calibrated images](fixed25.md)
 - [Absolute versus relative error limits: matched-rate calibrated imaging](absolute_relative_error.md)
 - [Gamma selection from maximum/std: matched blocks and calibrated CLEAN](gamma_max_std.md)

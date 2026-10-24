@@ -385,6 +385,9 @@ def write_note(result):
             'The source bundle is retained; the shared file can be relocated and decoded independently. '
             'Local fixtures cover special-value bits, calibrated DATA reconstruction, direct access to a later partition, '
             'and rejection of corrupt payloads, mappings, missing data, unsafe links and incomplete files. The local suite has 95 passing tests.', '']
+    if Path('reports/calibrated-gamma-ratio.json').exists():
+        lines += ['Follow-up: [gamma selection from maximum/std](gamma_max_std.md) compares two ratio rules with full gamma search, '
+                  'including matched-block rates, complete shared archives and the same elevation-masked CLEAN test.', '']
     Path('devnotes/test_calibrated_dataset.md').write_text('\n'.join(lines))
 
 

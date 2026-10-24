@@ -38,6 +38,8 @@ class Config:
     scale_quantiles: list = field(default_factory=lambda: [1.0, 0.995])
     power_center: str = "median"
     power_gammas: list = field(default_factory=lambda: [1.0, 0.5])
+    power_gamma_policy: str = "search"
+    power_ratio_reference: float = 4.0
     max_component_mse: float | None = None
     max_complex_error: float | None = None
     max_complex_bias: float | None = None
@@ -101,6 +103,12 @@ class Config:
             raise ValueError("power_center must be median or zero (control)")
         if not isinstance(self.power_gammas, list) or not self.power_gammas or any(type(g) not in (int, float) or g not in (1., .5, .25) for g in self.power_gammas) or len(set(self.power_gammas)) != len(self.power_gammas):
             raise ValueError("power_gammas must be a unique nonempty subset of [1, 0.5, 0.25]")
+        if self.power_gamma_policy not in ("search", "max-std-v1", "max-std-inlier-v1"):
+            raise ValueError("Unsupported power_gamma_policy")
+        if type(self.power_ratio_reference) not in (int, float) or not math.isfinite(self.power_ratio_reference) or self.power_ratio_reference <= 0:
+            raise ValueError("power_ratio_reference must be positive and finite")
+        if self.power_gamma_policy != "search" and self.codebook != "power-midrise-v1":
+            raise ValueError("Ratio-based gamma selection requires power-midrise-v1")
         if self.codebook == "power-midrise-v1" and self.rounding != "nearest-even":
             raise ValueError("power-midrise-v1 currently supports nearest-even in reconstructed-value space only")
         if self.rounding not in ("nearest-even", "stochastic-pcg64-v1"):

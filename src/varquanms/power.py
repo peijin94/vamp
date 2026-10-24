@@ -17,6 +17,32 @@ HEADER_BYTES = codec.HEADER.size + PARAMETERS.size
 GAMMAS = (1., .5, .25)
 
 
+def maximum_std_ratio(residuals):
+    """Maximum component residual / pooled within-component population std.
+
+    Callers exclude protected samples first. The standard deviation is signal
+    spread, not thermal noise. Float64 is ample for finite complex64 residuals.
+    Empty and zero-variance blocks have no defined ratio.
+    """
+    a = np.asarray(residuals, dtype=np.float64)
+    if a.ndim != 2 or a.shape[1] != 2 or not np.all(np.isfinite(a)):
+        raise ValueError('Ratio statistics require finite pairs of residual components')
+    maximum = float(np.max(np.abs(a))) if a.size else 0.
+    std = float(np.sqrt(np.mean(np.var(a, axis=0, dtype=np.float64)))) if len(a) else 0.
+    return dict(eligible_samples=len(a), maximum_component_residual=maximum,
+                component_std=std, max_std_ratio=maximum/std if std else None)
+
+
+def gamma_from_ratio(ratio, reference, allowed):
+    """Thresholds R0, 2*R0 select 1, 1/2, 1/4; constants choose 1.
+
+    A restricted allowed set picks the closest log2 gamma, with ties favouring
+    the larger gamma. This only narrows candidate search; error checks remain.
+    """
+    desired = 1. if ratio is None or ratio <= reference else .5 if ratio <= 2*reference else .25
+    return float(min(allowed, key=lambda g: (abs(math.log2(g/desired)), -g)))
+
+
 def reconstruct(codes, bits, radius, center, gamma):
     """IEEE binary64 divide, products, add; one final float32 rounding."""
     if radius == 0:
@@ -68,16 +94,26 @@ def _parameters(original, flags, config):
     ranges = np.max(np.abs(residuals), axis=-1)
     cutoffs = [float(ranges.max()) if q == 1 else float(np.quantile(ranges, q))
                for q in config.scale_quantiles] if ranges.size else [0.] * len(config.scale_quantiles)
-    widths, parameters = [], []
+    widths, parameters, scales = [], [], []
+    ratio = (maximum_std_ratio(residuals)['max_std_ratio']
+             if config.power_gamma_policy == 'max-std-v1' else None)
+    for cutoff in cutoffs:
+        with np.errstate(over="ignore"):
+            radius = np.float32(cutoff)
+            if float(radius) < cutoff:
+                radius = np.nextafter(radius, np.float32(np.inf))
+        if not np.isfinite(radius):
+            continue
+        gammas = config.power_gammas
+        if config.power_gamma_policy != 'search':
+            if config.power_gamma_policy == 'max-std-inlier-v1':
+                retained = residuals[ranges <= float(radius)]
+                ratio = maximum_std_ratio(retained)['max_std_ratio']
+            gammas = [gamma_from_ratio(ratio, config.power_ratio_reference, config.power_gammas)]
+        scales.append((radius, gammas))
     for bits in sorted(config.bits):
-        for cutoff in cutoffs:
-            with np.errstate(over="ignore"):
-                radius = np.float32(cutoff)
-                if float(radius) < cutoff:
-                    radius = np.nextafter(radius, np.float32(np.inf))
-            if not np.isfinite(radius):
-                continue
-            for gamma in config.power_gammas:
+        for radius, gammas in scales:
+            for gamma in gammas:
                 widths.append(bits); parameters.append([radius, *center, gamma])
     return components, mandatory, signed_zero, np.asarray(widths, dtype="u1"), np.asarray(parameters, dtype="<f4").reshape(-1,4)
 

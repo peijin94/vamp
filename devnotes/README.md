@@ -1,5 +1,6 @@
 # Development notes
 
+- [Gamma selection from maximum/std: matched blocks and calibrated CLEAN](gamma_max_std.md)
 - [Calibrated dataset: deeper CLEAN, elevation cut and compression tradeoffs](test_calibrated_dataset.md)
 - [Calibrated-only archives, four-bit weights and the 15-slot imaging test](calibrated-imaging.md)
 - [Median offset and adaptive power-law quantization](power-quantization.md)

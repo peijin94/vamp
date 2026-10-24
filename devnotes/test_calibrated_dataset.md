@@ -146,3 +146,5 @@ python scripts/validate_partition_export.py SHARED.h5 INPUT.ms SHARED.ms --repor
 ```
 
 See the [machine-readable sharing report](../reports/calibrated-shared-storage.json) and [format contract](../docs/format.md#shared-partition-storage-varquanmsshared-partitions1). The source bundle is retained; the shared file can be relocated and decoded independently. Local fixtures cover special-value bits, calibrated DATA reconstruction, direct access to a later partition, and rejection of corrupt payloads, mappings, missing data, unsafe links and incomplete files. The local suite has 95 passing tests.
+
+Follow-up: [gamma selection from maximum/std](gamma_max_std.md) compares two ratio rules with full gamma search, including matched-block rates, complete shared archives and the same elevation-masked CLEAN test.

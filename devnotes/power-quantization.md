@@ -3,6 +3,9 @@
 23 October 2026. Implemented as the optional `power-midrise-v1` codec. The default
 remains `uniform-symmetric-v1`; nothing is silently converted to the new mapping.
 
+24 October follow-up: [maximum/std gamma selection](gamma_max_std.md) adds
+optional encoder policies while retaining these decoder operations and error checks.
+
 ## Mathematical validation
 
 For a complex quantization block, use two component medians:

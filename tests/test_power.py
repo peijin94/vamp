@@ -10,6 +10,7 @@ import numpy as np
 from varquanms import codec, power
 from varquanms.archive import encode, decode, verify
 from varquanms.config import Config, SUPPORTED_BITS
+from varquanms.container import Reader
 from test_inspection import make_ms, snapshot
 from test_reference_decoder import reference
 
@@ -94,7 +95,9 @@ class PowerTests(unittest.TestCase):
 
     def test_corruption_unknown_config_and_truncation(self):
         for options in ({'power_gammas':[.75]}, {'power_gammas':[True]}, {'power_gammas':[]},
-                        {'power_center':'mean'}, {'rounding':'stochastic-pcg64-v1'}):
+                        {'power_center':'mean'}, {'rounding':'stochastic-pcg64-v1'},
+                        {'power_gamma_policy':'unknown'}, {'power_ratio_reference':0},
+                        {'power_ratio_reference':float('nan')}, {'power_ratio_reference':True}):
             with self.assertRaises(ValueError):self.config(**options)
         blob=codec.HEADER.pack(4,0,2,2,0,1.)+power.PARAMETERS.pack(0,0,.5)+bytes.fromhex('70f8')
         for bad in (blob[:-1],blob+b'\0',blob[:25],blob[:24]+power.PARAMETERS.pack(.75,0,0)[:4]+blob[28:]):
@@ -103,6 +106,58 @@ class PowerTests(unittest.TestCase):
             codec.decode_block(blob,(1,2),'uniform-midrise-v1')
         with self.assertRaises(ValueError):
             codec.decode_block(codec.HEADER.pack(0,0,2,1,0,0.)+bytes(20),(1,1))
+
+    def test_ratio_gamma_statistics_boundaries_and_protection(self):
+        residuals = np.array([[-1., -2.], [1., 2.]])
+        s = power.maximum_std_ratio(residuals)
+        self.assertAlmostEqual(s['component_std'], np.sqrt(2.5))
+        self.assertAlmostEqual(s['max_std_ratio'], 2/np.sqrt(2.5))
+        for factor in (1e-30, 1e30):
+            self.assertAlmostEqual(power.maximum_std_ratio(residuals*factor)['max_std_ratio'], s['max_std_ratio'])
+        for ratio, gamma in [(None,1.),(4.,1.),(np.nextafter(4.,np.inf),.5),(8.,.5),(9.,.25)]:
+            self.assertEqual(power.gamma_from_ratio(ratio,4.,power.GAMMAS),gamma)
+        self.assertEqual(power.gamma_from_ratio(20.,4.,[1.,.5]),.5)
+        self.assertIsNone(power.maximum_std_ratio(np.empty((0,2)))['max_std_ratio'])
+        self.assertIsNone(power.maximum_std_ratio(np.ones((4,2)))['max_std_ratio'])
+        # Excluding protected values keeps even enormous flagged samples from
+        # changing the selector; inlier mode also excludes range exceptions.
+        a = np.tile(np.linspace(-1,1,64,dtype='f4'),(8,1)).astype('c8')
+        a.imag = a.real
+        flags = np.zeros(a.shape,bool)
+        a[0,0] = 1e20+1e20j
+        cfg = self.config(power_gammas=[1.,.5,.25],power_gamma_policy='max-std-v1')
+        self.assertEqual(set(power._parameters(a,flags,cfg)[4][:,3]),{.25})
+        flags[0,0] = True
+        self.assertEqual(set(power._parameters(a,flags,cfg)[4][:,3]),{1.})
+        flags[0,0] = False
+        trimmed = replace(cfg,power_gamma_policy='max-std-inlier-v1',scale_quantiles=[.99])
+        self.assertEqual(set(power._parameters(a,flags,trimmed)[4][:,3]),{1.})
+        all_flagged = np.ones_like(flags)
+        self.assertEqual(set(power._parameters(a,all_flagged,trimmed)[4][:,3]),{1.})
+        with self.assertRaisesRegex(ValueError,'requires power-midrise'):
+            self.config(codebook='uniform-symmetric-v1',power_gamma_policy='max-std-v1')
+
+    def test_ratio_policy_preserves_error_checks_and_decoder_equivalence(self):
+        rng = np.random.default_rng(91)
+        a = (rng.normal(size=(8,31))+1j*rng.normal(size=(8,31))).astype('c8')
+        a[-1,-1] = 1000+1000j
+        flags = np.zeros(a.shape,bool)
+        for policy in ('max-std-v1','max-std-inlier-v1'):
+            cfg = self.config(power_gamma_policy=policy,power_gammas=[1.,.5,.25],
+                              scale_quantiles=[1.,.99],compression='gzip')
+            selected = codec.encode_block(a,flags,cfg,cfg.bounds())
+            with patch.object(codec,'_native',None):
+                portable = codec.encode_block(a,flags,cfg,cfg.bounds())
+            self.assertEqual(selected.blob,portable.blob)
+            self.assertEqual(reference.decode(selected.blob,*a.shape),selected.decoded.tobytes())
+            self.assertTrue(codec.within_bounds(selected.metrics,cfg.bounds()))
+            searched = replace(cfg,power_gamma_policy='search')
+            full = codec.encode_block(a,flags,searched,searched.bounds())
+            self.assertLessEqual(len(full.blob),len(selected.blob))
+            exact = replace(cfg,max_component_mse=0,max_complex_error=0)
+            escaped = codec.encode_block(a,flags,exact,exact.bounds())
+            self.assertEqual(escaped.bits,0)
+            self.assertEqual(escaped.decoded.tobytes(),a.tobytes())
 
     @unittest.skipUnless(getattr(codec._native,'POWER_V1',0),'native power extension unavailable')
     def test_native_portable_equivalence_and_near_thresholds(self):
@@ -128,13 +183,16 @@ class PowerTests(unittest.TestCase):
                 self.assertEqual(n.blob,p.blob);self.assertTrue(codec.within_bounds(n.metrics,c.bounds()))
 
     def test_archive_export_and_independent_decoder(self):
-        with tempfile.TemporaryDirectory() as d:
-            root=Path(d);source=make_ms(root/'source.ms',channels=17);before=snapshot(source)
-            cfg=self.config(baseline_group=2,channel_segment=8,workers=2)
-            encode(source,root/'archive.h5',cfg);decode(root/'archive.h5',root/'restored.ms')
-            with patch.object(codec,'_native',None):
-                self.assertEqual(verify(root/'archive.h5',source,root/'restored.ms')['status'],'passed')
-            self.assertEqual(before,snapshot(source))
+        for policy in ('search','max-std-v1','max-std-inlier-v1'):
+            with self.subTest(policy=policy), tempfile.TemporaryDirectory() as d:
+                root=Path(d);source=make_ms(root/'source.ms',channels=17);before=snapshot(source)
+                cfg=self.config(baseline_group=2,channel_segment=8,workers=2,power_gamma_policy=policy)
+                encode(source,root/'archive.h5',cfg);decode(root/'archive.h5',root/'restored.ms')
+                with patch.object(codec,'_native',None):
+                    self.assertEqual(verify(root/'archive.h5',source,root/'restored.ms')['status'],'passed')
+                with Reader(root/'archive.h5') as reader:
+                    self.assertEqual(reader.manifest['config']['power_gamma_policy'],policy)
+                self.assertEqual(before,snapshot(source))
         a=np.full((2,17),3+5j,dtype='c8');cfg=self.config()
         with patch.object(codec,'_native',object()):b=codec.encode_block(a,np.zeros(a.shape,bool),cfg,cfg.bounds())
         self.assertEqual(reference.decode(b.blob,*a.shape),a.tobytes())

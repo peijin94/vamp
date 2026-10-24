@@ -235,6 +235,26 @@ exception bytes and remaining archive categories. The public decoder uses only
 archive contents and these operations. Defaults remain the original codebook;
 select `configs/power-adaptive.json` for this experiment.
 
+Optional encoder-only `power_gamma_policy` values `max-std-v1` and
+`max-std-inlier-v1` narrow the gamma candidates; the default `search` retains
+the configured search above. For residual pairs after subtracting stored
+component centers (medians by default),
+define `sigma=sqrt((var(real)+var(imag))/2)` using float64 population variances,
+and `R=max(abs(component residual))/sigma`. Exclude the same protected samples
+used for scale estimation. The inlier variant additionally excludes samples
+whose maximum component residual exceeds the candidate's stored float32 radius.
+This variant computes a separate R for each radius, before the bit-width search.
+
+With `power_ratio_reference=R0` (default 4), choose gamma 1 when `R<=R0`,
+1/2 when `R0<R<=2*R0`, and 1/4 otherwise. Empty or zero-variance populations
+choose 1. If the configured `power_gammas` excludes that choice, select the
+nearest allowed value in log2 space, preferring the larger gamma at a tie.
+R is a signal-spread statistic, not a thermal-noise estimate or a scientific
+error bound. All reconstruction checks, exception handling and exact fallback
+still apply. The chosen gamma is already stored in the block header; decoder
+bytes, version and arithmetic are unchanged. These options are recorded in the
+archive config and rejected for other codebooks when a ratio policy is selected.
+
 ### Uniform encoder choices
 
 Scale candidates use the maximum absolute real/imag component of each eligible

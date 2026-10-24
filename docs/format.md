@@ -391,3 +391,36 @@ bundle size. No time or channel averaging occurs.
 
 Detailed policy, commands and calibration caveats are in
 [the calibrated imaging development note](../devnotes/calibrated-imaging.md).
+
+### Shared partition storage (`varquanms.shared-partitions/1`)
+
+`python scripts/timeslot_archive.py compact INPUT.bundle OUTPUT.h5 --report report.json`
+losslessly repacks an already verified directory bundle into one HDF5 file.
+Decode either representation with the same script's `decode` operation.
+This is a storage transformation, with no second quantization pass.
+
+Root attributes are `format=varquanms.shared-partitions`, `schema_version=1`,
+`complete`, and `manifest_sha256`. The root `manifest` is a gzip-compressed
+uint8 UTF-8 JSON array, at most 32 MiB. It retains the ordered bundle configuration,
+row ranges and original source hashes, adds storage-compaction provenance, and
+identifies `partitions/pNNNN` and `verification/vNNNN` for each partition.
+The verification datasets preserve the original JSON bytes and SHA-256.
+
+Each partition group contains the unchanged scientific manifest, archive
+attributes and relative payload paths of an ordinary `varquanms.archive/1`.
+Arrays with equal roles, shapes, dtypes, verified SHA-256 and bitwise contents
+share one HDF5 dataset through hard links. Numerical equality alone is insufficient:
+signed zeros and NaN payloads remain distinct. No external/soft links, virtual
+datasets, external dataset storage or aliased/cyclic groups are supported.
+Later partitions and their quantization blocks remain directly addressable.
+
+The full reader validates links, row coverage, configurations, subtable/schema
+agreement, both levels of manifests, verification reports and every logical
+array before creating an MS. Missing or corrupt members fail before publication.
+Source bundles remain untouched; construction uses a `.partial` file and a new
+final destination. NumPy, h5py and python-casacore suffice for independent export.
+
+Original per-partition byte counts remain provenance, not the shared file's
+physical accounting. `shared_summary` counts each unique HDF5 object once;
+all remaining file bytes count as container, links, manifests and verification
+overhead. Compaction time is additional to the original MS encoding time.

@@ -55,7 +55,7 @@ Vertical axis is logarithmic. Black crosses/segments show the two observed candi
 
 ![Zoom around the brightest masked reference pixel](figs/calibrated-test-zoom.png)
 
-The 128-pixel zoom spans 8.53 degrees. Reference and decoded panels share their colour scale; the difference has a separate linear scale. All panels exclude pixels at or below the elevation cut.
+The 128-pixel zoom spans 8.53 degrees in image coordinates. Reference and decoded panels share their colour scale; the difference has a separate linear scale. All panels exclude pixels at or below the elevation cut.
 
 ![Selected component bit widths by block and complex sample](figs/calibrated-test-bit-distribution.png)
 
@@ -100,7 +100,7 @@ Host: inti.solar.pvt, Intel(R) Xeon(R) Silver 4214 CPU @ 2.20GHz, 48 logical CPU
 
 For amplitude256, 314.57 MB is allocated visibility block payload, 83.01 MB repeated subtable arrays, 41.51 MB error-accounting arrays, 21.08 MB amplitude statistics, 19.58 MB coordinates, and the rest maps/container metadata. All categories sum to the whole archive. Its 29,224 blocks select 20,825×8-bit, 1,401×12-bit, 120×16-bit and 6,878 lossless; many lossless blocks are cheaply compressed all-flagged zero blocks, not failed error budgets. No four-bit blocks were selected. Complete per-profile histograms, error statistics, exception costs and bytes are in the JSON.
 
-A lossless recompression probe on a 42.248 MB first-partition archive produced 41.194 MB (gzip 1) and 40.791 MB (gzip 9), with every logical-array checksum unchanged. This 2.5–3.4% gain is modest. Repeated subtables and quality arrays are significant remaining costs. Sharing bitwise-identical subtable contents is a useful future structural experiment before accepting more visibility loss; the error arrays generally differ and cannot be assumed redundant.
+A lossless recompression probe on a 42.248 MB first-partition archive produced 41.194 MB (gzip 1) and 40.791 MB (gzip 9), with every logical-array checksum unchanged. This 2.5–3.4% gain is modest. Repeated subtables and quality arrays are significant remaining costs. Repeated subtables are candidates for exact sharing; the error arrays generally differ and cannot be assumed redundant.
 
 ## Reproduction and limits
 
@@ -119,3 +119,30 @@ Use new output paths. `scripts/screen_calibrated.py` reproduces the block screen
 This is joint Stokes I imaging of one 15-integration dataset. It does not validate individual time frames, transient light curves, weak polarization, spectra, calibration solutions, absolute flux or a held-out dataset. No Dysco comparison was run here. The recommendation is specific to this experiment, not a universal scientific archive default.
 
 References: [WSClean local RMS](https://wsclean.readthedocs.io/en/v3.6/local_rms_thresholding.html), [WSClean masks](https://wsclean.readthedocs.io/en/v3.7/masking.html), [Astropy AltAz](https://docs.astropy.org/en/stable/api/astropy.coordinates.AltAz.html).
+
+## Follow-up: exact sharing across integrations
+
+A new single-file HDF5 representation shares only bitwise-identical arrays and compresses manifest JSON. Original scientific manifests, payloads, scales, codebooks, flags, weights, UVW and reconstruction maps are unchanged. This is a storage change with no second quantization pass.
+
+| Profile | Directory bundle (MB) | Shared HDF5 (MB) | Additional repack including checks (s) |
+| --- | ---: | ---: | ---: |
+| lossless | 1079.629 | 985.236 | 67.62 |
+| amplitude256 | 509.714 | 414.599 | 44.25 |
+| sixbit2048 | 447.123 | 352.006 | 21.66 |
+
+![Whole-archive sizes before and after exact sharing](figs/calibrated-shared-size.png)
+
+The working amplitude profile is now **414.6 MB**, versus 985.2 MB for lossless visibility under the same storage and preservation policies. Its independent export matches the previously imaged export in all 147 supported column/metadata checks, bit for bit. All 108 original source-file checksums still match. The existing 0.55–0.69% Stokes I image differences therefore describe unchanged imaging inputs; no new CLEAN run was needed to assess this lossless storage transformation. CLEAN itself remains subject to the previously measured run-to-run variability.
+
+All three shared archives passed full inventory checks and exact scientific-manifest comparison. The amplitude profile additionally passed full MS export/source verification and equality against the prior export. The six-bit profile retains its earlier 1.27% global and 1.93% faint-region image differences.
+
+For amplitude256, exact duplicate arrays remove 82.11 MB, including 77.48 MB of repeated subtables. Manifest compression and container repacking account for the remaining saving. Visibility payload and error-accounting arrays still occupy 314.57 MB and 41.51 MB, respectively; the latter were not assumed redundant.
+
+Repacking took 44.25 s: 32.60 s input validation, 4.91 s copying/sharing, and 5.67 s output validation, plus final accounting/publication. This time is additional to creating the directory bundle. It is not a 44-second MS encoder. The earlier 606.6 s MS-to-bundle run spent 168.9 s copying partitions, 152.1 s inspecting, 124.6 s encoding, and 161.0 s in verification/integrity/other work. About 79.5% was outside encoding; eliminating repeated copies and inspections is the next speed target. These phase timings are shared-host observations, not isolated CPU profiles. The 15-second full-conversion target remains unmet.
+
+```bash
+python scripts/timeslot_archive.py compact NEW.bundle SHARED.h5 --report compact.json
+python scripts/validate_partition_export.py SHARED.h5 INPUT.ms SHARED.ms --report shared-export.json
+```
+
+See the [machine-readable sharing report](../reports/calibrated-shared-storage.json) and [format contract](../docs/format.md#shared-partition-storage-varquanmsshared-partitions1). The source bundle is retained; the shared file can be relocated and decoded independently. Local fixtures cover special-value bits, calibrated DATA reconstruction, direct access to a later partition, and rejection of corrupt payloads, mappings, missing data, unsafe links and incomplete files. The local suite has 95 passing tests.

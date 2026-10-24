@@ -1,8 +1,8 @@
 """Experimental ordered bundle of independently decodable single-context archives.
 
-Runs of equal row context become partitions. All original rows and all subtables
-are retained; repeated subtable bytes are counted, not claimed as deduplicated.
-The original MS is not required by the bundle decoder.
+Runs of equal row context become partitions. Directory bundles repeat all
+subtables; optional shared HDF5 packing removes only exact duplicate arrays.
+Both representations decode independently of the original MS.
 """
 
 from collections import Counter
@@ -130,6 +130,9 @@ def encode_partitioned(source, output, config=None):
 
 def _load(bundle):
     bundle = Path(bundle).resolve()
+    if bundle.is_file():
+        from .shared import load_shared
+        return bundle, load_shared(bundle)
     if file_sha256(bundle / "manifest.json") != (bundle / "manifest.sha256").read_text().strip():
         raise ValueError("Bundle manifest checksum mismatch")
     manifest = json.loads((bundle / "manifest.json").read_text())
@@ -164,6 +167,22 @@ def _load(bundle):
     return bundle, manifest
 
 
+def partition_reader(bundle, part, verify=True):
+    """Read one partition from either a directory bundle or shared HDF5 file."""
+    bundle = Path(bundle)
+    return (Reader(bundle, verify=verify, group=part['group']) if bundle.is_file()
+            else Reader(bundle / part['archive'], verify=verify))
+
+
+def partition_verification(bundle, part):
+    bundle = Path(bundle)
+    if bundle.is_file():
+        import h5py
+        with h5py.File(bundle, 'r') as h5:
+            return json.loads(h5[part['verification_dataset']][...].tobytes())
+    return json.loads((bundle / part['verification']).read_text())
+
+
 def decode_partitioned(bundle, output, ms_v2_data=None):
     """Restore all rows using only the bundle; integrity is checked before output."""
     started = time.perf_counter()
@@ -175,11 +194,13 @@ def decode_partitioned(bundle, output, ms_v2_data=None):
         raise ValueError('--ms-v2-data is only for a calibrated-only bundle')
     staged = Path(tempfile.mkdtemp(prefix=output.name + ".", suffix=".partial", dir=output.parent))
     restored = staged / "restored.ms"
-    decode(bundle / manifest["partitions"][0]["archive"], restored, ms_v2_data=False)
+    first = manifest["partitions"][0]
+    decode(bundle if bundle.is_file() else bundle / first['archive'], restored,
+           ms_v2_data=False, group=first.get('group'))
     with table(str(restored), readonly=False, ack=False) as t:
         t.addrows(manifest["row_count"] - t.nrows())
         for part in manifest["partitions"][1:]:
-            with Reader(bundle / part["archive"]) as reader:
+            with partition_reader(bundle, part) as reader:
                 main = next(s for s in reader.manifest["tables"] if s["path"] == ".")
                 for name, column in main["columns"].items():
                     quantized = read_column(reader, column, 0, main["row_count"]) if column["encoding"] == "quantized" else None
@@ -210,6 +231,9 @@ def decode_partitioned(bundle, output, ms_v2_data=None):
 
 def bundle_summary(bundle, manifest=None):
     bundle = Path(bundle)
+    if bundle.is_file():
+        from .shared import shared_summary
+        return shared_summary(bundle, manifest)
     manifest = manifest or json.loads((bundle / "manifest.json").read_text())
     categories = Counter()
     for part in manifest["partitions"]:

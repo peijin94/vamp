@@ -179,7 +179,7 @@ def plot_issue_panels(result, out):
                        extent=(x0-.5, x1-.5, y0-.5, y1-.5), **options)
         ax.set(title=label, xlabel='Pixel x', ylabel='Pixel y')
         fig.colorbar(im, ax=ax, shrink=.8, label='Jy/beam')
-    fig.suptitle('128-pixel (8.53°) zoom at masked reference peak; elevation >10°\n'
+    fig.suptitle('128-pixel zoom at masked reference peak; 4 arcmin/pixel; elevation >10°\n'
                  'Reference/decoded share a symmetric-log scale; difference uses its full linear range')
     fig.savefig(out/'calibrated-test-zoom.png', dpi=180); plt.close(fig)
 
@@ -271,7 +271,7 @@ def write_note(result):
         'The shaded band spans the two lossless/reference controls.', '',
         '![Reference, amplitude256 reconstruction and difference above 10 degrees](figs/calibrated-test-amplitude.png)', '',
         '![Zoom around the brightest masked reference pixel](figs/calibrated-test-zoom.png)', '',
-        'The 128-pixel zoom spans 8.53 degrees. Reference and decoded panels share their colour scale; '
+        'The 128-pixel zoom spans 8.53 degrees in image coordinates. Reference and decoded panels share their colour scale; '
         'the difference has a separate linear scale. All panels exclude pixels at or below the elevation cut.', '',
         '![Selected component bit widths by block and complex sample](figs/calibrated-test-bit-distribution.png)', '',
         'Precision fractions count blocks or complex samples, not stored bytes. Lossless includes all-flagged zero blocks; '
@@ -322,7 +322,7 @@ def write_note(result):
         'Complete per-profile histograms, error statistics, exception costs and bytes are in the JSON.', '',
         'A lossless recompression probe on a 42.248 MB first-partition archive produced 41.194 MB (gzip 1) and 40.791 MB (gzip 9), '
         'with every logical-array checksum unchanged. This 2.5–3.4% gain is modest. Repeated subtables and quality arrays are significant remaining costs. '
-        'Sharing bitwise-identical subtable contents is a useful future structural experiment before accepting more visibility loss; the error arrays generally differ and cannot be assumed redundant.', '',
+        'Repeated subtables are candidates for exact sharing; the error arrays generally differ and cannot be assumed redundant.', '',
         '## Reproduction and limits', '', '```bash',
         'export PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1',
         'python scripts/run_wsclean.py INPUT.ms --output REFERENCE --data-column CORRECTED_DATA --clean-profile calibrated --threads 8',
@@ -340,6 +340,51 @@ def write_note(result):
         'References: [WSClean local RMS](https://wsclean.readthedocs.io/en/v3.6/local_rms_thresholding.html), '
         '[WSClean masks](https://wsclean.readthedocs.io/en/v3.7/masking.html), '
         '[Astropy AltAz](https://docs.astropy.org/en/stable/api/astropy.coordinates.AltAz.html).', '']
+    shared_report = Path('reports/calibrated-shared-storage.json')
+    if shared_report.exists():
+        shared = json.loads(shared_report.read_text())
+        entries = {e['name']:e for e in shared['experiments']}
+        a = entries['amplitude256']
+        proof = shared['amplitude256_matches_previously_imaged_export']
+        phases = shared['original_encoding_phase_seconds']
+        lines += ['## Follow-up: exact sharing across integrations', '',
+            'A new single-file HDF5 representation shares only bitwise-identical arrays and compresses manifest JSON. '
+            'Original scientific manifests, payloads, scales, codebooks, flags, weights, UVW and reconstruction maps are unchanged. '
+            'This is a storage change with no second quantization pass.', '',
+            '| Profile | Directory bundle (MB) | Shared HDF5 (MB) | Additional repack including checks (s) |',
+            '| --- | ---: | ---: | ---: |']
+        for e in shared['experiments']:
+            lines.append(f"| {e['name']} | {e['storage_compaction']['source_bundle_bytes']/1e6:.3f} | {e['archive_bytes']/1e6:.3f} | {e['elapsed_seconds']:.2f} |")
+        lines += ['', '![Whole-archive sizes before and after exact sharing](figs/calibrated-shared-size.png)', '',
+            f"The working amplitude profile is now **{a['archive_bytes']/1e6:.1f} MB**, versus "
+            f"{entries['lossless']['archive_bytes']/1e6:.1f} MB for lossless visibility under the same storage and preservation policies. "
+            f"Its independent export matches the previously imaged export in all {len(proof['columns'])} supported column/metadata checks, bit for bit. "
+            f"All {proof['source_files_checked']} original source-file checksums still match. "
+            'The existing 0.55–0.69% Stokes I image differences therefore describe unchanged imaging inputs; no new CLEAN run was needed to assess this lossless storage transformation. '
+            'CLEAN itself remains subject to the previously measured run-to-run variability.', '',
+            'All three shared archives passed full inventory checks and exact scientific-manifest comparison. '
+            'The amplitude profile additionally passed full MS export/source verification and equality against the prior export. '
+            'The six-bit profile retains its earlier 1.27% global and 1.93% faint-region image differences.', '',
+            f"For amplitude256, exact duplicate arrays remove {sum(a['storage_compaction']['duplicate_stored_bytes_by_category'].values())/1e6:.2f} MB, "
+            f"including {a['storage_compaction']['duplicate_stored_bytes_by_category']['subtables']/1e6:.2f} MB of repeated subtables. "
+            'Manifest compression and container repacking account for the remaining saving. '
+            'Visibility payload and error-accounting arrays still occupy 314.57 MB and 41.51 MB, respectively; the latter were not assumed redundant.', '',
+            f"Repacking took {a['elapsed_seconds']:.2f} s: {a['storage_compaction']['source_validation_seconds']:.2f} s input validation, "
+            f"{a['storage_compaction']['copy_and_share_seconds']:.2f} s copying/sharing, and {a['output_validation_seconds']:.2f} s output validation, plus final accounting/publication. "
+            'This time is additional to creating the directory bundle. It is not a 44-second MS encoder. '
+            f"The earlier {sum(phases.values()):.1f} s MS-to-bundle run spent {phases['partition_copy']:.1f} s copying partitions, "
+            f"{phases['inspection']:.1f} s inspecting, {phases['encoding']:.1f} s encoding, and {phases['verification_integrity_and_other']:.1f} s in verification/integrity/other work. "
+            'About 79.5% was outside encoding; eliminating repeated copies and inspections is the next speed target. '
+            'These phase timings are shared-host observations, not isolated CPU profiles. The 15-second full-conversion target remains unmet.', '',
+            '```bash',
+            'python scripts/timeslot_archive.py compact NEW.bundle SHARED.h5 --report compact.json',
+            'python scripts/validate_partition_export.py SHARED.h5 INPUT.ms SHARED.ms --report shared-export.json',
+            '```', '',
+            'See the [machine-readable sharing report](../reports/calibrated-shared-storage.json) and '
+            '[format contract](../docs/format.md#shared-partition-storage-varquanmsshared-partitions1). '
+            'The source bundle is retained; the shared file can be relocated and decoded independently. '
+            'Local fixtures cover special-value bits, calibrated DATA reconstruction, direct access to a later partition, '
+            'and rejection of corrupt payloads, mappings, missing data, unsafe links and incomplete files. The local suite has 95 passing tests.', '']
     Path('devnotes/test_calibrated_dataset.md').write_text('\n'.join(lines))
 
 

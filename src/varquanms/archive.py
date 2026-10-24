@@ -311,10 +311,10 @@ def archive_summary(path, manifest, elapsed=None):
             "note": "Visibility dataset ratio includes indexes, mappings, counts and quality datasets, but container-wide overhead is reported only in whole-archive bytes. No scientific or CASA workflow acceptance is implied."}
 
 
-def decode(archive, output, ms_v2_data=None):
+def decode(archive, output, ms_v2_data=None, *, group=None):
     output = new_output(output, archive)
     started = time.perf_counter()
-    with Reader(archive) as reader:
+    with Reader(archive, group=group) as reader:
         if ms_v2_data is None:
             ms_v2_data = reader.manifest['config'].get('keep_calib_only', False)
         if ms_v2_data and not reader.manifest['config'].get('keep_calib_only', False):

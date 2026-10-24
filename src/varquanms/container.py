@@ -124,10 +124,11 @@ class Writer:
 
 
 class Reader:
-    def __init__(self, path, verify=True):
+    def __init__(self, path, verify=True, *, group=None):
         self.path = Path(path)
-        self.h5 = h5py.File(self.path, "r")
+        self.file = h5py.File(self.path, "r")
         try:
+            self.h5 = self.file if group is None else self.file[group]
             if self.h5.attrs.get("format") != FORMAT or self.h5.attrs.get("schema_version") != SCHEMA_VERSION or self.h5.attrs.get("complete") != True:
                 raise ValueError("Unsupported or incomplete archive")
             if "manifest" not in self.h5 or self.h5["manifest"].ndim != 1 or self.h5["manifest"].size > MAX_MANIFEST_BYTES:
@@ -144,22 +145,30 @@ class Reader:
             if len(self.entries) != len(self.manifest["inventory"]):
                 raise ValueError("Duplicate dataset inventory entries")
             paths = set()
-            def visit(group):
+            seen_groups = set()
+            def visit(group, prefix=""):
+                address = h5py.h5o.get_info(group.id).addr
+                if address in seen_groups:
+                    raise ValueError("Aliased or cyclic HDF5 groups are unsupported")
+                seen_groups.add(address)
                 for name in group:
                     if not isinstance(group.get(name, getlink=True), h5py.HardLink):
                         raise ValueError("External and soft HDF5 links are unsupported")
                     obj = group[name]
+                    relative = prefix + name
                     if isinstance(obj, h5py.Dataset):
-                        paths.add(obj.name.lstrip("/"))
+                        if obj.is_virtual or obj.external:
+                            raise ValueError("Virtual or externally stored datasets are unsupported")
+                        paths.add(relative)
                     else:
-                        visit(obj)
+                        visit(obj, relative + "/")
             visit(self.h5)
             if paths != set(self.entries) | {"manifest"}:
                 raise ValueError("Dataset inventory mismatch")
             if verify:
                 self.verify()
         except BaseException:
-            self.h5.close()
+            self.file.close()
             raise
 
     def verify(self):
@@ -179,7 +188,7 @@ class Reader:
         return json.loads(self.h5[name][...].tobytes())
 
     def close(self):
-        self.h5.close()
+        self.file.close()
 
     def __enter__(self):
         return self

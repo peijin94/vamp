@@ -9,10 +9,9 @@ import numpy as np
 from run_wsclean import snapshot
 from varquanms.archive import compare_ms, read_column
 from varquanms.cli import _write_new
-from varquanms.container import Reader
 from varquanms.inspection import _open
 from varquanms.metadata import equal
-from varquanms.partitioned import decode_partitioned, _load
+from varquanms.partitioned import decode_partitioned, _load, partition_reader, partition_verification
 
 
 def main():
@@ -37,16 +36,16 @@ def main():
                     'elapsed_seconds':None,'note':'Export occurred in an earlier decoder invocation; its wall time was not retained.'}
     else:
         exported = decode_partitioned(args.bundle, args.restored, ms_v2_data=args.ms_v2_data)
-        manifest = json.loads((args.bundle/'manifest.json').read_text())
+        _, manifest = _load(args.bundle)
     selected = manifest['config']['columns'] if manifest['config']['mode'] != 'lossless' else []
     selected = list(selected) + sorted({c for part in manifest['partitions'] for c,q in part['summary'].get('weights_quality', {}).items() if not q['original_bits_exact']})
     checks = compare_ms(args.source, args.restored, approximate_columns=selected,
                         keep_calib_only=manifest['config'].get('keep_calib_only', False), calib_config=manifest['config'])
     with _open(args.restored) as t:
         for part in manifest['partitions']:
-            validated = json.loads((args.bundle/part['verification']).read_text())
+            validated = partition_verification(args.bundle, part)
             if validated['status'] != 'passed': raise ValueError('Partition did not pass source verification')
-            with Reader(args.bundle/part['archive']) as reader:
+            with partition_reader(args.bundle, part) as reader:
                 spec = next(s for s in reader.manifest['tables'] if s['path'] == '.')
                 for name in selected:
                     values = read_column(reader, spec['columns'][name], 0, part['stop']-part['start'])

@@ -79,6 +79,10 @@ def encode_partitioned(source, output, config=None):
         raise ValueError("Ordered partition bundles currently require exact flag preservation")
     discover_tables(source)
     names, runs = context_runs(source)
+    distribution_references = None
+    if config.normalized_bounds is not None:
+        from .references import sample_references
+        distribution_references = sample_references(source, config)
     original_bytes = sum(p.stat().st_size for p in source.rglob("*") if p.is_file())
     staged = Path(tempfile.mkdtemp(prefix=output.name + ".", suffix=".partial", dir=output.parent))
     manifest = {"schema": SCHEMA, "status": "complete", "config": config.to_dict(),
@@ -87,6 +91,8 @@ def encode_partitioned(source, output, config=None):
                 "mapping": "Original rows [start,stop) equal local rows [0,stop-start); no averaging or row permutation",
                 "scope": "Contiguous numeric contexts; each partition must pass the existing archive preflight. All subtables are repeated exactly in every archive."}
     signature = None
+    if distribution_references is not None:
+        manifest['distribution_references'] = distribution_references
     for index, (start, stop) in enumerate(runs):
         copying = time.perf_counter()
         with tempfile.TemporaryDirectory(prefix="partition-ms-", dir=output.parent) as scratch:
@@ -102,7 +108,8 @@ def encode_partitioned(source, output, config=None):
             inspection = inspect_ms(part, config.columns, config.io_chunk_rows)
             inspection_seconds = time.perf_counter() - scanning
             name = f"partition-{index:04d}.h5"
-            summary = encode(part, staged / name, config, inspection)
+            summary = encode(part, staged / name, config, inspection,
+                             distribution_references=distribution_references)
             summary["archive"] = name  # Relative to the bundle after publication.
             with Reader(staged / name) as reader:
                 current = _signature(reader.manifest)
@@ -158,6 +165,8 @@ def _load(bundle):
         with Reader(bundle / part["archive"]) as reader:
             if reader.manifest["source"]["main_row_count"] != stop-start or reader.manifest["config"] != manifest["config"]:
                 raise ValueError("Partition row count/config mismatch")
+            if reader.manifest.get('distribution_references') != manifest.get('distribution_references'):
+                raise ValueError('Partition distribution references differ')
             current = _signature(reader.manifest)
             if signature is not None and current != signature:
                 raise ValueError("Partition schemas/subtables differ")
@@ -246,4 +255,5 @@ def bundle_summary(bundle, manifest=None):
             "sum_encode_seconds_excluding_inspection": sum(p["summary"]["elapsed_seconds"] for p in manifest["partitions"]),
             "sum_inspection_seconds": sum(p["inspection_seconds"] for p in manifest["partitions"]),
             "sum_partition_copy_seconds": sum(p["copy_seconds"] for p in manifest["partitions"]),
+            "global_reference_sampling_seconds": manifest.get('distribution_references', {}).get('elapsed_seconds', 0.),
             "elapsed_seconds_including_copy_inspection_verification": manifest["elapsed_seconds_including_copy_inspection_verification"]}

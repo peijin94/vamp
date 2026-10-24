@@ -476,3 +476,29 @@ Original per-partition byte counts remain provenance, not the shared file's
 physical accounting. `shared_summary` counts each unique HDF5 object once;
 all remaining file bytes count as container, links, manifests and verification
 overhead. Compaction time is additional to the original MS encoding time.
+
+## Distribution-normalized acceptance policy
+
+`config.normalized_bounds.reference=distribution-v1` selects the encoder policy
+defined in [normalized budgets](../devnotes/normalized-budgets.md). Enabled
+`epsilon_G/S/D/R` coefficients multiply sampled global component std, block
+component std, pooled raw component MAD and uncentred component RMS. Their
+minimum T gives an MSE ceiling T²; maximum error, bias, baseline MSE and optional
+p99 limits are dimensionless multiples. There is no fixed absolute error floor.
+Legacy absolute/relative/noise budget fields cannot be combined with this mode.
+
+The scientific manifest records `distribution_references`, schema
+`varquanms.distribution-references/1`, containing the reproducible sampling
+policy, source row count and configuration/column/product/auto-cross reference
+groups. Each quantized column binds to a `distribution_reference_key` and
+records its matching references. The reader checks the identities, counts,
+sampling policy, std convention and column bindings before accepting the file.
+Partition-bundle and shared-file root references must equal every partition's
+reference inventory. Full-source export verification independently resamples.
+
+Sample-index hashing is `splitmix64-row-channel-product-v1`, as specified in the
+linked note and `references.py`. Population std/MAD/RMS use float64 original
+unflagged finite values; no thermal-noise interpretation is implied. Reference
+statistics and error limits are encoder/verification provenance. Reconstruction
+still uses only the existing stored scale, centre, gamma, packed codes and exact
+exceptions; no new codec mapping or decoder randomness is introduced.

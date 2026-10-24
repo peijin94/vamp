@@ -22,7 +22,10 @@ def main():
     p.add_argument('--source',type=Path,default=Path('data/working/lwa-15slot-flat.ms'))
     p.add_argument('--jobs',type=int,default=2)
     p.add_argument('--cases',nargs='*')
-    p.add_argument('--repeat-only',action='store_true',help='Repeat CLEAN on already verified exports')
+    stages=p.add_mutually_exclusive_group()
+    stages.add_argument('--repeat-only',action='store_true',help='Repeat CLEAN on already verified exports')
+    stages.add_argument('--image-only',action='store_true',help='First CLEAN on already verified exports')
+    stages.add_argument('--archive-only',action='store_true',help='Encode, verify/export and measure visibility errors')
     args=p.parse_args()
     if not 1<=args.jobs<=2:raise ValueError('Use one or two pipelines')
     if args.root.resolve().is_relative_to(args.source.resolve()):
@@ -55,15 +58,16 @@ def main():
             if result.returncode or not completed.exists():raise RuntimeError(f'{name}: {label} failed; see stage log')
         bundle=Path(str(base)+'.bundle');shared=Path(str(base)+'.h5');ms=Path(str(base)+'.ms')
         report=lambda stage:args.root/(name+'-'+stage+'.json')
-        if args.repeat_only:
+        if args.repeat_only or args.image_only:
             verified=json.loads(report('export').read_text())
             if verified['status']!='passed':raise ValueError('Repeat requires verified export')
-            images=args.root/(name+'-repeat-images')
-            stage('image-repeat','run_wsclean.py',[ms,'--output',images,'--data-column','CORRECTED_DATA',
+            images=args.root/(name+('-repeat-images' if args.repeat_only else '-images'))
+            label='repeat-comparison' if args.repeat_only else 'comparison'
+            stage('image-repeat' if args.repeat_only else 'image','run_wsclean.py',[ms,'--output',images,'--data-column','CORRECTED_DATA',
                   '--clean-profile','calibrated','--threads','8','--beam-from',
                   'results/calibrated-template/reference/image-image.fits'],images/'complete.json')
-            stage('repeat-comparison','compare_wsclean.py',['results/calibrated-template/reference',images,
-                  '--mask','results/calibrated-template/above10deg.fits','--report',report('repeat-comparison')],report('repeat-comparison'))
+            stage(label,'compare_wsclean.py',['results/calibrated-template/reference',images,
+                  '--mask','results/calibrated-template/above10deg.fits','--report',report(label)],report(label))
             return name
         stage('encode','timeslot_archive.py',['encode',args.source,bundle,'--config',cfg,'--report',report('encode')],report('encode'))
         if 'payload_fraction_target' in case:
@@ -92,6 +96,7 @@ def main():
                 raise ValueError(f'{name}: physical payload exceeds target')
         stage('export','validate_partition_export.py',[shared,args.source,ms,'--report',report('export')],report('export'))
         stage('visibility','analyze_visibility_errors.py',[args.source,ms,'--report',report('visibility')],report('visibility'))
+        if args.archive_only:return name
         images=args.root/(name+'-images')
         stage('image','run_wsclean.py',[ms,'--output',images,'--data-column','CORRECTED_DATA','--clean-profile','calibrated',
               '--threads','8','--beam-from','results/calibrated-template/reference/image-image.fits'],images/'complete.json')

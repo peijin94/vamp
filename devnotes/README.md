@@ -1,5 +1,6 @@
 # Development notes
 
+- [Dimensionless G/S/D/R error budgets and reproducible global sampling](normalized-budgets.md)
 - [Ten-percent visibility payload: six-width selection and repeated calibrated images](fixed10.md)
 - [Default 3/4/6/8/12/16-bit ladder and three-bit conformance](precision-ladder-3bit.md)
 - [Selected archive: image difference versus reference residual-map RMS](fixed25-residual-rms.md)

@@ -41,6 +41,16 @@ def main():
     selected = list(selected) + sorted({c for part in manifest['partitions'] for c,q in part['summary'].get('weights_quality', {}).items() if not q['original_bits_exact']})
     checks = compare_ms(args.source, args.restored, approximate_columns=selected,
                         keep_calib_only=manifest['config'].get('keep_calib_only', False), calib_config=manifest['config'])
+    reference_check = None
+    if manifest['config'].get('normalized_bounds') is not None:
+        from varquanms.config import Config
+        from varquanms.references import sample_references
+        fresh = sample_references(args.source, Config(**manifest['config']))
+        recorded = manifest['distribution_references']
+        if any(fresh[k] != recorded[k] for k in ('schema','source_rows','sampling','groups')):
+            raise ValueError('Global distribution references differ from source resampling')
+        reference_check = dict(status='passed', source_resampling_identical=True,
+                               seconds=fresh['elapsed_seconds'])
     with _open(args.restored) as t:
         for part in manifest['partitions']:
             validated = partition_verification(args.bundle, part)
@@ -60,6 +70,7 @@ def main():
               'partitions_verified_against_source_at_encode': len(manifest['partitions']),
               'keep_calib_only': manifest['config'].get('keep_calib_only', False),
               'source_files_unchanged': True, 'source_file_sha256': before,
+              'distribution_reference_verification': reference_check,
               'elapsed_seconds_including_export_and_verification': time.perf_counter()-started,
               'scope': 'All declared exact metadata and auxiliary columns compared bitwise against the full source; selected columns match the independently decoded archives. CASA and imaging are separate checks.'}
     _write_new(args.report, json.dumps(result, indent=2, allow_nan=False)+'\n')

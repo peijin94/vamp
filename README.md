@@ -21,6 +21,9 @@ visarchive verify archive.h5 --source INPUT.ms --restored RESTORED.ms --report v
 ```
 
 Use `configs/engineering-adaptive.json` for an explicitly lossy experiment.
+The [normalized calibrated preset](configs/calibrated-normalized.json) uses
+dimensionless global-std, block-std, median-deviation and RMS error controls;
+see [the policy definition](devnotes/normalized-budgets.md).
 The [performance preset](configs/performance-adaptive.json) uses 24 CPU workers
 and optional compiled kernels; see [measured timings and setup](devnotes/performance.md).
 Optional `encode --burn-flag` discards MAIN flags and exports them as all-false;

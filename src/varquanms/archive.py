@@ -187,7 +187,7 @@ def _environment():
             "implementation_files_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(Path(__file__).parent.iterdir()) if p.is_file() and p.suffix in (".py", ".c", ".so", ".pyd")}}
 
 
-def encode(source, output, config=None, inspection=None):
+def encode(source, output, config=None, inspection=None, *, distribution_references=None):
     config = config or Config()
     config.validate()
     source = Path(source).resolve()
@@ -229,6 +229,9 @@ def encode(source, output, config=None, inspection=None):
                 raise ValueError("Quantized profile currently requires complex64 cells")
             if report["main"]["columns"][c]["logical_array_bytes"] > config.max_visibility_bytes:
                 raise ValueError("Selected visibility array exceeds max_visibility_bytes prototype limit")
+    if config.normalized_bounds is not None and distribution_references is None:
+        from .references import sample_references
+        distribution_references = sample_references(source, config)
     preflight_seconds = time.perf_counter() - started
     writer = Writer(output, config)
     manifest = {
@@ -245,6 +248,8 @@ def encode(source, output, config=None, inspection=None):
                        "source_snapshot_requirement": "Frozen input; readonly usernoread access"},
     }
     exact_started = time.perf_counter()
+    if config.normalized_bounds is not None:
+        manifest['distribution_references'] = distribution_references
     try:
         for table_index, (path, schema) in enumerate(schemas.items()):
             item = dict(schema, columns={})
@@ -264,7 +269,8 @@ def encode(source, output, config=None, inspection=None):
                             writer, t, column, prefix, scan["columns"][column], config)
                     elif table_name == "." and column in config.columns and config.mode != "lossless":
                         from .visibility import write_visibility
-                        item["columns"][column] = write_visibility(writer, t, column, prefix, config, report)
+                        item["columns"][column] = write_visibility(writer, t, column, prefix, config, report,
+                                                                   distribution_references=distribution_references)
                     else:
                         role = _exact_role(table_name, column, config.columns)
                         item["columns"][column] = _write_exact_column(

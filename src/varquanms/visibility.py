@@ -10,7 +10,7 @@ import numpy as np
 
 from .codec import _native, decode_block, encode_block, error_metrics, within_bounds
 from .config import CODEBOOK_IDS, Config
-from .error_budget import resolve_bounds
+from .error_budget import configured_bounds
 from .metadata import equal
 from .ordering import all_orders
 
@@ -163,7 +163,8 @@ def _numpy_quality(original, decoded, flags, names):
             "science_validation": "not performed"}, arrays
 
 
-def _encoded_blocks(values, flags, permutation, boundaries, product, column, name, config):
+def _encoded_blocks(values, flags, permutation, boundaries, product, column, name, config,
+                    references=None, autocorrelation=None):
     def jobs():
         for g, (start, stop) in enumerate(zip(boundaries[:-1], boundaries[1:])):
             rows = permutation[start:stop]
@@ -175,8 +176,14 @@ def _encoded_blocks(values, flags, permutation, boundaries, product, column, nam
         stamp = time.perf_counter()
         block, flagged = values[rows, lo:hi, product], flags[rows, lo:hi, product]
         gathering = time.perf_counter() - stamp
+        global_std = None
+        if config.normalized_bounds is not None:
+            if np.any(autocorrelation[rows] != autocorrelation[rows[0]]):
+                raise ValueError('Normalized blocks cannot mix auto/cross classes')
+            label = 'auto' if autocorrelation[rows[0]] else 'cross'
+            global_std = references[name][label]['component_std']
         chosen = encode_block(block, flagged, config, config.bounds(name),
-                              stream=(config.columns.index(column), product, g, segment))
+                              stream=(config.columns.index(column), product, g, segment), global_std=global_std)
         chosen.timings["memory_gathering"] = gathering
         return rows, lo, hi, chosen
 
@@ -195,7 +202,7 @@ def _encoded_blocks(values, flags, permutation, boundaries, product, column, nam
                 yield pending.popleft().result()
 
 
-def write_visibility(writer, t, column, prefix, config, inspection):
+def write_visibility(writer, t, column, prefix, config, inspection, *, distribution_references=None):
     timings = Counter()
     stamp = time.perf_counter()
     values = np.asarray(t.getcol(column))
@@ -209,6 +216,12 @@ def write_visibility(writer, t, column, prefix, config, inspection):
     orders, statistics, counts = all_orders(values, flags, pairs, uvw, config, timings)
     rows, channels, products = values.shape
     names = inspection["layout"]["configurations"][0]["correlation_names"]
+    references = None
+    if config.normalized_bounds is not None:
+        from .references import column_references
+        references = column_references(t,column,distribution_references)
+        if set(references) != set(names):
+            raise ValueError('Distribution reference correlation identities differ')
     reconstructed = np.empty_like(values)
     spec = {"encoding": "quantized", "row_count": rows, "cell_shape": [channels, products],
             "dtype": "<c8", "codec": config.codebook, "channel_segment": config.channel_segment,
@@ -216,6 +229,10 @@ def write_visibility(writer, t, column, prefix, config, inspection):
             "statistics": writer.put(prefix + "/amplitude_medians", statistics, "quantization_statistics"),
             "valid_counts": writer.put(prefix + "/valid_counts", counts, "quantization_statistics")}
     shared_permutation_path = None
+    if references is not None:
+        spec['distribution_references'] = references
+        from .references import key, table_context
+        spec['distribution_reference_key'] = key(table_context(t))
     worker_timings = Counter()
     for p, order in enumerate(orders):
         product_prefix = prefix + f"/p{p}"
@@ -238,7 +255,8 @@ def write_visibility(writer, t, column, prefix, config, inspection):
         buffered, buffered_size, written = [], 0, 0
         pipeline_start = time.perf_counter()
         previous_writes = timings["payload_writing"]
-        for source_rows, lo, hi, chosen in _encoded_blocks(values, flags, permutation, boundaries, p, column, names[p], config):
+        for source_rows, lo, hi, chosen in _encoded_blocks(values, flags, permutation, boundaries, p, column, names[p], config,
+                                                         references, pairs[:,0] == pairs[:,1]):
             worker_timings.update(chosen.timings)
             if config.workers == 1:
                 timings.update(chosen.timings)
@@ -362,6 +380,13 @@ def verify_visibility(reader, spec, t, column, configuration):
     config.validate()
     decoded = read_visibility(reader, spec)
     original, flags = np.asarray(t.getcol(column)), _flags(t)
+    autocorrelation = np.asarray(t.getcol('ANTENNA1')) == np.asarray(t.getcol('ANTENNA2'))
+    references = None
+    if config.normalized_bounds is not None:
+        from .references import column_references
+        references = column_references(t,column,reader.manifest.get('distribution_references'))
+        if references != spec.get('distribution_references'):
+            raise ValueError('Column distribution references differ from archive inventory')
     method = spec["quality_summary"].get("calculation", "numpy-v1")
     summary, arrays = quality(original, decoded, flags, spec["product_names"], method, config.workers)
     if config.keep_calib_only:
@@ -383,8 +408,14 @@ def verify_visibility(reader, spec, t, column, configuration):
             rows, lo, hi, block = read_visibility_block(reader, spec, p, index, layout)
             valid = ~flags[rows, lo:hi, p] & np.isfinite(original[rows, lo:hi, p])
             measured = error_metrics(original[rows, lo:hi, p], block, valid)
-            bounds = resolve_bounds(original[rows, lo:hi, p], flags[rows, lo:hi, p],
-                                    config.bounds(name), config.relative_bounds)
+            global_std = None
+            if references is not None:
+                if np.any(autocorrelation[rows] != autocorrelation[rows[0]]):
+                    raise ValueError('Normalized block mixes auto/cross classes')
+                label = 'auto' if autocorrelation[rows[0]] else 'cross'
+                global_std = references[name][label]['component_std']
+            bounds = configured_bounds(original[rows, lo:hi, p], flags[rows, lo:hi, p],
+                                       config, config.bounds(name), global_std)
             if not within_bounds(measured, bounds):
                 raise ValueError(f"Block failed measured error budget: product {name}, block {index}")
         if not within_bounds(summary["by_product"][name], config.bounds(name)):

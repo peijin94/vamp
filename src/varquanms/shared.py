@@ -104,6 +104,8 @@ def load_shared(path):
                 if (reader.manifest['source']['main_row_count'] != stop-start
                         or reader.manifest['config'] != manifest['config']):
                     raise ValueError('Shared partition row count/config mismatch')
+                if reader.manifest.get('distribution_references') != manifest.get('distribution_references'):
+                    raise ValueError('Shared partition distribution references differ')
                 current = _signature(reader.manifest)
                 if signature is not None and current != signature:
                     raise ValueError('Shared partition schemas/subtables differ')

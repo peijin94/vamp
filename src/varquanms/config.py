@@ -46,6 +46,7 @@ class Config:
     max_baseline_component_mse: float | None = None
     max_p99_error: float | None = None
     relative_bounds: dict | None = None
+    normalized_bounds: dict | None = None
     product_bounds: dict = field(default_factory=dict)
     noise: dict | None = None
     max_visibility_bytes: int = 2 * 1024**3
@@ -135,6 +136,12 @@ class Config:
         if self.relative_bounds is not None:
             from .error_budget import validate_relative_bounds
             validate_relative_bounds(self.relative_bounds)
+        if self.normalized_bounds is not None:
+            from .error_budget import validate_normalized_bounds
+            validate_normalized_bounds(self.normalized_bounds)
+            if (any(v is not None for v in bounds.values()) or self.relative_bounds is not None
+                    or self.product_bounds or self.noise is not None):
+                raise ValueError("Normalized epsilon bounds replace absolute, relative, product and noise budgets; do not mix them")
         if self.noise is not None:
             if not isinstance(self.noise, dict) or set(self.noise) != {"component_variance", "epsilon", "provenance", "validated"}:
                 raise ValueError("noise requires component_variance, epsilon, provenance and validated")
@@ -146,7 +153,7 @@ class Config:
                     raise ValueError(f"noise.{key} must be positive and finite")
             if not math.isfinite(self.noise["component_variance"] * self.noise["epsilon"]):
                 raise ValueError("Combined thermal-noise budget is not finite")
-        if self.mode != "lossless":
+        if self.mode != "lossless" and self.normalized_bounds is None:
             relative = self.relative_bounds or {}
             if self.max_component_mse is None and self.noise is None and 'max_component_rmse' not in relative:
                 raise ValueError("Lossy encoding requires an absolute MSE bound, relative RMSE bound or a validated supplied noise model")

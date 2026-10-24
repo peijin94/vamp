@@ -141,6 +141,8 @@ class Reader:
                 raise ValueError("Unsupported scientific schema")
             burned_columns(self.manifest)
             validate_manifest(self.manifest)
+            from .references import validate_reference_manifest
+            validate_reference_manifest(self.manifest)
             self.entries = {entry["path"]: entry for entry in self.manifest["inventory"]}
             if len(self.entries) != len(self.manifest["inventory"]):
                 raise ValueError("Duplicate dataset inventory entries")

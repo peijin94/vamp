@@ -1,0 +1,30 @@
+{
+  "mode": "adaptive",
+  "columns": ["CORRECTED_DATA"],
+  "keep_calib_only": true,
+  "weight_bits": 4,
+  "baseline_group": 128,
+  "channel_segment": 48,
+  "ordering": "amplitude",
+  "bits": [3, 4, 6, 8, 12, 16],
+  "codebook": "power-midrise-v1",
+  "power_center": "median",
+  "power_gammas": [1.0, 0.5, 0.25],
+  "power_gamma_policy": "max-std-v1",
+  "power_ratio_reference": 4.0,
+  "normalized_bounds": {
+    "reference": "distribution-v1",
+    "epsilon_G": 0.02,
+    "epsilon_S": 0.02,
+    "epsilon_D": 0.03,
+    "epsilon_R": 0.02,
+    "sampling_fraction": 0.02,
+    "sampling_seed": 20261024,
+    "minimum_samples": 128,
+    "max_error_factor": 10.0,
+    "bias_factor": 1.0,
+    "baseline_mse_factor": 2.0,
+    "p99_factor": null
+  },
+  "workers": 24
+}

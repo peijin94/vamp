@@ -32,6 +32,8 @@ def load_blocks(ms, base, groups=64):
             pairs = np.column_stack([t.getcol(c, start, stop-start) for c in ('ANTENNA1','ANTENNA2')])
             uvw = t.getcol('UVW', start, stop-start)
             ddids = np.unique(t.getcol('DATA_DESC_ID', start, stop-start))
+            from varquanms.references import CONFIG_COLUMNS, key
+            configuration_key = key({c:int(t.getcell(c,start)) for c in CONFIG_COLUMNS if c in t.colnames()})
         if len(ddids) != 1 or data.shape[1] != 48:
             raise ValueError('This study requires one 48-channel configuration per time context')
         with _open(ms/'DATA_DESCRIPTION') as t: polid = t.getcell('POLARIZATION_ID', int(ddids[0]))
@@ -45,7 +47,8 @@ def load_blocks(ms, base, groups=64):
                 for lo in range(0,data.shape[1],base.channel_segment):
                     hi=min(data.shape[1],lo+base.channel_segment)
                     a, f = data[rows,lo:hi,product], flags[rows,lo:hi,product]
-                    jobs.append(dict(integration=integration, product=names[product], group=int(index),channel_lo=lo,channel_hi=hi,
+                    jobs.append(dict(integration=integration, product=names[product], configuration_key=configuration_key,
+                        group=int(index),channel_lo=lo,channel_hi=hi,
                         auto=bool(np.all(pairs[rows,0] == pairs[rows,1])),
                         median_baseline_m=float(np.median(np.linalg.norm(uvw[rows],axis=1))),
                         signal_component_power=component_signal_power(a,f), values=a, flags=f))

@@ -1,0 +1,50 @@
+{
+  "mode": "adaptive",
+  "columns": [
+    "CORRECTED_DATA"
+  ],
+  "deduplicate": true,
+  "burn_flag": false,
+  "keep_calib_only": true,
+  "weight_bits": 4,
+  "weight_max_relative_error": 0.01,
+  "compression": "gzip",
+  "compression_level": 1,
+  "io_chunk_rows": 1024,
+  "baseline_group": 128,
+  "channel_segment": 48,
+  "ordering": "amplitude",
+  "shared_order": false,
+  "bucket_reference": null,
+  "orientation_bins": 24,
+  "length_reference_m": 1.0,
+  "antenna_endpoint": 1,
+  "bits": [
+    4,
+    6,
+    8,
+    12,
+    16
+  ],
+  "codebook": "uniform-symmetric-v1",
+  "rounding": "nearest-even",
+  "seed": 0,
+  "scale_quantiles": [
+    1.0,
+    0.995
+  ],
+  "power_center": "median",
+  "power_gammas": [
+    1.0,
+    0.5
+  ],
+  "max_component_mse": 2048.0,
+  "max_complex_error": 452.54833995939043,
+  "max_complex_bias": 45.254833995939045,
+  "max_baseline_component_mse": 4096.0,
+  "max_p99_error": null,
+  "product_bounds": {},
+  "noise": null,
+  "max_visibility_bytes": 2147483648,
+  "workers": 24
+}

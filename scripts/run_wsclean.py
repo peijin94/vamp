@@ -29,12 +29,17 @@ def main():
     parser.add_argument("--container", default="docker.io/astronrd/linc:5.2.1")
     parser.add_argument("--size", type=int, default=2048)
     parser.add_argument("--scale", default="4amin")
-    parser.add_argument("--niter", type=int, default=10000)
+    parser.add_argument("--niter", type=int)
+    parser.add_argument("--clean-profile", choices=("legacy", "calibrated"), default="legacy",
+                        help="calibrated: user template, local RMS, 10deg horizon mask, 150000 iterations")
     parser.add_argument("--threads", type=int, default=8)
     parser.add_argument("--polarizations", default="I", choices=("I", "I,Q,U,V"))
     parser.add_argument("--data-column", default="DATA", choices=("DATA", "CORRECTED_DATA", "MODEL_DATA"))
     parser.add_argument("--beam-from", type=Path, help="use this reference FITS restoring beam for every product")
     args = parser.parse_args()
+    calibrated = args.clean_profile == "calibrated"
+    if args.niter is None:
+        args.niter = 150000 if calibrated else 10000
     source, output = args.ms.resolve(), args.output.resolve()
     if not source.is_dir() or output.exists() or output.is_relative_to(source) or not output.parent.is_dir():
         raise ValueError("Use an existing MS and a new output directory outside it")
@@ -54,12 +59,14 @@ def main():
     working = output / "working.ms"
     shutil.copytree(source, working)
     (output / "tmp").mkdir()
-    options = ["-j", str(args.threads), "-abs-mem", "8", "-no-update-model-required",
+    options = ["-j", str(args.threads), *(["-mem", "40"] if calibrated else ["-abs-mem", "8"]), "-no-update-model-required",
                "-temp-dir", "/work/tmp", "-name", "/work/image", "-data-column", args.data_column,
                "-size", str(args.size), str(args.size), "-scale", args.scale,
                "-weight", "briggs", "0", "-pol", args.polarizations,
-               "-multiscale", "-mgain", "0.8", "-niter", str(args.niter),
-               "-auto-mask", "5", "-auto-threshold", "1", "/work/working.ms"]
+               "-multiscale", "-mgain", "0.95" if calibrated else "0.8", "-niter", str(args.niter),
+               "-auto-mask", "3" if calibrated else "5", "-auto-threshold", "0.5" if calibrated else "1", "/work/working.ms"]
+    if calibrated:
+        options[-1:-1] = ["-multiscale-scale-bias", "0.8", "-local-rms", "-horizon-mask", "10deg", "-reorder"]
     beam = None
     if args.beam_from:
         from astropy.io import fits
@@ -77,9 +84,16 @@ def main():
                              "auto_mask": 5, "auto_threshold": 1, "threads": args.threads, "memory_gb": 8, "restoring_beam": beam},
               "source_sha256": before,
               "interpretation": "Identical imaging settings are an experiment, not approved scientific-error tolerances. Auto-masks are separately estimated in each image; CLEAN path changes are part of the measured effect."}
+    if calibrated:
+        record["parameters"].pop("memory_gb")
+        record["parameters"].update(clean_profile="calibrated", mgain=.95, auto_mask=3, auto_threshold=.5,
+                                    multiscale_scale_bias=.8, local_rms=True, horizon_mask="10deg",
+                                    reorder=True, memory_percent=40, update_model_required=False)
     _write_new(output / "invocation.json", json.dumps(record, indent=2) + "\n")
     with (output / "wsclean.log").open("x") as log:
+        imaging_started = time.perf_counter()
         result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT)
+        record["wsclean_elapsed_seconds"] = time.perf_counter() - imaging_started
     record.update(status="complete" if result.returncode == 0 else "failed", returncode=result.returncode,
                   elapsed_seconds=time.perf_counter() - started, source_unchanged=snapshot(source) == before,
                   fits_files=[p.name for p in sorted(output.glob("*.fits"))])

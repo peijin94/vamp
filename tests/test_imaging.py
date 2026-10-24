@@ -59,6 +59,28 @@ class ImagingTests(unittest.TestCase):
         self.assertLess(report["regions"]["celestial_valid"]["pixels"], 100)
         self.assertEqual(report["regions"]["celestial_valid"]["difference_rms"], 0)
 
+    def test_elevation_mask_excludes_errors_and_peak_outside_region(self):
+        a = np.ones((10, 10), dtype=np.float32)
+        a[4, 4] = 2
+        b = a.copy()
+        b[0, 0] = 1000
+        mask = np.ones_like(a, dtype=bool)
+        mask[0, 0] = False
+        report, _ = compare_plane(self.write('a.fits', a), self.write('b.fits', b), comparison_mask=mask)
+        self.assertEqual(report['primary_region'], 'above_elevation_cut')
+        self.assertNotIn('celestial_valid', report['regions'])
+        self.assertEqual(report['regions']['above_elevation_cut']['difference_rms'], 0)
+        self.assertEqual(report['regions']['above_elevation_cut']['pixels'], 99)
+        self.assertEqual(report['peak_shift_pixels'], 0)
+        b[0, 0] = np.nan
+        report, _ = compare_plane(self.root/'a.fits', self.write('nanoutside.fits', b), comparison_mask=mask)
+        self.assertEqual(report['regions']['above_elevation_cut']['difference_rms'], 0)
+        b[4, 4] = np.nan
+        with self.assertRaisesRegex(ValueError, 'finite pixel masks'):
+            compare_plane(self.root/'a.fits', self.write('naninside.fits', b), comparison_mask=mask)
+        with self.assertRaisesRegex(ValueError, 'mask must be boolean'):
+            compare_plane(self.root/'a.fits', self.root/'b.fits', comparison_mask=mask.astype(int))
+
     def test_run_settings_cannot_be_silently_mixed(self):
         a, b = self.root / "a", self.root / "b"
         a.mkdir()
@@ -69,6 +91,25 @@ class ImagingTests(unittest.TestCase):
         (b / "complete.json").write_text(json.dumps(record))
         with self.assertRaisesRegex(ValueError, "settings"):
             compare_run(a, b)
+
+    def test_run_mask_grid_and_binary_values_checked(self):
+        import shutil
+        a, b = self.root / 'a', self.root / 'b'
+        a.mkdir(); b.mkdir()
+        record = dict(status='complete', source_unchanged=True, parameters={}, container_id='same')
+        image = self.write('image.fits', np.ones((10, 10)))
+        for directory in (a, b):
+            (directory/'complete.json').write_text(json.dumps(record))
+            shutil.copyfile(image, directory/'image-image.fits')
+        mask = self.write('mask.fits', np.ones((10,10)), ELCUT=10.)
+        report = compare_run(a, b, mask)
+        self.assertEqual(report['comparison_mask']['pixels'], 100)
+        invalid = self.write('badmask.fits', np.full((10,10), 2))
+        with self.assertRaisesRegex(ValueError, 'only zero and one'):
+            compare_run(a, b, invalid)
+        shifted = self.write('shiftedmask.fits', np.ones((10,10)), CRVAL1=180.)
+        with self.assertRaisesRegex(ValueError, 'mask celestial grid'):
+            compare_run(a, b, shifted)
 
     def test_empty_and_zero_reference_regions_have_no_invented_ratios(self):
         a = np.zeros((2, 2))

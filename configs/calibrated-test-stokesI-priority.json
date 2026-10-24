@@ -1,0 +1,46 @@
+{
+  "mode": "adaptive",
+  "columns": [
+    "CORRECTED_DATA"
+  ],
+  "workers": 24,
+  "baseline_group": 128,
+  "channel_segment": 48,
+  "ordering": "amplitude",
+  "shared_order": false,
+  "codebook": "uniform-symmetric-v1",
+  "rounding": "nearest-even",
+  "bits": [
+    4,
+    8,
+    12,
+    16
+  ],
+  "scale_quantiles": [
+    1.0,
+    0.995
+  ],
+  "max_component_mse": 1.0,
+  "max_baseline_component_mse": 2.0,
+  "max_complex_error": 10.0,
+  "max_complex_bias": 1.0,
+  "noise": null,
+  "burn_flag": false,
+  "keep_calib_only": true,
+  "compression": "gzip",
+  "compression_level": 1,
+  "product_bounds": {
+    "XY": {
+      "max_component_mse": 256.0,
+      "max_baseline_component_mse": 512.0,
+      "max_complex_error": 160.0,
+      "max_complex_bias": 16.0
+    },
+    "YX": {
+      "max_component_mse": 256.0,
+      "max_baseline_component_mse": 512.0,
+      "max_complex_error": 160.0,
+      "max_complex_bias": 16.0
+    }
+  }
+}

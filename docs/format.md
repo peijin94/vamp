@@ -7,6 +7,29 @@ No pickle, evaluation, network access, model or downloaded codebook is used.
 Decode with `visarchive decode ARCHIVE OUTPUT.ms`; NumPy, h5py and python-casacore
 are the only runtime dependencies. These packages must already be installed.
 
+## Encoder error limits
+
+Absolute limits retain their existing units and whole-product checks. Optional
+`relative_bounds` uses `reference: "block-rms-v1"`. Its reference is
+`S = sqrt(mean(real(V)^2 + imag(V)^2)/2)` over unflagged finite samples in the
+original quantization block, evaluated in float64. The signal center is included;
+this is neither residual spread nor a noise estimate. Available fractional limits
+are `max_component_rmse`, `max_baseline_component_rmse`, `max_complex_error`,
+`max_complex_bias` and `max_p99_error`. RMSE fractions become `(fraction*S)^2`
+MSE limits; the other fractions become `fraction*S`. The baseline reference is
+the same block S, not a separate per-baseline denominator. If omitted, the
+baseline RMSE fraction defaults to the component RMSE fraction.
+
+Every configured absolute and relative limit must pass: the effective threshold
+is their minimum. Relative-only mode requires component RMSE and maximum-error
+limits. Zero-reference blocks get zero relative limits, without a hidden floor;
+flagged and nonfinite values never determine S. Overflow fails explicitly. This
+is a block-normalized criterion, not a bound on each sample's fractional error.
+Source verification recomputes each block's reference and measured errors.
+Relative criteria are block-local; absolute criteria also retain their existing
+whole-product checks. Stored configuration fully records the policy. Payload,
+decoder arithmetic, exceptions and exact fallback are unchanged.
+
 ## Scientific contents
 
 The manifest contains the source layout, original table descriptors and storage

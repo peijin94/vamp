@@ -10,6 +10,7 @@ import numpy as np
 
 from .codec import _native, decode_block, encode_block, error_metrics, within_bounds
 from .config import CODEBOOK_IDS, Config
+from .error_budget import resolve_bounds
 from .metadata import equal
 from .ordering import all_orders
 
@@ -382,7 +383,9 @@ def verify_visibility(reader, spec, t, column, configuration):
             rows, lo, hi, block = read_visibility_block(reader, spec, p, index, layout)
             valid = ~flags[rows, lo:hi, p] & np.isfinite(original[rows, lo:hi, p])
             measured = error_metrics(original[rows, lo:hi, p], block, valid)
-            if not within_bounds(measured, config.bounds(name)):
+            bounds = resolve_bounds(original[rows, lo:hi, p], flags[rows, lo:hi, p],
+                                    config.bounds(name), config.relative_bounds)
+            if not within_bounds(measured, bounds):
                 raise ValueError(f"Block failed measured error budget: product {name}, block {index}")
         if not within_bounds(summary["by_product"][name], config.bounds(name)):
             raise ValueError(f"Whole-product measured error criteria failed: {name}")

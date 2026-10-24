@@ -264,6 +264,8 @@ def encode_block(original, flags, config, bounds, stream=()):
     original = portable(original)
     if original.dtype != np.dtype("<c8") or original.ndim != 2 or not 0 < original.size <= MAX_SAMPLES or flags.shape != original.shape:
         raise ValueError("Codec expects bounded complex64[baseline,channel] blocks")
+    from .error_budget import resolve_bounds
+    bounds = resolve_bounds(original, flags, bounds, config.relative_bounds)
     mapping = CODEBOOK_IDS[config.codebook]
     native_supported = _native is not None and (not mapping or getattr(_native, "MIDRISE_V1", 0) == 1)
     if mapping == 2:

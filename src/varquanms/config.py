@@ -45,6 +45,7 @@ class Config:
     max_complex_bias: float | None = None
     max_baseline_component_mse: float | None = None
     max_p99_error: float | None = None
+    relative_bounds: dict | None = None
     product_bounds: dict = field(default_factory=dict)
     noise: dict | None = None
     max_visibility_bytes: int = 2 * 1024**3
@@ -131,6 +132,9 @@ class Config:
                 raise ValueError("Unknown per-product error bound")
             self._validate_bounds({**bounds, **values})
         self._validate_bounds(bounds)
+        if self.relative_bounds is not None:
+            from .error_budget import validate_relative_bounds
+            validate_relative_bounds(self.relative_bounds)
         if self.noise is not None:
             if not isinstance(self.noise, dict) or set(self.noise) != {"component_variance", "epsilon", "provenance", "validated"}:
                 raise ValueError("noise requires component_variance, epsilon, provenance and validated")
@@ -143,13 +147,15 @@ class Config:
             if not math.isfinite(self.noise["component_variance"] * self.noise["epsilon"]):
                 raise ValueError("Combined thermal-noise budget is not finite")
         if self.mode != "lossless":
-            if self.max_component_mse is None and self.noise is None:
-                raise ValueError("Lossy encoding requires an absolute MSE bound or a validated supplied noise model")
-            if self.max_complex_error is None:
+            relative = self.relative_bounds or {}
+            if self.max_component_mse is None and self.noise is None and 'max_component_rmse' not in relative:
+                raise ValueError("Lossy encoding requires an absolute MSE bound, relative RMSE bound or a validated supplied noise model")
+            if self.max_complex_error is None and 'max_complex_error' not in relative:
                 raise ValueError("Lossy encoding also requires max_complex_error")
             for product in self.product_bounds:
                 effective = self.bounds(product)
-                if effective["max_component_mse"] is None or effective["max_complex_error"] is None:
+                if (effective["max_component_mse"] is None and 'max_component_rmse' not in relative or
+                    effective["max_complex_error"] is None and 'max_complex_error' not in relative):
                     raise ValueError("Per-product overrides cannot remove required MSE/maximum-error bounds")
 
     @staticmethod

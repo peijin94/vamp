@@ -1,5 +1,7 @@
 # Development notes
 
+- [Fixed 25% visibility-payload budget: parameters and repeated calibrated images](fixed25.md)
+- [Absolute versus relative error limits: matched-rate calibrated imaging](absolute_relative_error.md)
 - [Gamma selection from maximum/std: matched blocks and calibrated CLEAN](gamma_max_std.md)
 - [Calibrated dataset: deeper CLEAN, elevation cut and compression tradeoffs](test_calibrated_dataset.md)
 - [Calibrated-only archives, four-bit weights and the 15-slot imaging test](calibrated-imaging.md)

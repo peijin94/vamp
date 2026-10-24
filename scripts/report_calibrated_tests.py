@@ -388,6 +388,12 @@ def write_note(result):
     if Path('reports/calibrated-gamma-ratio.json').exists():
         lines += ['Follow-up: [gamma selection from maximum/std](gamma_max_std.md) compares two ratio rules with full gamma search, '
                   'including matched-block rates, complete shared archives and the same elevation-masked CLEAN test.', '']
+    if Path('reports/calibrated-error-limits.json').exists():
+        lines += ['Follow-up: [absolute versus relative error limits](absolute_relative_error.md) compares absolute, '
+                  'block-relative and hybrid thresholds at matched sampled payload rates, with full-data archives and CLEAN images.', '']
+    if Path('reports/calibrated-fixed25.json').exists():
+        lines += ['Follow-up: [fixed 25% visibility-payload budget](fixed25.md) compares five complete finalists, '
+                  'physical byte counts and repeated calibrated images, with an opt-in measured configuration.', '']
     Path('devnotes/test_calibrated_dataset.md').write_text('\n'.join(lines))
 
 

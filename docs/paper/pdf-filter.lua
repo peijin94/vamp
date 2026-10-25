@@ -1,5 +1,14 @@
 -- PDF-only presentation: vector figures, portable links and joined captions.
 local paper_dir = pandoc.path.directory(PANDOC_STATE.input_files[1])
+-- The Markdown carries a readable H1; the PDF template already prints metadata title.
+function Pandoc(doc)
+  if doc.meta.title and #doc.blocks > 0 and doc.blocks[1].t == "Header"
+     and doc.blocks[1].level == 1
+     and pandoc.utils.stringify(doc.blocks[1].content) == pandoc.utils.stringify(doc.meta.title) then
+    doc.blocks:remove(1)
+  end
+  return doc
+end
 local function project_path(path)
   local parts = {"docs", "paper"}
   for part in path:gmatch("[^/]+") do

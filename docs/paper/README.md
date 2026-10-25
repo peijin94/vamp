@@ -3,6 +3,7 @@
 - [PDF](varquantMS.pdf)
 - [Markdown source](varquantMS.md)
 - [Figures](figs/)
+- [Preserved initial development manuscript](work_note_20261025_init_work.md)
 
 Build from the repository root:
 

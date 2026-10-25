@@ -2,6 +2,9 @@
 
 Completed 2026-10-23/24. Tracking: [Calibrated data compression #1](https://github.com/peijin94/varquanMS/issues/1). The paper is unchanged.
 
+25 October follow-up: [fixed epsilon D with the expanded bit ladder](epsd-dense.md)
+adds three calibrated-data experiments and a rewritten methods paper.
+
 Input: `lwa-15slot-flat.ms`, 15 integrations, 931,920 rows, 48 channels (63.966–68.464 MHz), XX/XY/YX/YY. The source is 4,428,203,949 bytes. All 108 files still match the original import checksums. Every archive uses the same calibrated-only policy: omit original DATA/MODEL_DATA, replace flagged values with zero, preserve flags and original UVW/metadata, and encode weights with four bits. Weights are **exact** on this dataset. Default exports recreate calibrated DATA from decoded CORRECTED_DATA.
 
 ## CLEAN template and comparison region

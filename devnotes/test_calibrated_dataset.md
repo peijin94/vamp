@@ -154,3 +154,5 @@ Follow-up: [absolute versus relative error limits](absolute_relative_error.md) c
 Follow-up: [fixed 25% visibility-payload budget](fixed25.md) compares five complete finalists, physical byte counts and repeated calibrated images, with an opt-in measured configuration.
 
 Follow-up: [10% visibility-payload budget](fixed10.md) uses the new 3/4/6/8/12/16-bit ladder and compares four full-data archives with two CLEAN runs each, including differences normalized to the reference residual RMS.
+
+Follow-up: [16% payload with dimensionless G/S/D/R budgets](fixed16.md) replaces fixed B, screens 333 coefficient/layout combinations and compares ten full-data finalists with repeated calibrated images.

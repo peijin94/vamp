@@ -34,6 +34,28 @@ error limits; separate component MSEs are measured but not individually bounded.
 Every bit-width, range and gamma candidate is measured after reconstruction.
 Failed candidates use exact float32 fallback. There is no fixed absolute floor.
 
+```mermaid
+flowchart TD
+    MS["Source values, flags and row identities"] --> SAMPLE["Seeded global sample per configuration, product and auto/cross class"]
+    SAMPLE --> G["Global component std G"]
+    MS --> BLOCK["Order baselines and form baseline × channel × 1-product blocks"]
+    BLOCK --> LOCAL["Original valid-sample references: S, D and R"]
+    G --> LIMIT["T = minimum of enabled epsilon × reference terms"]
+    LOCAL --> LIMIT
+    BLOCK --> CAND["Encode and decode 3/4/6/8/12/16-bit candidates with stored factors and exceptions"]
+    CAND --> CHECK["Measure MSE, maximum error, bias and baseline errors"]
+    BLOCK --> CHECK
+    CHECK --> SELECT["Smallest actual serialized candidate satisfying every guard"]
+    LIMIT --> SELECT
+    BLOCK --> EXACT["Exact float32 candidate"]
+    EXACT --> SELECT
+    SELECT --> STORE["Store payload, factors, maps and quality provenance"]
+```
+
+The exact candidate competes on encoded bytes as well; it can be selected even
+when a quantized candidate passes. Reference statistics are acceptance criteria,
+separate from the stored centre, range and gamma used by the decoder.
+
 Zero MAD does not imply constant data: a mostly-zero block with nonzero outliers
 can have zero MAD. If that reference is enabled, only exact reconstructions can
 pass; exceptions or compressed float32 may be chosen. Empty/all-flagged blocks
@@ -75,7 +97,8 @@ provenance and needs no source access or sampling to reconstruct visibilities.
 The 15-slot calibrated source has separate OBSERVATION_IDs for its integrations
 but otherwise one configuration. Pooling those slots gives the requested eight
 references. A fixed 2% sample, nested 3%/5% samples and an independent 2% seed
-were checked; the upcoming 16%-payload experiment reports their sensitivity.
+were checked; the [16%-payload experiment](fixed16.md) reports their sensitivity,
+333 pilot combinations, and repeated images for ten complete archives.
 
 ## Configuration and scope
 

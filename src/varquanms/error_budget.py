@@ -1,10 +1,10 @@
-"""Encoder-only block-relative error limits; no decoder format change.
+"""Encoder-only error budgets; no decoder format change.
 
-Reference S = sqrt(mean(|V|**2)/2) over unflagged finite complex samples.
-S includes a coherent center: it is signal RMS, never a thermal-noise estimate.
-Relative and absolute limits intersect. Zero-reference blocks require exact
-values for every configured relative metric; there is no implicit denominator
-floor or division by individual near-zero visibilities.
+Distribution-v1 uses sampled global std G, block std S, raw component MAD D
+and uncentered component RMS R. These signal references are not thermal noise.
+It excludes legacy absolute/relative budgets, which remain supported separately.
+Zero-reference blocks require exact values for each enabled constraint; there
+is no implicit denominator floor or division by individual near-zero values.
 """
 import math
 

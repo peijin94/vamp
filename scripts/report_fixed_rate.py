@@ -38,24 +38,28 @@ def payload_distribution(path, *, by_class=False):
                               read_column(reader,columns['ANTENNA2'],0,table['row_count']))
                         segments=(visibility['cell_shape'][0]+visibility['channel_segment']-1)//visibility['channel_segment']
                         for product in visibility['products']:
-                            perm=group[product['permutation']][...]
+                            perm=(np.arange(table['row_count']) if product['permutation'] is None
+                                  else group[product['permutation']][...])
                             boundaries=group[product['group_boundaries']][...]
-                            ordered=auto[perm];labels=[]
-                            for lo,hi in zip(boundaries[:-1],boundaries[1:]):
-                                flags=ordered[int(lo):int(hi)]
-                                assert flags.size and np.all(flags==flags[0])
-                                labels.extend(['auto' if flags[0] else 'cross']*segments)
-                            classes[product['payload']]=labels
+                            ordered=auto[perm]
+                            sums=np.r_[np.int64(0),np.cumsum(ordered,dtype='i8')]
+                            counts=sums[boundaries[1:]]-sums[boundaries[:-1]]
+                            sizes_by_group=np.diff(boundaries)
+                            assert np.all(sizes_by_group>0) and np.all((counts==0)|(counts==sizes_by_group))
+                            classes[product['payload']]=np.repeat(counts==sizes_by_group,segments)
             for entry in spec['inventory']:
                 if entry['role']!='visibility_block_payload':continue
                 ds=group[entry['path']]
                 parent=ds.parent;offsets=parent['offsets'][...]
+                # Millions of tiny per-baseline blocks must not become millions
+                # of HDF5 reads. Keep the report's cache bounded to 64 MiB.
+                payload=memoryview(ds[...]) if ds.size <= 64*1024**2 else None
                 for index,(lo,hi) in enumerate(zip(offsets[:-1],offsets[1:])):
-                    blob=ds[int(lo):int(hi)].tobytes()
+                    blob=payload[int(lo):int(hi)] if payload is not None else ds[int(lo):int(hi)].tobytes()
                     bits,_,_,count,_,_=HEADER.unpack_from(blob)
                     label=str(bits) if bits else 'float32'
                     sizes[label]+=len(blob);samples[label]+=count
-                    if by_class:class_samples[classes[entry['path']][index]][label]+=count
+                    if by_class:class_samples['auto' if classes[entry['path']][index] else 'cross'][label]+=count
                     if bits==0 and np.all(decode_block(blob,(count,)).view('<u4')==0):
                         zero_samples+=count;zero_bytes+=len(blob)
     result=dict(serialized_bytes_by_bits=dict(sizes),samples_by_bits=dict(samples),
@@ -96,7 +100,7 @@ def collect(partial=False,reuse_preview=False):
         assert categories['visibility_block_payload'] <= rate['payload_bytes']
         rate['physical_payload_bytes']=categories['visibility_block_payload']
         rate['physical_payload_fraction']=rate['physical_payload_bytes']/rate['original_complex64_bytes']
-        rate['payload_plus_permutations_and_indexes_bytes']=sum(categories[k] for k in
+        rate['payload_plus_permutations_and_indexes_bytes']=sum(categories.get(k,0) for k in
             ('visibility_block_payload','permutations','visibility_indexes'))
         if name in cached:
             e=cached[name]
@@ -192,9 +196,9 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
     residual_rms=result.get('reference_residual_statistics',{}).get('rms')
     image_fraction=lambda c,product='image': (c['products'][f'image-{product}.fits']['regions']['above_elevation_cut']['difference_rms']/residual_rms
         if residual_rms else fraction(c,product))
-    labels=[f"{e['config']['baseline_group']}×{e['config']['channel_segment']}\n"+
-            ('search' if e['config']['power_gamma_policy']=='search' else 'max/std')+'\n'+e['family'] for e in cases]
-    fig,axes=plt.subplots(1,2,figsize=(11,4.8),constrained_layout=True)
+    labels=[e.get('plot_label',f"{e['config']['baseline_group']}×{e['config']['channel_segment']}\n"+
+            ('search' if e['config']['power_gamma_policy']=='search' else 'max/std')+'\n'+e['family']) for e in cases]
+    fig,axes=plt.subplots(1,2,figsize=(max(11,1.65*len(cases)),5),constrained_layout=True)
     for x,e in enumerate(cases):
         axes[0].bar(x,100*e['rate']['fraction'],color='#4393c3')
         a=100*image_fraction(e['comparison']);b=100*image_fraction(e['repeat']['versus_reference'])
@@ -202,13 +206,13 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
         axes[1].scatter([x,x],[a,b],color='#b2182b',label='Restored: two runs' if x==0 else None)
         axes[1].scatter(x,100*image_fraction(e['comparison'],'dirty'),marker='s',color='#2166ac',label='Dirty: first run' if x==0 else None)
     axes[0].axhline(ceiling,color='black',linestyle='--');axes[0].set(ylabel='Serialized visibility bytes / complex64 (%)',ylim=(0,1.12*ceiling))
-    axes[1].set(ylabel='Difference RMS / reference residual RMS (%)' if residual_rms else 'RMS difference / reference RMS (%)',yscale='log');axes[1].legend()
+    axes[1].set(ylabel='Difference RMS / reference residual RMS (%)' if residual_rms else 'RMS difference / reference RMS (%)',yscale='log');axes[1].legend(loc='upper left')
     axes[1].yaxis.set_major_formatter(StrMethodFormatter('{x:g}'))
     axes[1].yaxis.set_minor_formatter(StrMethodFormatter('{x:g}'))
     for ax in axes:ax.set(xticks=range(len(cases)),xticklabels=labels);ax.tick_params(axis='x',labelsize=8);ax.grid(axis='y',alpha=.2)
     fig.suptitle('Fixed visibility-payload budget; same 15-integration MS and above-10° image mask')
     fig.savefig(FIGS/(prefix+'-rate.png'),dpi=170);plt.close(fig)
-    fig,axes=plt.subplots(1,2,figsize=(13,5),constrained_layout=True);y=np.arange(len(cases))
+    fig,axes=plt.subplots(1,2,figsize=(13,max(5,.8*len(cases))),constrained_layout=True);y=np.arange(len(cases))
     for ax,key,title in zip(axes,('samples_by_bits','serialized_bytes_by_bits'),('All complex samples (%)','Serialized payload bytes (%)')):
         left=np.zeros(len(cases))
         for bits,color in zip(('3','4','6','8','12','16','float32'),('#fddbc7','#ef8a62','#92c5de','#4393c3','#2166ac','#542788','#aaa')):

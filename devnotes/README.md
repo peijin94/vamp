@@ -1,5 +1,6 @@
 # Development notes
 
+- [Sixteen-percent payload: G/S/D/R combinations, block sizes and calibrated images](fixed16.md)
 - [Dimensionless G/S/D/R error budgets and reproducible global sampling](normalized-budgets.md)
 - [Ten-percent visibility payload: six-width selection and repeated calibrated images](fixed10.md)
 - [Default 3/4/6/8/12/16-bit ladder and three-bit conformance](precision-ladder-3bit.md)

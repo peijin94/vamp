@@ -90,7 +90,7 @@ def main():
             categories=compact['stored_bytes_by_category']
             rate['physical_payload_bytes']=categories['visibility_block_payload']
             rate['physical_payload_within_target']=rate['physical_payload_bytes']<=rate['target']*rate['original_complex64_bytes']
-            rate['payload_plus_permutations_and_indexes_bytes']=sum(categories[k] for k in
+            rate['payload_plus_permutations_and_indexes_bytes']=sum(categories.get(k,0) for k in
                 ('visibility_block_payload','permutations','visibility_indexes'))
             report('rate').write_text(json.dumps(rate,indent=2)+'\n')
             if not rate['physical_payload_within_target']:

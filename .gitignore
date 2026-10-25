@@ -3,6 +3,8 @@
 /data/archives/
 /results/
 /plt_tmp/
+/agent.md
+/mem.md
 /.venv/
 /.pytest_cache/
 __pycache__/

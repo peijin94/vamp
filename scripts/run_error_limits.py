@@ -35,12 +35,16 @@ def ensure_case_config(path, config):
 
 
 def main():
+    from stokes_validation import STANDARD_STOKES, ensure_references, image_paths, restored_image
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--plan',type=Path,default=Path('results/calibrated-error-limits/screen-final/plan.json'))
     p.add_argument('--root',type=Path,default=Path('results/calibrated-error-limits'))
     p.add_argument('--source',type=Path,default=Path('data/working/lwa-15slot-flat.ms'))
     p.add_argument('--jobs',type=int,default=2)
     p.add_argument('--cases',nargs='*')
+    p.add_argument('--stokes',nargs='+',choices=STANDARD_STOKES,default=list(STANDARD_STOKES))
+    p.add_argument('--reference-root',type=Path,default=Path('results/calibrated-template'))
+    p.add_argument('--comparison-mask',type=Path,default=Path('results/calibrated-template/above10deg.fits'))
     stages=p.add_mutually_exclusive_group()
     stages.add_argument('--repeat-only',action='store_true',help='Repeat CLEAN on already verified exports')
     stages.add_argument('--image-only',action='store_true',help='First CLEAN on already verified exports')
@@ -59,6 +63,8 @@ def main():
         if set(args.cases)-{x['name'] for x in plan}:raise ValueError('Unknown case')
         plan=[x for x in plan if x['name'] in args.cases]
     env={**os.environ,'PYTHONPATH':'src','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MPLCONFIGDIR':'/tmp/varquanms-mpl'}
+    if len(set(args.stokes))!=len(args.stokes):raise ValueError('Duplicate Stokes selections')
+    references={} if args.archive_only else ensure_references(args.source,args.reference_root,args.stokes,env)
     def run(case):
         name=case['name']; base=args.root/name
         cfg=args.root/(name+'-config.json')
@@ -76,16 +82,23 @@ def main():
             if result.returncode or not completed.exists():raise RuntimeError(f'{name}: {label} failed; see stage log')
         bundle=Path(str(base)+'.bundle');shared=Path(str(base)+'.h5');ms=Path(str(base)+'.ms')
         report=lambda stage:args.root/(name+'-'+stage+'.json')
+        def image_and_compare(repeat=False):
+            for pol in args.stokes:
+                images,comparison=image_paths(args.root,name,pol,repeat)
+                suffix=('-v' if pol=='V' else '')+('-repeat' if repeat else '')
+                reference=references[pol]
+                stage('image'+suffix,'run_wsclean.py',[ms,'--output',images,
+                      '--data-column','CORRECTED_DATA','--clean-profile','calibrated','--threads','8',
+                      '--polarizations',pol,'--beam-from',restored_image(reference)],images/'complete.json')
+                actual=json.loads((images/'complete.json').read_text())
+                if actual.get('parameters',{}).get('polarizations')!=pol:
+                    raise ValueError('Existing imaging output has the wrong Stokes selection')
+                stage('comparison'+suffix,'compare_wsclean.py',[reference,images,
+                      '--mask',args.comparison_mask,'--report',comparison],comparison)
         if args.repeat_only or args.image_only:
             verified=json.loads(report('export').read_text())
             if verified['status']!='passed':raise ValueError('Repeat requires verified export')
-            images=args.root/(name+('-repeat-images' if args.repeat_only else '-images'))
-            label='repeat-comparison' if args.repeat_only else 'comparison'
-            stage('image-repeat' if args.repeat_only else 'image','run_wsclean.py',[ms,'--output',images,'--data-column','CORRECTED_DATA',
-                  '--clean-profile','calibrated','--threads','8','--beam-from',
-                  'results/calibrated-template/reference/image-image.fits'],images/'complete.json')
-            stage(label,'compare_wsclean.py',['results/calibrated-template/reference',images,
-                  '--mask','results/calibrated-template/above10deg.fits','--report',report(label)],report(label))
+            image_and_compare(args.repeat_only)
             return name
         stage('encode','timeslot_archive.py',['encode',args.source,bundle,'--config',cfg,
               '--partition-workers',case.get('partition_workers',1),'--report',report('encode')],report('encode'))
@@ -116,11 +129,7 @@ def main():
         stage('export','validate_partition_export.py',[shared,args.source,ms,'--report',report('export')],report('export'))
         stage('visibility','analyze_visibility_errors.py',[args.source,ms,'--report',report('visibility')],report('visibility'))
         if args.archive_only:return name
-        images=args.root/(name+'-images')
-        stage('image','run_wsclean.py',[ms,'--output',images,'--data-column','CORRECTED_DATA','--clean-profile','calibrated',
-              '--threads','8','--beam-from','results/calibrated-template/reference/image-image.fits'],images/'complete.json')
-        stage('comparison','compare_wsclean.py',['results/calibrated-template/reference',images,'--mask',
-              'results/calibrated-template/above10deg.fits','--report',report('comparison')],report('comparison'))
+        image_and_compare()
         return name
     with ThreadPoolExecutor(max_workers=args.jobs) as pool:
         for name in pool.map(run,plan):print(json.dumps(dict(case=name,status='complete')),flush=True)

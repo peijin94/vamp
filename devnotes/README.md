@@ -1,5 +1,7 @@
 # Development notes
 
+- [Calibrated archive profiling, optimization and standard I/V validation](calibrated-performance.md)
+
 - [Fixed epsilon D: expanded bit ladder and calibrated image comparisons](epsd-dense.md)
 - [Sixteen-percent payload: G/S/D/R combinations, block sizes and calibrated images](fixed16.md)
 - [Dimensionless G/S/D/R error budgets and reproducible global sampling](normalized-budgets.md)

@@ -156,19 +156,25 @@ class NormalizedBudgetTests(unittest.TestCase):
                 t.putcol('TIME',np.array([1.,1.,2.,2.]))
             before=snapshot(source);cfg=configuration()
             for n in (1,2):
-                encode_partitioned(source,root/f'archive{n}',cfg,partition_workers=n)
+                execution_cfg=cfg if n==1 else replace(cfg,workers=2)
+                with patch('varquanms.partitioned.os.cpu_count',return_value=4):
+                    encode_partitioned(source,root/f'archive{n}',execution_cfg,partition_workers=n)
                 decode_partitioned(root/f'archive{n}',root/f'export{n}.ms')
             self.assertTrue(compare_ms(root/'export1.ms',root/'export2.ms'))
             _,a=_load(root/'archive1');_,b=_load(root/'archive2')
             self.assertEqual(b['execution']['partition_workers'],2)
             for pa,pb in zip(a['partitions'],b['partitions']):
                 with Reader(root/'archive1'/pa['archive']) as ra,Reader(root/'archive2'/pb['archive']) as rb:
+                    self.assertEqual(ra.manifest['source']['row_window']['start'],pa['start'])
+                    self.assertIsNone(pa['summary']['whole_archive_ratio'])
                     ia={e['path']:e for e in ra.manifest['inventory']}
                     ib={e['path']:e for e in rb.manifest['inventory']}
                     self.assertEqual(ia,ib)
                     for path in ia:self.assertEqual(ra.h5[path][...].tobytes(),rb.h5[path][...].tobytes())
             self.assertEqual(before,snapshot(source))
-            with self.assertRaises(ValueError):encode_partitioned(source,root/'bad',replace(cfg,workers=2),partition_workers=2)
+            with patch('varquanms.partitioned.os.cpu_count',return_value=2):
+                with self.assertRaisesRegex(ValueError,'CPU budget'):
+                    encode_partitioned(source,root/'bad',replace(cfg,workers=2),partition_workers=2)
             with self.assertRaises(ValueError):encode_partitioned(source,root/'bad',cfg,partition_workers=0)
 
 

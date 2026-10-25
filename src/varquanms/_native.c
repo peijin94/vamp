@@ -271,9 +271,31 @@ fail_quality:
     PyBuffer_Release(&a);PyBuffer_Release(&b);PyBuffer_Release(&f);return NULL;
 }
 
-/* Power levels are evaluated with the same ordered binary64 operations as the
- * reference decoder. No pow(), cached external codebook, or fused arithmetic. */
+/* Immutable in-process levels, generated with the reference binary64 order.
+ * No external codebook, pow(), or fused arithmetic is involved. */
+static double power_levels[3][131072];
+static int power_levels_ready=0;
+static void initialize_power_levels(void) {
+    if(fegetround()!=FE_TONEAREST)return;
+    for(int bits=2;bits<=16;bits++) if(valid_bits(bits)) {
+        int maximum=(1<<bits)-1;
+        for(int q=0;q<=maximum;q++) {
+            double u=(double)(2*q-maximum)/maximum,magnitude=fabs(u);
+            for(int g=0;g<3;g++) {
+                power_levels[g][maximum+1+q]=copysign(magnitude,u);
+                magnitude=magnitude*magnitude;
+            }
+        }
+    }
+    power_levels_ready=1;
+}
+
 static float power_value(int q,int maximum,float radius,float center,float gamma) {
+    if(power_levels_ready) {
+        int g=gamma==1?0:gamma==.5f?1:2;
+        double residual=power_levels[g][maximum+1+q]*(double)radius;
+        return (float)(residual+(double)center);
+    }
     double u=(double)(2*q-maximum)/maximum,magnitude=fabs(u);
     if(gamma!=1) {magnitude=magnitude*magnitude;if(gamma==.25f) magnitude=magnitude*magnitude;}
     double residual=copysign(magnitude,u)*(double)radius;
@@ -390,6 +412,7 @@ static PyMethodDef methods[]={
 };
 static struct PyModuleDef module={PyModuleDef_HEAD_INIT,"_native",NULL,-1,methods};
 PyMODINIT_FUNC PyInit__native(void) {
+    initialize_power_levels();
     PyObject *m=PyModule_Create(&module);
     if(m && PyModule_AddIntConstant(m,"MIDRISE_V1",1)<0) {Py_DECREF(m);return NULL;}
     if(m && PyModule_AddIntConstant(m,"POWER_V1",1)<0) {Py_DECREF(m);return NULL;}

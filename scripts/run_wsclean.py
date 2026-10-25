@@ -33,7 +33,7 @@ def main():
     parser.add_argument("--clean-profile", choices=("legacy", "calibrated"), default="legacy",
                         help="calibrated: user template, local RMS, 10deg horizon mask, 150000 iterations")
     parser.add_argument("--threads", type=int, default=8)
-    parser.add_argument("--polarizations", default="I", choices=("I", "I,Q,U,V"))
+    parser.add_argument("--polarizations", default="I", choices=("I", "V", "I,V", "I,Q,U,V"))
     parser.add_argument("--data-column", default="DATA", choices=("DATA", "CORRECTED_DATA", "MODEL_DATA"))
     parser.add_argument("--beam-from", type=Path, help="use this reference FITS restoring beam for every product")
     args = parser.parse_args()

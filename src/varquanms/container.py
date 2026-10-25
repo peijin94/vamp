@@ -126,7 +126,8 @@ class Writer:
 class Reader:
     def __init__(self, path, verify=True, *, group=None):
         self.path = Path(path)
-        self.file = h5py.File(self.path, "r")
+        self.file = h5py.File(self.path, "r", rdcc_nbytes=2 * TARGET_CHUNK_BYTES)
+        self.datasets = {}
         try:
             self.h5 = self.file if group is None else self.file[group]
             if self.h5.attrs.get("format") != FORMAT or self.h5.attrs.get("schema_version") != SCHEMA_VERSION or self.h5.attrs.get("complete") != True:
@@ -188,6 +189,13 @@ class Reader:
         if name not in self.entries:
             raise ValueError(f"Dataset is absent from inventory: {name}")
         return json.loads(self.h5[name][...].tobytes())
+
+    def dataset(self, name):
+        """Retain a checked dataset handle and its chunk cache across row reads."""
+        if name not in self.entries:
+            raise ValueError('Dataset is absent from inventory: '+name)
+        if name not in self.datasets:self.datasets[name]=self.h5[name]
+        return self.datasets[name]
 
     def close(self):
         self.file.close()

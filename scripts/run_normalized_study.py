@@ -15,6 +15,9 @@ def main():
     p.add_argument('--plan',type=Path,default=Path('results/calibrated-fixed16/screen/plan.json'))
     p.add_argument('--source',type=Path,default=Path('data/working/lwa-15slot-flat.ms'))
     p.add_argument('--monitor-only',action='store_true',help='Image verified exports produced by separately running archive jobs')
+    p.add_argument('--stokes',nargs='+',choices=('I','V'),default=['I','V'])
+    p.add_argument('--reference-root',type=Path,default=Path('results/calibrated-template'))
+    p.add_argument('--comparison-mask',type=Path,default=Path('results/calibrated-template/above10deg.fits'))
     args=p.parse_args();plan=json.loads(args.plan.read_text())
     args.root.mkdir(parents=True,exist_ok=True)
     # Start the many-small-block control early so it does not become a late tail.
@@ -22,7 +25,8 @@ def main():
     archive_plan.write_text(json.dumps(sorted(plan,key=lambda e:e['config']['baseline_group']!=1),indent=2)+'\n')
     env={**os.environ,'PYTHONPATH':'src','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1'}
     base=[sys.executable,'scripts/run_error_limits.py','--root',str(args.root),'--plan',str(args.plan),
-          '--source',str(args.source)]
+          '--source',str(args.source),'--reference-root',str(args.reference_root),
+          '--comparison-mask',str(args.comparison_mask),'--stokes',*args.stokes]
     with (args.root/'driver-archives.log').open('a') as log:
         archives=(None if args.monitor_only else subprocess.Popen(
             [*base,'--plan',str(archive_plan),'--archive-only','--jobs','2'],env=env,stdout=log,stderr=subprocess.STDOUT))

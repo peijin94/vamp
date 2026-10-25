@@ -155,10 +155,30 @@ def compare_run(reference_dir, candidate_dir, mask_path=None):
     for name in files:
         measured, _ = compare_plane(reference_dir / name, candidate_dir / name, comparison_mask=mask)
         products[name] = measured
+    residual_normalized={}
+    for name,measured in products.items():
+        if not name.endswith('-image.fits'):continue
+        residual_name=name[:-len('-image.fits')]+'-residual.fits'
+        if residual_name not in products:continue
+        residual,header=read_fits(reference_dir/residual_name)
+        if _grid(header)!=measured['grid_and_beam']:
+            raise ValueError('Reference image/residual grid, polarization, beam or units differ')
+        reference,image_header=read_fits(reference_dir/name)
+        domain=sky_mask(reference.shape,image_header)&np.isfinite(reference)
+        if mask is not None:domain &= mask
+        if not np.all(np.isfinite(residual[domain])):
+            raise ValueError('Nonfinite reference residual inside comparison domain')
+        denominator=float(np.sqrt(np.mean(residual[domain]**2)))
+        delta=measured['regions'][measured['primary_region']]['difference_rms']
+        residual_normalized[name]=dict(reference_residual_file=residual_name,
+            reference_residual_rms=denominator,difference_rms=delta,
+            difference_over_reference_residual_rms=delta/denominator if denominator else None,
+            denominator_status='positive' if denominator else 'zero; ratio undefined',
+            definition='RMS(candidate image-reference image) / RMS(reference residual); same fixed comparison domain; no denominator floor')
     result = {"schema": "varquanms.wsclean-comparison/1", "status": "measured",
               "reference": str(reference_dir), "candidate": str(candidate_dir),
               "parameters": runs[0]["parameters"], "container_id": runs[0]["container_id"], "products": products,
-              "comparison_mask": mask_info,
+              "comparison_mask": mask_info, "residual_normalized": residual_normalized,
               "limitations": ["No scientific acceptance thresholds have been approved; measured does not mean scientifically accepted",
                               "Dirty, restored, residual and model images include sky structure; image RMS is not thermal noise",
                               "Automatic masks and nonlinear CLEAN paths may differ; compare the repeated lossless reference",

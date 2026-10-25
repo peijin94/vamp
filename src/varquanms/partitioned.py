@@ -9,6 +9,7 @@ from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
 import json
 import multiprocessing
+import os
 from pathlib import Path
 import tempfile
 import time
@@ -21,7 +22,7 @@ from .config import Config
 from .calibrated import OMITTED, materialize_ms_v2_data
 from .container import Reader, new_output
 from .imaging import file_sha256
-from .inspection import ROW_KEYS, _open, inspect_ms
+from .inspection import ROW_KEYS, _open, inspect_ms, row_window
 from .metadata import dumps, logical_descriptor, pack, unpack
 
 SCHEMA = "varquanms.ordered-partitions/1"
@@ -70,32 +71,25 @@ def _signature(manifest):
     return dumps({"tables": result, "subtable_values": subtable_entries})
 
 
-def _encode_context(task):
+def _encode_context(task, cache=None):
     source, staged, config, distribution_references, index, start, stop = task
-    copying = time.perf_counter()
-    with tempfile.TemporaryDirectory(prefix="partition-ms-", dir=staged.parent) as scratch:
-        part = Path(scratch) / "input.ms"
-        with _open(source) as t, t.selectrows(np.arange(start, stop)) as selected:
-            if config.keep_calib_only:
-                with selected.query(columns=','.join(c for c in selected.colnames() if c not in OMITTED)) as projection:
-                    projection.copy(str(part), deep=True, valuecopy=True).close()
-            else:
-                selected.copy(str(part), deep=True, valuecopy=True).close()
-        copy_seconds = time.perf_counter() - copying
+    with row_window(source,start,stop,OMITTED if config.keep_calib_only else ()):
         scanning = time.perf_counter()
-        inspection = inspect_ms(part, config.columns, config.io_chunk_rows)
+        inspection = inspect_ms(source, config.columns, config.io_chunk_rows, _subtable_cache=cache)
         inspection_seconds = time.perf_counter() - scanning
         name = f"partition-{index:04d}.h5"
-        summary = encode(part, staged / name, config, inspection,
+        summary = encode(source, staged / name, config, inspection,
                          distribution_references=distribution_references)
         summary["archive"] = name
         with Reader(staged / name) as reader:
             signature = _signature(reader.manifest)
-        validation = verify(staged / name, source=part)
+        validation = verify(staged / name, source=source)
+        validation['source_row_window']={'start':start,'stop':stop}
         validation_name = f"verification-{index:04d}.json"
         (staged / validation_name).write_text(json.dumps(validation, indent=2, allow_nan=False) + "\n")
     record = {"start": start, "stop": stop, "archive": name, "bytes": (staged / name).stat().st_size,
-              "sha256": file_sha256(staged / name), "copy_seconds": copy_seconds,
+              "sha256": file_sha256(staged / name), "copy_seconds": 0.,
+              "source_access": "readonly contiguous row view; no intermediate MS copy",
               "inspection_seconds": inspection_seconds, "summary": summary,
               "verification": validation_name, "verification_sha256": file_sha256(staged / validation_name)}
     return record, signature
@@ -110,8 +104,8 @@ def encode_partitioned(source, output, config=None, *, partition_workers=1):
     config.validate()
     if type(partition_workers) is not int or not 1 <= partition_workers <= 8:
         raise ValueError("partition_workers must be an integer in [1,8]")
-    if partition_workers > 1 and config.workers != 1:
-        raise ValueError("Parallel partitions require workers=1 inside each partition")
+    if partition_workers > 1 and partition_workers*config.workers > (os.cpu_count() or 1):
+        raise ValueError("Parallel partition and encoder workers exceed the host logical CPU budget")
     if config.burn_flag:
         raise ValueError("Ordered partition bundles currently require exact flag preservation")
     discover_tables(source)
@@ -124,7 +118,10 @@ def encode_partitioned(source, output, config=None, *, partition_workers=1):
     staged = Path(tempfile.mkdtemp(prefix=output.name + ".", suffix=".partial", dir=output.parent))
     manifest = {"schema": SCHEMA, "status": "complete", "config": config.to_dict(),
                 "source_name": source.name, "source_physical_bytes": original_bytes,
-                "execution": {"partition_workers": partition_workers},
+                "execution": {"partition_workers": partition_workers,
+                              "encoder_workers_per_partition":config.workers,
+                              "total_encoder_workers":partition_workers*config.workers,
+                              "source_access": "readonly-row-window-v1"},
                 "row_count": runs[-1][1], "context_columns": names, "partitions": [],
                 "mapping": "Original rows [start,stop) equal local rows [0,stop-start); no averaging or row permutation",
                 "scope": "Contiguous numeric contexts; each partition must pass the existing archive preflight. All subtables are repeated exactly in every archive."}
@@ -135,7 +132,8 @@ def encode_partitioned(source, output, config=None, *, partition_workers=1):
     pool = (ProcessPoolExecutor(max_workers=partition_workers, mp_context=multiprocessing.get_context('spawn'))
             if partition_workers > 1 else None)
     try:
-        results = map(_encode_context, tasks) if pool is None else pool.map(_encode_context, tasks)
+        cache={}
+        results = (_encode_context(task,cache) for task in tasks) if pool is None else pool.map(_encode_context, tasks)
         for index, (record, current) in enumerate(results):
             if signature is not None and current != signature:
                 raise ValueError("Partition schemas/subtables differ; bundle cannot reconstruct them safely")

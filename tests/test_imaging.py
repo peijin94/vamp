@@ -118,6 +118,46 @@ class ImagingTests(unittest.TestCase):
         self.assertIsNone(result["relative_rms_difference"])
         self.assertEqual(result["difference_rms"], 1)
 
+    def test_stokes_v_residual_normalization_and_zero_denominator(self):
+        a,b=self.root/'reference-v',self.root/'candidate-v'
+        a.mkdir();b.mkdir()
+        record=dict(status='complete',source_unchanged=True,
+                    parameters=dict(polarizations='V'),container_id='same')
+        for directory in (a,b):
+            (directory/'complete.json').write_text(json.dumps(record))
+        stokes=dict(CTYPE3='STOKES',CRVAL3=4.,CRPIX3=1.,CDELT3=1.)
+        reference=np.ones((1,10,10))
+        candidate=reference+.25;candidate[0,0,0]=1000
+        self.write('reference-v/image-V-image.fits',reference,**stokes)
+        self.write('candidate-v/image-V-image.fits',candidate,**stokes)
+        for directory in ('reference-v','candidate-v'):
+            self.write(directory+'/image-V-residual.fits',np.full((1,10,10),.5),**stokes)
+        mask=np.ones((10,10));mask[0,0]=0
+        maskpath=self.write('mask.fits',mask,ELCUT=10.)
+        report=compare_run(a,b,maskpath)
+        ratio=report['residual_normalized']['image-V-image.fits']
+        self.assertEqual(ratio['difference_rms'],.25)
+        self.assertEqual(ratio['reference_residual_rms'],.5)
+        self.assertEqual(ratio['difference_over_reference_residual_rms'],.5)
+        (a/'image-V-residual.fits').unlink()
+        self.write('reference-v/image-V-residual.fits',np.zeros((1,10,10)),**stokes)
+        ratio=compare_run(a,b,maskpath)['residual_normalized']['image-V-image.fits']
+        self.assertIsNone(ratio['difference_over_reference_residual_rms'])
+        self.assertEqual(ratio['denominator_status'],'zero; ratio undefined')
+
+    def test_stokes_identity_must_match_in_metadata_and_fits(self):
+        a=np.ones((1,10,10))
+        reference=self.write('v.fits',a,CTYPE3='STOKES',CRVAL3=4.)
+        candidate=self.write('i.fits',a,CTYPE3='STOKES',CRVAL3=1.)
+        with self.assertRaisesRegex(ValueError,'grid, coordinates, beam or units'):
+            compare_plane(reference,candidate)
+        for directory,pol in (('ref','V'),('candidate','I')):
+            root=self.root/directory;root.mkdir()
+            (root/'complete.json').write_text(json.dumps(dict(status='complete',source_unchanged=True,
+                parameters=dict(polarizations=pol),container_id='same')))
+        with self.assertRaisesRegex(ValueError,'settings'):
+            compare_run(self.root/'ref',self.root/'candidate')
+
 
 if __name__ == "__main__":
     unittest.main()

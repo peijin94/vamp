@@ -373,7 +373,12 @@ def read_visibility(reader, spec):
         raise ValueError("Decoded visibility exceeds configured prototype RAM limit")
     values = np.empty(shape, dtype="<c8")
     for p in range(shape[2]):
-        layout = _product_layout(reader, spec, p)
+        layout = list(_product_layout(reader, spec, p))
+        # A bulk decode needs every block. Fetch bounded streams once instead
+        # of issuing a small HDF5 read for each block. The single-block API
+        # retains direct indexed reads, and all block CRC/format checks run.
+        if layout[5].size <= 64*1024**2:
+            layout[5]=layout[5][...]
         for index in range(len(layout[-1])):
             rows, lo, hi, block = read_visibility_block(reader, spec, p, index, layout)
             values[rows, lo:hi, p] = block
@@ -411,7 +416,14 @@ def verify_visibility(reader, spec, t, column, configuration):
     for p, name in enumerate(spec["product_names"]):
         layout = _product_layout(reader, spec, p)
         for index in range(len(layout[-1])):
-            rows, lo, hi, block = read_visibility_block(reader, spec, p, index, layout)
+            # read_visibility already decoded and CRC/format-checked every
+            # block. Reuse those exact values for independent source budgets.
+            _,boundaries,permutation,segments,_,_,_=layout
+            group,segment=divmod(index,segments)
+            rows=permutation[boundaries[group]:boundaries[group+1]]
+            lo=segment*spec['channel_segment']
+            hi=min(spec['cell_shape'][0],lo+spec['channel_segment'])
+            block=decoded[rows,lo:hi,p]
             valid = ~flags[rows, lo:hi, p] & np.isfinite(original[rows, lo:hi, p])
             measured = error_metrics(original[rows, lo:hi, p], block, valid)
             global_std = None

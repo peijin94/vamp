@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import base64
 from collections import Counter
+from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -87,9 +89,39 @@ def unique_bits(values):
     return a[first[order]], old_to_new[inverse], counts[order]
 
 
+_ROW_WINDOW = ContextVar('varquanms_row_window', default=None)
+
+
+@contextmanager
+def row_window(source, start, stop, omitted=()):
+    """Scope read-only MAIN access to contiguous source rows; never write an MS.
+
+    Subtable references continue to resolve inside the original frozen source.
+    The context is private to the current task/thread and is reset on failure.
+    """
+    root=Path(source).resolve()
+    if _ROW_WINDOW.get() is not None:
+        raise ValueError('Nested source row windows are unsupported')
+    with table(str(root),readonly=True,lockoptions='usernoread',ack=False) as t:
+        if type(start) is not int or type(stop) is not int or not 0 <= start < stop <= t.nrows():
+            raise ValueError('Invalid source row window')
+    token=_ROW_WINDOW.set((root,start,stop,tuple(omitted)))
+    try:yield
+    finally:_ROW_WINDOW.reset(token)
+
+
 def _open(path):
     # A frozen local copy is expected. usernoread avoids lock-file modifications.
-    return table(str(path), readonly=True, lockoptions="usernoread", ack=False)
+    original=table(str(path), readonly=True, lockoptions="usernoread", ack=False)
+    window=_ROW_WINDOW.get()
+    if window is None or Path(path).resolve()!=window[0]:return original
+    _,start,stop,omitted=window
+    try:
+        selected=original.selectrows(np.arange(start,stop,dtype=np.int64))
+    finally:original.close()
+    if not omitted:return selected
+    try:return selected.query(columns=','.join(c for c in selected.colnames() if c not in omitted))
+    finally:selected.close()
 
 
 def _batches(t, column, chunk_rows):
@@ -420,7 +452,7 @@ def _layout(t, rows, columns, subtable_paths, selected, main_inventory):
             "validation_scope": "Inspection only. This is not an MS conformance or CASA compatibility certification."}
 
 
-def inspect_ms(source, selected=("DATA",), chunk_rows=1024):
+def inspect_ms(source, selected=("DATA",), chunk_rows=1024, *, _subtable_cache=None):
     """Return a strict JSON-compatible inspection report, or raise on read failure."""
     source = Path(source).resolve()
     selected = tuple(selected)
@@ -452,7 +484,12 @@ def inspect_ms(source, selected=("DATA",), chunk_rows=1024):
             subtable_paths[name] = path
         for name, path in subtable_paths.items():
             with _open(path) as sub:
-                subtables[name] = _scan_table(sub, chunk_rows, include_rows=True)
+                key=(str(path),chunk_rows)
+                if _subtable_cache is not None and key in _subtable_cache:
+                    subtables[name]=_subtable_cache[key]
+                else:
+                    subtables[name] = _scan_table(sub, chunk_rows, include_rows=True)
+                    if _subtable_cache is not None:_subtable_cache[key]=subtables[name]
                 managers[str(path.relative_to(source))] = sub.getdminfo()
         main = _scan_table(t, chunk_rows)
         managers["MAIN"] = t.getdminfo()
@@ -492,6 +529,13 @@ def inspect_ms(source, selected=("DATA",), chunk_rows=1024):
         "elapsed_seconds": time.perf_counter() - started,
     }
     # Validate portability before any output file is finalized.
+    window=_ROW_WINDOW.get()
+    if window is not None:
+        report['source_row_window']={'start':window[1],'stop':window[2],
+                                    'omitted_columns':list(window[3])}
+        report['policies']['inspection_scan']=('All retained MAIN values within the explicit source row window; '
+            + ('shared frozen-source subtables cached within this encoding operation' if _subtable_cache is not None
+               else 'shared original subtables scanned for this window'))
     json.dumps(report, allow_nan=False)
     return report
 

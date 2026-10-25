@@ -7,6 +7,7 @@ Decoder powers are fixed binary64 products, without libm pow or fused arithmetic
 import math
 import struct
 import time
+from functools import lru_cache
 
 import numpy as np
 
@@ -15,6 +16,20 @@ from . import codec
 PARAMETERS = struct.Struct("<fff")
 HEADER_BYTES = codec.HEADER.size + PARAMETERS.size
 GAMMAS = (1., .5, .25)
+
+
+@lru_cache(maxsize=30)
+def _levels(bits,gamma):
+    """Immutable normalized levels; exactly the reference operation order."""
+    maximum=2**bits-1
+    u=(2*np.arange(maximum+1,dtype=np.float64)-maximum)/maximum
+    magnitude=np.abs(u)
+    if gamma!=1:
+        magnitude=magnitude*magnitude
+        if gamma==.25:magnitude=magnitude*magnitude
+    levels=np.copysign(magnitude,u)
+    levels.setflags(write=False)
+    return levels
 
 
 def maximum_std_ratio(residuals):
@@ -48,13 +63,17 @@ def reconstruct(codes, bits, radius, center, gamma):
     if radius == 0:
         shape = np.broadcast_shapes(np.shape(codes), np.shape(center))
         return np.broadcast_to(np.asarray(center, dtype=np.float32), shape).copy()
-    u = (2 * np.asarray(codes, dtype=np.float64) - (2**bits-1)) / (2**bits-1)
-    magnitude = np.abs(u)
-    if gamma != 1:
-        magnitude = magnitude * magnitude
-        if gamma == .25:
-            magnitude = magnitude * magnitude
-    residual = np.copysign(magnitude, u) * float(radius)
+    codes=np.asarray(codes)
+    if codes.dtype.kind in 'iu':
+        normalized=_levels(bits,gamma)[codes]
+    else:
+        u=(2*codes.astype(np.float64)-(2**bits-1))/(2**bits-1)
+        magnitude=np.abs(u)
+        if gamma!=1:
+            magnitude=magnitude*magnitude
+            if gamma==.25:magnitude=magnitude*magnitude
+        normalized=np.copysign(magnitude,u)
+    residual = normalized * float(radius)
     with np.errstate(over="ignore", invalid="ignore"):
         return (residual + np.asarray(center, dtype=np.float64)).astype(np.float32)
 

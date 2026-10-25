@@ -145,7 +145,7 @@ def read_column(reader, spec, start, stop):
     if encoding == "empty":
         return []
     if encoding == "dense":
-        return reader.h5[spec["values"]][start:stop]
+        return reader.dataset(spec["values"])[start:stop]
     if encoding in ("constant", "dictionary"):
         if not hasattr(reader, "column_cache"):
             reader.column_cache = {}
@@ -154,7 +154,7 @@ def read_column(reader, spec, start, stop):
         values = reader.column_cache[spec["values"]]
         if encoding == "constant":
             return np.repeat(values, stop - start, axis=0)
-        indices = reader.h5[spec["row_map"]][start:stop]
+        indices = reader.dataset(spec["row_map"])[start:stop]
         if np.any(indices >= len(values)):
             raise ValueError("Dictionary reconstruction index out of range")
         return values[indices]
@@ -248,6 +248,9 @@ def encode(source, output, config=None, inspection=None, *, distribution_referen
                        "source_snapshot_requirement": "Frozen input; readonly usernoread access"},
     }
     exact_started = time.perf_counter()
+    if 'source_row_window' in report:
+        manifest['source']['row_window']=report['source_row_window']
+        manifest['source']['physical_file_bytes_scope']='Entire backing MS; bytes cannot be attributed to this row window'
     if config.normalized_bounds is not None:
         manifest['distribution_references'] = distribution_references
     try:
@@ -296,7 +299,8 @@ def archive_summary(path, manifest, elapsed=None):
     visibility_logical = manifest["source"]["selected_visibility_logical_bytes"]
     visibility_stored = sum(v for k, v in categories.items() if k.startswith("visibility_") or k in ("permutations", "quantization_statistics"))
     return {"archive": str(path), "archive_bytes": total, "source_physical_file_bytes": original,
-            "whole_archive_ratio": original / total if total else None,
+            "whole_archive_ratio": original / total if total and 'row_window' not in manifest['source'] else None,
+            "source_physical_bytes_scope": manifest['source'].get('physical_file_bytes_scope','Entire source MS'),
             "selected_visibility_logical_bytes": visibility_logical,
             "visibility_datasets_stored_bytes": visibility_stored,
             "visibility_dataset_ratio_including_maps_statistics": visibility_logical / visibility_stored if visibility_stored else None,
@@ -403,8 +407,16 @@ def _check_column(reader, spec, t, column, shapes_only=False):
             return actual.shape == expected.shape and actual.dtype == expected.dtype
         return equal(actual, expected)
 
-    for start in range(0, t.nrows(), 1024):
-        stop = min(t.nrows(), start + 1024)
+    step=1024
+    if spec['encoding']=='dense':
+        dataset=reader.dataset(spec['values'])
+        # Match storage slabs instead of repeatedly inflating a large chunk for
+        # 1024-row slices. Keep each source/decoded comparison bounded to 4 MiB
+        # or one already-validated cell, whichever is larger.
+        row_bytes=dataset.dtype.itemsize*int(np.prod(dataset.shape[1:],dtype=object))
+        step=max(1,(4*1024**2)//max(1,row_bytes))
+    for start in range(0, t.nrows(), step):
+        stop = min(t.nrows(), start + step)
         values = read_column(reader, spec, start, stop)
         if isinstance(values, np.ndarray):
             actual = np.asarray(t.getcol(column, startrow=start, nrow=stop - start))

@@ -463,8 +463,15 @@ Repeated subtable bytes and all outer manifest/report overhead count toward
 bundle size. No time or channel averaging occurs.
 
 The optional `execution.partition_workers` field records runtime concurrency
-(default one when absent). Encoding may process up to eight independent contexts
-with one encoder worker per context. Source checks, shared global references,
+(default one when absent). Encoding may process up to eight independent contexts.
+Each context can use its configured encoder threads; with parallel contexts the
+product of context processes and encoder threads cannot exceed the host logical
+CPU count. The execution record includes both counts. Contiguous read-only source
+row views avoid intermediate MS copies, with original subtable references retained.
+Such partitions record `source.row_window` and the scope of backing-file byte
+counts. Their per-partition whole-source compression ratio is undefined;
+the outer bundle reports the complete MS ratio.
+Source checks, shared global references,
 scientific configurations and ordered reconstruction are unchanged; only a fully
 verified bundle is published. This field does not affect decoder arithmetic.
 

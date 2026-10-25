@@ -59,13 +59,13 @@ class CodecTests(unittest.TestCase):
                 decode_block(truncated, values.shape)
 
     def test_default_ladder_and_current_example_configs(self):
-        self.assertEqual(Config().bits, [3, 4, 6, 8, 12, 16])
+        self.assertEqual(Config().bits, [3, 4, 5, 6, 8, 10, 12, 14, 16])
         self.assertEqual(Config().mode, "lossless")
         root = Path(__file__).resolve().parents[1]
-        self.assertEqual(Config.load(root / "configs/engineering-adaptive.json").bits, [3, 4, 6, 8, 12, 16])
+        self.assertEqual(Config.load(root / "configs/engineering-adaptive.json").bits, [3, 4, 5, 6, 8, 10, 12, 14, 16])
         for name in ("benchmark-smoke.json", "benchmark-grouping.json"):
             matrix = json.loads((root / "configs" / name).read_text())
-            self.assertEqual(matrix["base"]["bits"], [3, 4, 6, 8, 12, 16])
+            self.assertEqual(matrix["base"]["bits"], [3, 4, 5, 6, 8, 10, 12, 14, 16])
             for entry in matrix["experiments"]:
                 Config.load(None, **{**matrix["base"], **entry["config"]})
 
@@ -114,7 +114,7 @@ class CodecTests(unittest.TestCase):
         values = (rng.uniform(-1, 1, (8, 32)) + 1j * rng.uniform(-1, 1, (8, 32))).astype(np.complex64)
         flags = np.zeros(values.shape, dtype=bool)
         for mse, maximum, expected_bits in ((1e-7, 0.001, 12), (1e-10, 0.00003, 16), (0, 0, 0)):
-            config = self.config(scale_quantiles=[1.0], max_component_mse=mse, max_complex_error=maximum)
+            config = self.config(bits=[3,4,6,8,12,16], scale_quantiles=[1.0], max_component_mse=mse, max_complex_error=maximum)
             block = encode_block(values, flags, config, config.bounds())
             self.assertEqual(block.bits, expected_bits)
             self.assertTrue(within_bounds(block.metrics, config.bounds()))
@@ -176,7 +176,7 @@ class CodecTests(unittest.TestCase):
                     self.assertTrue(np.all(selected[:, 0] == selected[:, 1]) or np.all(selected[:, 0] != selected[:, 1]))
 
     def test_strict_config_and_no_implicit_noise_estimation(self):
-        for changes in ({"noise": {"component_variance": 1, "epsilon": .01}}, {"bits": [5]},
+        for changes in ({"noise": {"component_variance": 1, "epsilon": .01}}, {"bits": [7]},
                         {"mode": "fixed"}, {"rounding": "dither"}, {"max_complex_error": None},
                         {"orientation_bins": 0}, {"orientation_bins": True}, {"antenna_endpoint": 3},
                         {"length_reference_m": float("nan")}):

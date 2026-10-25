@@ -225,6 +225,7 @@ def write_visibility(writer, t, column, prefix, config, inspection, *, distribut
     reconstructed = np.empty_like(values)
     spec = {"encoding": "quantized", "row_count": rows, "cell_shape": [channels, products],
             "dtype": "<c8", "codec": config.codebook, "channel_segment": config.channel_segment,
+            "block_header": config.block_header,
             "product_names": names, "products": [],
             "statistics": writer.put(prefix + "/amplitude_medians", statistics, "quantization_statistics"),
             "valid_counts": writer.put(prefix + "/valid_counts", counts, "quantization_statistics")}
@@ -353,6 +354,11 @@ def read_visibility_block(reader, spec, product_index, block_index, layout=None)
     blob = payload[int(offsets[block_index]):int(offsets[block_index + 1])].tobytes()
     if zlib.crc32(blob) != checksums[block_index]:
         raise ValueError("Visibility block CRC32 mismatch")
+    header = spec.get("block_header", "literal-bits-v1")
+    if header not in ("literal-bits-v1", "precision-nibble-v1") or not blob:
+        raise ValueError("Unsupported visibility block header")
+    if (blob[0] & 0xF0 == 0xA0) != (header == "precision-nibble-v1"):
+        raise ValueError("Block precision header disagrees with manifest")
     return rows, lo, hi, decode_block(blob, (len(rows), hi - lo), spec["codec"])
 
 

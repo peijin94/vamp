@@ -10,6 +10,8 @@
 
 static double thread_cpu(void) {struct timespec t;clock_gettime(CLOCK_THREAD_CPUTIME_ID,&t);return t.tv_sec+t.tv_nsec*1e-9;}
 
+static int valid_bits(int b) {return b==2||b==3||b==4||b==5||b==6||b==8||b==10||b==12||b==14||b==16;}
+
 static void put32(uint8_t *p,uint32_t value) {for(int k=0;k<4;k++) p[k]=(uint8_t)(value>>(8*k));}
 static void header(uint8_t *p,int bits,int compressed,uint32_t n,uint32_t exceptions,float step,int mapping) {
     p[0]=bits;p[1]=compressed;p[2]=mapping;p[3]=0;put32(p+4,n);put32(p+8,exceptions);memcpy(p+12,&step,4);
@@ -25,7 +27,7 @@ static PyObject *search(PyObject *self,PyObject *args) {
     int valid=a.len%8==0 && n>0 && n<=262144 && f.len==n && channels>0 && n%channels==0 &&
         candidates>0 && candidates<=4096 && scales.len==4*candidates && bounds.len==32 && level>=-1 && level<=9 && (mapping==0||mapping==1) && fegetround()==FE_TONEAREST;
     const uint8_t *width=(const uint8_t *)widths.buf;
-    for(Py_ssize_t k=0;k<candidates && valid;k++) valid=width[k]==2||width[k]==3||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16;
+    for(Py_ssize_t k=0;k<candidates && valid;k++) valid=valid_bits(width[k]);
     if(!valid) {PyErr_SetString(PyExc_ValueError,"Invalid native search buffers/parameters");goto cleanup_search;}
     uint8_t *raw=malloc(16*n), *compressed=malloc(compressBound(16*n)), *best=malloc(8*n+16);
     float *decoded=malloc(8*n),*best_decoded=malloc(8*n);
@@ -111,7 +113,7 @@ static PyObject *candidate(PyObject *self, PyObject *args) {
     if (!PyArg_ParseTuple(args,"y*y*idi|i",&a,&f,&bits,&step_arg,&channels,&mapping)) return NULL;
     Py_ssize_t n=a.len/8;
     if (a.len%8 || n<1 || n>262144 || f.len!=n || channels<1 || n%channels ||
-        !(bits==2 || bits==3 || bits==4 || bits==6 || bits==8 || bits==12 || bits==16) ||
+        !(valid_bits(bits)) ||
         !isfinite(step_arg) || step_arg<0 || !(mapping==0||mapping==1) || fegetround()!=FE_TONEAREST) {
         PyBuffer_Release(&a); PyBuffer_Release(&f);
         return PyErr_Format(PyExc_ValueError,"Invalid native candidate buffers/parameters/rounding mode");
@@ -301,7 +303,7 @@ static PyObject *power_search(PyObject *self,PyObject *args) {
     const float *params=(const float *)parameters.buf;
     for(Py_ssize_t k=0;k<candidates&&valid;k++) {
         const float *p=params+4*k;
-        valid=(width[k]==2||width[k]==3||width[k]==4||width[k]==6||width[k]==8||width[k]==12||width[k]==16)&&
+        valid=(valid_bits(width[k]))&&
               isfinite(p[0])&&p[0]>=0&&isfinite(p[1])&&isfinite(p[2])&&(p[3]==1||p[3]==.5f||p[3]==.25f);
     }
     if(!valid) {PyErr_SetString(PyExc_ValueError,"Invalid native power search buffers/parameters");goto cleanup_power;}
@@ -392,5 +394,6 @@ PyMODINIT_FUNC PyInit__native(void) {
     if(m && PyModule_AddIntConstant(m,"MIDRISE_V1",1)<0) {Py_DECREF(m);return NULL;}
     if(m && PyModule_AddIntConstant(m,"POWER_V1",1)<0) {Py_DECREF(m);return NULL;}
     if(m && PyModule_AddIntConstant(m,"THREE_BIT_V1",1)<0) {Py_DECREF(m);return NULL;}
+    if(m && PyModule_AddIntConstant(m,"DENSE_BITS_V1",1)<0) {Py_DECREF(m);return NULL;}
     return m;
 }

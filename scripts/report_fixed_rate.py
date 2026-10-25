@@ -9,7 +9,7 @@ import numpy as np
 import h5py
 
 from varquanms.imaging import compare_run, file_sha256, read_fits
-from varquanms.codec import HEADER, decode_block
+from varquanms.codec import unpack_header, decode_block
 
 ROOT=Path('results/calibrated-fixed25')
 REF=Path('results/calibrated-template/reference')
@@ -56,7 +56,7 @@ def payload_distribution(path, *, by_class=False):
                 payload=memoryview(ds[...]) if ds.size <= 64*1024**2 else None
                 for index,(lo,hi) in enumerate(zip(offsets[:-1],offsets[1:])):
                     blob=payload[int(lo):int(hi)] if payload is not None else ds[int(lo):int(hi)].tobytes()
-                    bits,_,_,count,_,_=HEADER.unpack_from(blob)
+                    bits,_,_,count,_,_=unpack_header(blob)
                     label=str(bits) if bits else 'float32'
                     sizes[label]+=len(blob);samples[label]+=count
                     if by_class:class_samples['auto' if classes[entry['path']][index] else 'cross'][label]+=count
@@ -192,7 +192,8 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
     from matplotlib.ticker import StrMethodFormatter
     from astropy.io import fits
     cases=result['experiments']
-    ceiling=100*result['payload_budget_bytes']/result['original_complex64_bytes']
+    ceiling=(100*result['payload_budget_bytes']/result['original_complex64_bytes']
+             if result.get('payload_budget_bytes') is not None else None)
     residual_rms=result.get('reference_residual_statistics',{}).get('rms')
     image_fraction=lambda c,product='image': (c['products'][f'image-{product}.fits']['regions']['above_elevation_cut']['difference_rms']/residual_rms
         if residual_rms else fraction(c,product))
@@ -205,21 +206,26 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
         axes[1].plot([x,x],[a,b],color='#b2182b',linewidth=2)
         axes[1].scatter([x,x],[a,b],color='#b2182b',label='Restored: two runs' if x==0 else None)
         axes[1].scatter(x,100*image_fraction(e['comparison'],'dirty'),marker='s',color='#2166ac',label='Dirty: first run' if x==0 else None)
-    axes[0].axhline(ceiling,color='black',linestyle='--');axes[0].set(ylabel='Serialized visibility bytes / complex64 (%)',ylim=(0,1.12*ceiling))
+    if ceiling is not None:axes[0].axhline(ceiling,color='black',linestyle='--')
+    upper=ceiling if ceiling is not None else max(100*e['rate']['fraction'] for e in cases)
+    axes[0].set(ylabel='Serialized visibility bytes / complex64 (%)',ylim=(0,1.12*upper))
     axes[1].set(ylabel='Difference RMS / reference residual RMS (%)' if residual_rms else 'RMS difference / reference RMS (%)',yscale='log');axes[1].legend(loc='upper left')
     axes[1].yaxis.set_major_formatter(StrMethodFormatter('{x:g}'))
     axes[1].yaxis.set_minor_formatter(StrMethodFormatter('{x:g}'))
     for ax in axes:ax.set(xticks=range(len(cases)),xticklabels=labels);ax.tick_params(axis='x',labelsize=8);ax.grid(axis='y',alpha=.2)
-    fig.suptitle('Fixed visibility-payload budget; same 15-integration MS and above-10° image mask')
+    fig.suptitle(result.get('plot_title','Fixed visibility-payload budget; same 15-integration MS and above-10° image mask'))
     fig.savefig(FIGS/(prefix+'-rate.png'),dpi=170);plt.close(fig)
     fig,axes=plt.subplots(1,2,figsize=(13,max(5,.8*len(cases))),constrained_layout=True);y=np.arange(len(cases))
     for ax,key,title in zip(axes,('samples_by_bits','serialized_bytes_by_bits'),('All complex samples (%)','Serialized payload bytes (%)')):
         left=np.zeros(len(cases))
-        for bits,color in zip(('3','4','6','8','12','16','float32'),('#fddbc7','#ef8a62','#92c5de','#4393c3','#2166ac','#542788','#aaa')):
+        precision=result.get('precision_labels',('3','4','6','8','12','16','float32'))
+        colors=(list(plt.get_cmap('viridis')(np.linspace(.1,.9,len(precision)-1)))+['#aaa']
+                if 'precision_labels' in result else ['#fddbc7','#ef8a62','#92c5de','#4393c3','#2166ac','#542788','#aaa'])
+        for bits,color in zip(precision,colors):
             values=np.array([e['payload_distribution'][key].get(bits,0)/sum(e['payload_distribution'][key].values())*100 for e in cases])
             ax.barh(y,values,left=left,label=bits,color=color);left+=values
         ax.set(yticks=y,yticklabels=labels,xlabel=title,xlim=(0,100));ax.invert_yaxis()
-    axes[1].legend(title='Bits/component; float32 = exact',ncol=7,loc='upper center',bbox_to_anchor=(.5,-.15),fontsize=8)
+    axes[1].legend(title='Bits/component; float32 = exact',ncol=min(5,len(precision)) if len(precision)>7 else 7,loc='upper center',bbox_to_anchor=(.5,-.15),fontsize=8)
     fig.suptitle('Bit-size distribution: exact zero blocks can contain many samples but few bytes')
     fig.savefig(FIGS/(prefix+'-bits.png'),dpi=170);plt.close(fig)
     reference,_=read_fits(REF/'image-image.fits');mask=fits.getdata(MASK).astype(bool)

@@ -17,13 +17,19 @@ def decode(blob, rows, channels):
     if len(blob) < header.size:
         raise ValueError("Truncated header")
     bits, compression, mapping, count, exceptions, step = header.unpack_from(blob)
+    if bits & 0xF0 == 0xA0:
+        precision = (0, 3, 4, 5, 6, 8, 10, 12, 14, 16, 2)
+        tag = bits & 0x0F
+        if tag >= len(precision):
+            raise ValueError("Reserved or error precision tag")
+        bits = precision[tag]
     if mapping not in (0, 1, 2) or count != rows * channels or not 0 < count <= 262144:
         raise ValueError("Invalid sample count/header")
     if bits == 0:
         if mapping or exceptions or step != 0:
             raise ValueError("Invalid exact header")
         expected = count * 8
-    elif bits in (2, 3, 4, 6, 8, 12, 16) and 0 <= exceptions <= count and 0 <= step < float("inf"):
+    elif bits in (2, 3, 4, 5, 6, 8, 10, 12, 14, 16) and 0 <= exceptions <= count and 0 <= step < float("inf"):
         code_bytes = (2 * count * bits + 7) // 8
         expected = code_bytes + exceptions * 12
     else:

@@ -103,12 +103,39 @@ Each block starts with the 16-byte little-endian structure `<BBHIIf`:
 
 | Field | Type | Meaning |
 | --- | --- | --- |
-| bits | uint8 | 0 for exact complex64; otherwise 3, 4, 6, 8, 12 or 16 per component (legacy 2 supported) |
+| precision | uint8 | Literal component width, or versioned four-bit precision tag as defined below |
 | compression | uint8 | 0 uncompressed body; 1 zlib-wrapped DEFLATE body |
 | mapping | uint16 | 0: `uniform-symmetric-v1`; 1: `uniform-midrise-v1`; 2: `power-midrise-v1`; exact blocks require 0 |
 | samples | uint32 | Number of complex samples, 1 through 262,144 |
 | exceptions | uint32 | Number of exact exception samples |
 | step | float32 | Nonnegative stored uniform step, or zero for an exact block |
+
+### Four-bit precision selection (`precision-nibble-v1`)
+
+The calibrated epsilon-D presets set `block_header: "precision-nibble-v1"`.
+The first byte is `0xA0 | tag`: the upper nibble is the immutable format marker
+and the lower nibble selects component precision. The remaining header fields
+and payload packing are unchanged. Literal-bit headers remain supported and
+are the default when loading historical configurations without this field.
+
+| Tag (hex) | Meaning |
+| --- | --- |
+| 0 | Exact complex64 bits, optionally losslessly compressed |
+| 1, 2, 3, 4, 5, 6, 7, 8, 9 | 3, 4, 5, 6, 8, 10, 12, 14, 16 bits/component, respectively |
+| A | Legacy 2-bit codec; outside the new default ladder |
+| B–E | Reserved; reject |
+| F | Invalid/error; reject, never emit as a successful block |
+
+The tag identifies a block's precision; it does not mean four bits per visibility.
+The aligned base header still occupies 16 bytes, or 28 bytes with power factors.
+No half-byte saving is claimed. A visibility column declares `block_header`;
+readers check that every block agrees. Unsupported tags fail before reconstruction.
+The independent decoder and literal `precision-nibble-v1.json` fixtures cover the
+new format. Five-, ten- and fourteen-bit values are packed at their actual width;
+fourteen-bit codes can cross three bytes. Native modules without the new-width
+capability use the portable encoder instead.
+
+### Body and legacy symmetric mapping
 
 The configuration's `gzip` selection uses the HDF5 gzip filter for ordinary
 arrays and zlib for independently compressed block bodies. A block uses
@@ -121,13 +148,13 @@ codebook is exactly symmetric and represents zero, at the cost of one unused
 bit pattern. The immutable codec identifier is `uniform-symmetric-v1`.
 Mapping 0 is the original header's zero reserved field. Existing archives and
 their numerical interpretation are unchanged. Old decoders reject mapping 1.
-The default candidate ladder is 3/4/6/8/12/16 bits per component. Two-bit archives
+The default candidate ladder is 3/4/5/6/8/10/12/14/16 bits per component. Two-bit archives
 and explicitly selected historical configurations remain supported. Three-bit
 codes pack eight component codes into three bytes, using the same least-significant
 bit order and zero tail padding. Adding a supported width does not change the
 codebook, block header or bytes at older widths. Older decoders reject unsupported
 widths explicitly; the Python encoder falls back to its portable implementation
-if an installed native extension predates three-bit support.
+if an installed native extension predates a requested width.
 
 Decode each real and imaginary component separately in this exact order:
 

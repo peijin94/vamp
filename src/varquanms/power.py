@@ -62,7 +62,7 @@ def reconstruct(codes, bits, radius, center, gamma):
 def decode_power(blob, shape):
     if len(blob) < HEADER_BYTES:
         raise ValueError("Truncated power block metadata")
-    bits, compressed, mapping, count, exceptions, radius = codec.HEADER.unpack_from(blob)
+    bits, compressed, mapping, count, exceptions, radius = codec.unpack_header(blob)
     cr, ci, gamma = PARAMETERS.unpack_from(blob, codec.HEADER.size)
     if mapping != 2 or bits not in codec.ALLOWED_BITS or count != math.prod(shape) or not 0 < count <= codec.MAX_SAMPLES or exceptions > count or not math.isfinite(radius) or radius < 0 or not math.isfinite(cr) or not math.isfinite(ci) or gamma not in GAMMAS:
         raise ValueError("Invalid power block header/parameters")
@@ -121,7 +121,7 @@ def _parameters(original, flags, config):
 def _record(blob, original, flags, mandatory, signed_zero, timings):
     decoded = codec.decode_block(blob, original.shape, "power-midrise-v1")
     metrics = codec.error_metrics(original, decoded, ~flags & np.isfinite(original))
-    bits, _, _, count, exceptions, radius = codec.HEADER.unpack_from(blob)
+    bits, _, _, count, exceptions, radius = codec.unpack_header(blob)
     parameters = {}
     if bits:
         cr, ci, gamma = PARAMETERS.unpack_from(blob, codec.HEADER.size)
@@ -145,7 +145,7 @@ def encode_power(original, flags, config, bounds):
     timings = {"quantization_and_scale_estimation": time.perf_counter()-started}
     native = codec._native
     if (native is not None and getattr(native, "POWER_V1", 0)
-            and (3 not in config.bits or getattr(native, "THREE_BIT_V1", 0) == 1)
+            and codec.native_widths_supported(config.bits)
             and 0 < len(widths) <= 4096 and bounds["max_p99_error"] is None):
         limits = [bounds[k] if bounds[k] is not None else np.inf for k in
                   ("max_component_mse", "max_complex_error", "max_complex_bias", "max_baseline_component_mse")]

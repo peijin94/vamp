@@ -5,7 +5,7 @@
   "baseline_group": 32,
   "channel_segment": 64,
   "ordering": "original",
-  "bits": [3, 4, 6, 8, 12, 16],
+  "bits": [3, 4, 5, 6, 8, 10, 12, 14, 16],
   "codebook": "uniform-symmetric-v1",
   "rounding": "nearest-even",
   "scale_quantiles": [1.0, 0.995],

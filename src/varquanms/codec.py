@@ -1,6 +1,6 @@
 """Versioned uniform codecs: packing, exceptions and exact escape blocks.
 
-Header <BBHIIf: component bits (0 = exact complex64), body compression
+Header <BBHIIf: component bits (0 = exact complex64) or precision-nibble-v1 tag, body compression
 (0 = none, 1 = zlib), mapping uint16 (0 = symmetric, 1 = midrise), sample count uint32,
 exception count uint32, positive float32 quantization step. All little endian.
 The raw body is either complex64 bits, or packed component codes followed by
@@ -23,12 +23,32 @@ from .metadata import portable
 HEADER = struct.Struct("<BBHIIf")
 MAX_SAMPLES = 262144
 ALLOWED_BITS = SUPPORTED_BITS
+PRECISION_TAG_BITS = (0, 3, 4, 5, 6, 8, 10, 12, 14, 16, 2)
+# High nibble A identifies this header representation; low nibble is precision.
+# Tags B..E are reserved, F is invalid/error. Exact is 0; legacy two-bit is A.
+PRECISION_MARKER = 0xA0
 try:
     from . import _native
 except ImportError:
     _native = None
 if sys.byteorder != "little":
     _native = None
+
+
+def unpack_header(blob):
+    fields = list(HEADER.unpack_from(blob))
+    if fields[0] & 0xF0 == PRECISION_MARKER:
+        tag = fields[0] & 0x0F
+        if tag >= len(PRECISION_TAG_BITS):
+            raise ValueError("Reserved or error precision tag")
+        fields[0] = PRECISION_TAG_BITS[tag]
+    return tuple(fields)
+
+
+def native_widths_supported(bits):
+    return (_native is not None
+            and (3 not in bits or getattr(_native, "THREE_BIT_V1", 0) == 1)
+            and (not set(bits).intersection((5, 10, 14)) or getattr(_native, "DENSE_BITS_V1", 0) == 1))
 
 
 def pack_codes(codes, bits):
@@ -50,20 +70,19 @@ def pack_codes(codes, bits):
         for j in range(1, per_byte):
             result |= padded[j::per_byte] << (bits * j)
         return result.tobytes()
-    # 3/6/12-bit streams repeat after eight/four/two codes respectively. Work in
-    # bytes, without the old samples-by-bits temporary array.
+    # Work by byte phases. A 14-bit code can span THREE bytes; uint32 is needed
+    # for its shifted value, even though the unshifted code fits uint16.
     count = (a.size * bits + 7) // 8
     result = np.zeros(count, dtype=np.uint8)
     per_group = 8 // math.gcd(bits, 8)
     for j in range(per_group):
-        values = a[j::per_group]
+        values = a[j::per_group].astype(np.uint32)
         offset, shift = divmod(j * bits, 8)
         stride = per_group * bits // 8
-        result[offset:offset + len(values)*stride:stride] |= (values << shift).astype(np.uint8)
-        if shift + bits > 8:
-            high = values >> (8 - shift)
-            target = result[offset+1:offset+1+len(values)*stride:stride]
-            target |= high[:len(target)].astype(np.uint8)
+        shifted = values << shift
+        for byte in range((shift + bits + 7) // 8):
+            target = result[offset+byte:offset+byte+len(values)*stride:stride]
+            target |= (shifted[:len(target)] >> (8*byte)).astype(np.uint8)
     return result.tobytes()
 
 
@@ -87,11 +106,11 @@ def unpack_codes(payload, bits, count):
     for j in range(per_group):
         target = result[j::per_group]
         offset, shift = divmod(j * bits, 8)
-        values = source[offset:offset+len(target)*stride:stride].astype(np.uint16) >> shift
-        if shift + bits > 8:
-            high = source[offset+1:offset+1+len(target)*stride:stride].astype(np.uint16)
-            values[:len(high)] |= high << (8-shift)
-        target[:] = values & (2**bits - 1)
+        values = np.zeros(len(target), dtype=np.uint32)
+        for byte in range((shift + bits + 7) // 8):
+            part = source[offset+byte:offset+byte+len(target)*stride:stride].astype(np.uint32)
+            values[:len(part)] |= part << (8*byte)
+        target[:] = (values >> shift) & (2**bits - 1)
     return result
 
 
@@ -157,7 +176,7 @@ def _body(payload, compressed, expected):
 def decode_block(blob, shape, codebook=None):
     if len(blob) < HEADER.size:
         raise ValueError("Truncated block header")
-    bits, compressed, mapping, count, exceptions, step = HEADER.unpack_from(blob)
+    bits, compressed, mapping, count, exceptions, step = unpack_header(blob)
     if mapping not in CODEBOOK_IDS.values() or count != math.prod(shape) or not 0 < count <= MAX_SAMPLES:
         raise ValueError("Invalid block sample count/header")
     if codebook is not None and (codebook not in CODEBOOK_IDS or (bits and mapping != CODEBOOK_IDS[codebook])):
@@ -259,6 +278,15 @@ def _native_encode_block(original, flags, config, bounds):
 
 
 def encode_block(original, flags, config, bounds, stream=(), *, global_std=None):
+    result = _encode_block(original, flags, config, bounds, stream, global_std=global_std)
+    if config.block_header == "precision-nibble-v1":
+        result.blob = bytes([PRECISION_MARKER | PRECISION_TAG_BITS.index(result.bits)]) + result.blob[1:]
+    elif config.block_header != "literal-bits-v1":
+        raise ValueError("Unsupported block_header")
+    return result
+
+
+def _encode_block(original, flags, config, bounds, stream=(), *, global_std=None):
     total_start = time.perf_counter()
     times = Counter()
     original = portable(original)
@@ -267,8 +295,8 @@ def encode_block(original, flags, config, bounds, stream=(), *, global_std=None)
     from .error_budget import configured_bounds
     bounds = configured_bounds(original, flags, config, bounds, global_std)
     mapping = CODEBOOK_IDS[config.codebook]
-    native_supported = (_native is not None and (not mapping or getattr(_native, "MIDRISE_V1", 0) == 1)
-                        and (3 not in config.bits or getattr(_native, "THREE_BIT_V1", 0) == 1))
+    native_supported = (native_widths_supported(config.bits)
+                        and (not mapping or getattr(_native, "MIDRISE_V1", 0) == 1))
     if mapping == 2:
         from .power import encode_power
         return encode_power(original, flags, config, bounds)

@@ -17,6 +17,9 @@ spec.loader.exec_module(reference)
 class ReferenceDecoderTests(unittest.TestCase):
     def test_literal_conformance_and_independent_decoder(self):
         fixtures = json.loads((root / "tests/fixtures/codec-v1.json").read_text())
+        tagged = json.loads((root / "tests/fixtures/precision-nibble-v1.json").read_text())
+        for key in ('packing', 'blocks'):
+            fixtures[key].extend(tagged[key])
         for fixture in fixtures["packing"]:
             self.assertEqual(pack_codes(np.asarray(fixture["codes"]), fixture["bits"]).hex(), fixture["hex"])
         for fixture in fixtures["blocks"]:

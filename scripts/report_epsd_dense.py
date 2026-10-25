@@ -19,13 +19,15 @@ REF=Path('results/calibrated-template/reference')
 MASK=Path('results/calibrated-template/above10deg.fits')
 BYTES=1431429120
 LADDER=[3,4,5,6,8,10,12,14,16]
+EPSILONS=[.01,.04,.18]
+PREVIOUS_COMMIT='b9596c800e176dfe312945212453b99161343bac'
 
 
 def collect():
     HASHES.clear()
     plan=json.loads((ROOT/'plan.json').read_text())
     controller=json.loads((ROOT/'study-status.json').read_text());assert controller['status']=='passed'
-    assert len(plan)==3 and sorted(e['epsilon_D'] for e in plan)==[.01,.018,.04]
+    assert len(plan)==3 and sorted(e['epsilon_D'] for e in plan)==EPSILONS
     mask=fits.getdata(MASK).astype(bool);assert mask.sum()==2245726
     reference,header=read_fits(REF/'image-image.fits')
     residual,rh=read_fits(REF/'image-residual.fits');assert _grid(header)==_grid(rh)
@@ -121,7 +123,12 @@ def collect():
         comparison_mask=dict(path=str(MASK),sha256=file_sha256(MASK),pixels=int(mask.sum()),minimum_elevation_deg=10),
         source_integrity=dict(original_import_checksums_match=True,files_checked=len(imported['files'])),
         previous_manuscript=dict(path=str(old_paper),sha256=old_hash,content_unchanged=True),
-        tests_passed=114,hardware=previous['hardware'],study_controller=controller,
+        tests_passed=116,hardware=previous['hardware'],study_controller=controller,
+        correction=dict(previous_epsilon_D=.018,corrected_epsilon_D=.18,
+            previous_results_commit=PREVIOUS_COMMIT,
+            reused_verified_cases=['epsd-001-dense','epsd-004-dense'],
+            new_case='epsd-018-dense',
+            note='The 0.018 experiment is historical and is not relabelled as 0.18. The corrected case was encoded from the original MS and CLEANed twice.'),
         precision_labels=[str(x) for x in LADDER]+['float32'],
         plot_title='Fixed epsilon_D; expanded precision ladder; same MS and above-10° mask',
         empirical_best_worst_of_two=min(entries,key=lambda e:e['worst_residual_normalized_difference'])['name'],
@@ -161,17 +168,30 @@ def visibility_table(result):
     return '\n'.join(rows)
 
 
+def clean_termination_text(result):
+    runs=[r for e in result['experiments'] for r in e['residual_normalized_runs']]
+    assert len(runs)==6 and all(r['clean_termination']['final_threshold_reached'] for r in runs)
+    counts=sorted({r['clean_termination']['major_iterations'] for r in runs})
+    assert all(isinstance(n,int) and n>0 for n in counts)
+    suffix=f'{counts[0]} major iterations each' if len(counts)==1 else f'{counts[0]}–{counts[-1]} major iterations'
+    return 'All six CLEAN runs reached the final threshold, with '+suffix+'.'
+
+
 def write_note(result):
     main,detail,timing=tables(result)
     best=next(e for e in result['experiments'] if e['name']==result['empirical_best_worst_of_two'])
+    smallest=min(result['experiments'],key=lambda e:e['shared']['archive_bytes'])
+    first=min(result['experiments'],key=lambda e:e['residual_normalized_runs'][0]['restored_difference']['rms'])
+    tolerances=', '.join(f"{e['epsilon_D']:g}" for e in result['experiments'])
     lines=['# Fixed epsilon D with the expanded precision ladder','',
-        '25 October 2026. Three requested tolerances were encoded independently from the original calibrated source, with no rate cap or retuning: 0.01, 0.018 and 0.04. All use 128×48×1 amplitude groups, median centres, max/std gamma (R0=4), range quantiles 1 and 0.995, and the 3/4/5/6/8/10/12/14/16 ladder plus exact fallback. G/S/R are disabled.','',
+        f'25 October 2026. Three requested tolerances were encoded independently from the original calibrated source, with no rate cap or retuning: {tolerances}. All use 128×48×1 amplitude groups, median centres, max/std gamma (R0=4), range quantiles 1 and 0.995, and the 3/4/5/6/8/10/12/14/16 ladder plus exact fallback. G/S/R are disabled.','',
+        f'Correction: the requested third tolerance is **0.18**, replacing 0.018. The 0.18 archive and both CLEAN runs are new measurements; verified 0.01 and 0.04 results are reused unchanged. The [earlier 0.018 results](https://github.com/peijin94/varquanMS/blob/{PREVIOUS_COMMIT}/devnotes/epsd-dense.md) remain historical and are not relabelled.','',
         'The four-bit precision selector is stored in the low nibble of a versioned header byte. Exact is tag 0; tags 1–9 select the nine widths; tag A is legacy two-bit; B–E are reserved and F is invalid/error. Invalid tags fail rather than pretending to contain data. Header sizes remain 16/28 bytes.','',
         main,'',detail,'',visibility_table(result),'',
         'The reference residual RMS is 1.031244811 Jy/beam, measured without clipping or mean removal on the fixed above-10° mask. Two CLEAN runs record variation, not statistical confidence. Minimum image error is a different objective from minimum archive bytes; no universal default is selected.','',
-        f"Epsilon-D {best['epsilon_D']:g} has the smallest archive and the smallest worst-of-two restored-image difference among these three cases. Epsilon-D 0.01 has the smallest dirty-image and reference-peak differences. Epsilon-D 0.018 has the smallest first-run restored-image difference, but its repeat varies from 9.03 to 12.93 mJy/beam. Tighter visibility bounds therefore do not monotonically rank the restored CLEAN images.",'',
-        'All six CLEAN runs reached the final threshold, with three major iterations each.','',
-        'All source/export checks passed, all 108 import-file hashes match, and the dataset’s four-bit weights remain exact. Original metre UVW, supported metadata, coordinates and flags remain exact. Calibrated-only deliberately omits original DATA/MODEL_DATA and zeroes flagged values. The local suite has 114 passing tests.','',
+        f"Epsilon-D {smallest['epsilon_D']:g} has the smallest archive. Epsilon-D {best['epsilon_D']:g} has the smallest worst-of-two restored-image difference, and epsilon-D {first['epsilon_D']:g} has the smallest first-run difference. Tighter visibility bounds do not monotonically rank the restored CLEAN images: the unchanged 0.01 versus 0.04 comparison shows that reversal.",'',
+        clean_termination_text(result),'',
+        f"All source/export checks passed, all 108 import-file hashes match, and the dataset’s four-bit weights remain exact. Original metre UVW, supported metadata, coordinates and flags remain exact. Calibrated-only deliberately omits original DATA/MODEL_DATA and zeroes flagged values. The local suite has {result['tests_passed']} passing tests.",'',
         '![Size and image error](figs/epsd-dense-rate.png)','',
         '![Precision distribution](figs/epsd-dense-bits.png)','',
         '![All image differences](figs/epsd-dense-images.png)','',
@@ -179,7 +199,7 @@ def write_note(result):
         '![Minimum-error full comparison](figs/epsd-dense-best-images.png)','',
         '![Minimum-error peak zoom](figs/epsd-dense-best-zoom.png)','',
         '## Timing','',timing,'',
-        'These shared-host timings overlap archive/image work and do not evict caches. Verified bundle time includes source copying, inspection, encoding and verification. Compaction and MS export are additional. The full 15-second conversion target is not established. G is disabled, but the shared policy still measures and records global references; that cost is included.','',
+        'These shared-host timings do not evict caches. The 0.01/0.04 pipelines overlapped other archive/image work; 0.18 was run separately after the correction, with its two CLEAN repetitions concurrent. Active workload differs, so this is not an isolated speed ranking. Verified bundle time includes source copying, inspection, encoding and verification. Compaction and MS export are additional. The full 15-second conversion target is not established. G is disabled, but the shared policy still measures and records global references; that cost is included.','',
         '## Byte accounting','']
     for e in result['experiments']:
         lines += [f"### epsilon_D = {e['epsilon_D']:g}",'','| Category | Physical MB |','| --- | ---: |']
@@ -199,8 +219,8 @@ def write_note(result):
 def update_paper(result):
     main,detail,timing=tables(result)
     cases=result['experiments'];best=next(e for e in cases if e['name']==result['empirical_best_worst_of_two'])
-    assert all(r['clean_termination']['final_threshold_reached'] and r['clean_termination']['major_iterations']==3
-               for e in cases for r in e['residual_normalized_runs'])
+    termination=clean_termination_text(result)
+    tolerances=', '.join(f"{e['epsilon_D']:g}" for e in cases)
     sizes=[e['shared']['archive_bytes']/1e6 for e in cases]
     rates=[100*e['rate']['fraction'] for e in cases]
     errors=[100*e['worst_residual_normalized_difference'] for e in cases]
@@ -214,7 +234,7 @@ with maximum-error, bias and baseline guards. The precision ladder is 3, 4, 5, 6
 8, 10, 12, 14 and 16 bits per component plus exact float32, identified by a four-bit
 tag. Original UVW, ordering and retained metadata are reconstructed without
 coordinate regeneration or averaging. On a calibrated 15-integration OVRO-LWA
-observation, epsilon-D values 0.01, 0.018 and 0.04 produce visibility payloads of
+observation, epsilon-D values {tolerances} produce visibility payloads of
 {values(rates)}% of the original complex64 bytes and complete archives of
 {values(sizes)} MB, respectively. The larger restored-image difference across
 two multiscale CLEAN runs is {values(errors)}% of reference residual RMS,
@@ -230,8 +250,8 @@ visibility statistics do not constitute a polarized-image validation.
 
 All three archives passed full-source export verification. Original supported
 metadata, UVW, flags and this observation's weights passed exact checks; all 108
-source-file hashes still match. All six CLEAN runs reached the final threshold,
-with three major iterations each. The new 5/10/14-bit choices encode
+source-file hashes still match. {termination}
+The new 5/10/14-bit choices encode
 {new_widths['5']:,}, {new_widths['10']:,} and {new_widths['14']:,} complex samples,
 respectively, summed across the three separate experiments. Exact blocks often
 represent highly compressible zeros, so sample fractions and byte fractions differ.
@@ -273,7 +293,7 @@ This selects a display case by error, without asserting an optimal size–error 
 intensity scale; the difference has a separate, explicitly labelled linear scale.*'''
     timingbody=timing+'''\n\nTimings cover all 15 integrations on a shared Intel Xeon Silver 4214 host with
 48 logical CPUs and approximately 376 GiB RAM. Grouped encoders use 24 workers;
-CLEAN uses eight threads. Archive pipelines and imaging overlap, and caches are
+CLEAN uses eight threads. Concurrent workloads vary between cases, and caches are
 not evicted. These measurements describe the observed workflow rather than an
 isolated speed ranking. Verified-bundle wall time includes source copying,
 inspection, encoding, global-reference sampling and verification; compaction and
@@ -282,8 +302,9 @@ disabled. The full-conversion 15-second target remains unmet.
 
 ![Rate–distortion and physical byte categories](figs/epsd-rate-distortion.png)
 
-*Figure 9. Complete-file size versus the two restored-image RMS differences, and
-physical byte categories. Factors and exceptions are inside visibility payload;
+*Figure 9. Complete-file size versus RMS(image − reference) / RMS(reference residual),
+shown in percent for the two CLEAN runs on the same above-10° mask, and physical
+byte categories. Factors and exceptions are inside visibility payload;
 quality records, coordinates, permutations and other metadata remain part of the
 complete archive. Summing only nominal component bits would understate storage.*'''
     conclusion=f'''The three specified epsilon-D values yield complete archives between
@@ -297,6 +318,13 @@ threshold. Preserved exact data, explicit profile losses and complete byte count
 make the tradeoffs reviewable for this observation.'''
     strict=next(e for e in cases if e['epsilon_D']==.01)
     loose=next(e for e in cases if e['epsilon_D']==.04)
+    corrected=next(e for e in cases if e['epsilon_D']==.18)
+    conclusion += f'''\n\nAt epsilon-D 0.18, the visibility payload is
+{100*corrected['rate']['fraction']:.3f}% of the original complex64 bytes, with a
+worst-of-two restored-image difference of
+{100*corrected['worst_residual_normalized_difference']:.3f}% of reference residual
+RMS. This point measures the stronger compression setting directly, using the
+same grouping, reconstruction checks and imaging mask.'''
     if strict['worst_residual_normalized_difference']>loose['worst_residual_normalized_difference']:
         s=strict['residual_normalized_runs'][0];l=loose['residual_normalized_runs'][0]
         conclusion += f'''\n\nThe epsilon-D 0.01 case has a smaller first-run dirty-image difference

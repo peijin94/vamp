@@ -160,10 +160,10 @@
     "partition_workers": 1
   },
   {
-    "name": "epsd-0018-dense",
-    "family": "epsilon_D=0.018",
+    "name": "epsd-018-dense",
+    "family": "epsilon_D=0.18",
     "layout": "amplitude128x48",
-    "epsilon_D": 0.018,
+    "epsilon_D": 0.18,
     "config": {
       "mode": "adaptive",
       "columns": [
@@ -222,7 +222,7 @@
         "reference": "distribution-v1",
         "epsilon_G": null,
         "epsilon_S": null,
-        "epsilon_D": 0.018,
+        "epsilon_D": 0.18,
         "epsilon_R": null,
         "sampling_fraction": 0.02,
         "sampling_seed": 20261024,

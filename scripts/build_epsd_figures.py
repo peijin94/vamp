@@ -16,7 +16,10 @@ DEST=Path('docs/paper/figs')
 
 def save(fig,name):
     for suffix in ('png','svg','pdf'):
-        fig.savefig(DEST/(name+'.'+suffix),dpi=180,bbox_inches='tight')
+        path=DEST/(name+'.'+suffix)
+        fig.savefig(path,dpi=180,bbox_inches='tight')
+        if suffix=='svg':
+            path.write_text('\n'.join(line.rstrip() for line in path.read_text().splitlines())+'\n')
     plt.close(fig)
 
 
@@ -69,10 +72,12 @@ def measured(result):
     fig,axes=plt.subplots(1,2,figsize=(11,4.2),constrained_layout=True)
     for e in cases:
         x=e['shared']['archive_bytes']/1e6
-        yy=[r['restored_difference']['rms']*1000 for r in e['residual_normalized_runs']]
+        yy=[100*r['restored_difference_over_reference_residual'] for r in e['residual_normalized_runs']]
         axes[0].plot([x,x],yy,'o-',color='#2166ac')
         axes[0].annotate(f"εD={e['epsilon_D']:g}",(x,max(yy)),xytext=(0,7),textcoords='offset points',ha='center',fontsize=9)
-    axes[0].set(xlabel='Complete archive (MB)',ylabel='Restored-image difference RMS (mJy/beam)',title='Two CLEAN runs per fixed epsilon')
+    axes[0].set(xlabel='Complete archive (MB)',
+                ylabel='RMS(image − reference) /\nRMS(reference residual) [%]',
+                title='Two CLEAN runs per fixed epsilon')
     axes[0].margins(x=.16,y=.18)
     main=('visibility_block_payload','visibility_quality','quantization_statistics','coordinates')
     left=np.zeros(len(cases))

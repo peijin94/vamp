@@ -23,10 +23,10 @@ with maximum-error, bias and baseline guards. The precision ladder is 3, 4, 5, 6
 8, 10, 12, 14 and 16 bits per component plus exact float32, identified by a four-bit
 tag. Original UVW, ordering and retained metadata are reconstructed without
 coordinate regeneration or averaging. On a calibrated 15-integration OVRO-LWA
-observation, epsilon-D values 0.01, 0.018 and 0.04 produce visibility payloads of
-22.859, 17.947, 17.433% of the original complex64 bytes and complete archives of
-427.429, 357.127, 350.112 MB, respectively. The larger restored-image difference across
-two multiscale CLEAN runs is 1.260, 1.254, 1.151% of reference residual RMS,
+observation, epsilon-D values 0.01, 0.04, 0.18 produce visibility payloads of
+22.859, 17.433, 9.932% of the original complex64 bytes and complete archives of
+427.429, 350.112, 242.766 MB, respectively. The larger restored-image difference across
+two multiscale CLEAN runs is 1.260, 1.151, 5.584% of reference residual RMS,
 measured above 10° elevation. The calibrated profile explicitly discards raw/model
 columns and flagged values while retaining flags; its weights are exact on this
 dataset. These results measure agreement with the supplied calibrated reference,
@@ -305,7 +305,7 @@ For the supported multi-integration case, the reference workflow is:
 ```bash
 export PYTHONPATH=src
 python scripts/timeslot_archive.py encode INPUT.ms blocks.bundle \
-  --config configs/calibrated-epsd-0018.json --report encode.json
+  --config configs/calibrated-epsd-018.json --report encode.json
 python scripts/timeslot_archive.py compact blocks.bundle archive.h5 \
   --report compact.json
 python scripts/timeslot_archive.py decode archive.h5 RESTORED.ms \
@@ -336,7 +336,7 @@ independent validation of the calibration or flux scale.
 [Input inspection](../../reports/calibrated-inspection.json).
 
 We fix all grouping, median, gamma, exception and preservation settings and test
-$\epsilon_D=0.01$, $0.018$ and $0.04$ with the expanded nine-width ladder. The
+$\epsilon_D=0.01$, $0.04$ and $0.18$ with the expanded nine-width ladder. The
 coefficients are specified in advance and are not retuned to a byte target or
 selected from image outcomes. Each case reads the original calibrated source;
 none recompresses a previous quantized result. All use 128×48×1 blocks, independent
@@ -350,7 +350,7 @@ The validation suite exercises every width, partial blocks, special values,
 flags, signed zeros, exact fallback, malformed/truncated streams and both header
 representations. Independent standard-library, portable NumPy and compiled
 reconstructions are compared. Native modules built before a requested width
-fall back to portable encoding. The current full suite passes 114 tests.
+fall back to portable encoding. The current full suite passes 116 tests.
 Source-aware archive/export checks compare original supported metadata,
 coordinates, flags and weights exactly, and independently recompute normalized
 visibility error criteria. Source checksums are checked against the original
@@ -392,20 +392,20 @@ runs do not establish statistical confidence intervals.
 | εD | Payload MB (% of complex64) | Complete archive MB | Difference mJy/beam, first / repeat | Difference / reference residual RMS %, first / repeat |
 | ---: | ---: | ---: | ---: | ---: |
 | 0.01 | 327.207 (22.859%) | 427.429 | 12.9866 / 12.9944 | 1.2593 / 1.2601 |
-| 0.018 | 256.906 (17.947%) | 357.127 | 9.0301 / 12.9284 | 0.8756 / 1.2537 |
 | 0.04 | 249.542 (17.433%) | 350.112 | 11.8731 / 11.8666 | 1.1513 / 1.1507 |
+| 0.18 | 142.163 (9.932%) | 242.766 | 57.5807 / 49.4859 | 5.5836 / 4.7987 |
 
 | εD | Dirty difference mJy/beam | Worst reference-peak change % | Worst faint-region RMS difference % | Candidate residual RMS Jy/beam, first / repeat |
 | ---: | ---: | ---: | ---: | ---: |
 | 0.01 | 1.5080 | 0.00020 | 1.0430 | 1.030953 / 1.030953 |
-| 0.018 | 2.9380 | 0.00150 | 1.0392 | 1.031052 / 1.031412 |
 | 0.04 | 5.4572 | 0.00244 | 0.9556 | 1.031218 / 1.031221 |
+| 0.18 | 40.0807 | 0.43340 | 4.5891 | 1.026183 / 1.028690 |
 
 | εD | Cross XX RMSE / signal RMS % | Cross XY % | Cross YX % | Cross YY % |
 | ---: | ---: | ---: | ---: | ---: |
 | 0.01 | 0.59372 | 0.38169 | 0.48786 | 0.45558 |
-| 0.018 | 0.77274 | 0.84894 | 0.82884 | 0.82922 |
 | 0.04 | 2.35604 | 1.43210 | 1.87325 | 1.78090 |
+| 0.18 | 11.49117 | 10.65014 | 11.56520 | 9.94197 |
 
 Visibility ratios divide component reconstruction RMSE by the original component
 signal RMS, pooling all finite unflagged cross-correlations in each product.
@@ -414,9 +414,9 @@ visibility statistics do not constitute a polarized-image validation.
 
 All three archives passed full-source export verification. Original supported
 metadata, UVW, flags and this observation's weights passed exact checks; all 108
-source-file hashes still match. All six CLEAN runs reached the final threshold,
-with three major iterations each. The new 5/10/14-bit choices encode
-0, 105,035,520 and 0 complex samples,
+source-file hashes still match. All six CLEAN runs reached the final threshold, with 3 major iterations each.
+The new 5/10/14-bit choices encode
+26,333,664, 104,509,248 and 0 complex samples,
 respectively, summed across the three separate experiments. Exact blocks often
 represent highly compressible zeros, so sample fractions and byte fractions differ.
 Complete distributions and auto/cross splits are retained in the machine-readable
@@ -463,12 +463,12 @@ intensity scale; the difference has a separate, explicitly labelled linear scale
 | εD | Sum partition encode s | Global sampling s | Verified bundle wall s | Compaction s | MS export s | CLEAN s, first / repeat |
 | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | 0.01 | 196.45 | 7.45 | 456.48 | 33.25 | 58.61 | 174.66 / 185.93 |
-| 0.018 | 202.66 | 7.18 | 756.66 | 23.80 | 48.32 | 166.18 / 172.85 |
 | 0.04 | 178.68 | 6.97 | 456.93 | 31.88 | 55.97 | 288.42 / 213.19 |
+| 0.18 | 188.12 | 6.29 | 447.38 | 17.17 | 48.29 | 164.56 / 183.58 |
 
 Timings cover all 15 integrations on a shared Intel Xeon Silver 4214 host with
 48 logical CPUs and approximately 376 GiB RAM. Grouped encoders use 24 workers;
-CLEAN uses eight threads. Archive pipelines and imaging overlap, and caches are
+CLEAN uses eight threads. Concurrent workloads vary between cases, and caches are
 not evicted. These measurements describe the observed workflow rather than an
 isolated speed ranking. Verified-bundle wall time includes source copying,
 inspection, encoding, global-reference sampling and verification; compaction and
@@ -477,8 +477,9 @@ disabled. The full-conversion 15-second target remains unmet.
 
 ![Rate–distortion and physical byte categories](figs/epsd-rate-distortion.png)
 
-*Figure 9. Complete-file size versus the two restored-image RMS differences, and
-physical byte categories. Factors and exceptions are inside visibility payload;
+*Figure 9. Complete-file size versus RMS(image − reference) / RMS(reference residual),
+shown in percent for the two CLEAN runs on the same above-10° mask, and physical
+byte categories. Factors and exceptions are inside visibility payload;
 quality records, coordinates, permutations and other metadata remain part of the
 complete archive. Summing only nominal component bits would understate storage.*
 <!-- TIMING_END -->
@@ -495,14 +496,21 @@ permutations, indexes, coordinates and error summaries in the archive size.
 
 <!-- CONCLUSION_START -->
 The three specified epsilon-D values yield complete archives between
-350.112 and 427.429 MB. Their worst-of-two image differences range
-from 1.151% to 1.260% of the reference residual RMS on the
+242.766 and 427.429 MB. Their worst-of-two image differences range
+from 1.151% to 5.584% of the reference residual RMS on the
 fixed elevation mask. This is a measured three-point size–error comparison with
 constant grouping and codec settings. It does not isolate the effect of expanding
 the ladder from the earlier six-width experiments, whose tolerances also differ.
 No result here demonstrates a universal optimum or a scientific acceptance
 threshold. Preserved exact data, explicit profile losses and complete byte counts
 make the tradeoffs reviewable for this observation.
+
+At epsilon-D 0.18, the visibility payload is
+9.932% of the original complex64 bytes, with a
+worst-of-two restored-image difference of
+5.584% of reference residual
+RMS. This point measures the stronger compression setting directly, using the
+same grouping, reconstruction checks and imaging mask.
 
 The epsilon-D 0.01 case has a smaller first-run dirty-image difference
 (0.146% versus

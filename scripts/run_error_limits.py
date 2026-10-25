@@ -12,7 +12,26 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 import time
+
+
+def ensure_case_config(path, config):
+    """Publish complete JSON once; concurrent/resumed stages only validate it."""
+    if not path.exists():
+        with tempfile.NamedTemporaryFile(mode='w', dir=path.parent, prefix='.config-',
+                                         suffix='.partial', delete=False) as stream:
+            staged=Path(stream.name)
+            json.dump(config,stream,indent=2)
+            stream.write('\n')
+        try:
+            # A hard link publishes a complete file atomically without replacing
+            # a different configuration another process may already have saved.
+            try:os.link(staged,path)
+            except FileExistsError:pass
+        finally:staged.unlink()
+    if json.loads(path.read_text())!=config:
+        raise ValueError('Existing configuration differs')
 
 
 def main():
@@ -43,8 +62,7 @@ def main():
     def run(case):
         name=case['name']; base=args.root/name
         cfg=args.root/(name+'-config.json')
-        if cfg.exists() and json.loads(cfg.read_text())!=case['config']:raise ValueError('Existing configuration differs')
-        cfg.write_text(json.dumps(case['config'],indent=2)+'\n')
+        ensure_case_config(cfg,case['config'])
         def stage(label,script,options,completed):
             if completed.exists():
                 data=json.loads(completed.read_text())

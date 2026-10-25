@@ -435,6 +435,12 @@ contiguous context runs, and each run must satisfy the ordinary archive prefligh
 Repeated subtable bytes and all outer manifest/report overhead count toward
 bundle size. No time or channel averaging occurs.
 
+The optional `execution.partition_workers` field records runtime concurrency
+(default one when absent). Encoding may process up to eight independent contexts
+with one encoder worker per context. Source checks, shared global references,
+scientific configurations and ordered reconstruction are unchanged; only a fully
+verified bundle is published. This field does not affect decoder arithmetic.
+
 Detailed policy, commands and calibration caveats are in
 [the calibrated imaging development note](../devnotes/calibrated-imaging.md).
 

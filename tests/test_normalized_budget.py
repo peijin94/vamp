@@ -149,5 +149,27 @@ class NormalizedBudgetTests(unittest.TestCase):
             refs=sample_references(mixed,cfg)
             self.assertEqual(len(refs['groups']),2)
 
+    def test_parallel_partitions_keep_payloads_and_export_identical(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);source=make_ms(root/'source.ms',pairs=((0,0),(0,1),(0,0),(0,1)),channels=5)
+            with table(str(source),readonly=False,ack=False) as t:
+                t.putcol('TIME',np.array([1.,1.,2.,2.]))
+            before=snapshot(source);cfg=configuration()
+            for n in (1,2):
+                encode_partitioned(source,root/f'archive{n}',cfg,partition_workers=n)
+                decode_partitioned(root/f'archive{n}',root/f'export{n}.ms')
+            self.assertTrue(compare_ms(root/'export1.ms',root/'export2.ms'))
+            _,a=_load(root/'archive1');_,b=_load(root/'archive2')
+            self.assertEqual(b['execution']['partition_workers'],2)
+            for pa,pb in zip(a['partitions'],b['partitions']):
+                with Reader(root/'archive1'/pa['archive']) as ra,Reader(root/'archive2'/pb['archive']) as rb:
+                    ia={e['path']:e for e in ra.manifest['inventory']}
+                    ib={e['path']:e for e in rb.manifest['inventory']}
+                    self.assertEqual(ia,ib)
+                    for path in ia:self.assertEqual(ra.h5[path][...].tobytes(),rb.h5[path][...].tobytes())
+            self.assertEqual(before,snapshot(source))
+            with self.assertRaises(ValueError):encode_partitioned(source,root/'bad',replace(cfg,workers=2),partition_workers=2)
+            with self.assertRaises(ValueError):encode_partitioned(source,root/'bad',cfg,partition_workers=0)
+
 
 if __name__=='__main__':unittest.main()

@@ -6,7 +6,9 @@ Both representations decode independently of the original MS.
 """
 
 from collections import Counter
+from concurrent.futures import ProcessPoolExecutor
 import json
+import multiprocessing
 from pathlib import Path
 import tempfile
 import time
@@ -68,13 +70,48 @@ def _signature(manifest):
     return dumps({"tables": result, "subtable_values": subtable_entries})
 
 
-def encode_partitioned(source, output, config=None):
+def _encode_context(task):
+    source, staged, config, distribution_references, index, start, stop = task
+    copying = time.perf_counter()
+    with tempfile.TemporaryDirectory(prefix="partition-ms-", dir=staged.parent) as scratch:
+        part = Path(scratch) / "input.ms"
+        with _open(source) as t, t.selectrows(np.arange(start, stop)) as selected:
+            if config.keep_calib_only:
+                with selected.query(columns=','.join(c for c in selected.colnames() if c not in OMITTED)) as projection:
+                    projection.copy(str(part), deep=True, valuecopy=True).close()
+            else:
+                selected.copy(str(part), deep=True, valuecopy=True).close()
+        copy_seconds = time.perf_counter() - copying
+        scanning = time.perf_counter()
+        inspection = inspect_ms(part, config.columns, config.io_chunk_rows)
+        inspection_seconds = time.perf_counter() - scanning
+        name = f"partition-{index:04d}.h5"
+        summary = encode(part, staged / name, config, inspection,
+                         distribution_references=distribution_references)
+        summary["archive"] = name
+        with Reader(staged / name) as reader:
+            signature = _signature(reader.manifest)
+        validation = verify(staged / name, source=part)
+        validation_name = f"verification-{index:04d}.json"
+        (staged / validation_name).write_text(json.dumps(validation, indent=2, allow_nan=False) + "\n")
+    record = {"start": start, "stop": stop, "archive": name, "bytes": (staged / name).stat().st_size,
+              "sha256": file_sha256(staged / name), "copy_seconds": copy_seconds,
+              "inspection_seconds": inspection_seconds, "summary": summary,
+              "verification": validation_name, "verification_sha256": file_sha256(staged / validation_name)}
+    return record, signature
+
+
+def encode_partitioned(source, output, config=None, *, partition_workers=1):
     """Encode contiguous contexts; publish the bundle only after all checks pass."""
     started = time.perf_counter()
     source = Path(source).resolve()
     output = new_output(output, source)
     config = config or Config()
     config.validate()
+    if type(partition_workers) is not int or not 1 <= partition_workers <= 8:
+        raise ValueError("partition_workers must be an integer in [1,8]")
+    if partition_workers > 1 and config.workers != 1:
+        raise ValueError("Parallel partitions require workers=1 inside each partition")
     if config.burn_flag:
         raise ValueError("Ordered partition bundles currently require exact flag preservation")
     discover_tables(source)
@@ -87,45 +124,27 @@ def encode_partitioned(source, output, config=None):
     staged = Path(tempfile.mkdtemp(prefix=output.name + ".", suffix=".partial", dir=output.parent))
     manifest = {"schema": SCHEMA, "status": "complete", "config": config.to_dict(),
                 "source_name": source.name, "source_physical_bytes": original_bytes,
+                "execution": {"partition_workers": partition_workers},
                 "row_count": runs[-1][1], "context_columns": names, "partitions": [],
                 "mapping": "Original rows [start,stop) equal local rows [0,stop-start); no averaging or row permutation",
                 "scope": "Contiguous numeric contexts; each partition must pass the existing archive preflight. All subtables are repeated exactly in every archive."}
     signature = None
     if distribution_references is not None:
         manifest['distribution_references'] = distribution_references
-    for index, (start, stop) in enumerate(runs):
-        copying = time.perf_counter()
-        with tempfile.TemporaryDirectory(prefix="partition-ms-", dir=output.parent) as scratch:
-            part = Path(scratch) / "input.ms"
-            with _open(source) as t, t.selectrows(np.arange(start, stop)) as selected:
-                if config.keep_calib_only:
-                    with selected.query(columns=','.join(c for c in selected.colnames() if c not in OMITTED)) as projection:
-                        projection.copy(str(part), deep=True, valuecopy=True).close()
-                else:
-                    selected.copy(str(part), deep=True, valuecopy=True).close()
-            copy_seconds = time.perf_counter() - copying
-            scanning = time.perf_counter()
-            inspection = inspect_ms(part, config.columns, config.io_chunk_rows)
-            inspection_seconds = time.perf_counter() - scanning
-            name = f"partition-{index:04d}.h5"
-            summary = encode(part, staged / name, config, inspection,
-                             distribution_references=distribution_references)
-            summary["archive"] = name  # Relative to the bundle after publication.
-            with Reader(staged / name) as reader:
-                current = _signature(reader.manifest)
+    tasks = [(source, staged, config, distribution_references, i, a, b) for i, (a, b) in enumerate(runs)]
+    pool = (ProcessPoolExecutor(max_workers=partition_workers, mp_context=multiprocessing.get_context('spawn'))
+            if partition_workers > 1 else None)
+    try:
+        results = map(_encode_context, tasks) if pool is None else pool.map(_encode_context, tasks)
+        for index, (record, current) in enumerate(results):
             if signature is not None and current != signature:
                 raise ValueError("Partition schemas/subtables differ; bundle cannot reconstruct them safely")
             signature = current
-            validation = verify(staged / name, source=part)
-            validation_name = f"verification-{index:04d}.json"
-            (staged / validation_name).write_text(json.dumps(validation, indent=2, allow_nan=False) + "\n")
-        record = {"start": start, "stop": stop, "archive": name, "bytes": (staged / name).stat().st_size,
-                  "sha256": file_sha256(staged / name), "copy_seconds": copy_seconds,
-                  "inspection_seconds": inspection_seconds, "summary": summary,
-                  "verification": validation_name, "verification_sha256": file_sha256(staged / validation_name)}
-        manifest["partitions"].append(record)
-        print(json.dumps({"partition": index, "rows": stop-start, "bytes": record["bytes"],
-                          "encode_seconds_excluding_inspection": summary["elapsed_seconds"]}), flush=True)
+            manifest["partitions"].append(record)
+            print(json.dumps({"partition": index, "rows": record['stop']-record['start'], "bytes": record["bytes"],
+                              "encode_seconds_excluding_inspection": record['summary']["elapsed_seconds"]}), flush=True)
+    finally:
+        if pool is not None:pool.shutdown(wait=True, cancel_futures=True)
     manifest["elapsed_seconds_including_copy_inspection_verification"] = time.perf_counter() - started
     (staged / "manifest.json").write_text(json.dumps(manifest, indent=2, allow_nan=False) + "\n")
     (staged / "manifest.sha256").write_text(file_sha256(staged / "manifest.json") + "\n")
@@ -256,4 +275,5 @@ def bundle_summary(bundle, manifest=None):
             "sum_inspection_seconds": sum(p["inspection_seconds"] for p in manifest["partitions"]),
             "sum_partition_copy_seconds": sum(p["copy_seconds"] for p in manifest["partitions"]),
             "global_reference_sampling_seconds": manifest.get('distribution_references', {}).get('elapsed_seconds', 0.),
+            "partition_workers": manifest.get('execution', {}).get('partition_workers', 1),
             "elapsed_seconds_including_copy_inspection_verification": manifest["elapsed_seconds_including_copy_inspection_verification"]}

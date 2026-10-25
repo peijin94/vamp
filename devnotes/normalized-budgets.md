@@ -95,4 +95,13 @@ The implementation adds encoder policy/provenance and keeps the packed codec
 and decoder arithmetic unchanged. Validation covers gain scaling, zero MAD,
 native/portable agreement, metadata and source-bit preservation, sampled class
 separation, minimum-count fallback, sampling reproducibility, partition sharing
-and malformed reference rejection. The local suite has 109 passing tests.
+and malformed reference rejection. The local suite has 110 passing tests.
+
+For the many-small-block benchmark, `timeslot_archive.py encode` also accepts
+`--partition-workers 1..8`. Values above one require `workers=1` inside each
+partition. Global references are still sampled once; independent contexts are
+processed separately and assembled in original order only after every source
+check passes. Runtime parallelism is recorded in the bundle's `execution`
+field and does not change the scientific configuration. A fixture compares
+all stored arrays and both exported MSs bitwise between serial and parallel
+execution. This option changes throughput, not quantization criteria.

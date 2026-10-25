@@ -69,7 +69,8 @@ def main():
             stage(label,'compare_wsclean.py',['results/calibrated-template/reference',images,
                   '--mask','results/calibrated-template/above10deg.fits','--report',report(label)],report(label))
             return name
-        stage('encode','timeslot_archive.py',['encode',args.source,bundle,'--config',cfg,'--report',report('encode')],report('encode'))
+        stage('encode','timeslot_archive.py',['encode',args.source,bundle,'--config',cfg,
+              '--partition-workers',case.get('partition_workers',1),'--report',report('encode')],report('encode'))
         if 'payload_fraction_target' in case:
             manifest=json.loads((bundle/'manifest.json').read_text())
             payload=samples=0

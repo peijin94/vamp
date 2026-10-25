@@ -211,6 +211,7 @@ def main():
         name=f'eps16-{index:02d}-{e["layout"]}-{e["family"].lower().replace(".","p")}'
         plan.append(dict(name=name,family=e['family'],layout=e['layout'],weights=e['weights'],
             parameter=e['tau'],nomination=e['nomination'],payload_fraction_target=args.target,
+            partition_workers=6 if e['config']['baseline_group']==1 else 1,
             pilot_payload_fraction=e['payload_fraction'],config=dict(e['config'],
                 workers=1 if e['config']['baseline_group']==1 else e['config']['workers'])))
     (args.output/'plan.json').write_text(json.dumps(plan,indent=2,allow_nan=False)+'\n')

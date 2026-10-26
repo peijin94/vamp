@@ -450,16 +450,35 @@ first dirty-image difference, all normalized by the same reference residual RMS.
 payload bytes. Float32 denotes exact storage, including cheaply compressed zero
 blocks. Metadata outside visibility blocks is accounted for separately.*
 
-![Image differences for every tolerance](figs/epsd-images.png)
+For the pixelwise displays in Figures 5–6, define
 
-*Figure 5. Reference and first-run quantized-minus-reference restored images above
-10°. Difference panels share one linear colour scale; the reference uses its own
-symmetric logarithmic display scale. Pixels outside the mask are excluded.*
+$$P_\epsilon(\boldsymbol\theta)=100\,
+\frac{I_\epsilon(\boldsymbol\theta)-I_0(\boldsymbol\theta)}{\sigma_R},\qquad
+\sigma_R=\sqrt{\frac{1}{N_{\mathcal M}}\sum_{\boldsymbol\theta\in\mathcal M}
+\left[R_0(\boldsymbol\theta)-\overline R_{0,\mathcal M}\right]^2}.$$
+
+Here $\sigma_R=1.018715249$ Jy/beam is the population standard deviation
+(`ddof=0`) of the uncompressed reference residual over the full above-10° mask.
+The displayed values are percentages of this single reference fluctuation scale.
+The denominator remains fixed across cases and zooms. This display normalization
+uses centred standard deviation; the tabulated image-error metrics and Figure 9
+retain their stated uncentred reference residual RMS normalization.
+
+![Recovered Stokes I and percentage differences for every tolerance](figs/epsd-images.png)
+
+*Figure 5. Two rows and three columns, with $\epsilon_D=0.01$, $0.04$ and $0.18$
+from left to right. Top: first-run recovered Stokes I images in Jy/beam, using
+viridis and a common symmetric logarithmic intensity scale. Bottom: signed
+$100(I_\epsilon-I_0)/\sigma_R$ differences, using bwr and a common linear
+percentage scale. Pixels outside the above-10° mask are excluded.*
 
 ![Reference-peak zooms](figs/epsd-zoom.png)
 
-*Figure 6. The same comparisons in a fixed 128×128-pixel crop around the reference
-peak. The reference peak defines the crop independently of compressed results.*
+*Figure 6. The same two-row, three-column comparisons in a fixed 128×128-pixel
+crop around the reference peak. Recovered images occupy the top row; percentage
+differences occupy the bottom row. The full-mask residual standard deviation and
+both colour scales are identical to Figure 5. The uncompressed reference defines
+the crop independently of the recovered images.*
 
 <!-- RESULTS_END -->
 

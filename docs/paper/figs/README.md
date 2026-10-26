@@ -8,12 +8,17 @@ FITS outputs. PNGs support Markdown; SVG/PDF diagrams and charts support the PDF
 | 1a | `grouping` | Conceptual whole-spectrum permutation and baseline/frequency block boundaries; illustrative 2×4 blocks, with actual 128×48 settings stated in the caption |
 | 1b–2 | `epsd-method`, `epsd-levels` | Grouping, precision selection and unsigned power-spaced levels; method schematics |
 | 3–4 | `epsd-rate`, `epsd-bits` | Three fixed epsilon-D values: image errors, sample and payload precision fractions; `reports/calibrated-epsd-dense.json` |
-| 5–6 | `epsd-images`, `epsd-zoom` | Initial Stokes I comparison and reference-peak crops; original measured FITS |
+| 5–6 | `epsd-images`, `epsd-zoom` | 2×3 panels: recovered I above percentage differences, one epsilon per column; original measured FITS and reference-peak crops |
 | 7–8 | `calibrated-iv-full`, `calibrated-iv-zoom` | Additional epsilon-D 0.18 I/V reference, reconstruction and residual-normalized differences; `reports/calibrated-performance.json` and matching FITS |
 | 9 | `epsd-rate-distortion` | Initial I image-error/size relation and physical byte categories; dense-ladder report |
 | 10 | `calibrated-paper-runtime` | Three full-MS timing repeats per implementation, median and range; performance report |
 
-I flux images use viridis; V and signed differences use bwr. Differences in
+I flux images use viridis; V and signed differences use bwr. Figures 5–6 show
+`100 × (I_recovered − I_reference) / std(reference residual)` with a percentage
+colour scale. The denominator is the centred population standard deviation
+(`ddof=0`, 1.018715249 Jy/beam) over the full fixed above-10° mask; it is shared
+across all cases and zooms. Both figures use identical intensity/difference limits.
+Differences in
 Figures 7–8 divide by a scalar matching reference residual RMS, not by each
 residual pixel. All image metrics use the fixed above-10° mask. Figure 9 retains
 RMS(image−reference)/RMS(reference residual) on its left axis.

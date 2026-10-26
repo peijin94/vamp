@@ -66,10 +66,96 @@ def methods():
     save(fig,'epsd-levels')
 
 
+def image_comparisons(result):
+    """Paper Figures 5–6: recovered I over percent error, three epsilon columns."""
+    from astropy.io import fits
+    from matplotlib.colors import SymLogNorm
+    from matplotlib.ticker import PercentFormatter
+    from varquanms.imaging import read_fits, _grid, file_sha256
+    from report_fixed_rate import REF
+
+    cases = sorted(result['experiments'], key=lambda e: e['epsilon_D'])
+    if len(cases) != 3:
+        raise ValueError('The paper comparison requires three epsilon cases')
+    mask_info = result['comparison_mask']
+    mask_path = Path(mask_info['path'])
+    if file_sha256(mask_path) != mask_info['sha256']:
+        raise ValueError('Comparison mask differs from the measured study')
+    mask = fits.getdata(mask_path).astype(bool)
+    reference_path = REF / 'image-image.fits'
+    reference, header = read_fits(reference_path)
+    residual, residual_header = read_fits(REF / 'image-residual.fits')
+    if (mask.shape != reference.shape or residual.shape != reference.shape
+            or _grid(header) != _grid(residual_header)
+            or int(mask.sum()) != mask_info['pixels']):
+        raise ValueError('Reference, residual and mask must match the measured domain')
+    if not np.all(np.isfinite(residual[mask])):
+        raise ValueError('Reference residual has nonfinite comparison pixels')
+    # One scalar, centered population standard deviation over the FULL mask;
+    # never re-estimate it in a zoom or from the quantized residual.
+    sigma = float(np.std(residual[mask], dtype=np.float64, ddof=0))
+    expected = result['reference_residual_statistics']['standard_deviation']
+    if not np.isfinite(sigma) or sigma <= 0 or not np.isclose(sigma, expected, rtol=1e-12):
+        raise ValueError('Reference residual standard deviation no longer matches the report')
+    reference_sha = file_sha256(reference_path)
+    images, differences = [], []
+    for case in cases:
+        measured = case['comparison']['products']['image-image.fits']
+        path = Path(result['results_root']) / (case['name'] + '-images') / 'image-image.fits'
+        if (reference_sha != measured['reference_file_sha256']
+                or file_sha256(path) != measured['candidate_file_sha256']):
+            raise ValueError('Image inputs differ from the recorded first CLEAN run')
+        recovered, recovered_header = read_fits(path)
+        if (recovered.shape != reference.shape or _grid(recovered_header) != _grid(header)
+                or not np.all(np.isfinite(recovered[mask]))):
+            raise ValueError('Recovered image grid/beam or comparison domain differs')
+        error = recovered - reference
+        rms = float(np.sqrt(np.mean(error[mask] ** 2)))
+        if not np.isclose(rms, measured['regions']['above_elevation_cut']['difference_rms'], rtol=1e-12):
+            raise ValueError('Image difference disagrees with measured RMS')
+        images.append(recovered)
+        differences.append(100.0 * error / sigma)
+
+    peak = np.unravel_index(np.argmax(np.where(mask, np.abs(reference), -np.inf)), reference.shape)
+    scale = max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.
+    limit = max(float(np.max(np.abs(a[mask]))) for a in differences) or 1.
+    intensity_norm = SymLogNorm(.01 * scale, vmin=-scale, vmax=scale)
+    DEST.mkdir(exist_ok=True)
+    for zoom in (False, True):
+        view = (slice(max(0, peak[0]-64), min(reference.shape[0], peak[0]+64)),
+                slice(max(0, peak[1]-64), min(reference.shape[1], peak[1]+64))) if zoom else np.s_[:,:]
+        extent = ((view[1].start-.5, view[1].stop-.5, view[0].start-.5, view[0].stop-.5)
+                  if zoom else (-.5, reference.shape[1]-.5, -.5, reference.shape[0]-.5))
+        fig, axes = plt.subplots(2, 3, figsize=(12.4, 8.5), layout='constrained')
+        for col, (case, recovered, difference) in enumerate(zip(cases, images, differences)):
+            top = axes[0, col].imshow(np.where(mask, recovered, np.nan)[view], origin='lower',
+                                      extent=extent, cmap='viridis', norm=intensity_norm)
+            bottom = axes[1, col].imshow(np.where(mask, difference, np.nan)[view], origin='lower',
+                                         extent=extent, cmap='bwr', vmin=-limit, vmax=limit)
+            axes[0, col].set_title(f"εD = {case['epsilon_D']:g} · recovered I", fontsize=11)
+            axes[1, col].set_title('Recovered − reference', fontsize=11)
+        intensity_bar = fig.colorbar(top, ax=axes[0, :].tolist(), shrink=.85, pad=.02,
+                                     label='Recovered I [Jy/beam]; shared scale')
+        ticks = [-scale, -.1*scale, 0, .1*scale, scale]
+        intensity_bar.set_ticks(ticks)
+        intensity_bar.set_ticklabels([f'{value:.2g}' for value in ticks])
+        difference_bar = fig.colorbar(bottom, ax=axes[1, :].tolist(), shrink=.85, pad=.02,
+                                      label='(I recovered − I reference) / std(reference residual) [%]')
+        difference_bar.ax.yaxis.set_major_formatter(PercentFormatter(xmax=100, decimals=0))
+        for ax in axes.flat:
+            ax.set(xlabel='Pixel x', ylabel='Pixel y')
+        view_label = 'reference-peak crop' if zoom else 'full field'
+        fig.suptitle(f'First CLEAN runs · {view_label} · above 10° · residual std = {sigma:.6f} Jy/beam',
+                     fontsize=12)
+        fig.savefig(DEST / ('epsd-zoom.png' if zoom else 'epsd-images.png'), dpi=180)
+        plt.close(fig)
+
+
 def measured(result):
     from report_fixed_rate import plots
     root=Path(result['results_root'])
-    plots(result,root=root,prefix='epsd',output=DEST,include_best=False)
+    plots(result,root=root,prefix='epsd',output=DEST,include_best=False,include_images=False)
+    image_comparisons(result)
     cases=sorted(result['experiments'],key=lambda e:e['epsilon_D'])
     fig,axes=plt.subplots(1,2,figsize=(11,4.2),constrained_layout=True)
     for e in cases:

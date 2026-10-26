@@ -58,3 +58,26 @@ with stable whole-spectrum ordering and the inverse permutation. Later figure
 numbers and measured results are unchanged. The rebuilt PDF has 17 pages; both
 vector diagrams and captions were visually checked, local links resolve, and
 text remains within page boundaries.
+
+## Figures 5–6: recovered images and residual-std percentages
+
+Both figures now use two rows and three columns, ordered by epsilon-D 0.01, 0.04
+and 0.18. The top row shows each first-run recovered I image; the bottom row shows
+`100 * (I_recovered - I_reference) / std(reference_residual)` in percent. The
+population standard deviation (`ddof=0`) is 1.018715249293199 Jy/beam, evaluated
+once over the full 2,245,726-pixel above-10° mask. The denominator and both display
+scales are shared across cases and the full-field/128×128-pixel zoom figures.
+I uses viridis; signed percentage differences use bwr.
+
+The formula is now explicit in the paper. Existing tabulated error metrics and
+Figure 9 retain their documented reference-residual RMS normalization. The
+underlying imaging experiments and measurement reports are unchanged.
+
+`image_comparisons()` in `build_epsd_figures.py` verifies the saved mask and image
+hashes, matched grids/beams, reference residual standard deviation and original
+image-difference RMS before drawing the panels. The generic historical plotting
+routine can skip images so paper regeneration uses the new layout without
+changing older development-note figures. Direct regeneration, Python syntax
+checks, Markdown links and PDF compilation passed. Figures 5 and 6 were visually
+checked on pages 11 and 12 of the rebuilt 18-page PDF; all PDF text remains within
+page boundaries.

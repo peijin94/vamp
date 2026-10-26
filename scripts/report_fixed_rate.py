@@ -183,7 +183,7 @@ def collect(partial=False,reuse_preview=False):
     return result
 
 
-def plots(result, *, root=ROOT, prefix='fixed25', output=FIGS, include_best=True):
+def plots(result, *, root=ROOT, prefix='fixed25', output=FIGS, include_best=True, include_images=True):
     os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
     import matplotlib
     matplotlib.use('Agg')
@@ -228,6 +228,8 @@ def plots(result, *, root=ROOT, prefix='fixed25', output=FIGS, include_best=True
     axes[1].legend(title='Bits/component; float32 = exact',ncol=min(5,len(precision)) if len(precision)>7 else 7,loc='upper center',bbox_to_anchor=(.5,-.15),fontsize=8)
     fig.suptitle('Bit-size distribution: exact zero blocks can contain many samples but few bytes')
     fig.savefig(output/(prefix+'-bits.png'),dpi=170);plt.close(fig)
+    if not include_images:
+        return
     reference,_=read_fits(REF/'image-image.fits');mask=fits.getdata(MASK).astype(bool)
     deltas=[read_fits(root/(e['name']+'-images')/'image-image.fits')[0]-reference for e in cases]
     y,x=cases[0]['comparison']['products']['image-image.fits']['reference_peak_yx']

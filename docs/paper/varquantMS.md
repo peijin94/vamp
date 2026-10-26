@@ -5,13 +5,6 @@ date: '26 October 2026'
 
 # varquanMS: local-scale, adaptive, variable-quantization-length compression method for radio interferometry data
 
-**Methods and validation manuscript.** The earlier development manuscript is
-preserved as [work_note_20261025_init_work.md](work_note_20261025_init_work.md).
-This version describes the implemented calibrated-data profile. Numerical results
-combine the three-epsilon Stokes I study with a subsequent repeated I/V and
-performance benchmark at epsilon-D 0.18. The two studies are identified separately.
-Sizes are decimal MB; retained-data lossless and whole-MS denominators are explicit.
-
 ## Abstract
 
 <!-- ABSTRACT_START -->

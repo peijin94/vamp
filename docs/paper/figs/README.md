@@ -17,7 +17,9 @@ I flux images use viridis; V and signed differences use bwr. Figures 5–6 show
 `100 × (I_recovered − I_reference) / std(reference residual)` with a percentage
 colour scale. The denominator is the centred population standard deviation
 (`ddof=0`, 1.018715249 Jy/beam) over the full fixed above-10° mask; it is shared
-across all cases and zooms. Both figures use identical intensity/difference limits.
+across all cases and zooms. Both figures use identical intensity/difference limits;
+the difference scale is fixed at −30% to +30%, with colourbar extensions marking
+values beyond the displayed range.
 Differences in
 Figures 7–8 divide by a scalar matching reference residual RMS, not by each
 residual pixel. All image metrics use the fixed above-10° mask. Figure 9 retains

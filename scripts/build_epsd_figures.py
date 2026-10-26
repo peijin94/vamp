@@ -118,7 +118,7 @@ def image_comparisons(result):
 
     peak = np.unravel_index(np.argmax(np.where(mask, np.abs(reference), -np.inf)), reference.shape)
     scale = max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.
-    limit = max(float(np.max(np.abs(a[mask]))) for a in differences) or 1.
+    limit = 30.0  # Fixed display range in percent; underlying errors are unchanged.
     intensity_norm = SymLogNorm(.01 * scale, vmin=-scale, vmax=scale)
     DEST.mkdir(exist_ok=True)
     for zoom in (False, True):
@@ -140,6 +140,7 @@ def image_comparisons(result):
         intensity_bar.set_ticks(ticks)
         intensity_bar.set_ticklabels([f'{value:.2g}' for value in ticks])
         difference_bar = fig.colorbar(bottom, ax=axes[1, :].tolist(), shrink=.85, pad=.02,
+                                      extend='both', ticks=np.arange(-30, 31, 10),
                                       label='(I recovered − I reference) / std(reference residual) [%]')
         difference_bar.ax.yaxis.set_major_formatter(PercentFormatter(xmax=100, decimals=0))
         for ax in axes.flat:

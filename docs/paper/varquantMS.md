@@ -470,7 +470,9 @@ retain their stated uncentred reference residual RMS normalization.
 from left to right. Top: first-run recovered Stokes I images in Jy/beam, using
 viridis and a common symmetric logarithmic intensity scale. Bottom: signed
 $100(I_\epsilon-I_0)/\sigma_R$ differences, using bwr and a common linear
-percentage scale. Pixels outside the above-10° mask are excluded.*
+percentage scale from −30% to +30%. Values beyond these display limits use the
+endpoint colours, indicated by the extended colourbar. Pixels outside the
+above-10° mask are excluded.*
 
 ![Reference-peak zooms](figs/epsd-zoom.png)
 

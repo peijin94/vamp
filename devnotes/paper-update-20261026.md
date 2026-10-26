@@ -81,3 +81,8 @@ changing older development-note figures. Direct regeneration, Python syntax
 checks, Markdown links and PDF compilation passed. Figures 5 and 6 were visually
 checked on pages 11 and 12 of the rebuilt 18-page PDF; all PDF text remains within
 page boundaries.
+
+The subsequent display-range adjustment fixes the difference colour limits in
+Figures 5–6 at −30% to +30%, with 10-percentage-point ticks and extended colourbar
+ends. Values outside the range use endpoint colours; numerical differences,
+normalization, measurements and top-row intensity scales are unchanged.

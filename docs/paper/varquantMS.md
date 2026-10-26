@@ -1,6 +1,6 @@
 ---
 title: 'varquanMS: local-scale, adaptive, variable-quantization-length compression method for radio interferometry data'
-date: '25 October 2026'
+date: '26 October 2026'
 ---
 
 # varquanMS: local-scale, adaptive, variable-quantization-length compression method for radio interferometry data
@@ -8,29 +8,31 @@ date: '25 October 2026'
 **Methods and validation manuscript.** The earlier development manuscript is
 preserved as [work_note_20261025_init_work.md](work_note_20261025_init_work.md).
 This version describes the implemented calibrated-data profile. Numerical results
-come from three verified fixed-epsilon archives and six CLEAN runs. Sizes are
-decimal MB.
+combine the three-epsilon Stokes I study with a subsequent repeated I/V and
+performance benchmark at epsilon-D 0.18. The two studies are identified separately.
+Sizes are decimal MB; retained-data lossless and whole-MS denominators are explicit.
 
 ## Abstract
 
 <!-- ABSTRACT_START -->
-We present varquanMS, an experimental archive for radio-interferometric Measurement
-Sets using local scaling and adaptive integer precision. Baseline–frequency blocks
-within one correlation product store a complex median, a shared range, a power
-spacing parameter and a selected component width. A dimensionless epsilon-D
-criterion bounds reconstruction RMS relative to raw component median deviation,
-with maximum-error, bias and baseline guards. The precision ladder is 3, 4, 5, 6,
-8, 10, 12, 14 and 16 bits per component plus exact float32, identified by a four-bit
-tag. Original UVW, ordering and retained metadata are reconstructed without
-coordinate regeneration or averaging. On a calibrated 15-integration OVRO-LWA
-observation, epsilon-D values 0.01, 0.04, 0.18 produce visibility payloads of
-22.859, 17.433, 9.932% of the original complex64 bytes and complete archives of
-427.429, 350.112, 242.766 MB, respectively. The larger restored-image difference across
-two multiscale CLEAN runs is 1.260, 1.151, 5.584% of reference residual RMS,
-measured above 10° elevation. The calibrated profile explicitly discards raw/model
-columns and flagged values while retaining flags; its weights are exact on this
-dataset. These results measure agreement with the supplied calibrated reference,
-not sky truth or a general thermal-noise guarantee.
+We present varquanMS, an experimental archive for radio-interferometric
+Measurement Sets using local scaling and adaptive integer precision. Each
+baseline–frequency block stores a complex median, range, power-spacing parameter
+and a selected component width. A dimensionless epsilon-D criterion bounds
+reconstruction error relative to local component median deviation, with maximum,
+bias and baseline guards. Nine widths from 3 to 16 bits plus exact float32 fit
+within a four-bit selector. Original UVW, sampling and retained metadata are
+preserved. On one calibrated 15-integration OVRO-LWA observation, epsilon-D
+0.01, 0.04 and 0.18 yield visibility payloads of 22.859, 17.433 and 9.932% of
+logical complex64 bytes. At 0.18, a complete archive is 242.769 MB versus
+985.236 MB for the same-policy retained-data lossless archive. The calibrated
+profile explicitly discards raw/model columns and flagged values while retaining
+flags; its four-bit weights are exact on this dataset. Additional I/V imaging
+above 10° gives difference RMS of 4.810–4.876% and 10.056% of the matching
+reference residual RMS, respectively. Three repeated full-MS conversion runs
+reduce median time from 485.870 to 72.685 s (6.685×), including verification;
+the 15-second target remains unmet. These measurements establish agreement with
+the supplied calibrated reference, not sky truth or general polarization fidelity.
 <!-- ABSTRACT_END -->
 
 ## 1. Introduction
@@ -341,8 +343,10 @@ coefficients are specified in advance and are not retuned to a byte target or
 selected from image outcomes. Each case reads the original calibrated source;
 none recompresses a previous quantized result. All use 128×48×1 blocks, independent
 amplitude ordering, the max/std gamma rule, range quantiles 1 and 0.995, and exact
-fallback. Encoder workers are set to 24. Exact configuration files accompany the
-results.
+fallback. The initial three-epsilon study used 24 encoder workers. A subsequent speed and
+I/V study retains the epsilon-D 0.18 scientific settings and decoded values, with
+a different execution configuration (Section 3.6). Exact configurations and
+versioned reports accompany both studies.
 
 ### 3.2 Reconstruction and imaging checks
 
@@ -350,7 +354,7 @@ The validation suite exercises every width, partial blocks, special values,
 flags, signed zeros, exact fallback, malformed/truncated streams and both header
 representations. Independent standard-library, portable NumPy and compiled
 reconstructions are compared. Native modules built before a requested width
-fall back to portable encoding. The current full suite passes 116 tests.
+fall back to portable encoding. The subsequent performance validation passes 124 tests.
 Source-aware archive/export checks compare original supported metadata,
 coordinates, flags and weights exactly, and independently recompute normalized
 visibility error criteria. Source checksums are checked against the original
@@ -358,8 +362,9 @@ import inventory.
 
 Imaging uses WSClean 3.7 in the same recorded container for reference and
 quantized MSs. A private MS copy protects each input from imaging side effects.
-The uncompressed reference and every reconstructed case use Stokes I,
-2048×2048 pixels, four-arcminute pixels, Briggs robust 0 and multiscale CLEAN.
+The initial study uses Stokes I; the subsequent epsilon-D 0.18 study runs
+Stokes I and V separately against matching references. All use 2048×2048 pixels,
+four-arcminute pixels, Briggs robust 0 and multiscale CLEAN.
 The remaining settings are eight threads, scale bias 0.8, 150,000 iterations,
 mgain 0.95, auto-threshold 0.5, auto-mask 3, local RMS, a 10° horizon mask,
 40% memory setting, reordering and no model-column update. Candidate images use
@@ -370,23 +375,25 @@ belong to this experiment.
 [Offringa et al. (2014)](https://arxiv.org/abs/1407.1943).
 
 The comparison mask requires elevation above 10° for all 15 integrations and
-contains 2,245,726 pixels. Let $I_0$ be the restored reference image,
-$I_\epsilon$ a quantized restored image, and $R_0$ the reference residual map.
-We report the uncentered, unclipped statistics
+contains 2,245,726 pixels. For $S\in\{I,V\}$, let $S_0$ be the restored reference,
+$S_\epsilon$ the corresponding quantized image, and $R_{0,S}$ the reference
+residual map. We report uncentered, unclipped statistics on this fixed mask:
 
-$$E_{\mathrm{image}}=\operatorname{RMS}_{\mathcal M}(I_\epsilon-I_0),\qquad
-\eta_{\mathrm{residual}}=100\frac{E_{\mathrm{image}}}{\operatorname{RMS}_{\mathcal M}(R_0)}.$$
+$$E_S=\operatorname{RMS}_{\mathcal M}(S_\epsilon-S_0),\qquad
+\eta_S=100\frac{E_S}{\operatorname{RMS}_{\mathcal M}(R_{0,S})}.$$
 
-The reference residual RMS is 1.031244811 Jy/beam; the restored-reference RMS is
-1.898403101 Jy/beam. Residual-normalized difference is not fractional flux loss,
-per-pixel relative error, or a thermal-noise budget. The residual contains sky and
-deconvolution structure. We additionally compare dirty images, faint-region RMS,
-reference-peak changes and visibility errors by baseline, product and frequency.
-The reference defines faint pixels below 1% of its peak absolute intensity.
-Each compressed MS is CLEANed twice to record observed repeat variation; two
-runs do not establish statistical confidence intervals.
+The I and V reference residual RMS values are 1.031244811 and 0.384439444 Jy/beam,
+respectively. Each denominator is a single scalar measured from the matching
+reference residual; there is no pixelwise residual division. These percentages
+are not fractional flux loss or thermal-noise budgets. Residual maps contain sky
+and deconvolution structure. We additionally compare dirty images, faint-region
+RMS, reference-peak changes and visibility errors by baseline, product and
+frequency. Faint pixels are defined by reference intensity below 1% of its peak.
+Each quantized imaging case is CLEANed twice, and the I/V study includes a repeat
+of each uncompressed reference. Two runs measure observed variation, not a
+statistical confidence interval.
 
-### 3.3 Measured size, precision and image differences
+### 3.3 Three-epsilon Stokes I comparison
 
 <!-- RESULTS_START -->
 | εD | Payload MB (% of complex64) | Complete archive MB | Difference mJy/beam, first / repeat | Difference / reference residual RMS %, first / repeat |
@@ -445,44 +452,222 @@ symmetric logarithmic display scale. Pixels outside the mask are excluded.*
 *Figure 6. The same comparisons in a fixed 128×128-pixel crop around the reference
 peak. The reference peak defines the crop independently of compressed results.*
 
-![Complete minimum-error comparison](figs/epsd-best-images.png)
-
-*Figure 7. Reference, quantized image and difference for epsilon-D 0.04,
-the smallest worst-of-two global image-RMS difference in this three-point test.
-This selects a display case by error, without asserting an optimal size–error tradeoff.*
-
-![Peak zoom for the minimum-error case](figs/epsd-best-zoom.png)
-
-*Figure 8. Reference-peak crop for the same case. The first two panels share an
-intensity scale; the difference has a separate, explicitly labelled linear scale.*
 <!-- RESULTS_END -->
 
-### 3.4 Timing and byte accounting
+### 3.4 Additional Stokes I and V validation
 
-<!-- TIMING_START -->
-| εD | Sum partition encode s | Global sampling s | Verified bundle wall s | Compaction s | MS export s | CLEAN s, first / repeat |
-| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| 0.01 | 196.45 | 7.45 | 456.48 | 33.25 | 58.61 | 174.66 / 185.93 |
-| 0.04 | 178.68 | 6.97 | 456.93 | 31.88 | 55.97 | 288.42 / 213.19 |
-| 0.18 | 188.12 | 6.29 | 447.38 | 17.17 | 48.29 | 164.56 / 183.58 |
+<!-- IV_START -->
+The subsequent test uses the epsilon-D 0.18 archive produced by the measured
+optimized workflow. Its decoded visibilities equal those of the earlier 0.18
+case: 147 column comparisons and the retained metadata match. An independent
+frozen decoder exports the new archive, and original-source checks pass. Across
+archive implementations, 5,040 scientific dataset references have matching
+shapes, dtypes and hashes, with unchanged measured visibility errors. The extra
+I runs below are distinct CLEAN realizations of the same decoded values; they
+do not replace the earlier I measurements. V was tested only at 0.18.
 
-Timings cover all 15 integrations on a shared Intel Xeon Silver 4214 host with
-48 logical CPUs and approximately 376 GiB RAM. Grouped encoders use 24 workers;
-CLEAN uses eight threads. Concurrent workloads vary between cases, and caches are
-not evicted. These measurements describe the observed workflow rather than an
-isolated speed ranking. Verified-bundle wall time includes source copying,
-inspection, encoding, global-reference sampling and verification; compaction and
-MS export are additional. Global references are still recorded even though G is
-disabled. The full-conversion 15-second target remains unmet.
+| Stokes | Reference residual RMS Jy/beam | Difference mJy/beam, first / repeat | Difference / reference residual RMS %, first / repeat |
+| --- | --- | --- | --- |
+| I | 1.031245 | 49.6019 / 50.2789 | 4.8099 / 4.8756 |
+| V | 0.384439 | 38.6601 / 38.6601 | 10.0562 / 10.0562 |
+
+A repeat of each uncompressed reference quantifies observed CLEAN variation:
+
+| Stokes | Reference-repeat difference mJy/beam | Difference / reference residual RMS % |
+| --- | --- | --- |
+| I | 4.341164 | 0.420964 |
+| V | 0.042750 | 0.011120 |
+
+All four quantized I/V CLEAN runs reached the final threshold. The V discrepancy
+is about 10.06% of its reference residual RMS, compared with 4.81–4.88% in I.
+Although the absolute V difference is smaller, its normalization is also smaller.
+Both exceed their corresponding reference-repeat differences; the V discrepancy
+cannot be explained by the observed repeat alone. These controls are not
+subtracted from the reported errors. Visual agreement or a small I difference
+does not establish weak-polarization or leakage fidelity. No V result is inferred
+for the two stricter epsilon settings.
+[Measured I/V and identity report](../../reports/calibrated-performance.json).
+
+![Stokes I and V restored-image comparisons](figs/calibrated-iv-full.png)
+
+*Figure 7. Additional epsilon-D 0.18 test, first run: I (top) and V (bottom), each
+with reference, reconstruction and signed difference divided by its scalar
+reference residual RMS. I flux uses viridis; V flux and signed differences use
+bwr. Flux panels share a symmetric logarithmic scale within each row; differences
+use a separate linear scale. Only pixels above 10° throughout the observation
+are shown. Image axes are pixel coordinates.*
+
+![Stokes I and V reference-peak zooms](figs/calibrated-iv-zoom.png)
+
+*Figure 8. Fixed 200×200-pixel crops around the largest absolute reference pixel
+of each Stokes image, selected without consulting the reconstructed image.
+The I and V crops therefore need not cover the same sky region. Scales and
+normalizations match Figure 7. These peaks are not independently identified as
+the Sun or interpreted as integrated source fluxes.*
+<!-- IV_END -->
+
+### 3.5 Before/after sizes and storage contributors
+
+<!-- STORAGE_START -->
+| Representation | Whole MB | Visibility MB | Scope |
+| --- | --- | --- | --- |
+| Original full MS (physical) | 4428.204 | — | Includes raw and model columns |
+| Original CORRECTED_DATA (logical) | — | 1431.429 | Denominator for payload fractions |
+| Calibrated-only, exact retained values | 985.236 | 955.400 | Shared single-file lossless control |
+| Quantized, εD=0.01 | 427.429 | 327.207 | Initial three-epsilon study |
+| Quantized, εD=0.04 | 350.112 | 249.542 | Initial three-epsilon study |
+| Quantized, εD=0.18 | 242.766 | 142.163 | Initial three-epsilon study |
+| Quantized, εD=0.18, optimized | 242.769 | 142.163 | I/V and speed benchmark, run 1 |
+
+The full-source-to-archive change includes a deliberate preservation-policy
+change: raw DATA and MODEL_DATA each contain 1431.429 logical MB and are
+omitted; original flagged visibility values are zeroed. Their combined
+2862.858 logical MB must not be interpreted as separately measured
+physical file savings. The exact control uses the same calibrated-only policy,
+flags and exact-on-this-dataset four-bit weights, with no visibility quantization.
+Its verified shared-file archive occupies 985.236 MB.
+Before lossless structural sharing, its directory bundle occupied
+1079.629 MB; sharing and
+container compaction save 94.393 MB without requantization.
+
+Relative to this retained-data lossless control, the optimized 0.18 archive is
+4.058× smaller (24.641% remaining).
+Its visibility stream is 9.932% of logical complex64 bytes,
+or 14.880% of
+the already losslessly compressed control stream. The complete archive is
+5.482% of the physical source, but that
+ratio combines omission, lossless compression, deduplication and quantization.
+The 3,630-byte increase relative to the earlier
+0.18 file is provenance/container overhead; visibility bytes are unchanged.
+[Lossless sharing measurements](../../reports/calibrated-shared-storage.json),
+[storage audit](../../reports/calibrated-paper-storage.json).
+
+The optimized run-1 archive has the following physical allocation. Every byte is
+included, including container overhead; percentages may round independently.
+
+| Contributor | Bytes | % of archive |
+| --- | --- | --- |
+| Visibility blocks (codes, headers, factors, exceptions, exact blocks) | 142,163,290 | 58.559 |
+| Measured visibility-error records | 42,153,640 | 17.364 |
+| Quantization/reference statistics | 21,032,024 | 8.663 |
+| Original coordinates and identities | 19,510,556 | 8.037 |
+| Baseline permutations | 6,185,493 | 2.548 |
+| Shared subtables | 5,531,017 | 2.278 |
+| Container, manifests, verification and links | 5,345,063 | 2.202 |
+| Reconstruction maps | 462,886 | 0.191 |
+| Visibility-block indexes | 352,749 | 0.145 |
+| Flags and weights | 32,166 | 0.013 |
+| Other auxiliary columns | 292 | 0.000 |
+| Total | 242,769,176 | 100.000 |
+
+Visibility payload contributes 58.56% of the file. Error records
+and quantization statistics together occupy
+63.186 MB
+(26.03%).
+These diagnostic arrays, followed by coordinates, are the main remaining costs;
+metadata has not disappeared into a visibility-only compression claim.
+
+The 0.18 precision distribution is shown numerically below. Each width applies
+to both real and imaginary components; a four-bit component block has eight
+nominal code bits per complex sample. Figure 4 compares all three epsilon cases.
+
+| Bits/component | Blocks | Complex samples | % samples | Stored block MB |
+| --- | --- | --- | --- | --- |
+| 3 | 0 | 0 | 0.000 | 0.000000 |
+| 4 | 17,997 | 110,527,680 | 61.772 | 107.846086 |
+| 5 | 4,295 | 26,333,664 | 14.717 | 32.098492 |
+| 6 | 56 | 165,216 | 0.092 | 0.206102 |
+| 8 | 28 | 172,032 | 0.096 | 0.285262 |
+| 10 | 0 | 0 | 0.000 | 0.000000 |
+| 12 | 0 | 0 | 0.000 | 0.000000 |
+| 14 | 0 | 0 | 0.000 | 0.000000 |
+| 16 | 0 | 0 | 0.000 | 0.000000 |
+| Exact float32 | 6,848 | 41,730,048 | 23.322 | 1.727348 |
+
+The 29,224 blocks include 22,376 quantized and
+6,848 exact blocks. All exact blocks in this case contain
+positive-zero placeholders: 41,730,048 samples but only
+1.727348 MB after lossless compression. This does
+not recover discarded flagged values. The remaining 22,564
+flagged placeholders are exact exceptions inside mixed blocks. Thus a large
+exact sample fraction does not imply a large exact-byte cost. Widths unused here
+remain available to other data.
+
+Before secondary compression, packed integer codes occupy
+144.036648 MB, exact-block component arrays
+333.840384 MB, exception positions
+2.294332 MB and exception values
+4.588664 MB. Headers total
+0.736096 MB, including 0.358016 MB for the four
+float32 factors (two centre components, range and gamma). Factor bytes are a
+subset of headers, not an additional category. These are logical precompression
+counts: codes and exceptions share compressed block bodies, so their final
+physical contributions cannot be uniquely separated. The measured combined
+visibility stream is 142.163290 MB.
 
 ![Rate–distortion and physical byte categories](figs/epsd-rate-distortion.png)
 
-*Figure 9. Complete-file size versus RMS(image − reference) / RMS(reference residual),
-shown in percent for the two CLEAN runs on the same above-10° mask, and physical
-byte categories. Factors and exceptions are inside visibility payload;
-quality records, coordinates, permutations and other metadata remain part of the
-complete archive. Summing only nominal component bits would understate storage.*
-<!-- TIMING_END -->
+*Figure 9. Initial three-epsilon Stokes I study: complete archive size versus
+RMS(image − reference) / RMS(reference residual), in percent for both CLEAN runs
+(left), and physical byte contributors (right). The 0.18 visibility payload is
+identical in the subsequent I/V study. Full optimized-file accounting is given
+above; nominal component widths alone do not determine whole-archive size.*
+<!-- STORAGE_END -->
+
+### 3.6 Measured MS-to-archive performance
+
+<!-- PERFORMANCE_START -->
+Three unprofiled, fresh-process runs of each implementation measure elapsed
+wall time from the complete 15-integration MS to a verified single-file archive.
+The boundary includes discovery, reference sampling, inspection, encoding,
+integrity and source checks, and final compaction/validation. It excludes MS
+export and imaging. Scientific settings, flags/weights policy and decoded values
+are held fixed at epsilon-D 0.18; no error bound is relaxed for this comparison.
+
+The host has two Intel Xeon Silver 4214 CPUs, 48 logical CPUs and 376.5 GiB RAM.
+Runs use a warm OS cache without eviction. Task-owned timing runs execute
+sequentially, separately from profiling, unit tests and CLEAN; unrelated activity
+on this shared host is not controlled. Six one-run process/thread allocation
+pilots preceded selection of eight processes with six encoder threads each.
+The table reports the subsequent three repeats, not the fastest pilot.
+
+| Execution | Three full-workflow runs, s | Median s | Min–max s |
+| --- | --- | --- | --- |
+| Baseline (1 process × 24 threads) | 489.143 / 464.957 / 485.870 | 485.870 | 464.957–489.143 |
+| Optimized (8 processes × 6 threads) | 71.636 / 72.685 / 72.965 | 72.685 | 71.636–72.965 |
+
+The median falls from 485.870 to
+72.685 s, a 6.685× speedup.
+In the optimized repeats, verified-bundle creation takes 53.105–56.132 s and
+single-file compaction/validation another 16.592–19.325 s. The complete-MS
+15-second target remains unmet. Parallel stage-time sums are not elapsed latency.
+This benchmark compares complete execution configurations; it does not isolate
+algorithmic changes from the increased worker allocation.
+
+Reported parent peak RSS is 0.991–1.016 GB for the baseline and approximately
+0.136 GB for the optimized workflow; the largest individual optimized worker
+peak is 0.714–0.738 GB. A simultaneous aggregate memory peak was not measured,
+so these values are not a total-memory comparison. Separately, the frozen
+independent decoder exported the optimized archive in 58.35 s; export plus
+source verification and resampling took 118.08 s. That check overlapped later
+imaging and is not a repeated decoder-performance benchmark.
+
+All repeated archives preserve the same 142,163,290-byte visibility payload,
+precision distribution and reconstructed values. Their few-hundred-byte total
+size variation comes from provenance. The performance validation reports
+124 passing tests, independent decoding and exact retained-column checks.
+Detailed profiles, software records and reproduction commands are kept in the
+[benchmark note](../../devnotes/calibrated-performance.md) and
+[measured report](../../reports/calibrated-performance.json).
+
+![Repeated full-MS conversion timing](figs/calibrated-paper-runtime.png)
+
+*Figure 10. Complete MS-to-verified-archive wall time. Bars mark medians, whiskers
+show the minimum and maximum, and dots show the three individual unprofiled
+runs. The horizontal line is the unmet 15-second target. This is a warm-cache,
+shared-host benchmark with unchanged scientific output, not a cold-cache or
+encoder-kernel timing.*
+<!-- PERFORMANCE_END -->
 
 ## 4. Conclusion and discussion
 
@@ -495,32 +680,23 @@ precision coverage does not remove the need to count factors, exceptions,
 permutations, indexes, coordinates and error summaries in the archive size.
 
 <!-- CONCLUSION_START -->
-The three specified epsilon-D values yield complete archives between
-242.766 and 427.429 MB. Their worst-of-two image differences range
-from 1.151% to 5.584% of the reference residual RMS on the
-fixed elevation mask. This is a measured three-point size–error comparison with
-constant grouping and codec settings. It does not isolate the effect of expanding
-the ladder from the earlier six-width experiments, whose tolerances also differ.
-No result here demonstrates a universal optimum or a scientific acceptance
-threshold. Preserved exact data, explicit profile losses and complete byte counts
-make the tradeoffs reviewable for this observation.
+The three fixed epsilon-D values produce archives of 242.766–427.429 MB;
+the initial Stokes I study has worst-of-two differences of 1.151–5.584% of
+reference residual RMS. Epsilon-D 0.01 gives a smaller dirty-image difference
+than 0.04 (0.146% versus 0.529%), yet a larger worst restored difference
+(1.260% versus 1.151%). Tighter visibility limits therefore do not impose a
+monotonic ordering on these CLEAN results. Two repeats do not establish
+significance or a causal explanation for this reversal.
 
-At epsilon-D 0.18, the visibility payload is
-9.932% of the original complex64 bytes, with a
-worst-of-two restored-image difference of
-5.584% of reference residual
-RMS. This point measures the stronger compression setting directly, using the
-same grouping, reconstruction checks and imaging mask.
-
-The epsilon-D 0.01 case has a smaller first-run dirty-image difference
-(0.146% versus
-0.529% of reference residual RMS)
-than epsilon-D 0.04, yet its worst restored-image difference is larger
-(1.260% versus
-1.151%). Both outcomes are retained:
-tighter visibility bounds do not impose a monotonic ordering on the CLEAN results.
-The repeated runs quantify observed variation but do not establish statistical
-significance or a causal model for this reversal.
+The additional 0.18 study measures I differences of 4.810–4.876% and V differences
+of 10.056% of their respective reference residual RMS. V is more affected by this
+measure than I, and exceeds its observed reference-repeat variation. The
+242.769 MB complete archive is 4.058× smaller than the same-policy lossless
+control; visibility payload is only 58.56% of the final file, with quality and
+reference-statistics arrays contributing a further 26.03%. Full conversion takes
+a median 72.685 s, including verification, versus 485.870 s for the baseline.
+These are measured size, fidelity and speed tradeoffs for one observation;
+none defines a universal optimum or a scientific acceptance threshold.
 <!-- CONCLUSION_END -->
 
 A single block statistic cannot establish every future science requirement.
@@ -531,14 +707,16 @@ agreement depends on visibility weighting and nonlinear deconvolution as well as
 visibility error, so dirty-image agreement alone is insufficient. These are
 reasons to retain direct image checks and explicit maximum/bias guards.
 
-The present validation covers joint Stokes I on one supplied calibrated
-observation. It does not establish polarimetric leakage, narrow spectral-feature,
-calibration-solution or transient-light-curve fidelity, and it contains no held-out
-observation. CASA compatibility is limited to the checks documented in the
-repository; the new experiments directly exercise python-casacore reconstruction
-and WSClean. A matched Dysco benchmark, additional observations and isolated
-runtime measurements remain necessary before choosing general archival defaults.
-The conservative default remains lossless.
+The present validation covers joint-frequency Stokes I and V imaging on one
+supplied calibrated observation. It does not establish polarimetric leakage,
+narrow spectral-feature, calibration-solution or transient-light-curve fidelity,
+and contains no held-out observation. Python-casacore reconstruction and WSClean
+are directly exercised. CASA 5.4.1 reopened the export and produced a 64×64-pixel
+natural-weight Stokes I dirty-image smoke test on a private copy. Its installed
+observatory, Earth-orientation and leap-second tables issued warnings; this is
+not a CASA 6 or precision-astrometry validation. A matched Dysco benchmark,
+additional observations and dedicated weak-polarization checks remain necessary
+before choosing general archival defaults. The conservative default remains lossless.
 
 The [public repository](https://github.com/peijin94/varquanMS) contains the format,
 reference decoder, configurations, conformance tests, machine-readable validation

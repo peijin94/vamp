@@ -1,4 +1,4 @@
-"""Audit three fixed epsilon-D experiments and populate the new methods paper."""
+"""Audit the historical three-epsilon Stokes I study and refresh its development note."""
 from collections import Counter
 import json
 from pathlib import Path
@@ -216,140 +216,15 @@ def write_note(result):
     Path('devnotes/epsd-dense.md').write_text('\n'.join(lines))
 
 
-def update_paper(result):
-    main,detail,timing=tables(result)
-    cases=result['experiments'];best=next(e for e in cases if e['name']==result['empirical_best_worst_of_two'])
-    termination=clean_termination_text(result)
-    tolerances=', '.join(f"{e['epsilon_D']:g}" for e in cases)
-    sizes=[e['shared']['archive_bytes']/1e6 for e in cases]
-    rates=[100*e['rate']['fraction'] for e in cases]
-    errors=[100*e['worst_residual_normalized_difference'] for e in cases]
-    def values(xs):return ', '.join(f'{x:.3f}' for x in xs)
-    abstract=f'''We present varquanMS, an experimental archive for radio-interferometric Measurement
-Sets using local scaling and adaptive integer precision. Baseline–frequency blocks
-within one correlation product store a complex median, a shared range, a power
-spacing parameter and a selected component width. A dimensionless epsilon-D
-criterion bounds reconstruction RMS relative to raw component median deviation,
-with maximum-error, bias and baseline guards. The precision ladder is 3, 4, 5, 6,
-8, 10, 12, 14 and 16 bits per component plus exact float32, identified by a four-bit
-tag. Original UVW, ordering and retained metadata are reconstructed without
-coordinate regeneration or averaging. On a calibrated 15-integration OVRO-LWA
-observation, epsilon-D values {tolerances} produce visibility payloads of
-{values(rates)}% of the original complex64 bytes and complete archives of
-{values(sizes)} MB, respectively. The larger restored-image difference across
-two multiscale CLEAN runs is {values(errors)}% of reference residual RMS,
-measured above 10° elevation. The calibrated profile explicitly discards raw/model
-columns and flagged values while retaining flags; its weights are exact on this
-dataset. These results measure agreement with the supplied calibrated reference,
-not sky truth or a general thermal-noise guarantee.'''
-    new_widths={str(w):sum(e['sample_bits'].get(str(w),0) for e in cases) for w in (5,10,14)}
-    body=main+'\n\n'+detail+'\n\n'+visibility_table(result)+f'''\n\nVisibility ratios divide component reconstruction RMSE by the original component
-signal RMS, pooling all finite unflagged cross-correlations in each product.
-They are distinct from the local MAD-normalized acceptance criterion. Cross-hand
-visibility statistics do not constitute a polarized-image validation.
-
-All three archives passed full-source export verification. Original supported
-metadata, UVW, flags and this observation's weights passed exact checks; all 108
-source-file hashes still match. {termination}
-The new 5/10/14-bit choices encode
-{new_widths['5']:,}, {new_widths['10']:,} and {new_widths['14']:,} complex samples,
-respectively, summed across the three separate experiments. Exact blocks often
-represent highly compressible zeros, so sample fractions and byte fractions differ.
-Complete distributions and auto/cross splits are retained in the machine-readable
-[experiment report](../../reports/calibrated-epsd-dense.json).
-
-![Payload and repeated image differences](figs/epsd-rate.png)
-
-*Figure 3. Fixed epsilon-D values produce measured sizes and image errors; there
-is no imposed byte target. Red points show two CLEAN runs. Blue squares show the
-first dirty-image difference, all normalized by the same reference residual RMS.*
-
-![Precision distribution](figs/epsd-bits.png)
-
-*Figure 4. Selected component widths by number of complex samples and by serialized
-payload bytes. Float32 denotes exact storage, including cheaply compressed zero
-blocks. Metadata outside visibility blocks is accounted for separately.*
-
-![Image differences for every tolerance](figs/epsd-images.png)
-
-*Figure 5. Reference and first-run quantized-minus-reference restored images above
-10°. Difference panels share one linear colour scale; the reference uses its own
-symmetric logarithmic display scale. Pixels outside the mask are excluded.*
-
-![Reference-peak zooms](figs/epsd-zoom.png)
-
-*Figure 6. The same comparisons in a fixed 128×128-pixel crop around the reference
-peak. The reference peak defines the crop independently of compressed results.*
-
-![Complete minimum-error comparison](figs/epsd-best-images.png)
-
-*Figure 7. Reference, quantized image and difference for epsilon-D {best['epsilon_D']:g},
-the smallest worst-of-two global image-RMS difference in this three-point test.
-This selects a display case by error, without asserting an optimal size–error tradeoff.*
-
-![Peak zoom for the minimum-error case](figs/epsd-best-zoom.png)
-
-*Figure 8. Reference-peak crop for the same case. The first two panels share an
-intensity scale; the difference has a separate, explicitly labelled linear scale.*'''
-    timingbody=timing+'''\n\nTimings cover all 15 integrations on a shared Intel Xeon Silver 4214 host with
-48 logical CPUs and approximately 376 GiB RAM. Grouped encoders use 24 workers;
-CLEAN uses eight threads. Concurrent workloads vary between cases, and caches are
-not evicted. These measurements describe the observed workflow rather than an
-isolated speed ranking. Verified-bundle wall time includes source copying,
-inspection, encoding, global-reference sampling and verification; compaction and
-MS export are additional. Global references are still recorded even though G is
-disabled. The full-conversion 15-second target remains unmet.
-
-![Rate–distortion and physical byte categories](figs/epsd-rate-distortion.png)
-
-*Figure 9. Complete-file size versus RMS(image − reference) / RMS(reference residual),
-shown in percent for the two CLEAN runs on the same above-10° mask, and physical
-byte categories. Factors and exceptions are inside visibility payload;
-quality records, coordinates, permutations and other metadata remain part of the
-complete archive. Summing only nominal component bits would understate storage.*'''
-    conclusion=f'''The three specified epsilon-D values yield complete archives between
-{min(sizes):.3f} and {max(sizes):.3f} MB. Their worst-of-two image differences range
-from {min(errors):.3f}% to {max(errors):.3f}% of the reference residual RMS on the
-fixed elevation mask. This is a measured three-point size–error comparison with
-constant grouping and codec settings. It does not isolate the effect of expanding
-the ladder from the earlier six-width experiments, whose tolerances also differ.
-No result here demonstrates a universal optimum or a scientific acceptance
-threshold. Preserved exact data, explicit profile losses and complete byte counts
-make the tradeoffs reviewable for this observation.'''
-    strict=next(e for e in cases if e['epsilon_D']==.01)
-    loose=next(e for e in cases if e['epsilon_D']==.04)
-    corrected=next(e for e in cases if e['epsilon_D']==.18)
-    conclusion += f'''\n\nAt epsilon-D 0.18, the visibility payload is
-{100*corrected['rate']['fraction']:.3f}% of the original complex64 bytes, with a
-worst-of-two restored-image difference of
-{100*corrected['worst_residual_normalized_difference']:.3f}% of reference residual
-RMS. This point measures the stronger compression setting directly, using the
-same grouping, reconstruction checks and imaging mask.'''
-    if strict['worst_residual_normalized_difference']>loose['worst_residual_normalized_difference']:
-        s=strict['residual_normalized_runs'][0];l=loose['residual_normalized_runs'][0]
-        conclusion += f'''\n\nThe epsilon-D 0.01 case has a smaller first-run dirty-image difference
-({100*s['dirty_difference_over_reference_residual']:.3f}% versus
-{100*l['dirty_difference_over_reference_residual']:.3f}% of reference residual RMS)
-than epsilon-D 0.04, yet its worst restored-image difference is larger
-({100*strict['worst_residual_normalized_difference']:.3f}% versus
-{100*loose['worst_residual_normalized_difference']:.3f}%). Both outcomes are retained:
-tighter visibility bounds do not impose a monotonic ordering on the CLEAN results.
-The repeated runs quantify observed variation but do not establish statistical
-significance or a causal model for this reversal.'''
-    path=Path('docs/paper/varquantMS.md');text=path.read_text()
-    for key,bodytext in [('ABSTRACT',abstract),('RESULTS',body),('TIMING',timingbody),('CONCLUSION',conclusion)]:
-        text,n=re.subn(r'<!-- '+key+r'_START -->.*?<!-- '+key+r'_END -->',lambda m:'<!-- '+key+'_START -->\n'+bodytext+'\n<!-- '+key+'_END -->',text,flags=re.S)
-        assert n==1
-    text=text.replace('Numerical results\nbelow are being populated from the three fixed-epsilon experiments; no pending\nmeasurement is an established result. Sizes are decimal MB.',
-                      'Numerical results\ncome from three verified fixed-epsilon archives and six CLEAN runs. Sizes are\ndecimal MB.')
-    path.write_text(text)
+# This historical experiment report does not overwrite the current manuscript.
+# Refresh current paper tables/figures with scripts/update_calibrated_paper.py.
 
 
 if __name__=='__main__':
     result=collect()
     Path('reports/calibrated-epsd-dense.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
-    from build_epsd_figures import methods,measured
-    methods();measured(result);write_note(result);update_paper(result)
+    from report_fixed_rate import plots
+    plots(result,root=ROOT,prefix='epsd-dense');write_note(result)
     for e in result['experiments']:
         print(e['epsilon_D'],e['rate']['fraction'],e['shared']['archive_bytes'],
               [r['restored_difference_over_reference_residual'] for r in e['residual_normalized_runs']])

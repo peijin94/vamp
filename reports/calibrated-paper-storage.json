@@ -1,0 +1,75 @@
+{
+  "schema": "varquanms.paper-storage-audit/1",
+  "date": "2026-10-26",
+  "input_report_sha256": {
+    "reports/calibrated-epsd-dense.json": "4e5189ecf4b63651bec22b96e07bccf58676910f5344d19d4db3ca1a403f3a44",
+    "reports/calibrated-performance.json": "f9cff3daca4f9fa6da3a7fdc67da86d51fd1e7669e1722493fbf40167569d364",
+    "reports/calibrated-shared-storage.json": "d4cd0f406c5e4672b6d915b7d8451f7266c86a0f56b261bb67f454f9fd9dc94b",
+    "reports/calibrated-lossless-export.json": "a085e453ce29429f1e5e46b1d325620977497b761d494dd3d3bdefc99e671fac"
+  },
+  "lossless_archive": "results/calibrated-sharing/lossless-shared.h5",
+  "lossless_archive_sha256_verified": "ce587b7d29db17000af952c55df10c299c8159d3854dd1c1ea98a891f15601f7",
+  "lossless_config": {
+    "mode": "lossless",
+    "columns": [
+      "CORRECTED_DATA"
+    ],
+    "deduplicate": true,
+    "burn_flag": false,
+    "keep_calib_only": true,
+    "weight_bits": 4,
+    "weight_max_relative_error": 0.01,
+    "compression": "gzip",
+    "compression_level": 1,
+    "io_chunk_rows": 1024,
+    "baseline_group": 1,
+    "channel_segment": 192,
+    "ordering": "original",
+    "shared_order": false,
+    "bucket_reference": null,
+    "orientation_bins": 24,
+    "length_reference_m": 1.0,
+    "antenna_endpoint": 1,
+    "bits": [
+      4,
+      8,
+      12,
+      16
+    ],
+    "codebook": "uniform-symmetric-v1",
+    "rounding": "nearest-even",
+    "seed": 0,
+    "scale_quantiles": [
+      1.0,
+      0.995
+    ],
+    "power_center": "median",
+    "power_gammas": [
+      1.0,
+      0.5
+    ],
+    "max_component_mse": null,
+    "max_complex_error": null,
+    "max_complex_bias": null,
+    "max_baseline_component_mse": null,
+    "max_p99_error": null,
+    "product_bounds": {},
+    "noise": null,
+    "max_visibility_bytes": 2147483648,
+    "workers": 1
+  },
+  "optimized_precompression_accounting": {
+    "lossless_component_bytes": 333840384,
+    "packed_code_bytes": 144036648,
+    "exception_position_bytes": 2294332,
+    "exception_value_bytes": 4588664,
+    "header_bytes": 736096,
+    "flagged_exception_samples": 22564,
+    "nonfinite_exception_samples": 0,
+    "signed_zero_exception_samples": 0,
+    "outlier_exception_samples": 551019
+  },
+  "accounting_source": "results/calibrated-performance/optimized/run-1.bundle/manifest.json",
+  "accounting_source_sha256": "83237246311ea1f5dd00ab6faf030ead2f03d9f41ea1e5c50b5e70d4c14707c0",
+  "interpretation": "Logical body/header bytes before secondary lossless compression; exception positions and values share compressed bodies with codes. Physical bytes cannot be independently attributed to these subcategories. Exact values are after the calibrated-only flagged-value purge."
+}

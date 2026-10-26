@@ -29,7 +29,7 @@ def main():
             "--output=" + str(intermediate),
         ], check=True, cwd=ROOT)
         result = typst.compile(intermediate.read_bytes(), root=str(ROOT),
-                               timestamp=datetime.datetime(2026, 10, 25, tzinfo=datetime.timezone.utc))
+                               timestamp=datetime.datetime(2026, 10, 26, tzinfo=datetime.timezone.utc))
         if not result.startswith(b"%PDF-"):
             raise ValueError("Compiler did not produce a PDF")
         args.output.parent.mkdir(parents=True, exist_ok=True)

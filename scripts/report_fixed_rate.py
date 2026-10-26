@@ -183,7 +183,7 @@ def collect(partial=False,reuse_preview=False):
     return result
 
 
-def plots(result, *, root=ROOT, prefix='fixed25'):
+def plots(result, *, root=ROOT, prefix='fixed25', output=FIGS, include_best=True):
     os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
     import matplotlib
     matplotlib.use('Agg')
@@ -214,7 +214,7 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
     axes[1].yaxis.set_minor_formatter(StrMethodFormatter('{x:g}'))
     for ax in axes:ax.set(xticks=range(len(cases)),xticklabels=labels);ax.tick_params(axis='x',labelsize=8);ax.grid(axis='y',alpha=.2)
     fig.suptitle(result.get('plot_title','Fixed visibility-payload budget; same 15-integration MS and above-10° image mask'))
-    fig.savefig(FIGS/(prefix+'-rate.png'),dpi=170);plt.close(fig)
+    fig.savefig(output/(prefix+'-rate.png'),dpi=170);plt.close(fig)
     fig,axes=plt.subplots(1,2,figsize=(13,max(5,.8*len(cases))),constrained_layout=True);y=np.arange(len(cases))
     for ax,key,title in zip(axes,('samples_by_bits','serialized_bytes_by_bits'),('All complex samples (%)','Serialized payload bytes (%)')):
         left=np.zeros(len(cases))
@@ -227,7 +227,7 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
         ax.set(yticks=y,yticklabels=labels,xlabel=title,xlim=(0,100));ax.invert_yaxis()
     axes[1].legend(title='Bits/component; float32 = exact',ncol=min(5,len(precision)) if len(precision)>7 else 7,loc='upper center',bbox_to_anchor=(.5,-.15),fontsize=8)
     fig.suptitle('Bit-size distribution: exact zero blocks can contain many samples but few bytes')
-    fig.savefig(FIGS/(prefix+'-bits.png'),dpi=170);plt.close(fig)
+    fig.savefig(output/(prefix+'-bits.png'),dpi=170);plt.close(fig)
     reference,_=read_fits(REF/'image-image.fits');mask=fits.getdata(MASK).astype(bool)
     deltas=[read_fits(root/(e['name']+'-images')/'image-image.fits')[0]-reference for e in cases]
     y,x=cases[0]['comparison']['products']['image-image.fits']['reference_peak_yx']
@@ -243,14 +243,16 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
         else:
             fig,axes=plt.subplots(1,len(cases)+1,figsize=(3.2*(len(cases)+1),4.3),constrained_layout=True)
         scale=float(np.max(np.abs(reference[crop][domain])))
-        im=axes[0].imshow(np.where(domain,reference[crop],np.nan),origin='lower',cmap='RdBu_r',norm=SymLogNorm(.01*scale,vmin=-scale,vmax=scale))
+        im=axes[0].imshow(np.where(domain,reference[crop],np.nan),origin='lower',cmap='viridis',norm=SymLogNorm(.01*scale,vmin=-scale,vmax=scale))
         axes[0].set_title('Reference');fig.colorbar(im,ax=axes[0],shrink=.7,label='Jy/beam',ticks=symmetric_ticks(scale))
         for ax,label,delta in zip(axes[1:],labels,deltas):
-            im=ax.imshow(np.where(domain,delta[crop],np.nan),origin='lower',cmap='RdBu_r',vmin=-lim,vmax=lim);ax.set_title(label+' − reference',fontsize=9)
+            im=ax.imshow(np.where(domain,delta[crop],np.nan),origin='lower',cmap='bwr',vmin=-lim,vmax=lim);ax.set_title(label+' − reference',fontsize=9)
         fig.colorbar(im,ax=list(axes[1:]),shrink=.7,label='Difference Jy/beam; common linear scale')
         for ax in axes:ax.set(xlabel='Crop pixel x' if zoom else 'Pixel x',ylabel='Crop pixel y' if zoom else 'Pixel y')
         fig.suptitle('First CLEAN run for every finalist; above 10° only'+(' • reference-peak zoom' if zoom else ''))
-        fig.savefig(FIGS/(prefix+('-zoom.png' if zoom else '-images.png')),dpi=170);plt.close(fig)
+        fig.savefig(output/(prefix+('-zoom.png' if zoom else '-images.png')),dpi=170);plt.close(fig)
+    if not include_best:
+        return
     best=next(e for e in cases if e['name']==result['empirical_best_worst_of_two'])
     restored,_=read_fits(root/(best['name']+'-images')/'image-image.fits')
     for zoom in (False,True):
@@ -260,16 +262,16 @@ def plots(result, *, root=ROOT, prefix='fixed25'):
         limit=float(np.max(np.abs(delta[domain])))
         fig,axes=plt.subplots(1,3,figsize=(12,4.5),constrained_layout=True)
         for ax,values,title in zip(axes[:2],(a,b),('Uncompressed reference','Selected quantized archive')):
-            im=ax.imshow(np.where(domain,values,np.nan),origin='lower',cmap='RdBu_r',
+            im=ax.imshow(np.where(domain,values,np.nan),origin='lower',cmap='viridis',
                          norm=SymLogNorm(.01*scale,vmin=-scale,vmax=scale))
             ax.set_title(title)
         fig.colorbar(im,ax=list(axes[:2]),shrink=.7,label='Jy/beam; shared scale',ticks=symmetric_ticks(scale))
-        im=axes[2].imshow(np.where(domain,delta,np.nan),origin='lower',cmap='RdBu_r',vmin=-limit,vmax=limit)
+        im=axes[2].imshow(np.where(domain,delta,np.nan),origin='lower',cmap='bwr',vmin=-limit,vmax=limit)
         axes[2].set_title('Quantized − reference')
         fig.colorbar(im,ax=axes[2],shrink=.7,label='Difference Jy/beam')
         for ax in axes:ax.set(xlabel='Crop pixel x' if zoom else 'Pixel x',ylabel='Crop pixel y' if zoom else 'Pixel y')
         fig.suptitle(best['layout']+' / '+best['family']+'; first CLEAN run; above 10°'+(' • peak zoom' if zoom else ''))
-        fig.savefig(FIGS/(prefix+('-best-zoom.png' if zoom else '-best-images.png')),dpi=170);plt.close(fig)
+        fig.savefig(output/(prefix+('-best-zoom.png' if zoom else '-best-images.png')),dpi=170);plt.close(fig)
 
 
 def note(result):

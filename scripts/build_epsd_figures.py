@@ -1,12 +1,13 @@
 """Deterministic vector method figures and measured epsilon-D validation plots."""
 from pathlib import Path
 import json
+import datetime
 import os
-import shutil
 
 os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
 import matplotlib
 matplotlib.use('Agg')
+matplotlib.rcParams['svg.hashsalt'] = 'varquanms-paper'
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 import numpy as np
@@ -17,7 +18,10 @@ DEST=Path('docs/paper/figs')
 def save(fig,name):
     for suffix in ('png','svg','pdf'):
         path=DEST/(name+'.'+suffix)
-        fig.savefig(path,dpi=180,bbox_inches='tight')
+        stamp = datetime.datetime(2026, 10, 26, tzinfo=datetime.timezone.utc)
+        metadata = ({'Date': stamp.isoformat()} if suffix == 'svg' else
+                    {'CreationDate': stamp, 'ModDate': stamp} if suffix == 'pdf' else None)
+        fig.savefig(path,dpi=180,bbox_inches='tight',metadata=metadata)
         if suffix=='svg':
             path.write_text('\n'.join(line.rstrip() for line in path.read_text().splitlines())+'\n')
     plt.close(fig)
@@ -65,9 +69,7 @@ def methods():
 def measured(result):
     from report_fixed_rate import plots
     root=Path(result['results_root'])
-    plots(result,root=root,prefix='epsd-dense')
-    for suffix in ('rate','bits','images','zoom','best-images','best-zoom'):
-        shutil.copyfile(Path('devnotes/figs')/f'epsd-dense-{suffix}.png',DEST/f'epsd-{suffix}.png')
+    plots(result,root=root,prefix='epsd',output=DEST,include_best=False)
     cases=sorted(result['experiments'],key=lambda e:e['epsilon_D'])
     fig,axes=plt.subplots(1,2,figsize=(11,4.2),constrained_layout=True)
     for e in cases:

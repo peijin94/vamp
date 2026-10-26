@@ -108,9 +108,25 @@ cost. The implementation also supports original, baseline-length, orientation,
 antenna and amplitude-bucket orders, but this three-tolerance experiment does not
 compare those alternatives.
 
+Figure 1a illustrates the grouping operation: rows move as whole spectra, while
+channel order stays fixed. Each outlined block shares a complex centre, range,
+power-spacing parameter and selected component width. Figure 1b connects those
+groups to the reconstruction-error checks and precision decision.
+
+![Conceptual baseline ordering and frequency-block grouping](figs/grouping.png)
+
+*Figure 1a. Grouping concept for one integration, configuration and correlation
+product, after separating auto/cross classes. The illustrative amplitudes show
+stable whole-spectrum sorting; equal amplitudes retain original row order.
+Orange outlines mark blocks of two baselines by four channels. This small
+schematic illustrates segmentation; the measured calibrated-data experiments use
+128 baselines by all 48 channels per product, with partial edge blocks. The
+stored permutation restores original row positions without channel averaging
+or antenna-pair reversal. Colours illustrate amplitude, not measured data.*
+
 ![Grouping and candidate selection](figs/epsd-method.png)
 
-*Figure 1. Spectra are ordered within one configuration, integration, product and
+*Figure 1b. Spectra are ordered within one configuration, integration, product and
 auto/cross class. Each block is independently encoded, reconstructed and checked;
 the smallest accepted serialized candidate is stored with its reconstruction map.*
 

@@ -48,3 +48,13 @@ experiments. `--skip-images` works from committed reports and figure files.
 The historical `report_epsd_dense.py` now updates only its report and development
 note, preventing it from replacing the current manuscript with the older I-only
 text. SVG identifiers and vector-figure dates are deterministic.
+
+## Grouping concept figure
+
+The follow-up revision adds the existing `grouping` schematic to Section 2.1 as
+Figure 1a and retains the candidate-selection flowchart as Figure 1b. Its caption
+identifies the synthetic 2×4 example and the actual 128×48 calibrated-data blocks,
+with stable whole-spectrum ordering and the inverse permutation. Later figure
+numbers and measured results are unchanged. The rebuilt PDF has 17 pages; both
+vector diagrams and captions were visually checked, local links resolve, and
+text remains within page boundaries.

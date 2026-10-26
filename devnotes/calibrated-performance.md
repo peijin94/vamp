@@ -131,6 +131,10 @@ processes and must not be stacked into elapsed wall time.
 
 ![Full-MS timing comparison](figs/calibrated-runtime.png)
 
+The speed figure separates the three-run median/range comparison from the
+single-run worker-allocation pilots. Labels give partition processes × encoder
+threads per process; the 15-second target refers to the complete workflow.
+
 Baseline parent peak RSS was 0.99–1.02 GB. Optimized parent peaks were about
 0.136 GB, and the largest terminated worker peaks were 0.714–0.738 GB.
 These are process peaks from `getrusage`, **not a measured simultaneous sum of
@@ -230,7 +234,8 @@ science. Absolute polarization accuracy, leakage calibration, spectral features
 and temporal behaviour require separate validation.
 
 The maps show the reference and reconstructed images on a shared symmetric-log
-flux scale and a separate linear difference scale. The difference divisor is
+flux scale: **viridis for Stokes I** and **bwr for Stokes V**. Signed difference
+panels use **bwr**, centred on zero, on a separate linear scale. The difference divisor is
 the scalar reference residual RMS, not the residual value at each pixel. Zooms
 are 200×200 pixels around each Stokes reference's largest absolute pixel inside
 the comparison mask; the location is not identified as a specific source.
@@ -284,3 +289,11 @@ contains per-run timing/bytes, process memory, profile excerpts, source/library
 hashes, identity audits, CASA scope and imaging metrics. Figures and this note
 are generated/maintained outside the paper. The local `agent.md` and `mem.md`
 working notes are ignored by Git.
+
+Figure styling updated 26 October 2026. Numerical measurements, FITS inputs,
+image colour limits and the above-10° mask are unchanged. Redraw the figures from
+the saved measurements with:
+
+```bash
+PYTHONPATH=src:scripts python scripts/report_calibrated_performance.py --figures-only
+```

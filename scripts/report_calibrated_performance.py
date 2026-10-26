@@ -135,18 +135,38 @@ def figures(result,root,output):
     from matplotlib.colors import SymLogNorm
     from astropy.io import fits
     output.mkdir(parents=True,exist_ok=True)
-    labels=['Baseline']+list(result['pilots'])+['Selected\n3 repeats']
-    entries=[result['baseline'],*result['pilots'].values(),result['optimized']]
+    entries=[result['baseline'],result['optimized']]
     values=np.array([e['median_seconds'] for e in entries])
     errors=np.array([[e['median_seconds']-e['minimum_seconds'] for e in entries],
                      [e['maximum_seconds']-e['median_seconds'] for e in entries]])
-    fig,ax=plt.subplots(figsize=(10,4),layout='constrained')
-    bars=ax.bar(labels,values,yerr=errors,capsize=4,color=['#777777']+['#4c91bd']*(len(labels)-2)+['#237847'])
+    fig,(ax,pilot_ax)=plt.subplots(1,2,figsize=(12,5.5),layout='constrained',
+                                 gridspec_kw={'width_ratios':[1,1.5]})
+    execution=result['execution']
+    optimized_label=f"Optimized\n{execution['partition_workers']} × {result['config']['workers']}"
+    bars=ax.bar(['Baseline\n1 × 24',optimized_label],values,yerr=errors,
+                capsize=5,color=['#777777','#237847'],width=.55)
     ax.bar_label(bars,labels=[f'{v:.1f} s' for v in values],padding=5)
     ax.axhline(15,color='#a84435',linestyle='--',label='15 s target')
-    ax.set_ylabel('MS to verified single-file archive, seconds');ax.set_ylim(0,max(values)*1.18)
-    ax.set_title('Complete 15-integration MS; same scientific settings and payload')
-    ax.legend();fig.savefig(output/'calibrated-runtime.png',dpi=160);plt.close(fig)
+    ax.set_ylabel('Complete workflow, seconds');ax.set_ylim(0,max(values)*1.18)
+    ax.set_title('Three repeats: median and min–max range')
+    ax.text(.96,.94,f"{result['median_speedup']:.2f}× speedup",transform=ax.transAxes,
+            ha='right',va='top',fontsize=13,color='#237847',fontweight='bold')
+    ax.legend(loc='upper right',bbox_to_anchor=(1,.86),frameon=False)
+    pilot_order=sorted(result['pilots'],key=lambda name:tuple(map(int,name[1:].split('t'))))
+    pilot_labels=[name[1:].replace('t',' × ') for name in pilot_order]
+    pilot_values=[result['pilots'][name]['median_seconds'] for name in pilot_order]
+    selected=f"p{execution['partition_workers']}t{result['config']['workers']}"
+    bars=pilot_ax.barh(pilot_labels,pilot_values,
+        color=['#237847' if name==selected else '#4c91bd' for name in pilot_order])
+    pilot_ax.bar_label(bars,labels=[f'{v:.1f} s' for v in pilot_values],padding=5)
+    pilot_ax.invert_yaxis();pilot_ax.set_xlim(0,max(pilot_values)*1.2)
+    pilot_ax.set_xlabel('Complete workflow, seconds')
+    pilot_ax.set_ylabel('Partition processes × encoder threads each')
+    pilot_ax.set_title('Worker allocation pilots: one run each')
+    pilot_ax.axvline(15,color='#a84435',linestyle='--')
+    fig.suptitle('Complete 15-integration MS → verified single-file archive\n'
+                 'Same scientific settings and payload · warm cache · 48 logical CPUs',fontsize=13)
+    fig.savefig(output/'calibrated-runtime.png',dpi=160);plt.close(fig)
     mask=fits.getdata('results/calibrated-template/above10deg.fits').astype(bool)
     for pol,runs in result['imaging'].items():
         run=runs[0];reference,_=read_fits(run['reference']);candidate,_=read_fits(run['candidate'])
@@ -166,7 +186,8 @@ def figures(result,root,output):
                 norm=SymLogNorm(linthresh=extent*.01,vmin=-extent,vmax=extent) if i<2 else None
                 opts=dict(norm=norm) if norm else dict(vmin=-limit,vmax=limit)
                 if zoom:opts['extent']=(view[1].start-.5,view[1].stop-.5,view[0].start-.5,view[0].stop-.5)
-                im=ax.imshow(data,origin='lower',cmap='RdBu_r',**opts)
+                cmap='viridis' if pol=='I' and i<2 else 'bwr'
+                im=ax.imshow(data,origin='lower',cmap=cmap,**opts)
                 ax.set_title(title,fontsize=10);ax.set_xlabel('Pixel x');ax.set_ylabel('Pixel y')
                 bar=fig.colorbar(im,ax=ax,shrink=.75,label='Jy/beam' if i<2 else 'dimensionless')
                 if i<2:
@@ -188,8 +209,9 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path,default=Path('results/calibrated-performance'))
     parser.add_argument('--report',type=Path,default=Path('reports/calibrated-performance.json'))
-    args=parser.parse_args();result=collect(args.root)
-    args.report.write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+    parser.add_argument('--figures-only',action='store_true',help='Redraw the saved measurements without rewriting the report')
+    args=parser.parse_args();result=load(args.report) if args.figures_only else collect(args.root)
+    if not args.figures_only:args.report.write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
     figures(result,args.root,Path('devnotes/figs'))
     print(json.dumps(dict(status='complete',speedup=result['median_speedup'],seconds=result['optimized']['median_seconds'])))
 

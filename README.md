@@ -1,12 +1,51 @@
 # vamp
 
-Adaptive 3/4/5/6/8/10/12/14/16-bit visibility compression for CASA Measurement Sets, with exact
-float32 fallback and reconstruction to a new MS. Experiments group samples by
-baseline geometry, antenna, amplitude and frequency segment.
+**Visibility-Adaptive Mixed Precision** is a research prototype for archiving
+radio-interferometric Measurement Sets. It compresses complex visibilities in
+locally scaled blocks and reconstructs a new MS for existing imaging tools.
 
-By default, the research prototype preserves original UVW, metadata, flags, weights and
-protected sample bits exactly. Quantized visibilities are lossy. Default encoding
-is lossless; science-ready tolerances have not been established.
+## How it works
+
+- Inspect the MS and group baselines and frequency channels within each
+  configuration and correlation product. Ordering can use amplitude, baseline
+  geometry or antenna identity; stored mappings restore the original order.
+- Quantize each block with uniform or median-centered power-spaced levels.
+  Adaptive mode tests 3/4/5/6/8/10/12/14/16 bits per real and imaginary
+  component and selects the smallest encoded candidate that meets the configured
+  error checks, with exact float32 fallback.
+- By default, preserve original UVW in metres, metadata, flags, weights and
+  flagged sample values. The default lossless mode preserves visibility values
+  exactly; quantized modes are lossy. There is no time or channel averaging.
+
+## Calibrated-data comparison
+
+The following measurements use one calibrated OVRO-LWA observation with
+15 integrations and 48 channels. They compare vamp with Dysco using the same
+unflagged calibrated visibilities, retained flags and row weights, and WSClean
+Stokes I and V settings. Both paths discard flagged visibility values; vamp
+exports zeros and Dysco receives NaN markers. The vamp cases use amplitude-ordered
+blocks of up to 128 baselines × 48 channels per product; blue point labels show
+the dimensionless εD error setting relative to local median deviation.
+
+![Measured vamp and Dysco rate–distortion comparison](docs/paper/figs/dysco-comparison-rate.png)
+
+The horizontal axis is visibility storage: vamp block payloads, permutations
+and indexes versus the Dysco DATA-manager file. The I/V axes show image-difference
+RMS divided by the corresponding reference residual RMS; the third axis shows
+relative error in the paired cross-baseline I visibilities. Error axes are
+reversed, so lower error appears higher. Lines connect measured settings.
+
+| Nearly matched visibility storage | Visibility MB | Complete output MB | I / residual RMS | V / residual RMS |
+| --- | ---: | ---: | ---: | ---: |
+| vamp, εD = 0.18 | 148.702 | 242.766 | 5.584% | 10.056% |
+| Dysco RF, 3-bit, 1.5σ | 149.119 | 318.774 | 12.049% | 27.154% |
+
+The I/V values are first CLEAN runs over the region above 10°; their denominator
+is the reference residual RMS, not source flux or a verified thermal-noise level.
+Complete sizes include different HDF5 archive and MS container costs. These
+results describe this observation, not a general scientific-fidelity guarantee.
+See the [paper](docs/paper/vamp.pdf) and [comparison notes](devnotes/compare-dysco.md)
+for the full table, repeats, image differences and limitations.
 
 ## Quick start
 

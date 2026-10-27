@@ -1,8 +1,9 @@
 # Matched calibrated-MS comparison with Dysco
 
 Tracked in [issue #3](https://github.com/peijin94/varquanMS/issues/3).
-The paper is intentionally unchanged. Results are for this dataset and these
-settings, not a general ranking of the algorithms. The complete measurements
+The matched comparison is now summarized in paper section 3.7; additional
+epsilon measurements are documented in [the follow-up note](dysco-paper-comparison.md).
+Results are for this dataset and these settings, not a general ranking of the algorithms. The complete measurements
 and binned visibility diagnostics are in [the JSON report](../reports/dysco-comparison.json).
 
 ## Data and matching policy

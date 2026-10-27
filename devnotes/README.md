@@ -1,5 +1,6 @@
 # Development notes
 
+- [Paper comparison: additional epsilon measurements and figures](dysco-paper-comparison.md)
 - [Matched calibrated I/V and rate comparison against Dysco](compare-dysco.md)
 - [Calibrated archive profiling, optimization and standard I/V validation](calibrated-performance.md)
 

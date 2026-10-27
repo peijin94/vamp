@@ -11,6 +11,9 @@ FITS outputs. PNGs support Markdown; SVG/PDF diagrams and charts support the PDF
 | 5–6 | `epsd-images`, `epsd-zoom` | 2×3 panels: recovered I above percentage differences, one epsilon per column; original measured FITS and reference-peak crops |
 | 7–8 | `epsd-v-images`, `epsd-v-zoom` | Matching 2×3 Stokes V comparisons across all three epsilon values; `reports/calibrated-epsd-v.json` and new first-run FITS; Taurus A source zoom audited in `reports/calibrated-v-zoom.json` |
 | 9 | `epsd-rate-distortion` | Initial I image-error/size relation and physical byte categories; dense-ladder report |
+| 10 | `dysco-comparison-rate` | Visibility-storage rate–distortion comparison; five epsilon values, RF/AF Dysco, connected measured series and reversed error axes |
+| 11–12 | `dysco-comparison-images`, `dysco-comparison-v-zoom` | The issue #3 matched-rate I/V image differences and Taurus A V zoom, copied without alteration |
+| 13 | `dysco-comparison-bits` | The issue #3 complex-sample precision distribution, copied without alteration |
 
 I flux images use viridis; V and signed differences use bwr. Figures 5–6 show
 `100 × (I_quant − I_ref) / RMS(reference residual)` with a percentage
@@ -37,19 +40,27 @@ compact `(I_quant − I_ref)/RMS_residual` or V equivalent, with percentage tick
 All image metrics use the fixed above-10° mask. Figure 9 retains
 RMS(image−reference)/RMS(reference residual) on its left axis.
 
-The old combined I/V panels are removed from the paper. The previous Figure 10
-speed chart is replaced by tables of measured phases from the median 72.685-second
-run; `reports/calibrated-runtime-breakdown.json` records the additive wall times
-and the separately reported parallel-work totals.
+The prior speed chart was replaced by tables of measured phases from the median
+72.685-second run; the new Figure 10 is the Dysco rate comparison.
+`reports/calibrated-runtime-breakdown.json` records additive wall times and
+separately reported parallel-work totals.
 
 From the repository root:
 
 ```bash
 PYTHONPATH=src:scripts python scripts/update_calibrated_paper.py
+PYTHONPATH=src:scripts python scripts/build_dysco_paper_comparison.py render
+PYTHONPATH=src:scripts python scripts/update_dysco_paper.py
 python scripts/compile_paper.py
 ```
 
-The update command reads saved reports and local FITS; it does not run imaging or
+The comparison renderer uses the committed Dysco and additional-epsilon reports
+and the retained issue figures. Its lines connect measured settings only and its
+logarithmic error axes are reversed so lower error appears higher. The new
+epsilon cases were separately audited from local MS and FITS outputs with the
+builder's `collect` operation.
+
+The update commands read saved reports and local FITS; they do not run imaging or
 benchmarks. Use `--skip-images` when local FITS are unavailable to refresh text and
 tables while retaining committed image figures. Method diagrams can
 be regenerated with `PYTHONPATH=scripts python -c 'from build_epsd_figures import methods; methods()'`.

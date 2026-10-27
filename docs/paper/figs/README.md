@@ -17,11 +17,13 @@ I flux images use viridis; V and signed differences use bwr. Figures 5–6 show
 colour scale. Figures 7–8 apply the same formula to V. The denominator is the
 uncentred reference residual RMS over the full fixed above-10° mask:
 1.031244811 Jy/beam for I and 0.384439444 Jy/beam for V. Within each polarization,
-it is shared across all cases and zooms. The figures share intensity/difference limits;
-the difference scale is fixed at −30% to +30%, with colourbar extensions marking
+it is shared across all cases and zooms. The difference scale is fixed at −30%
+to +30%, with colourbar extensions marking
 values beyond the displayed range.
-V intensity uses a linear scale with fixed −10 to +10 Jy/beam limits and evenly
-spaced colourbar ticks. Its 64×64 zoom is centred on the
+V intensity uses linear scales with −4 to +4 Jy/beam limits in the full field
+(Figure 7) and −10 to +10 Jy/beam in the zoom (Figure 8), with evenly spaced
+colourbar ticks. Figure 7 uses colourbar extensions to show values outside its
+display range. Its 64×64 zoom is centred on the
 largest absolute reference V pixel above 45° at every integration, a compact
 feature at Taurus A (Crab Nebula); the entire crop is checked to remain above
 45°. Selection uses the original mask's time, location and Earth-orientation

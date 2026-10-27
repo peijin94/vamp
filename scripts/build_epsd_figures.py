@@ -133,12 +133,13 @@ def image_comparisons(result):
         zoom_view = (slice(bounds['y_start'], bounds['y_stop']), slice(bounds['x_start'], bounds['x_stop']))
         if reference[zoom_view].shape != tuple(zoom_record['crop_shape']) or not mask[zoom_view].all():
             raise ValueError('V zoom must match its complete, valid recorded crop')
-    scale = 10. if pol == 'V' else (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.)
+    scale = (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.) if pol == 'I' else None
     limit = 30.0  # Fixed display range in percent; underlying errors are unchanged.
-    intensity_norm = (Normalize(vmin=-scale, vmax=scale) if pol == 'V'
-                      else SymLogNorm(.01 * scale, vmin=-scale, vmax=scale))
     DEST.mkdir(exist_ok=True)
     for zoom in (False, True):
+        panel_scale = (10. if zoom else 4.) if pol == 'V' else scale
+        intensity_norm = (Normalize(vmin=-panel_scale, vmax=panel_scale) if pol == 'V'
+                          else SymLogNorm(.01 * panel_scale, vmin=-panel_scale, vmax=panel_scale))
         view = zoom_view if zoom else np.s_[:,:]
         extent = ((view[1].start-.5, view[1].stop-.5, view[0].start-.5, view[0].stop-.5)
                   if zoom else (-.5, reference.shape[1]-.5, -.5, reference.shape[0]-.5))
@@ -155,8 +156,10 @@ def image_comparisons(result):
             axes[0, col].set_title(f"εD = {case['epsilon_D']:g} · Stokes {pol}", fontsize=11)
             axes[1, col].set_title('Difference', fontsize=11)
         intensity_bar = fig.colorbar(top, ax=axes[0, :].tolist(), shrink=.85, pad=.02,
+                                     extend='both' if pol == 'V' and not zoom else 'neither',
                                      label=rf'${pol}_{{\rm quant}}$ [Jy/beam]')
-        ticks = np.linspace(-scale, scale, 5) if pol == 'V' else [-scale, -.1*scale, 0, .1*scale, scale]
+        ticks = (np.linspace(-panel_scale, panel_scale, 5) if pol == 'V' else
+                 [-panel_scale, -.1*panel_scale, 0, .1*panel_scale, panel_scale])
         intensity_bar.set_ticks(ticks)
         intensity_bar.set_ticklabels([f'{value:g}' if pol == 'V' else f'{value:.2g}' for value in ticks])
         difference_bar = fig.colorbar(bottom, ax=axes[1, :].tolist(), shrink=.85, pad=.02,

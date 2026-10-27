@@ -544,9 +544,9 @@ reference selects a source-centred crop independently of the reconstructions.
 *Figure 7. Stokes V counterparts to Figure 5: recovered images above signed
 percentage differences, with epsilon-D 0.01, 0.04 and 0.18 from left to right.
 Both rows use bwr; the intensity scale is linear with fixed
-limits of −10 to +10 Jy/beam, and the RMS-normalized difference scale is linear
-from −30% to +30%. Extended difference-colourbar
-ends indicate values outside that display range. Only the fixed above-10° mask
+limits of −4 to +4 Jy/beam, and the RMS-normalized difference scale is linear
+from −30% to +30%. Extended colourbar ends indicate values outside the displayed
+ranges. Only the fixed above-10° mask
 is shown. Top-row x axes and the last two columns' y axes are omitted.*
 
 ![Stokes V comparisons around Taurus A](figs/epsd-v-zoom.png)
@@ -558,7 +558,8 @@ beam of the [catalogue position](https://simbad.u-strasbg.fr/simbad/sim-id?Ident
 Circles mark the selected reference peak. The centre stays above 50° elevation
 and every crop pixel remains above 45°
 throughout the observation. Selection uses only the reference; the full-field
-residual RMS denominator and colour scales are retained. This is measured V
+residual RMS denominator and ±30% difference scale are retained. The linear V
+intensity scale runs from −10 to +10 Jy/beam. This is measured V
 at a radio-source position; intrinsic circular polarization and instrumental
 leakage have not been separated.*
 <!-- IV_END -->

@@ -135,6 +135,12 @@ The latest display adjustment uses a linear **−10 to +10 Jy/beam** V intensity
 scale in both figures, with ticks at −10, −5, 0, 5 and 10. The zoom, difference
 scale and measured data remain unchanged.
 
+The following adjustment changes Figure 7 (full-field V) to a linear **−4 to
++4 Jy/beam**, with ticks at −4, −2, 0, 2 and 4 and extended colourbar ends for
+out-of-range intensities. Figure 8 (Taurus A zoom) retains the linear −10 to
++10 Jy/beam scale. Both figures retain the ±30% difference scale; no measurements
+are changed.
+
 ## Timing table replacing Figure 10
 
 The table decomposes the existing **run 2**, which is the median of the three

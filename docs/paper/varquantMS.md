@@ -1,6 +1,6 @@
 ---
 title: 'varquanMS: local-scale, adaptive, variable-quantization-length compression method for radio interferometry data'
-date: '26 October 2026'
+date: '27 October 2026'
 ---
 
 # varquanMS: local-scale, adaptive, variable-quantization-length compression method for radio interferometry data
@@ -22,7 +22,8 @@ logical complex64 bytes. At 0.18, a complete archive is 242.769 MB versus
 profile explicitly discards raw/model columns and flagged values while retaining
 flags; its four-bit weights are exact on this dataset. Additional I/V imaging
 above 10° gives difference RMS of 4.810–4.876% and 10.056% of the matching
-reference residual RMS, respectively. Three repeated full-MS conversion runs
+reference residual RMS, respectively. A follow-up extends V validation to all
+three epsilon values. Three repeated full-MS conversion runs
 reduce median time from 485.870 to 72.685 s (6.685×), including verification;
 the 15-second target remains unmet. These measurements establish agreement with
 the supplied calibrated reference, not sky truth or general polarization fidelity.
@@ -372,7 +373,9 @@ import inventory.
 Imaging uses WSClean 3.7 in the same recorded container for reference and
 quantized MSs. A private MS copy protects each input from imaging side effects.
 The initial study uses Stokes I; the subsequent epsilon-D 0.18 study runs
-Stokes I and V separately against matching references. All use 2048×2048 pixels,
+Stokes I and V separately against matching references. A further V sweep images
+the same three epsilon cases, each twice, using their verified exports.
+All use 2048×2048 pixels,
 four-arcminute pixels, Briggs robust 0 and multiscale CLEAN.
 The remaining settings are eight threads, scale bias 0.8, 150,000 iterations,
 mgain 0.95, auto-threshold 0.5, auto-mask 3, local RMS, a 10° horizon mask,
@@ -450,35 +453,35 @@ first dirty-image difference, all normalized by the same reference residual RMS.
 payload bytes. Float32 denotes exact storage, including cheaply compressed zero
 blocks. Metadata outside visibility blocks is accounted for separately.*
 
-For the pixelwise displays in Figures 5–6, define
+For the pixelwise I and V displays in Figures 5–8, define
 
-$$P_\epsilon(\boldsymbol\theta)=100\,
-\frac{I_\epsilon(\boldsymbol\theta)-I_0(\boldsymbol\theta)}{\sigma_R},\qquad
-\sigma_R=\sqrt{\frac{1}{N_{\mathcal M}}\sum_{\boldsymbol\theta\in\mathcal M}
-\left[R_0(\boldsymbol\theta)-\overline R_{0,\mathcal M}\right]^2}.$$
+$$P_{\epsilon,S}(\boldsymbol\theta)=100\,
+\frac{S_\epsilon(\boldsymbol\theta)-S_0(\boldsymbol\theta)}{\mathrm{RMS}_{\mathrm{residual},S}},\qquad
+\mathrm{RMS}_{\mathrm{residual},S}=\sqrt{\frac{1}{N_{\mathcal M}}\sum_{\boldsymbol\theta\in\mathcal M}
+R_{0,S}(\boldsymbol\theta)^2},\quad S\in\{I,V\}.$$
 
-Here $\sigma_R=1.018715249$ Jy/beam is the population standard deviation
-(`ddof=0`) of the uncompressed reference residual over the full above-10° mask.
-The displayed values are percentages of this single reference fluctuation scale.
-The denominator remains fixed across cases and zooms. This display normalization
-uses centred standard deviation; the tabulated image-error metrics and Figure 9
-retain their stated uncentred reference residual RMS normalization.
+The denominators are the uncentred reference residual RMS over the full
+above-10° mask: 1.031244811 Jy/beam for I and 0.384439444 Jy/beam for V.
+Each remains fixed across epsilon cases and zooms, matching the normalization of
+the tabulated image-error metrics. Colourbar ticks express the ratios as
+percentages, with the compact label
+$(S_{\mathrm{quant}}-S_{\mathrm{ref}})/\mathrm{RMS}_{\mathrm{residual}}$.
 
 ![Recovered Stokes I and percentage differences for every tolerance](figs/epsd-images.png)
 
 *Figure 5. Two rows and three columns, with $\epsilon_D=0.01$, $0.04$ and $0.18$
 from left to right. Top: first-run recovered Stokes I images in Jy/beam, using
 viridis and a common symmetric logarithmic intensity scale. Bottom: signed
-$100(I_\epsilon-I_0)/\sigma_R$ differences, using bwr and a common linear
+$100(I_\epsilon-I_0)/\mathrm{RMS}_{\mathrm{residual},I}$ differences, using bwr and a common linear
 percentage scale from −30% to +30%. Values beyond these display limits use the
 endpoint colours, indicated by the extended colourbar. Pixels outside the
-above-10° mask are excluded.*
+above-10° mask are excluded. Top-row x axes and y axes in columns 2–3 are omitted.*
 
 ![Reference-peak zooms](figs/epsd-zoom.png)
 
 *Figure 6. The same two-row, three-column comparisons in a fixed 128×128-pixel
 crop around the reference peak. Recovered images occupy the top row; percentage
-differences occupy the bottom row. The full-mask residual standard deviation and
+differences occupy the bottom row. The full-mask reference residual RMS and
 both colour scales are identical to Figure 5. The uncompressed reference defines
 the crop independently of the recovered images.*
 
@@ -494,7 +497,8 @@ frozen decoder exports the new archive, and original-source checks pass. Across
 archive implementations, 5,040 scientific dataset references have matching
 shapes, dtypes and hashes, with unchanged measured visibility errors. The extra
 I runs below are distinct CLEAN realizations of the same decoded values; they
-do not replace the earlier I measurements. V was tested only at 0.18.
+do not replace the earlier I measurements. In that performance study, V was
+tested at 0.18; the subsequent three-epsilon V sweep is reported below.
 
 | Stokes | Reference residual RMS Jy/beam | Difference mJy/beam, first / repeat | Difference / reference residual RMS %, first / repeat |
 | --- | --- | --- | --- |
@@ -514,26 +518,42 @@ Although the absolute V difference is smaller, its normalization is also smaller
 Both exceed their corresponding reference-repeat differences; the V discrepancy
 cannot be explained by the observed repeat alone. These controls are not
 subtracted from the reported errors. Visual agreement or a small I difference
-does not establish weak-polarization or leakage fidelity. No V result is inferred
-for the two stricter epsilon settings.
+does not establish weak-polarization or leakage fidelity. The follow-up below
+measures the two stricter V cases directly.
 [Measured I/V and identity report](../../reports/calibrated-performance.json).
 
-![Stokes I and V restored-image comparisons](figs/calibrated-iv-full.png)
+A follow-up on 27 October images Stokes V at all three epsilon values,
+using the original verified exports and the same template, reference beam and
+above-10° mask. Each case is CLEANed twice. All six runs reach the final
+threshold and preserve their input MS hashes. These new runs are separate from
+the preceding performance-study V pair at 0.18; no result has been relabelled or
+substituted. The matching V reference residual RMS is 0.384439444 Jy/beam.
 
-*Figure 7. Additional epsilon-D 0.18 test, first run: I (top) and V (bottom), each
-with reference, reconstruction and signed difference divided by its scalar
-reference residual RMS. I flux uses viridis; V flux and signed differences use
-bwr. Flux panels share a symmetric logarithmic scale within each row; differences
-use a separate linear scale. Only pixels above 10° throughout the observation
-are shown. Image axes are pixel coordinates.*
+| εD | V difference mJy/beam, first / repeat | V difference / reference residual RMS %, first / repeat |
+| --- | --- | --- |
+| 0.01 | 4.1801 / 4.1802 | 1.0873 / 1.0873 |
+| 0.04 | 8.0278 / 8.0278 | 2.0882 / 2.0882 |
+| 0.18 | 38.6601 / 38.6601 | 10.0562 / 10.0562 |
 
-![Stokes I and V reference-peak zooms](figs/calibrated-iv-zoom.png)
+[Full three-epsilon V measurements](../../reports/calibrated-epsd-v.json).
+Figures 7–8 use the same layout as the I comparisons in Figures 5–6. The V
+reference selects its own peak crop, which need not cover the I peak region.
 
-*Figure 8. Fixed 200×200-pixel crops around the largest absolute reference pixel
-of each Stokes image, selected without consulting the reconstructed image.
-The I and V crops therefore need not cover the same sky region. Scales and
-normalizations match Figure 7. These peaks are not independently identified as
-the Sun or interpreted as integrated source fluxes.*
+![Recovered Stokes V and RMS-normalized percentage differences](figs/epsd-v-images.png)
+
+*Figure 7. Stokes V counterparts to Figure 5: recovered images above signed
+percentage differences, with epsilon-D 0.01, 0.04 and 0.18 from left to right.
+Both rows use bwr; the intensity scale is symmetric logarithmic and the
+RMS-normalized difference scale is linear from −30% to +30%. Extended colourbar
+ends indicate values outside that display range. Only the fixed above-10° mask
+is shown. Top-row x axes and the last two columns' y axes are omitted.*
+
+![Stokes V reference-peak zooms](figs/epsd-v-zoom.png)
+
+*Figure 8. The same V comparisons in a fixed 128×128-pixel crop around the
+largest absolute V reference pixel, retaining the full-field RMS denominator
+and colour scales. The reference defines the crop independently of the
+reconstructions; the peak is not assigned a source identity.*
 <!-- IV_END -->
 
 ### 3.5 Before/after sizes and storage contributors
@@ -690,13 +710,43 @@ Detailed profiles, software records and reproduction commands are kept in the
 [benchmark note](../../devnotes/calibrated-performance.md) and
 [measured report](../../reports/calibrated-performance.json).
 
-![Repeated full-MS conversion timing](figs/calibrated-paper-runtime.png)
+The following breakdown uses the recorded median run (run 2), whose full
+process wall time is 72.685 s. Rows are non-overlapping elapsed intervals, or
+explicit differences of those measured intervals, and sum to the complete run.
 
-*Figure 10. Complete MS-to-verified-archive wall time. Bars mark medians, whiskers
-show the minimum and maximum, and dots show the three individual unprofiled
-runs. The horizontal line is the unmet 15-second target. This is a warm-cache,
-shared-host benchmark with unchanged scientific output, not a cold-cache or
-encoder-kernel timing.*
+| Phase | Wall seconds | % of total |
+| --- | --- | --- |
+| Global reference sampling | 6.141 | 8.45 |
+| Remaining bundle work: discovery, parallel inspection/encoding/source checks, finalization | 46.964 | 64.61 |
+| Validate input bundle for compaction | 6.117 | 8.42 |
+| Copy/share arrays into final archive | 4.848 | 6.67 |
+| Validate final archive | 5.309 | 7.30 |
+| Other compaction/finalization overhead | 3.051 | 4.20 |
+| Process startup/shutdown and remaining orchestration | 0.255 | 0.35 |
+| Total process wall time | 72.685 | 100.00 |
+
+The remaining bundle interval includes discovery, overlapping partition work
+and finalization. The instrumentation does not separate these into individual
+additive wall-time contributions. The two overhead rows are measured remainders.
+Input-bundle validation, array copying/sharing and final-archive validation are
+sequential subphases of the 19.325-second compaction stage.
+
+For context, the same run also records the following work summed across the
+15 partitions. These totals overlap in wall time and must not be added
+to the preceding table:
+
+| Parallel work | Summed partition seconds |
+| --- | --- |
+| Inspection | 23.466 |
+| Encoding and writing, including integrity finalization | 223.877 |
+| Source/integrity verification | 73.778 |
+
+Encoding/writing is the largest recorded partition-work total. The parent
+waits while partition processes run, so attributing that interval to parent CPU
+or adding thread/partition durations would misrepresent the 72.685-second
+latency. A finer additive split inside parallel encoding would require new
+instrumentation; none is inferred from unrelated single-context profiles.
+[Median-run timing audit](../../reports/calibrated-runtime-breakdown.json).
 <!-- PERFORMANCE_END -->
 
 ## 4. Conclusion and discussion

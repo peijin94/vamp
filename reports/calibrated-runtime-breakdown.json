@@ -1,0 +1,87 @@
+{
+  "schema": "varquanms.median-runtime-breakdown/1",
+  "status": "passed",
+  "measurement_date": "2026-10-25",
+  "report_date": "2026-10-27",
+  "selected_run": "run-2",
+  "total_process_wall_seconds": 72.68508086586371,
+  "workflow_seconds": 72.43148004589602,
+  "bundle_wall_seconds": 53.104928622953594,
+  "compaction_wall_seconds": 19.325321456883103,
+  "phase_wall_seconds": [
+    {
+      "phase": "Global reference sampling",
+      "seconds": 6.140628442168236,
+      "percent": 8.448265268494955,
+      "derivation": "bundle.global_reference_sampling_seconds"
+    },
+    {
+      "phase": "Remaining bundle work: discovery, parallel inspection/encoding/source checks, finalization",
+      "seconds": 46.96430018078536,
+      "percent": 64.6133974418428,
+      "derivation": "bundle_wall_seconds minus reference sampling"
+    },
+    {
+      "phase": "Validate input bundle for compaction",
+      "seconds": 6.116740927100182,
+      "percent": 8.41540086938651,
+      "derivation": "compact.storage_compaction.source_validation_seconds"
+    },
+    {
+      "phase": "Copy/share arrays into final archive",
+      "seconds": 4.848464458249509,
+      "percent": 6.670508446151532,
+      "derivation": "compact.storage_compaction.copy_and_share_seconds"
+    },
+    {
+      "phase": "Validate final archive",
+      "seconds": 5.308617282193154,
+      "percent": 7.303585851393511,
+      "derivation": "compact.output_validation_seconds"
+    },
+    {
+      "phase": "Other compaction/finalization overhead",
+      "seconds": 3.0514987893402576,
+      "percent": 4.198246398007907,
+      "derivation": "compaction elapsed minus the three timed subphases"
+    },
+    {
+      "phase": "Process startup/shutdown and remaining orchestration",
+      "seconds": 0.25483078602701426,
+      "percent": 0.35059572472278094,
+      "derivation": "process wall minus bundle wall and compaction elapsed"
+    }
+  ],
+  "parallel_partition_stage_seconds": {
+    "Inspection": 23.466356399469078,
+    "Encoding and writing, including integrity finalization": 223.87700136611238,
+    "Source/integrity verification": 73.77775602135807
+  },
+  "scope": "Complete 15-integration MS to verified single-file archive; existing unprofiled median run. No new timing experiment.",
+  "limitations": [
+    "Remaining bundle work includes overlapping partition stages and discovery/finalization; a finer additive wall-time split was not instrumented.",
+    "Parallel partition-stage times are sums across 15 integrations, not additive contributions to the 72.685-second latency.",
+    "The two remainder rows are differences of measured elapsed durations, not independent function profiles."
+  ],
+  "input_sha256": {
+    "reports/calibrated-performance.json": "f9cff3daca4f9fa6da3a7fdc67da86d51fd1e7669e1722493fbf40167569d364",
+    "results/calibrated-performance/optimized/run-2.json": "53939ad8101036a1f6eb8cfcde41434111d671ea93df9756d70e6fc827dcb400",
+    "results/calibrated-performance/optimized/processes.json": "7ea7051899610aa64e7a9ef53c126948fef52e66fee9f045b5b04be3f7447cf7",
+    "results/calibrated-performance/optimized/run-2.bundle/manifest.json": "9d17003c91c572f0cdec5d2409d1d6cf7b6b2ff323269164c941ef44bc2582de",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0000.json": "00dc6aefde70aac0ba2aa6608d8b76b323b70ea7e815447c33aa392269dc6575",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0001.json": "a0b5954779da0dde5ac143776f775695cd6244f193af240e4cb8b76a34b1ea5e",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0002.json": "30bf490ef2a9c1f150193b5efa426e221c9370c626978dac72268c46fae410a2",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0003.json": "65cfb89749a15692da6dd57c5c96fb88bf5f515a6e15eaf47b08d22caa9cd991",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0004.json": "726b42ffb6a6908eb7f1db4e84f21fde7a5f243cc3bd9c47b6ba4f9171a830f4",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0005.json": "c1f9b10f0e263dcc9ff31edfd539f95025996a9500110e9266bb4bc00c1a074f",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0006.json": "6d645d8e3e6cb8135957e8ba319eb1d3784c638d63cfc70f88c3a0ed79421be5",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0007.json": "db2704f3d121b6ee8cbaca0e56d6159e549dd9c932b14114d71aced66895beee",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0008.json": "70b8956a09f2015a1d32a983618e7541723c7c8a4e4156cad4aff348f261c0b7",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0009.json": "b5a4190467495b0c9b3de855fa5f9af414d41704a7b568f019dec59ad3133787",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0010.json": "e77a310073d3ea4029553c2c2f3f68eaf55d41b14fa244d14e728ee4ce6e7fc5",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0011.json": "a4db7b4151fa4af64cc0399b903e6ffa0b421eac739be6964be3eb1faecf4418",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0012.json": "ede107a73a1c7427c0425d561fa67ac36e5d426cdf3acf2aeec6e7104a272aaa",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0013.json": "30c0a55e41c825e437495737de2460225042b415a61755fb71cf0ad31fb7f247",
+    "results/calibrated-performance/optimized/run-2.bundle/verification-0014.json": "e1346339d3082bc340e40716a43236101f51ef25137f5ac563e40ee8e6ec2797"
+  }
+}

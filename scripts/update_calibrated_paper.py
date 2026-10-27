@@ -31,7 +31,78 @@ def table(headers, rows):
                      ['| ' + ' | '.join(map(str, row)) + ' |' for row in rows])
 
 
-def sections(study, perf, lossless, audit):
+def runtime_table(timing):
+    rows = [[p['phase'], f"{p['seconds']:.3f}", f"{p['percent']:.2f}"]
+            for p in timing['phase_wall_seconds']]
+    rows.append(['Total process wall time', f"{timing['total_process_wall_seconds']:.3f}", '100.00'])
+    parallel = [[name, f'{value:.3f}'] for name,value in timing['parallel_partition_stage_seconds'].items()]
+    return '''The following breakdown uses the recorded median run (run 2), whose full
+process wall time is 72.685 s. Rows are non-overlapping elapsed intervals, or
+explicit differences of those measured intervals, and sum to the complete run.
+
+''' + table(['Phase', 'Wall seconds', '% of total'], rows) + '''
+
+The remaining bundle interval includes discovery, overlapping partition work
+and finalization. The instrumentation does not separate these into individual
+additive wall-time contributions. The two overhead rows are measured remainders.
+Input-bundle validation, array copying/sharing and final-archive validation are
+sequential subphases of the 19.325-second compaction stage.
+
+For context, the same run also records the following work summed across the
+15 partitions. These totals overlap in wall time and must not be added
+to the preceding table:
+
+''' + table(['Parallel work', 'Summed partition seconds'], parallel) + '''
+
+Encoding/writing is the largest recorded partition-work total. The parent
+waits while partition processes run, so attributing that interval to parent CPU
+or adding thread/partition durations would misrepresent the 72.685-second
+latency. A finer additive split inside parallel encoding would require new
+instrumentation; none is inferred from unrelated single-context profiles.
+[Median-run timing audit](../../reports/calibrated-runtime-breakdown.json).
+'''
+
+
+def v_validation_section(study):
+    rows=[]
+    for case in sorted(study['experiments'],key=lambda e:e['epsilon_D']):
+        n=[r['normalization'] for r in case['runs']]
+        rows.append([f"{case['epsilon_D']:g}",
+            ' / '.join(f"{1000*x['difference_rms']:.4f}" for x in n),
+            ' / '.join(f"{100*x['difference_over_reference_residual_rms']:.4f}" for x in n)])
+    return '''A follow-up on 27 October images Stokes V at all three epsilon values,
+using the original verified exports and the same template, reference beam and
+above-10° mask. Each case is CLEANed twice. All six runs reach the final
+threshold and preserve their input MS hashes. These new runs are separate from
+the preceding performance-study V pair at 0.18; no result has been relabelled or
+substituted. The matching V reference residual RMS is 0.384439444 Jy/beam.
+
+''' + table(['εD', 'V difference mJy/beam, first / repeat',
+             'V difference / reference residual RMS %, first / repeat'],rows) + '''
+
+[Full three-epsilon V measurements](../../reports/calibrated-epsd-v.json).
+Figures 7–8 use the same layout as the I comparisons in Figures 5–6. The V
+reference selects its own peak crop, which need not cover the I peak region.
+
+![Recovered Stokes V and RMS-normalized percentage differences](figs/epsd-v-images.png)
+
+*Figure 7. Stokes V counterparts to Figure 5: recovered images above signed
+percentage differences, with epsilon-D 0.01, 0.04 and 0.18 from left to right.
+Both rows use bwr; the intensity scale is symmetric logarithmic and the
+RMS-normalized difference scale is linear from −30% to +30%. Extended colourbar
+ends indicate values outside that display range. Only the fixed above-10° mask
+is shown. Top-row x axes and the last two columns' y axes are omitted.*
+
+![Stokes V reference-peak zooms](figs/epsd-v-zoom.png)
+
+*Figure 8. The same V comparisons in a fixed 128×128-pixel crop around the
+largest absolute V reference pixel, retaining the full-field RMS denominator
+and colour scales. The reference defines the crop independently of the
+reconstructions; the peak is not assigned a source identity.*
+'''
+
+
+def sections(study, perf, lossless, audit, vstudy, timing):
     run = perf['optimized']['runs'][0]
     total = run['archive_bytes']
     payload = perf['visibility_payload_bytes']
@@ -64,7 +135,8 @@ frozen decoder exports the new archive, and original-source checks pass. Across
 archive implementations, 5,040 scientific dataset references have matching
 shapes, dtypes and hashes, with unchanged measured visibility errors. The extra
 I runs below are distinct CLEAN realizations of the same decoded values; they
-do not replace the earlier I measurements. V was tested only at 0.18.
+do not replace the earlier I measurements. In that performance study, V was
+tested at 0.18; the subsequent three-epsilon V sweep is reported below.
 
 ''' + table(['Stokes', 'Reference residual RMS Jy/beam', 'Difference mJy/beam, first / repeat',
              'Difference / reference residual RMS %, first / repeat'], iv_rows) + '''
@@ -79,27 +151,12 @@ Although the absolute V difference is smaller, its normalization is also smaller
 Both exceed their corresponding reference-repeat differences; the V discrepancy
 cannot be explained by the observed repeat alone. These controls are not
 subtracted from the reported errors. Visual agreement or a small I difference
-does not establish weak-polarization or leakage fidelity. No V result is inferred
-for the two stricter epsilon settings.
+does not establish weak-polarization or leakage fidelity. The follow-up below
+measures the two stricter V cases directly.
 [Measured I/V and identity report](../../reports/calibrated-performance.json).
 
-![Stokes I and V restored-image comparisons](figs/calibrated-iv-full.png)
-
-*Figure 7. Additional epsilon-D 0.18 test, first run: I (top) and V (bottom), each
-with reference, reconstruction and signed difference divided by its scalar
-reference residual RMS. I flux uses viridis; V flux and signed differences use
-bwr. Flux panels share a symmetric logarithmic scale within each row; differences
-use a separate linear scale. Only pixels above 10° throughout the observation
-are shown. Image axes are pixel coordinates.*
-
-![Stokes I and V reference-peak zooms](figs/calibrated-iv-zoom.png)
-
-*Figure 8. Fixed 200×200-pixel crops around the largest absolute reference pixel
-of each Stokes image, selected without consulting the reconstructed image.
-The I and V crops therefore need not cover the same sky region. Scales and
-normalizations match Figure 7. These peaks are not independently identified as
-the Sun or interpreted as integrated source fluxes.*
 '''
+    iv += v_validation_section(vstudy)
     size_rows = [
         ['Original full MS (physical)', f"{study['original_ms_physical_bytes']/1e6:.3f}", '—', 'Includes raw and model columns'],
         ['Original CORRECTED_DATA (logical)', '—', f'{original/1e6:.3f}', 'Denominator for payload fractions'],
@@ -253,14 +310,8 @@ Detailed profiles, software records and reproduction commands are kept in the
 [benchmark note](../../devnotes/calibrated-performance.md) and
 [measured report](../../reports/calibrated-performance.json).
 
-![Repeated full-MS conversion timing](figs/calibrated-paper-runtime.png)
-
-*Figure 10. Complete MS-to-verified-archive wall time. Bars mark medians, whiskers
-show the minimum and maximum, and dots show the three individual unprofiled
-runs. The horizontal line is the unmet 15-second target. This is a warm-cache,
-shared-host benchmark with unchanged scientific output, not a cold-cache or
-encoder-kernel timing.*
 '''
+    performance += runtime_table(timing)
     abstract = '''We present varquanMS, an experimental archive for radio-interferometric
 Measurement Sets using local scaling and adaptive integer precision. Each
 baseline–frequency block stores a complex median, range, power-spacing parameter
@@ -275,7 +326,8 @@ logical complex64 bytes. At 0.18, a complete archive is 242.769 MB versus
 profile explicitly discards raw/model columns and flagged values while retaining
 flags; its four-bit weights are exact on this dataset. Additional I/V imaging
 above 10° gives difference RMS of 4.810–4.876% and 10.056% of the matching
-reference residual RMS, respectively. Three repeated full-MS conversion runs
+reference residual RMS, respectively. A follow-up extends V validation to all
+three epsilon values. Three repeated full-MS conversion runs
 reduce median time from 485.870 to 72.685 s (6.685×), including verification;
 the 15-second target remains unmet. These measurements establish agreement with
 the supplied calibrated reference, not sky truth or general polarization fidelity.'''
@@ -300,85 +352,24 @@ none defines a universal optimum or a scientific acceptance threshold.'''
             'PERFORMANCE': performance, 'CONCLUSION': conclusion}
 
 
-def figures(perf, images=True):
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    import numpy as np
-    from build_epsd_figures import save
-    fig, ax = plt.subplots(figsize=(8,4.2), layout='constrained')
-    entries = [perf['baseline'], perf['optimized']]
-    values = [e['median_seconds'] for e in entries]
-    bars = ax.bar([0,1], values, color=['#777777','#237847'], width=.45,
-                  yerr=[[e['median_seconds']-e['minimum_seconds'] for e in entries],
-                        [e['maximum_seconds']-e['median_seconds'] for e in entries]], capsize=7)
-    for i, e in enumerate(entries):
-        ax.scatter(i+np.linspace(-.09,.09,3), [r['process_wall_seconds'] for r in e['runs']],
-                   s=28, color='black', zorder=4, label='Individual runs' if i==0 else None)
-    ax.bar_label(bars, labels=[f'{x:.3f} s' for x in values], padding=15)
-    ax.axhline(15, color='#a84435', linestyle='--', label='15 s target')
-    ax.set(xticks=[0,1], xticklabels=['Baseline\n1 process × 24 threads','Optimized\n8 processes × 6 threads'],
-           ylabel='Complete workflow, seconds', ylim=(0,580),
-           title=f"15 integrations → verified archive: {perf['median_speedup']:.3f}× median speedup")
-    ax.legend(frameon=False);ax.grid(axis='y',alpha=.2)
-    save(fig, 'calibrated-paper-runtime')
-    if not images:
-        return
-    from astropy.io import fits
-    from matplotlib.colors import SymLogNorm
-    from report_calibrated_performance import read_fits
-    mask = fits.getdata(ROOT/'results/calibrated-template/above10deg.fits').astype(bool)
-    for zoom in (False,True):
-        fig, axes = plt.subplots(2,3,figsize=(12,8),layout='constrained')
-        for row, pol in enumerate(('I','V')):
-            run = perf['imaging'][pol][0]
-            reference,_ = read_fits(Path(run['reference']))
-            candidate,_ = read_fits(Path(run['candidate']))
-            normr = run['normalization']['reference_residual_rms']
-            assert normr > 0
-            delta = (candidate-reference)/normr
-            measured = np.sqrt(np.mean((candidate[mask]-reference[mask])**2))
-            if not np.isclose(measured,run['normalization']['difference_rms'],rtol=1e-10):
-                raise ValueError(f'Stokes {pol} FITS no longer matches recorded RMS')
-            peak = np.unravel_index(np.nanargmax(np.where(mask,abs(reference),np.nan)),reference.shape)
-            view = (slice(max(0,peak[0]-100),min(reference.shape[0],peak[0]+100)),
-                    slice(max(0,peak[1]-100),min(reference.shape[1],peak[1]+100))) if zoom else np.s_[:,:]
-            extent = max(np.max(abs(reference[mask])),np.max(abs(candidate[mask]))) or 1.
-            limit = np.max(abs(delta[mask])) or 1.
-            for col, (data,title) in enumerate(zip((reference,candidate,delta),('Reference','Reconstructed','(Image − reference) /\nRMS(reference residual)'))):
-                ax = axes[row,col]
-                opts = dict(norm=SymLogNorm(linthresh=.01*extent,vmin=-extent,vmax=extent)) if col<2 else dict(vmin=-limit,vmax=limit)
-                if zoom:
-                    opts['extent']=(view[1].start-.5,view[1].stop-.5,view[0].start-.5,view[0].stop-.5)
-                im = ax.imshow(np.where(mask,data,np.nan)[view],origin='lower',
-                               cmap='viridis' if pol=='I' and col<2 else 'bwr',**opts)
-                ax.set_title(f'Stokes {pol}: {title}',fontsize=10)
-                ax.set(xlabel='Pixel x',ylabel='Pixel y')
-                cb = fig.colorbar(im,ax=ax,shrink=.74,label='Jy/beam' if col<2 else 'dimensionless')
-                if col<2:
-                    ticks=[-extent,-.1*extent,0,.1*extent,extent]
-                    cb.set_ticks(ticks);cb.set_ticklabels([f'{v:.2g}' for v in ticks])
-        fig.suptitle('εD=0.18; fixed above-10° mask'+(' · reference-peak crops' if zoom else ''),fontsize=14)
-        fig.savefig(FIGS/('calibrated-iv-'+('zoom' if zoom else 'full')+'.png'),dpi=180)
-        plt.close(fig)
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--skip-images',action='store_true',help='Refresh tables and speed figure without local FITS files')
+    parser.add_argument('--skip-images',action='store_true',help='Refresh paper text/tables without local FITS files')
     args = parser.parse_args()
     os.chdir(ROOT)
     study = load('calibrated-epsd-dense')
     perf = load('calibrated-performance')
     lossless = next(e for e in load('calibrated-shared-storage')['experiments'] if e['name']=='lossless')
     audit = load('calibrated-paper-storage')
+    vstudy = load('calibrated-epsd-v')
+    timing = load('calibrated-runtime-breakdown')
     text = PAPER.read_text()
-    for name, body in sections(study,perf,lossless,audit).items():
+    for name, body in sections(study,perf,lossless,audit,vstudy,timing).items():
         text = replace_section(text,name,body)
-    figures(perf,images=not args.skip_images)
     if not args.skip_images:
-        from build_epsd_figures import measured
+        from build_epsd_figures import measured, image_comparisons
         measured(study)
+        image_comparisons(vstudy)
     PAPER.write_text(text)
     print('Updated paper from frozen reports; scientific experiments were not rerun.')
 

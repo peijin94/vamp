@@ -44,7 +44,7 @@ labels are compact mathematical expressions. Top-row x axes and y axes in
 columns 2–3 are hidden. I uses its reference-peak crop; the V crop was subsequently
 moved to high elevation as described below.
 
-## V display limits and high-elevation zoom
+## Initial V display limits and high-elevation zoom (superseded below)
 
 The later 27 October request fixes V intensity limits to **−30 to +30 Jy/beam**
 in both the full-field and zoom figures. The symmetric-log normalization is
@@ -73,6 +73,44 @@ These are display changes. Scientific error measurements, the fixed above-10°
 comparison domain, I figures, archives and source MS remain unchanged. Checks
 cover every panel's colour limits, colormap and axis visibility, zoom dimensions
 and bounds, recorded FITS errors, figure appearance and PDF compilation.
+
+## Source-centred V zoom and ±120 Jy/beam limits
+
+The next request replaces the diffuse high-elevation field with a compact V
+feature at a radio source and widens V intensity limits to **−120 to +120
+Jy/beam**. Both full-field and zoomed V images use those limits, bwr and the
+existing symmetric-log linear threshold of 0.3 Jy/beam. Differences remain
+linear at ±30%, with the same full-mask reference residual RMS.
+
+Searching reference V peaks above 45° at every integration selects `(y,x) =
+(947,449)`: **+6.091340 Jy/beam**, coincident with the **488.629883 Jy/beam** I
+peak. Its ICRS position is RA 83.692929°, Dec +22.017468°, consistent within one
+restoring beam with [Taurus A / the Crab Nebula](https://simbad.u-strasbg.fr/simbad/sim-id?Ident=Crab+Nebula).
+The catalogue association is made after selecting the reference peak; candidate
+quantized images do not influence selection. The two stronger absolute V peaks
+found in the full mask are at only 19.95° and 13.71° elevation and are excluded.
+
+The reference repeat gives +6.091304 Jy/beam at the same pixel; the V reference
+residual there is +0.177968 Jy/beam. In an 8–16-pixel annulus, median reference V
+is 0.003094 Jy/beam and scaled MAD is 0.628021 Jy/beam. This local fluctuation
+statistic is not a thermal-noise estimate. The compact feature is measured V at
+a known radio-source position; this test does not establish whether it is
+intrinsic circular polarization or instrumental leakage.
+
+The tighter **64×64** crop uses `y[915:979], x[417:481]` (zero-based, exclusive
+stops). Its centre stays above **50.125659°**, and every crop pixel remains above
+**46.710021°** at all 15 integration times. This replaces the previous 128×128
+crop above 60°, which mostly showed diffuse fluctuations. The existing
+[selection audit](../reports/calibrated-v-zoom.json), now schema version 2,
+includes the catalogue position, angular separation, beam, supporting I/repeat
+V/residual FITS hashes and values. The generator checks the catalogue match and
+image grids. Scratch candidate maps remain ignored under `plt_tmp/`.
+
+The full-mask science metrics and I figures are unchanged. V intensity and
+difference bounds, bwr colormaps, hidden axes and new crop bounds are checked
+while regenerating; dashed circles locate the reference peak in the recovered
+V zoom panels. The paper and PDF captions describe the source association
+and its polarization limitation.
 
 ## Timing table replacing Figure 10
 

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import astropy
 from astropy import units as u
-from astropy.coordinates import AltAz, EarthLocation
+from astropy.coordinates import AltAz, EarthLocation, SkyCoord
 from astropy.io import fits
 from astropy.time import Time
 from astropy.utils import iers
@@ -61,23 +61,60 @@ def select_zoom(study):
                                                  pressure=provenance['pressure_hpa'] * u.hPa)).alt.deg
                 values = np.minimum(values, altitude)
             minimum[y, x] = values
-    eligible = mask & (minimum > 60.)
+    eligible = mask & (minimum > 45.)
     if not eligible.any():
-        raise ValueError('No V reference pixels are above 60 degrees throughout the observation')
+        raise ValueError('No V reference pixels are above 45 degrees throughout the observation')
     peak = np.unravel_index(np.argmax(np.where(eligible, np.abs(reference), -np.inf)), reference.shape)
     y, x = map(int, peak)
-    bounds = dict(y_start=y-64, y_stop=y+64, x_start=x-64, x_stop=x+64)
-    if y < 64 or x < 64 or y+64 > reference.shape[0] or x+64 > reference.shape[1]:
-        raise ValueError('High-elevation peak cannot support a complete 128-pixel crop')
-    crop = np.s_[y-64:y+64, x-64:x+64]
+    half_width = 32
+    bounds = dict(y_start=y-half_width, y_stop=y+half_width, x_start=x-half_width, x_stop=x+half_width)
+    if y < half_width or x < half_width or y+half_width > reference.shape[0] or x+half_width > reference.shape[1]:
+        raise ValueError('Selected V peak cannot support a complete 64-pixel crop')
+    crop = np.s_[y-half_width:y+half_width, x-half_width:x+half_width]
     lowest = float(minimum[crop].min())
     if lowest <= 45.:
         raise ValueError('The entire V zoom must stay above 45 degrees at every epoch')
-    return dict(schema='varquanms.paper-v-zoom/1', reference_fits=str(reference_path),
+    # Identify the selected compact feature against a fixed, cited catalogue
+    # position. This association does not establish intrinsic circular polarization.
+    sky = pixel_to_skycoord(x, y, wcs).icrs
+    catalogue = SkyCoord('05h34m31.8s', '+22d01m03s', frame='icrs')
+    separation = float(sky.separation(catalogue).arcmin)
+    if separation > float(header['BMAJ']) * 60:
+        raise ValueError('Selected V feature is no longer within one major beam of the Crab catalogue position')
+    other_files = {
+        'reference_i': Path('results/calibrated-template/reference/image-image.fits'),
+        'reference_v_repeat': Path('results/calibrated-template/reference-v-repeat/image-image.fits'),
+        'reference_v_residual': reference_path.with_name('image-residual.fits'),
+    }
+    evidence = {}
+    yy, xx = np.mgrid[y-16:y+17, x-16:x+17]
+    radius = np.hypot(yy-y, xx-x)
+    annulus = (radius >= 8) & (radius <= 16)
+    local = reference[y-16:y+17, x-16:x+17][annulus]
+    background = float(np.median(local))
+    for name, path in other_files.items():
+        values, values_header = read_fits(path)
+        if values.shape != reference.shape or not WCS(values_header).celestial.wcs.compare(wcs.wcs):
+            raise ValueError('Source-identification evidence uses a different image grid')
+        evidence[name] = dict(path=str(path), sha256=file_sha256(path),
+                              value_at_v_peak_jy_per_beam=float(values[peak]))
+    source = dict(label='Taurus A (Crab Nebula) region',
+                  catalogue_url='https://simbad.u-strasbg.fr/simbad/sim-id?Ident=Crab+Nebula',
+                  catalogue_icrs_ra_deg=float(catalogue.ra.deg), catalogue_icrs_dec_deg=float(catalogue.dec.deg),
+                  measured_peak_icrs_ra_deg=float(sky.ra.deg), measured_peak_icrs_dec_deg=float(sky.dec.deg),
+                  catalogue_separation_arcmin=separation, restoring_beam_major_arcmin=float(header['BMAJ'])*60,
+                  restoring_beam_minor_arcmin=float(header['BMIN'])*60,
+                  local_reference_v_median_jy_per_beam=background,
+                  local_reference_v_mad_sigma_jy_per_beam=float(1.4826*np.median(np.abs(local-background))),
+                  local_statistic_region='Annulus 8 to 16 pixels from the V peak; describes local fluctuations, not thermal noise',
+                  evidence=evidence,
+                  interpretation='Compact measured Stokes V at a known radio-source position; intrinsic circular polarization and instrumental leakage are not separated.')
+    return dict(schema='varquanms.paper-v-zoom/2', reference_fits=str(reference_path),
                 reference_fits_sha256=reference_sha, comparison_mask_sha256=provenance['mask_sha256'],
                 mask_provenance_path=str(provenance_path), mask_provenance_sha256=file_sha256(provenance_path),
-                selection='Largest absolute reference V pixel above 60 degrees at all integration TIME values; first row-major tie',
+                selection='Largest absolute reference V pixel above 45 degrees at all integration TIME values; first row-major tie; catalogue association checked afterward',
                 center_yx=[y, x], bounds=bounds, pixel_indexing='zero-based; stop indices exclusive',
+                crop_shape=[2*half_width, 2*half_width], source=source,
                 center_reference_jy_per_beam=float(reference[peak]),
                 center_minimum_elevation_deg=float(minimum[peak]),
                 entire_crop_minimum_elevation_deg=lowest,

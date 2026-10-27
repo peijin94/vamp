@@ -9,7 +9,7 @@ import matplotlib
 matplotlib.use('Agg')
 matplotlib.rcParams['svg.hashsalt'] = 'varquanms-paper'
 import matplotlib.pyplot as plt
-from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Circle
 import numpy as np
 
 DEST=Path('docs/paper/figs')
@@ -131,11 +131,11 @@ def image_comparisons(result):
             raise ValueError('V zoom does not match the measured reference or high-elevation requirement')
         bounds = zoom_record['bounds']
         zoom_view = (slice(bounds['y_start'], bounds['y_stop']), slice(bounds['x_start'], bounds['x_stop']))
-        if reference[zoom_view].shape != (128, 128) or not mask[zoom_view].all():
-            raise ValueError('V zoom must be a complete, valid 128-pixel crop')
-    scale = 30. if pol == 'V' else (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.)
+        if reference[zoom_view].shape != tuple(zoom_record['crop_shape']) or not mask[zoom_view].all():
+            raise ValueError('V zoom must match its complete, valid recorded crop')
+    scale = 120. if pol == 'V' else (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.)
     limit = 30.0  # Fixed display range in percent; underlying errors are unchanged.
-    intensity_norm = SymLogNorm(.01 * scale, vmin=-scale, vmax=scale)
+    intensity_norm = SymLogNorm(.3 if pol == 'V' else .01 * scale, vmin=-scale, vmax=scale)
     DEST.mkdir(exist_ok=True)
     for zoom in (False, True):
         view = zoom_view if zoom else np.s_[:,:]
@@ -145,6 +145,10 @@ def image_comparisons(result):
         for col, (case, recovered, difference) in enumerate(zip(cases, images, differences)):
             top = axes[0, col].imshow(np.where(mask, recovered, np.nan)[view], origin='lower',
                                       extent=extent, cmap='viridis' if pol=='I' else 'bwr', norm=intensity_norm)
+            if zoom and pol == 'V':
+                source_y, source_x = zoom_record['center_yx']
+                axes[0, col].add_patch(Circle((source_x, source_y), 5, fill=False,
+                                              edgecolor='black', linewidth=.8, linestyle='--'))
             bottom = axes[1, col].imshow(np.where(mask, difference, np.nan)[view], origin='lower',
                                          extent=extent, cmap='bwr', vmin=-limit, vmax=limit)
             axes[0, col].set_title(f"εD = {case['epsilon_D']:g} · Stokes {pol}", fontsize=11)
@@ -153,7 +157,7 @@ def image_comparisons(result):
                                      label=rf'${pol}_{{\rm quant}}$ [Jy/beam]')
         ticks = [-scale, -.1*scale, 0, .1*scale, scale]
         intensity_bar.set_ticks(ticks)
-        intensity_bar.set_ticklabels([f'{value:.2g}' for value in ticks])
+        intensity_bar.set_ticklabels([f'{value:g}' if pol == 'V' else f'{value:.2g}' for value in ticks])
         difference_bar = fig.colorbar(bottom, ax=axes[1, :].tolist(), shrink=.85, pad=.02,
                                       extend='both', ticks=np.arange(-30, 31, 10),
                                       label=rf'$({pol}_{{\rm quant}}-{pol}_{{\rm ref}})/\mathrm{{RMS}}_{{\rm residual}}$')
@@ -172,7 +176,7 @@ def image_comparisons(result):
         view_label = 'reference-peak crop' if zoom else 'full field'
         elevation_label = 'above 10°'
         if zoom and pol == 'V':
-            view_label, elevation_label = 'high-elevation reference crop', 'above 45°'
+            view_label, elevation_label = zoom_record['source']['label'], 'above 45°'
         fig.suptitle(f'Stokes {pol} · {view_label} · {elevation_label} · reference residual RMS = {residual_rms:.6f} Jy/beam',
                      fontsize=12)
         prefix = 'epsd' if pol=='I' else 'epsd-v'

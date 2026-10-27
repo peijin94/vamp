@@ -1,27 +1,63 @@
 {
-  "schema": "varquanms.paper-v-zoom/1",
+  "schema": "varquanms.paper-v-zoom/2",
   "reference_fits": "results/calibrated-template/reference-v/image-image.fits",
   "reference_fits_sha256": "9a438429b5050f16275658fb98e655ddd2dbab4206b1dd89e8b385db862b30b6",
   "comparison_mask_sha256": "d2d25dccd02e43027d5f20c1126dd0a9bf7f9949531bcc2416111ab98e530965",
   "mask_provenance_path": "results/calibrated-template/above10deg.json",
   "mask_provenance_sha256": "57da528707ba2f64a49b591ecc29e8aa09391a6c84da20d8d649a13cd0c86d1f",
-  "selection": "Largest absolute reference V pixel above 60 degrees at all integration TIME values; first row-major tie",
+  "selection": "Largest absolute reference V pixel above 45 degrees at all integration TIME values; first row-major tie; catalogue association checked afterward",
   "center_yx": [
-    1204,
-    1231
+    947,
+    449
   ],
   "bounds": {
-    "y_start": 1140,
-    "y_stop": 1268,
-    "x_start": 1167,
-    "x_stop": 1295
+    "y_start": 915,
+    "y_stop": 979,
+    "x_start": 417,
+    "x_stop": 481
   },
   "pixel_indexing": "zero-based; stop indices exclusive",
-  "center_reference_jy_per_beam": 2.015388250350952,
-  "center_minimum_elevation_deg": 68.96734323129712,
-  "entire_crop_minimum_elevation_deg": 62.63307698865253,
+  "crop_shape": [
+    64,
+    64
+  ],
+  "source": {
+    "label": "Taurus A (Crab Nebula) region",
+    "catalogue_url": "https://simbad.u-strasbg.fr/simbad/sim-id?Ident=Crab+Nebula",
+    "catalogue_icrs_ra_deg": 83.6325,
+    "catalogue_icrs_dec_deg": 22.0175,
+    "measured_peak_icrs_ra_deg": 83.69292875363065,
+    "measured_peak_icrs_dec_deg": 22.017468318529648,
+    "catalogue_separation_arcmin": 3.3612997728074596,
+    "restoring_beam_major_arcmin": 10.71915897239298,
+    "restoring_beam_minor_arcmin": 7.718288099331961,
+    "local_reference_v_median_jy_per_beam": 0.003094150102697313,
+    "local_reference_v_mad_sigma_jy_per_beam": 0.6280213229745626,
+    "local_statistic_region": "Annulus 8 to 16 pixels from the V peak; describes local fluctuations, not thermal noise",
+    "evidence": {
+      "reference_i": {
+        "path": "results/calibrated-template/reference/image-image.fits",
+        "sha256": "3d80066c04bcbfb1106eb9c6d9d2375a56366ea5999716fd7e96d65ba375969c",
+        "value_at_v_peak_jy_per_beam": 488.6298828125
+      },
+      "reference_v_repeat": {
+        "path": "results/calibrated-template/reference-v-repeat/image-image.fits",
+        "sha256": "815e2387bb53db509a5beac9d3ff10242a4bdac8b01f3048d40667593340dc21",
+        "value_at_v_peak_jy_per_beam": 6.091304302215576
+      },
+      "reference_v_residual": {
+        "path": "results/calibrated-template/reference-v/image-residual.fits",
+        "sha256": "737932356ac5dcf171f8de67f3e9385c09c28948341b05b92f4a094147c41f5d",
+        "value_at_v_peak_jy_per_beam": 0.17796847224235535
+      }
+    },
+    "interpretation": "Compact measured Stokes V at a known radio-source position; intrinsic circular polarization and instrumental leakage are not separated."
+  },
+  "center_reference_jy_per_beam": 6.091339588165283,
+  "center_minimum_elevation_deg": 50.125658784437,
+  "entire_crop_minimum_elevation_deg": 46.71002129269954,
   "required_entire_crop_minimum_elevation_deg": 45.0,
-  "eligible_pixels": 574218,
+  "eligible_pixels": 1152819,
   "astropy_version": "6.0.0",
   "times_utc_mjd_seconds": [
     5268786625.260147,

@@ -9,7 +9,7 @@ FITS outputs. PNGs support Markdown; SVG/PDF diagrams and charts support the PDF
 | 1b–2 | `epsd-method`, `epsd-levels` | Grouping, precision selection and unsigned power-spaced levels; method schematics |
 | 3–4 | `epsd-rate`, `epsd-bits` | Three fixed epsilon-D values: image errors, sample and payload precision fractions; `reports/calibrated-epsd-dense.json` |
 | 5–6 | `epsd-images`, `epsd-zoom` | 2×3 panels: recovered I above percentage differences, one epsilon per column; original measured FITS and reference-peak crops |
-| 7–8 | `epsd-v-images`, `epsd-v-zoom` | Matching 2×3 Stokes V comparisons across all three epsilon values; `reports/calibrated-epsd-v.json` and new first-run FITS; high-elevation zoom selected in `reports/calibrated-v-zoom.json` |
+| 7–8 | `epsd-v-images`, `epsd-v-zoom` | Matching 2×3 Stokes V comparisons across all three epsilon values; `reports/calibrated-epsd-v.json` and new first-run FITS; Taurus A source zoom audited in `reports/calibrated-v-zoom.json` |
 | 9 | `epsd-rate-distortion` | Initial I image-error/size relation and physical byte categories; dense-ladder report |
 
 I flux images use viridis; V and signed differences use bwr. Figures 5–6 show
@@ -20,11 +20,15 @@ uncentred reference residual RMS over the full fixed above-10° mask:
 it is shared across all cases and zooms. The figures share intensity/difference limits;
 the difference scale is fixed at −30% to +30%, with colourbar extensions marking
 values beyond the displayed range.
-V intensity uses fixed −30 to +30 Jy/beam limits with the existing symmetric-log
-normalization (linear threshold 0.3 Jy/beam). Its 128×128 zoom is centred on the
-largest absolute reference V pixel above 60° at every integration; the entire
-crop is checked to remain above 45°. Selection uses the original mask's time,
-location and Earth-orientation information, without using quantized images.
+V intensity uses fixed −120 to +120 Jy/beam limits with the existing symmetric-log
+normalization (linear threshold 0.3 Jy/beam). Its 64×64 zoom is centred on the
+largest absolute reference V pixel above 45° at every integration, a compact
+feature at Taurus A (Crab Nebula); the entire crop is checked to remain above
+45°. Selection uses the original mask's time, location and Earth-orientation
+information, without using quantized images. The audit records the catalogue
+association, coincident I flux, repeat V flux and reference residual at that
+position. This is a measured V feature, without separating intrinsic circular
+polarization from instrumental leakage.
 I intensity and its reference-peak zoom are unchanged.
 Top-row x axes and y axes in columns 2–3 are hidden; colourbar labels use the
 compact `(I_quant − I_ref)/RMS_residual` or V equivalent, with percentage ticks.

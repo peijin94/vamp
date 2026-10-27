@@ -20,7 +20,7 @@ uncentred reference residual RMS over the full fixed above-10° mask:
 it is shared across all cases and zooms. The figures share intensity/difference limits;
 the difference scale is fixed at −30% to +30%, with colourbar extensions marking
 values beyond the displayed range.
-V intensity uses a linear scale with fixed −30 to +30 Jy/beam limits and evenly
+V intensity uses a linear scale with fixed −10 to +10 Jy/beam limits and evenly
 spaced colourbar ticks. Its 64×64 zoom is centred on the
 largest absolute reference V pixel above 45° at every integration, a compact
 feature at Taurus A (Crab Nebula); the entire crop is checked to remain above

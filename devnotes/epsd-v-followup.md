@@ -131,6 +131,10 @@ The subsequent display adjustment narrows the linear V intensity range to
 0, 15 and 30. The zoom, bwr colormap, ±30% difference scale and measured data
 remain unchanged.
 
+The latest display adjustment uses a linear **−10 to +10 Jy/beam** V intensity
+scale in both figures, with ticks at −10, −5, 0, 5 and 10. The zoom, difference
+scale and measured data remain unchanged.
+
 ## Timing table replacing Figure 10
 
 The table decomposes the existing **run 2**, which is the median of the three

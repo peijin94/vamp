@@ -133,7 +133,7 @@ def image_comparisons(result):
         zoom_view = (slice(bounds['y_start'], bounds['y_stop']), slice(bounds['x_start'], bounds['x_stop']))
         if reference[zoom_view].shape != tuple(zoom_record['crop_shape']) or not mask[zoom_view].all():
             raise ValueError('V zoom must match its complete, valid recorded crop')
-    scale = 120. if pol == 'V' else (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.)
+    scale = 30. if pol == 'V' else (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.)
     limit = 30.0  # Fixed display range in percent; underlying errors are unchanged.
     intensity_norm = (Normalize(vmin=-scale, vmax=scale) if pol == 'V'
                       else SymLogNorm(.01 * scale, vmin=-scale, vmax=scale))

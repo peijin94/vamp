@@ -113,7 +113,7 @@ while regenerating; dashed circles locate the reference peak in the recovered
 V zoom panels. The paper and PDF captions describe the source association
 and its polarization limitation.
 
-## Linear V intensity scale
+## Linear V intensity scale (initial limits)
 
 The subsequent request removes the symmetric-log stretch from V intensity.
 Both full-field and Taurus A zoom panels now use a strictly linear mapping from
@@ -125,6 +125,11 @@ The figures and paper/PDF captions are regenerated from the existing FITS.
 Checks verify the V normalization is linear, limits and ticks match the request,
 and crop/axes remain correct. No imaging, compression or scientific metric is
 recomputed; all measurement reports and I figures remain unchanged.
+
+The subsequent display adjustment narrows the linear V intensity range to
+**−30 to +30 Jy/beam** in both figures, with evenly spaced ticks at −30, −15,
+0, 15 and 30. The zoom, bwr colormap, ±30% difference scale and measured data
+remain unchanged.
 
 ## Timing table replacing Figure 10
 

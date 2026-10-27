@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from varquanms.config import Config
+from vamp.config import Config
 
 _spec = importlib.util.spec_from_file_location("summarize_grouping", Path(__file__).resolve().parents[1] / "scripts" / "summarize_grouping.py")
 summary = importlib.util.module_from_spec(_spec)
@@ -16,7 +16,7 @@ class SummaryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "case").mkdir()
-            matrix = {"schema": "varquanms.benchmark/1", "base": {}, "export_ms": True,
+            matrix = {"schema": "vamp.benchmark/1", "base": {}, "export_ms": True,
                       "cache_methodology": "fixture", "experiments": [{"name": "case", "config": {}}]}
             (root / "matrix.json").write_text(json.dumps(matrix))
             (root / "case" / "complete.json").write_text(json.dumps({"configuration": Config().to_dict(), "verification_status": "passed"}))

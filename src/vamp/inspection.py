@@ -510,12 +510,12 @@ def inspect_ms(source, selected=("DATA",), chunk_rows=1024, *, _subtable_cache=N
             "note": "Logical dictionary estimate only; no measured archive savings. Only identical bytes are shareable. No UVW regeneration or wavelength conversion was performed.",
         }
     report = {
-        "schema": "varquanms.inspection/1", "status": "complete",
+        "schema": "vamp.inspection/1", "status": "complete",
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "source": str(source), "selected_visibility_columns": list(selected),
         "other_visibility_columns_preserved_by_future_archive": [c for c in VISIBILITY_COLUMNS if c in main["columns"] and c not in selected],
         "flags_weights_columns_present": [c for c in FLAG_WEIGHT_COLUMNS if c in main["columns"]],
-        "software": {"varquanMS": __version__, "python": platform.python_version(),
+        "software": {"vamp": __version__, "python": platform.python_version(),
                      "numpy": np.__version__, "python_casacore": casacore.__version__},
         "main": main, "subtables": subtables, "row_identity": row_inventory,
         "layout": layout, "uvw": uvw_inventory, "visibility": visibility,

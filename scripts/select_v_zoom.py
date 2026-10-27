@@ -12,7 +12,7 @@ from astropy.wcs import WCS
 from astropy.wcs.utils import pixel_to_skycoord
 import numpy as np
 
-from varquanms.imaging import file_sha256, read_fits
+from vamp.imaging import file_sha256, read_fits
 
 
 OUTPUT = Path('reports/calibrated-v-zoom.json')
@@ -109,7 +109,7 @@ def select_zoom(study):
                   local_statistic_region='Annulus 8 to 16 pixels from the V peak; describes local fluctuations, not thermal noise',
                   evidence=evidence,
                   interpretation='Compact measured Stokes V at a known radio-source position; intrinsic circular polarization and instrumental leakage are not separated.')
-    return dict(schema='varquanms.paper-v-zoom/2', reference_fits=str(reference_path),
+    return dict(schema='vamp.paper-v-zoom/2', reference_fits=str(reference_path),
                 reference_fits_sha256=reference_sha, comparison_mask_sha256=provenance['mask_sha256'],
                 mask_provenance_path=str(provenance_path), mask_provenance_sha256=file_sha256(provenance_path),
                 selection='Largest absolute reference V pixel above 45 degrees at all integration TIME values; first row-major tie; catalogue association checked afterward',

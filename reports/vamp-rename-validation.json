@@ -1,0 +1,1483 @@
+{
+  "schema": "vamp.rename-validation/1",
+  "status": "passed",
+  "legacy_archive": "results/dysco-paper-extra/epsd-009-dysco.h5",
+  "legacy_archive_bytes": 282825653,
+  "legacy_archive_sha256": "0242150ef64110941c632ef7a100aadcb31a66af5885ecddc16663cc9a1c1d42",
+  "source_description": "15-integration calibrated OVRO-LWA MS, 931920 rows",
+  "source_unchanged": true,
+  "source_snapshot_matches_pre_rename": true,
+  "source_comparison_column_checks": 146,
+  "source_comparison_checks": [
+    {
+      "table": ".",
+      "column": "DATA",
+      "export": "derived_calibrated_copy_matches_CORRECTED_DATA_bits"
+    },
+    {
+      "table": ".",
+      "column": "UVW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG_CATEGORY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "WEIGHT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "SIGMA",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ANTENNA1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ANTENNA2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ARRAY_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "DATA_DESC_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "EXPOSURE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FEED1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FEED2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FIELD_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "OBSERVATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "PROCESSOR_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "SCAN_NUMBER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "STATE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "TIME_CENTROID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "OFFSET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "POSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "DISH_DIAMETER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "MOUNT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "STATION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "POLARIZATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "BEAM_OFFSET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POLARIZATION_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POL_RESPONSE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "RECEPTOR_ANGLE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "ANTENNA_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "BEAM_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "FEED_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "NUM_RECEPTORS",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "APPLIED",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "COMMAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "LEVEL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "REASON",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "SEVERITY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "DELAY_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "PHASE_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "REFERENCE_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "CODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "NUM_POLY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "SOURCE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "APP_PARAMS",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "CLI_COMMAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "APPLICATION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "MESSAGE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "OBJECT_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "OBSERVATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "ORIGIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "PRIORITY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "TIME_RANGE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "LOG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "SCHEDULE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "OBSERVER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "PROJECT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "RELEASE_DATE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "SCHEDULE_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "TELESCOPE_NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "CORR_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "CORR_PRODUCT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "NUM_CORR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "MODE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "TYPE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "SUB_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "MEAS_FREQ_REF",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "CHAN_FREQ",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "REF_FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "CHAN_WIDTH",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "EFFECTIVE_BW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "RESOLUTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FREQ_GROUP",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FREQ_GROUP_NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "IF_CONV_CHAIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NET_SIDEBAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NUM_CHAN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "TOTAL_BANDWIDTH",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "CAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "LOAD",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "OBS_MODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "REF",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "SIG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "SUB_SCAN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "DIRECTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "PROPER_MOTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "CALIBRATION_GROUP",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "CODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "NUM_LINES",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SOURCE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "TRANSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "REST_FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SYSVEL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "ANTENNA_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "NUM_POLY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TIME_ORIGIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "DIRECTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TARGET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TRACKING",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_KIND_NAME",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_KIND_NAME",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "ANTENNA1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "ANTENNA2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    }
+  ],
+  "calibrated_column_matches_independent_decoder_bitwise": true,
+  "prior_vs_renamed_export_exact_column_checks": 147,
+  "prior_vs_renamed_export_checks": [
+    {
+      "table": ".",
+      "column": "UVW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG_CATEGORY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "WEIGHT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "SIGMA",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ANTENNA1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ANTENNA2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "ARRAY_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "DATA_DESC_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "EXPOSURE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FEED1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FEED2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FIELD_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "OBSERVATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "PROCESSOR_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "SCAN_NUMBER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "STATE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "TIME_CENTROID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "CORRECTED_DATA",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": ".",
+      "column": "DATA",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "OFFSET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "POSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "DISH_DIAMETER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "MOUNT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "ANTENNA",
+      "column": "STATION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "POLARIZATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "DATA_DESCRIPTION",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "BEAM_OFFSET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POLARIZATION_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "POL_RESPONSE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "RECEPTOR_ANGLE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "ANTENNA_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "BEAM_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "FEED_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "NUM_RECEPTORS",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FEED",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "APPLIED",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "COMMAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "LEVEL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "REASON",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "SEVERITY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FLAG_CMD",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "DELAY_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "PHASE_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "REFERENCE_DIR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "CODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "NUM_POLY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "SOURCE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "FIELD",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "APP_PARAMS",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "CLI_COMMAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "APPLICATION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "MESSAGE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "OBJECT_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "OBSERVATION_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "ORIGIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "PRIORITY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "HISTORY",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "TIME_RANGE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "LOG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "SCHEDULE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "OBSERVER",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "PROJECT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "RELEASE_DATE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "SCHEDULE_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "OBSERVATION",
+      "column": "TELESCOPE_NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "CORR_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "CORR_PRODUCT",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POLARIZATION",
+      "column": "NUM_CORR",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "MODE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "TYPE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "PROCESSOR",
+      "column": "SUB_TYPE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "MEAS_FREQ_REF",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "CHAN_FREQ",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "REF_FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "CHAN_WIDTH",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "EFFECTIVE_BW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "RESOLUTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FREQ_GROUP",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "FREQ_GROUP_NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "IF_CONV_CHAIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NET_SIDEBAND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "NUM_CHAN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SPECTRAL_WINDOW",
+      "column": "TOTAL_BANDWIDTH",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "CAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "FLAG_ROW",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "LOAD",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "OBS_MODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "REF",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "SIG",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "STATE",
+      "column": "SUB_SCAN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "DIRECTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "PROPER_MOTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "CALIBRATION_GROUP",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "CODE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "NUM_LINES",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SOURCE_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SPECTRAL_WINDOW_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "TRANSITION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "REST_FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "SOURCE",
+      "column": "SYSVEL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "ANTENNA_ID",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "INTERVAL",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "NUM_POLY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TIME_ORIGIN",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "DIRECTION",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TARGET",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "POINTING",
+      "column": "TRACKING",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_KIND_NAME",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_KIND_NAME",
+      "column": "NAME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "TIME",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_TIME_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_FREQUENCY_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "ANTENNA1",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "ANTENNA2",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "FREQUENCY",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "KIND",
+      "export": "bitwise_exact"
+    },
+    {
+      "table": "QUALITY_BASELINE_STATISTIC",
+      "column": "VALUE",
+      "export": "bitwise_exact"
+    }
+  ],
+  "scope": "All retained exact metadata and auxiliary columns compared against original source; quantized visibility values decoded from the pre-rename archive. All columns including DATA and CORRECTED_DATA compared bitwise with the pre-rename export. No new imaging or calibration was performed."
+}

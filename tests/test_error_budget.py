@@ -10,10 +10,10 @@ import shutil
 import numpy as np
 from casacore.tables import table, makearrcoldesc, maketabdesc
 
-from varquanms import codec
-from varquanms.archive import encode, decode, verify
-from varquanms.config import Config
-from varquanms.error_budget import component_signal_power, resolve_bounds
+from vamp import codec
+from vamp.archive import encode, decode, verify
+from vamp.config import Config
+from vamp.error_budget import component_signal_power, resolve_bounds
 from test_inspection import make_ms, snapshot
 
 

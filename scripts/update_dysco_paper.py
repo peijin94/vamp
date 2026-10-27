@@ -13,8 +13,8 @@ HEADING='### 3.7 Comparison'
 
 
 def row(case):
-    if case['method']=='varquanMS':
-        label=f"varquanMS $\\epsilon_D={case['epsilon_D']:g}$"
+    if case['method'] in ('vamp', 'varquanMS'):
+        label=f"vamp $\\epsilon_D={case['epsilon_D']:g}$"
         visibility=case['visibility_with_permutations_and_indexes_bytes']
     else:
         label=f"Dysco {case['normalization']} {case['distribution_truncation']:g}σ, {case['bits_per_component']}-bit"
@@ -32,7 +32,7 @@ def row(case):
 def section(base,extra):
     collect_series(base,extra)  # Enforce the complete five-epsilon and Dysco sets.
     cases=base['cases']+extra['cases']
-    varq=sorted((c for c in cases if c['method']=='varquanMS'),key=lambda c:c['epsilon_D'])
+    varq=sorted((c for c in cases if c['method'] in ('vamp', 'varquanMS')),key=lambda c:c['epsilon_D'])
     dysco=[c for c in cases if c['method']=='Dysco' and c.get('flagged_input')=='nan']
     dysco.sort(key=lambda c:(0 if c['normalization']=='RF' and c['distribution_truncation']==1.5 else
                              1 if c['normalization']=='RF' else 2,c['bits_per_component']))
@@ -48,19 +48,19 @@ def section(base,extra):
       'We compare the calibrated archive against one-pass Dysco compression on the',
       'same 15-integration dataset. Both paths retain the original flags, weights,',
       'UVW and other supported metadata, omit raw and model visibilities, and discard',
-      'flagged visibility values. The varquanMS export uses zeros for discarded',
+      'flagged visibility values. The vamp export uses zeros for discarded',
       'values; Dysco receives complex NaN markers as described by Offringa (2016).',
       'Unflagged calibrated inputs are identical. The Dysco output is a directly',
-      'readable MS, whereas the varquanMS HDF5 archive is exported to an MS for',
+      'readable MS, whereas the vamp HDF5 archive is exported to an MS for',
       'imaging. Both use the same WSClean I/V settings, reference beams and fixed',
       'above-10° mask. The original source was not modified.',
       '',
       'Dysco uses truncated-Gaussian levels with row-frequency (RF) normalization',
       'at 3, 4, 6 and 8 bits per component and truncations 1.5σ or 2.5σ; the',
-      'antenna-frequency (AF) control uses 3 and 8 bits at 2.5σ. VarquanMS',
+      'antenna-frequency (AF) control uses 3 and 8 bits at 2.5σ. vamp',
       'uses the same 128-baseline × 48-channel grouping and adaptive ladder as',
       'above, with additional $\\epsilon_D=0.09$ and $0.3$ measurements. Table 1',
-      'reports actual bytes. Visibility storage includes varquanMS permutations',
+      'reports actual bytes. Visibility storage includes vamp permutations',
       'and indexes, or Dysco DATA-manager scales and headers; complete sizes also',
       'include the different container and metadata representations.',
       '',
@@ -86,7 +86,7 @@ def section(base,extra):
       '',
       '*Figure 10. I/V restored-image differences and paired cross-baseline I',
       'visibility error versus visibility storage. Points at $\\epsilon_D=0.09$',
-      'and $0.3$ are newly measured; labels on the varquanMS points are $\\epsilon_D$.',
+      'and $0.3$ are newly measured; labels on the vamp points are $\\epsilon_D$.',
       'Lines join measured settings of the same',
       'method; they do not establish interpolation or monotonic CLEAN behavior.',
       'Error axes are reversed, placing smaller errors higher. RF truncations use',
@@ -119,9 +119,9 @@ def section(base,extra):
       '',
       '![Precision distribution at the matched rate](figs/dysco-comparison-bits.png)',
       '',
-      '*Figure 13. Complex-sample counts by selected precision for varquanMS',
+      '*Figure 13. Complex-sample counts by selected precision for vamp',
       '$\\epsilon_D=0.18$ and 3-bit Dysco RF. Counts include flagged sample slots;',
-      'varquanMS exact-zero blocks are stored compactly. These are sample shares,',
+      'vamp exact-zero blocks are stored compactly. These are sample shares,',
       'not byte shares; Table 1 includes the corresponding storage costs.*',
       '',
       'CLEAN can be nonmonotonic: for Dysco RF at 1.5σ, the 4-bit I dirty-image',
@@ -172,7 +172,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--base-report',type=Path,default=ROOT/'reports/dysco-comparison.json')
     parser.add_argument('--extra-report',type=Path,default=ROOT/'reports/dysco-paper-extra.json')
-    parser.add_argument('--paper',type=Path,default=ROOT/'docs/paper/varquantMS.md')
+    parser.add_argument('--paper',type=Path,default=ROOT/'docs/paper/vamp.md')
     args=parser.parse_args()
     base=json.loads(args.base_report.read_text());extra=json.loads(args.extra_report.read_text())
     if base.get('status')!='complete' or extra.get('status')!='complete' or extra['base_report_sha256']!=sha(args.base_report):

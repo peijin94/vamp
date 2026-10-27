@@ -15,7 +15,7 @@ from astropy.wcs.utils import pixel_to_skycoord
 from casacore.tables import table
 import numpy as np
 
-from varquanms.imaging import file_sha256
+from vamp.imaging import file_sha256
 
 
 def main():
@@ -69,7 +69,7 @@ def main():
     mask_header['ELCUT'] = args.minimum_elevation
     mask_header['ELPOLICY'] = 'all integrations; strict > cut'
     fits.writeto(args.output, mask.astype(np.uint8), mask_header)
-    record = dict(schema='varquanms.elevation-mask/1', source_ms=str(args.ms), reference_fits=str(args.image),
+    record = dict(schema='vamp.elevation-mask/1', source_ms=str(args.ms), reference_fits=str(args.image),
                   reference_fits_sha256=file_sha256(args.image), mask_sha256=file_sha256(args.output),
                   minimum_elevation_deg=args.minimum_elevation, time_policy='intersection over all integration TIME values',
                   times_utc_mjd_seconds=times.tolist(), antenna_mean_itrf_metres=position.tolist(),

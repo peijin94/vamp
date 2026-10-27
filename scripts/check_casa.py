@@ -22,7 +22,7 @@ def main():
     args = parser.parse_args()
     if os.path.exists(args.report) or args.image and os.path.exists(args.image):
         raise ValueError("CASA check outputs must be new")
-    result = {"schema": "varquanms.casa-check/1", "ms": os.path.abspath(args.ms),
+    result = {"schema": "vamp.casa-check/1", "ms": os.path.abspath(args.ms),
               "data_column": args.data_column,
               "python_executable": sys.executable, "table_reopen": "not run",
               "imaging": "not run", "science_acceptance": "not established by this smoke workflow"}

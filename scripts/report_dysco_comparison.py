@@ -1,4 +1,4 @@
-"""Collect verified calibrated Dysco/varquanMS rate-distortion experiments.
+"""Collect verified calibrated Dysco/vamp rate-distortion experiments.
 
 The input MS, FITS files and per-run reports are local, ignored experiment
 outputs. This script refuses to report an incomplete or unverified case.
@@ -10,7 +10,7 @@ from pathlib import Path
 
 from run_wsclean import snapshot
 from run_dysco_benchmark import case_name
-from varquanms.inspection import _open
+from vamp.inspection import _open
 
 
 def read(path):
@@ -96,7 +96,7 @@ def collect(root, normalizations, bits, rf15_bits, flagged_input, af_bits, zero_
     for case in original_i['experiments']:
         vcase = v_by_name[case['name']]
         if case['export_verification']['status'] != 'passed' or not case['weights_all_exact']:
-            raise ValueError('varquanMS export or weights verification did not pass')
+            raise ValueError('vamp export or weights verification did not pass')
         if not all(r['clean_termination']['final_threshold_reached'] for r in case['residual_normalized_runs']):
             raise ValueError('Stokes I CLEAN did not reach its threshold')
         if not all(r['final_threshold_reached'] and r['source_unchanged'] for r in vcase['runs']):
@@ -108,7 +108,7 @@ def collect(root, normalizations, bits, rf15_bits, flagged_input, af_bits, zero_
                    'clean_final_threshold_reached':r['clean_termination']['final_threshold_reached']}
                   for r in case['residual_normalized_runs']]
         v_runs = [image_metrics(r['comparison'],r['final_threshold_reached']) for r in vcase['runs']]
-        cases.append({'method': 'varquanMS', 'name': case['name'], 'epsilon_D': case['epsilon_D'],
+        cases.append({'method': 'vamp', 'name': case['name'], 'epsilon_D': case['epsilon_D'],
                       'visibility_payload_bytes': case['rate']['payload_bytes'],
                       'visibility_with_permutations_and_indexes_bytes': case['rate']['payload_plus_permutations_and_indexes_bytes'],
                       'complete_output_bytes': case['shared']['archive_bytes'],
@@ -193,14 +193,14 @@ def collect(root, normalizations, bits, rf15_bits, flagged_input, af_bits, zero_
                                 'peak_rss_bytes':enc['peak_rss_bytes'],
                                 'scope':process['timing_scope']},
                       'artifact_sha256':{str(p):sha(p) for p in (enc_path,process_path,diagnostic_path,audit_path)}})
-    return {'schema':'varquanms.dysco-comparison/1', 'status':'complete',
+    return {'schema':'vamp.dysco-comparison/1', 'status':'complete',
             'measurement_date':'2026-10-27', 'source':'15-integration calibrated OVRO-LWA MS',
             'source_complex64_bytes':original_i['original_complex64_bytes'],
             'source_physical_bytes_including_raw_and_model':original_i['original_ms_physical_bytes'],
             'mask':mask, 'container_id':original_v['container_id'],
-            'policy':'Calibrated visibilities only; original raw DATA/MODEL_DATA omitted; flagged visibility values purged, FLAG and FLAG_ROW retained, WEIGHT and SIGMA exact on this input. Primary Dysco runs encode flagged values as NaN; varquanMS uses zero.',
-            'visibility_rate_definition':'varquanMS payload plus permutations and visibility indexes versus Dysco DATA manager file including payload, scales and manager header; generic container/table overhead is excluded in both.',
-            'complete_rate_definition':'Complete varquanMS HDF5 archive versus complete Dysco Measurement Set; different containers and metadata overhead are included.',
+            'policy':'Calibrated visibilities only; original raw DATA/MODEL_DATA omitted; flagged visibility values purged, FLAG and FLAG_ROW retained, WEIGHT and SIGMA exact on this input. Primary Dysco runs encode flagged values as NaN; vamp uses zero.',
+            'visibility_rate_definition':'vamp payload plus permutations and visibility indexes versus Dysco DATA manager file including payload, scales and manager header; generic container/table overhead is excluded in both.',
+            'complete_rate_definition':'Complete vamp HDF5 archive versus complete Dysco Measurement Set; different containers and metadata overhead are included.',
             'image_metric':'100 × RMS(candidate restored − reference restored) / RMS(reference residual), over the fixed mask above 10 degrees; not a thermal-noise guarantee.',
             'uncompressed_reference_repeat_percent':{
                 pol:100*performance['reference_repeat_controls'][pol]['image-image.fits']['difference_over_reference_residual_rms']
@@ -215,7 +215,7 @@ def collect(root, normalizations, bits, rf15_bits, flagged_input, af_bits, zero_
                 'report_sha256':sha(independent_path),
                 'lossless_archive_sha256':independent['lossless_archive_sha256']},
             'provenance_sha256':{str(p):sha(p) for p in (source_i,source_v,performance_path,root/'input-identity.json')},
-            'timing_limitations':'Dysco process timings exclude calibrated input preparation, subsequent verification and imaging; prior varquanMS verified archive timings have a different scope. NaN-flagged RF, RF 1.5 and AF runs overlap other jobs; AF containers are CPU-limited. No controlled cold-cache comparison.',
+            'timing_limitations':'Dysco process timings exclude calibrated input preparation, subsequent verification and imaging; prior vamp verified archive timings have a different scope. NaN-flagged RF, RF 1.5 and AF runs overlap other jobs; AF containers are CPU-limited. No controlled cold-cache comparison.',
             'cases':cases}
 
 
@@ -226,7 +226,7 @@ def plots(report, root, destination):
     import numpy as np
     from astropy.io import fits
     destination.mkdir(parents=True, exist_ok=True)
-    styles = {'varquanMS':('o','#1d668c'), 'RF':('s','#c1512c'),
+    styles = {'vamp':('o','#1d668c'), 'RF':('s','#c1512c'),
               'RF1.5':('D','#d59921'), 'RFzero':('x','#888888'), 'AF':('^','#8b5da7')}
     adaptive = next(case for case in report['cases'] if case.get('epsilon_D') == .18)
     sample_counts = adaptive['precision_sample_counts']
@@ -254,7 +254,7 @@ def plots(report, root, destination):
         offset+=width
     ax.barh(0,100,color=colours['3'],height=.55)
     ax.text(50,0,'100% at 3 bits/component',ha='center',va='center',fontsize=10)
-    ax.set(yticks=[1,0],yticklabels=['varquanMS εD=0.18','Dysco RF 3-bit'],
+    ax.set(yticks=[1,0],yticklabels=['vamp εD=0.18','Dysco RF 3-bit'],
            xlim=(0,100),xlabel='Share of input complex samples (%)')
     ax.set_title('Sample counts by selected block precision; includes flagged sample slots')
     ax.legend(ncol=4,loc='lower center',bbox_to_anchor=(.5,-.5),fontsize=8)
@@ -265,16 +265,16 @@ def plots(report, root, destination):
         for case in report['cases']:
             if case.get('flagged_input') == 'zero':
                 continue  # Retained as a control in JSON; omit overlapping controls from the plot.
-            key = case.get('normalization','varquanMS')
+            key = case.get('normalization','vamp')
             if key == 'RF':
                 if case.get('flagged_input') == 'zero':
                     key = 'RFzero'
                 elif case['distribution_truncation'] == 1.5:
                     key = 'RF1.5'
             marker,color = styles[key]
-            label = ('εD='+str(case['epsilon_D']) if key == 'varquanMS' else str(case['bits_per_component'])+' bit')
+            label = ('εD='+str(case['epsilon_D']) if key == 'vamp' else str(case['bits_per_component'])+' bit')
             field = ('complete_output_bytes' if scope=='complete' else
-                     'visibility_with_permutations_and_indexes_bytes' if key=='varquanMS' else 'visibility_manager_bytes')
+                     'visibility_with_permutations_and_indexes_bytes' if key=='vamp' else 'visibility_manager_bytes')
             x = case[field]/1e6
             for ax,field in zip(axes[:2],('stokes_I','stokes_V')):
                 y = case[field][0]['difference_over_reference_residual_percent']
@@ -294,9 +294,9 @@ def plots(report, root, destination):
         axes[2].set_ylabel('Cross-baseline visibility relative RMS error (%)')
         present = {'RFzero' if x.get('normalization')=='RF' and x.get('flagged_input')=='zero'
                    else 'RF1.5' if x.get('normalization')=='RF' and x.get('distribution_truncation')==1.5
-                   else x.get('normalization','varquanMS') for x in report['cases']
+                   else x.get('normalization','vamp') for x in report['cases']
                    if x.get('flagged_input')!='zero'}
-        labels = {'varquanMS':'varquanMS','RF':'Dysco RF, 2.5σ',
+        labels = {'vamp':'vamp','RF':'Dysco RF, 2.5σ',
                   'RF1.5':'Dysco RF, 1.5σ','RFzero':'Dysco RF, zero control','AF':'Dysco AF, 2.5σ'}
         handles = [plt.Line2D([],[],linestyle='',marker=m,color=c,label=labels[k])
                    for k,(m,c) in styles.items() if k in present]
@@ -349,7 +349,7 @@ def plots(report, root, destination):
                                      cmap='bwr' if pol=='V' else 'viridis',
                                      vmin=-limit if pol=='V' else 0,vmax=limit)
             axes[row,0].set_title(f'{pol} reference');fig.colorbar(refimg,ax=axes[row,0],shrink=.8,label='Jy/beam')
-            for col,(image,title) in enumerate(((a,'varquanMS εD=0.18'),(b,f'Dysco {normalization} 3-bit, {truncation}σ')),1):
+            for col,(image,title) in enumerate(((a,'vamp εD=0.18'),(b,f'Dysco {normalization} 3-bit, {truncation}σ')),1):
                 difference=100*(image-original)/denominator
                 rms=np.sqrt(np.mean(difference[mask]**2))
                 panel=axes[row,col].imshow(np.where(mask,difference,np.nan),origin='lower',cmap='bwr',vmin=-30,vmax=30)
@@ -362,7 +362,7 @@ def plots(report, root, destination):
 
         images = (original[view],a[view],b[view])  # last row above is Stokes V
         fig,axes = plt.subplots(2,3,figsize=(11,7),constrained_layout=True)
-        titles = ('Reference','varquanMS εD=0.18',f'Dysco {normalization} 3-bit, {truncation}σ')
+        titles = ('Reference','vamp εD=0.18',f'Dysco {normalization} 3-bit, {truncation}σ')
         for col,(v,title) in enumerate(zip(images,titles)):
             upper=axes[0,col].imshow(v,origin='lower',cmap='bwr',vmin=-8,vmax=8)
             axes[0,col].set_title(title)

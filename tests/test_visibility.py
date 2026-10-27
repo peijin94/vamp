@@ -7,10 +7,10 @@ from casacore.tables import makearrcoldesc, makescacoldesc, maketabdesc, table
 import h5py
 import numpy as np
 
-from varquanms.archive import decode, encode, verify
-from varquanms.config import Config, SUPPORTED_BITS
-from varquanms.container import Reader
-from varquanms.visibility import read_visibility, read_visibility_block
+from vamp.archive import decode, encode, verify
+from vamp.config import Config, SUPPORTED_BITS
+from vamp.container import Reader
+from vamp.visibility import read_visibility, read_visibility_block
 from test_inspection import make_ms, snapshot
 
 

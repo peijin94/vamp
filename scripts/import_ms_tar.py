@@ -61,7 +61,7 @@ def main():
             if digest(destination)!=record['sha256']:raise ValueError('Extracted SHA-256 mismatch: '+relative)
             destination.chmod(member.mode & 0o777)
     staging.rename(output)
-    result={'schema':'varquanms.manifest-import/1','status':'verified','source_tar':str(source),
+    result={'schema':'vamp.manifest-import/1','status':'verified','source_tar':str(source),
             'local_tar':str(target),'extracted_ms':str(output),'tar_sha256':checksum,
             'archive_bytes':target.stat().st_size,'file_count':len(files),'payload_bytes':sum(v['bytes'] for v in manifest['files'].values()),
             'files':{k:{'bytes':v['bytes'],'sha256':v['sha256']} for k,v in manifest['files'].items()},

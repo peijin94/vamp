@@ -7,7 +7,7 @@ from pathlib import Path
 
 import numpy as np
 
-from varquanms.imaging import file_sha256, read_fits, compare_run
+from vamp.imaging import file_sha256, read_fits, compare_run
 
 ROOT=Path('results/calibrated-error-limits')
 REF=Path('results/calibrated-template/reference')
@@ -92,7 +92,7 @@ def collect(partial=False):
             subset=[(j,b) for j,b in zip(screen['blocks'],blocks) if j['auto']==auto]
             n=sum(b['metrics']['valid_samples'] for j,b in subset)
             e['auto_component_mse' if auto else 'cross_component_mse']=sum(b['metrics']['component_mse']*b['metrics']['valid_samples'] for j,b in subset)/max(1,n)
-    screen['schema']='varquanms.error-limit-screen-summary/1'
+    screen['schema']='vamp.error-limit-screen-summary/1'
     screen['block_record_order']='Arrays align with the common screen.blocks list; retained for nine selected profiles.'
     old=json.loads(Path('reports/calibrated-template-tests.json').read_text())
     controls=[e for e in old['experiments'] if e['name'] in ('reference-repeat','lossless')]
@@ -100,7 +100,7 @@ def collect(partial=False):
         controls.append(dict(name='reference-repeat-3',
             comparison=json.loads((ROOT/'reference-repeat-3-comparison.json').read_text()),
             imaging=json.loads((ROOT/'reference-repeat-3/complete.json').read_text())))
-    result=dict(schema='varquanms.error-limit-study/1',status='partial' if partial else 'complete',
+    result=dict(schema='vamp.error-limit-study/1',status='partial' if partial else 'complete',
         screen=screen,experiments=records,controls=controls,hardware=old['hardware'],
         tests_passed=102,
         scope='All 15 integrations, 48 channels, four correlations; joint Stokes I CLEAN only above 10 degrees.',
@@ -120,7 +120,7 @@ def collect(partial=False):
 
 
 def plots(result):
-    os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
+    os.environ.setdefault('MPLCONFIGDIR','/tmp/vamp-mpl')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt

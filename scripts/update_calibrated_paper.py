@@ -6,9 +6,9 @@ import os
 from pathlib import Path
 import re
 
-os.environ.setdefault('MPLCONFIGDIR', '/tmp/varquanms-mpl')
+os.environ.setdefault('MPLCONFIGDIR', '/tmp/vamp-mpl')
 ROOT = Path(__file__).resolve().parents[1]
-PAPER = ROOT / 'docs/paper/varquantMS.md'
+PAPER = ROOT / 'docs/paper/vamp.md'
 FIGS = PAPER.parent / 'figs'
 
 
@@ -320,7 +320,7 @@ Detailed profiles, software records and reproduction commands are kept in the
 
 '''
     performance += runtime_table(timing)
-    abstract = '''We present varquanMS, an experimental archive for radio-interferometric
+    abstract = '''We present vamp (Visibility-Adaptive Mixed Precision), an experimental archive for radio-interferometric
 Measurement Sets using local scaling and adaptive integer precision. Each
 baseline–frequency block stores a complex median, range, power-spacing parameter
 and a selected component width. A dimensionless epsilon-D criterion bounds

@@ -109,17 +109,17 @@ usable; check that it succeeded before expecting these performance figures:
 
 ```bash
 python -m pip install -e '.[validation]'
-python -c 'from varquanms import _native; print("native kernels available")'
+python -c 'from vamp import _native; print("native kernels available")'
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  visarchive encode INPUT.ms NEW.archive.h5 \
+  vamp encode INPUT.ms NEW.archive.h5 \
   --config configs/performance-adaptive.json --report encode.json
 
 # Override the preset's worker count if needed:
-visarchive encode INPUT.ms ANOTHER.archive.h5 \
+vamp encode INPUT.ms ANOTHER.archive.h5 \
   --config configs/performance-adaptive.json --workers 16
 
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  visarchive benchmark INPUT.ms --matrix configs/benchmark-performance.json \
+  vamp benchmark INPUT.ms --matrix configs/benchmark-performance.json \
   --output results/new-performance-run
 
 # Run profiling separately from benchmark repeats:

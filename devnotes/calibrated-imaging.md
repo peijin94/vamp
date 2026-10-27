@@ -118,10 +118,10 @@ hypercolumn declarations are restored exactly for retained columns.
 
 ```bash
 # Single integration:
-visarchive encode INPUT.ms OUTPUT.h5 --keep-calib-only \
+vamp encode INPUT.ms OUTPUT.h5 --keep-calib-only \
   --config configs/calibrated-power.json --report encode.json
-visarchive decode OUTPUT.h5 RESTORED.ms
-visarchive verify OUTPUT.h5 --source INPUT.ms --restored RESTORED.ms --report verify.json
+vamp decode OUTPUT.h5 RESTORED.ms
+vamp verify OUTPUT.h5 --source INPUT.ms --restored RESTORED.ms --report verify.json
 
 # All 15 integrations, without averaging:
 PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
@@ -213,7 +213,7 @@ Evidence: [complete experiment](../reports/calibrated-evaluation.json),
 [power images](../reports/wsclean-calibrated-power.json),
 [compatible export](../reports/calibrated-power-compatible-export.json), and
 [CASA workflow](../reports/casa-calibrated-power.json). The
-[paper](../docs/paper/varquantMS.md) contains equations, the profile diagram,
+[paper](../docs/paper/vamp.md) contains equations, the profile diagram,
 rate–distortion plot, actual image panels and explicitly clipped diagnostic
 difference maps. Full-resolution FITS and archives remain in the ignored
 `results/calibrated-20261023/` directory.

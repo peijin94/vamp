@@ -184,19 +184,19 @@ solutions, calibrated solar flux, narrow spectral features or temporal behavior.
 ## Reproduction
 
 ```bash
-visarchive encode INPUT.ms NEW.h5 --config configs/power-adaptive.json
-visarchive decode NEW.h5 RESTORED.ms
-visarchive verify NEW.h5 --source INPUT.ms --restored RESTORED.ms
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+vamp encode INPUT.ms NEW.h5 --config configs/power-adaptive.json
+vamp decode NEW.h5 RESTORED.ms
+vamp verify NEW.h5 --source INPUT.ms --restored RESTORED.ms
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 vamp benchmark INPUT.ms \
   --matrix configs/benchmark-power.json --output results/new-power-controls
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 vamp benchmark INPUT.ms \
   --matrix configs/benchmark-power-final.json --output results/new-power-timings
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 vamp benchmark INPUT.ms \
   --matrix configs/benchmark-power-fidelity.json --output results/new-power-fidelity
 python scripts/report_power.py --figures-only
 ```
 
 Detailed results: [machine-readable study](../reports/power-evaluation.json),
 [image comparison](../reports/wsclean-power.json), [format](../docs/format.md),
-and [paper](../docs/paper/varquantMS.md). Large archives, MSs and FITS products
+and [paper](../docs/paper/vamp.md). Large archives, MSs and FITS products
 remain local under `results/power-20261023/` and are excluded from Git.

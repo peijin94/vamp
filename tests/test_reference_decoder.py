@@ -5,8 +5,8 @@ import unittest
 
 import numpy as np
 
-from varquanms.codec import decode_block, encode_block, pack_codes
-from varquanms.config import Config, SUPPORTED_BITS
+from vamp.codec import decode_block, encode_block, pack_codes
+from vamp.config import Config, SUPPORTED_BITS
 
 root = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("reference_block_decoder", root / "scripts/reference_block_decoder.py")

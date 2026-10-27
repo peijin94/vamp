@@ -4,8 +4,8 @@ from dataclasses import replace
 import json
 from pathlib import Path
 
-from varquanms.config import Config
-from varquanms.references import sample_references
+from vamp.config import Config
+from vamp.references import sample_references
 
 
 def main():

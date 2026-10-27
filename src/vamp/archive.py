@@ -179,7 +179,7 @@ def read_column(reader, spec, start, stop):
 
 def _environment():
     from .codec import _native
-    return {"varquanMS": __version__, "python": platform.python_version(),
+    return {"vamp": __version__, "python": platform.python_version(),
             "numpy": np.__version__, "python_casacore": casacore.__version__, "h5py": h5py.__version__,
             "platform": platform.platform(), "machine": platform.machine(),
             "cpu_count": os.cpu_count(), "threads_environment": {k: os.environ.get(k) for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")},
@@ -484,7 +484,7 @@ def verify(archive, source=None, restored=None):
                                 if not equal(expected, np.asarray(exported.getcol(name, startrow=start, nrow=len(expected)))):
                                     raise ValueError(f"Exported quantized values differ from archive decoder: {name}")
                             checks.append({"table": ".", "column": name, "export": "exactly_matches_archive_reconstruction"})
-        result = {"schema": "varquanms.verification/1", "status": "passed",
+        result = {"schema": "vamp.verification/1", "status": "passed",
                   "archive": str(archive), "integrity": "all inventory SHA-256 and HDF5 chunk checksums passed",
                   "source": str(source) if source else None, "restored": str(restored) if restored else None,
                   "column_checks": checks, "summary": archive_summary(archive, reader.manifest),

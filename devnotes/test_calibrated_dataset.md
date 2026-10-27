@@ -1,6 +1,6 @@
 # Calibrated data compression tests
 
-Completed 2026-10-23/24. Tracking: [Calibrated data compression #1](https://github.com/peijin94/varquanMS/issues/1). The paper is unchanged.
+Completed 2026-10-23/24. Tracking: [Calibrated data compression #1](https://github.com/peijin94/vamp/issues/1). The paper is unchanged.
 
 25 October follow-up: [fixed epsilon D with the expanded bit ladder](epsd-dense.md)
 adds three calibrated-data experiments and a rewritten methods paper.

@@ -9,10 +9,10 @@ import time
 from casacore.tables import table
 import numpy as np
 
-from varquanms.codec import encode_block
-from varquanms.config import Config
-from varquanms.ordering import all_orders
-from varquanms.partitioned import context_runs
+from vamp.codec import encode_block
+from vamp.config import Config
+from vamp.ordering import all_orders
+from vamp.partitioned import context_runs
 
 
 def main():
@@ -83,7 +83,7 @@ def main():
                           accounting=dict(cost), elapsed_seconds=time.perf_counter()-stamp)
             results.append(result)
             print(json.dumps({k:v for k,v in result.items() if k not in ('config','accounting')}), flush=True)
-    report = dict(schema='varquanms.calibrated-screen/1', source=str(args.ms), source_rows=[start,stop],
+    report = dict(schema='vamp.calibrated-screen/1', source=str(args.ms), source_rows=[start,stop],
                   sampling='Up to 128 evenly spaced quantization groups per product; all frequency segments. Deterministic, not random or a whole-MS estimate.',
                   limitations='Different groupings sample different values. Rates exclude metadata, maps, quality arrays and HDF5 overhead. Use full encodes and images for selection.',
                   experiments=results)

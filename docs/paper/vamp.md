@@ -1,14 +1,14 @@
 ---
-title: 'varquanMS: local-scale, adaptive, variable-quantization-length compression method for radio interferometry data'
+title: 'Visibility-Adaptive Mixed Precision for Radio Interferometric Measurement Sets'
 date: '27 October 2026'
 ---
 
-# varquanMS: local-scale, adaptive, variable-quantization-length compression method for radio interferometry data
+# Visibility-Adaptive Mixed Precision for Radio Interferometric Measurement Sets
 
 ## Abstract
 
 <!-- ABSTRACT_START -->
-We present varquanMS, an experimental archive for radio-interferometric
+We present vamp (Visibility-Adaptive Mixed Precision), an experimental archive for radio-interferometric
 Measurement Sets using local scaling and adaptive integer precision. Each
 baseline–frequency block stores a complex median, range, power-spacing parameter
 and a selected component width. A dimensionless epsilon-D criterion bounds
@@ -763,19 +763,19 @@ instrumentation; none is inferred from unrelated single-context profiles.
 We compare the calibrated archive against one-pass Dysco compression on the
 same 15-integration dataset. Both paths retain the original flags, weights,
 UVW and other supported metadata, omit raw and model visibilities, and discard
-flagged visibility values. The varquanMS export uses zeros for discarded
+flagged visibility values. The vamp export uses zeros for discarded
 values; Dysco receives complex NaN markers as described by Offringa (2016).
 Unflagged calibrated inputs are identical. The Dysco output is a directly
-readable MS, whereas the varquanMS HDF5 archive is exported to an MS for
+readable MS, whereas the vamp HDF5 archive is exported to an MS for
 imaging. Both use the same WSClean I/V settings, reference beams and fixed
 above-10° mask. The original source was not modified.
 
 Dysco uses truncated-Gaussian levels with row-frequency (RF) normalization
 at 3, 4, 6 and 8 bits per component and truncations 1.5σ or 2.5σ; the
-antenna-frequency (AF) control uses 3 and 8 bits at 2.5σ. VarquanMS
+antenna-frequency (AF) control uses 3 and 8 bits at 2.5σ. vamp
 uses the same 128-baseline × 48-channel grouping and adaptive ladder as
 above, with additional $\epsilon_D=0.09$ and $0.3$ measurements. Table 1
-reports actual bytes. Visibility storage includes varquanMS permutations
+reports actual bytes. Visibility storage includes vamp permutations
 and indexes, or Dysco DATA-manager scales and headers; complete sizes also
 include the different container and metadata representations.
 
@@ -788,11 +788,11 @@ noise. Values are first CLEAN runs.
 
 | Method and setting | Vis. MB | Total MB | Paired-I % | I % | V % |
 | -------- | ---: | ---: | ---: | ---: | ---: |
-| varquanMS $\epsilon_D=0.01$ | 333.745 | 427.429 | 0.425 | 1.259 | 1.087 |
-| varquanMS $\epsilon_D=0.04$ | 256.080 | 350.112 | 1.678 | 1.151 | 2.088 |
-| varquanMS $\epsilon_D=0.09$ | 188.904 | 282.826 | 4.658 | 2.800 | 5.764 |
-| varquanMS $\epsilon_D=0.18$ | 148.702 | 242.766 | 8.650 | 5.584 | 10.056 |
-| varquanMS $\epsilon_D=0.3$ | 124.769 | 218.750 | 13.353 | 20.098 | 12.964 |
+| vamp $\epsilon_D=0.01$ | 333.745 | 427.429 | 0.425 | 1.259 | 1.087 |
+| vamp $\epsilon_D=0.04$ | 256.080 | 350.112 | 1.678 | 1.151 | 2.088 |
+| vamp $\epsilon_D=0.09$ | 188.904 | 282.826 | 4.658 | 2.800 | 5.764 |
+| vamp $\epsilon_D=0.18$ | 148.702 | 242.766 | 8.650 | 5.584 | 10.056 |
+| vamp $\epsilon_D=0.3$ | 124.769 | 218.750 | 13.353 | 20.098 | 12.964 |
 | Dysco RF 1.5σ, 3-bit | 149.119 | 318.774 | 22.448 | 12.049 | 27.154 |
 | Dysco RF 1.5σ, 4-bit | 193.851 | 363.506 | 9.841 | 16.908 | 12.259 |
 | Dysco RF 1.5σ, 6-bit | 283.315 | 452.970 | 2.268 | 3.089 | 3.666 |
@@ -814,7 +814,7 @@ and baseline/frequency diagnostics, exact-column checks and provenance.*
 
 *Figure 10. I/V restored-image differences and paired cross-baseline I
 visibility error versus visibility storage. Points at $\epsilon_D=0.09$
-and $0.3$ are newly measured; labels on the varquanMS points are $\epsilon_D$.
+and $0.3$ are newly measured; labels on the vamp points are $\epsilon_D$.
 Lines join measured settings of the same
 method; they do not establish interpolation or monotonic CLEAN behavior.
 Error axes are reversed, placing smaller errors higher. RF truncations use
@@ -846,9 +846,9 @@ leakage have not been separated.*
 
 ![Precision distribution at the matched rate](figs/dysco-comparison-bits.png)
 
-*Figure 13. Complex-sample counts by selected precision for varquanMS
+*Figure 13. Complex-sample counts by selected precision for vamp
 $\epsilon_D=0.18$ and 3-bit Dysco RF. Counts include flagged sample slots;
-varquanMS exact-zero blocks are stored compactly. These are sample shares,
+vamp exact-zero blocks are stored compactly. These are sample shares,
 not byte shares; Table 1 includes the corresponding storage costs.*
 
 CLEAN can be nonmonotonic: for Dysco RF at 1.5σ, the 4-bit I dirty-image
@@ -914,7 +914,7 @@ not a CASA 6 or precision-astrometry validation. The matched Dysco comparison
 covers the same observation; additional observations and dedicated weak-polarization checks remain necessary
 before choosing general archival defaults. The conservative default remains lossless.
 
-The [public repository](https://github.com/peijin94/varquanMS) contains the format,
+The [public repository](https://github.com/peijin94/vamp) contains the format,
 reference decoder, configurations, conformance tests, machine-readable validation
 and figure-generation scripts. Detailed operational history is retained in
 [development notes](../../devnotes/README.md) and the preserved initial manuscript,

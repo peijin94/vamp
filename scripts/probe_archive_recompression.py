@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 import time
 
-from varquanms.config import Config
-from varquanms.container import Reader, Writer, slabs
-from varquanms.imaging import file_sha256
+from vamp.config import Config
+from vamp.container import Reader, Writer, slabs
+from vamp.imaging import file_sha256
 
 
 def main():

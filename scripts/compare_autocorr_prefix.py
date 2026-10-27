@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from varquanms.inspection import _open, CORRELATIONS
+from vamp.inspection import _open, CORRELATIONS
 
 
 def main():
@@ -65,7 +65,7 @@ def main():
         products={name:{'unflagged_samples':int(count),'relative_complex_rms_error':float(np.sqrt(err/power))}
                   for name,(count,power,err) in zip(names,totals[label])}
         cases.append({'label':label,'ms':path,'column':column,'products':products})
-    result={'schema':'varquanms.autocorrelation-prefix-comparison/1','status':'measured',
+    result={'schema':'vamp.autocorrelation-prefix-comparison/1','status':'measured',
             'source':str(args.source),'rows':args.rows,'integrations':2,'verified_prefix_columns':list(keys),
             'time_values':times.tolist(),
             'scope':'Unflagged autocorrelations in the same input row prefix; no imaging or full-MS acceptance is implied.',

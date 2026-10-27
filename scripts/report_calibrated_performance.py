@@ -7,7 +7,7 @@ import statistics
 
 import numpy as np
 
-from varquanms.imaging import file_sha256, read_fits
+from vamp.imaging import file_sha256, read_fits
 
 
 def load(path):return json.loads(Path(path).read_text())
@@ -108,7 +108,7 @@ def collect(root):
     casa['installed_runtime_warnings']=['OVRO-LWA absent from the installed observatory repository; frequency conversion unavailable',
         'Observation outside the installed IERS range', 'Installed leap-second table out of date; derived times/coordinates may be inaccurate']
     casa['scope']='CASA 5.4.1 reopening and coarse 64x64 Stokes I dirty-image smoke workflow on a private copy; not CASA 6 or precision astrometry/calibration validation'
-    return dict(schema='varquanms.calibrated-performance/1',status='complete',
+    return dict(schema='vamp.calibrated-performance/1',status='complete',
         baseline_commit=load(root/'start-inventory.json')['commit'],hardware=hardware,
         optimized_source_sha256=source_hashes,profiling=profiling,
         baseline=baseline,optimized=optimized,pilots=pilots,context_ablations=ablations,

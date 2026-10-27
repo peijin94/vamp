@@ -122,14 +122,14 @@ defined for these image metrics.
 ## Reproduction
 
 ```bash
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 vamp benchmark INPUT.ms \
   --matrix configs/benchmark-midrise.json --output results/new-uint-comparison
-visarchive encode INPUT.ms NEW.h5 --config configs/performance-midrise.json
-visarchive decode NEW.h5 RESTORED.ms
-visarchive verify NEW.h5 --source INPUT.ms --restored RESTORED.ms
+vamp encode INPUT.ms NEW.h5 --config configs/performance-midrise.json
+vamp decode NEW.h5 RESTORED.ms
+vamp verify NEW.h5 --source INPUT.ms --restored RESTORED.ms
 ```
 
-The [paper](../docs/paper/varquantMS.md) contains equations and level/benchmark
+The [paper](../docs/paper/vamp.md) contains equations and level/benchmark
 figures. [The machine-readable report](../reports/uint-midrise-evaluation.json)
 records full byte accounting, product errors, class-specific errors, timings,
 source hashes, export verification and imaging evidence. Figure-only regeneration

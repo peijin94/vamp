@@ -7,7 +7,7 @@ import subprocess
 import sys
 import time
 
-from varquanms.benchmark import load_matrix
+from vamp.benchmark import load_matrix
 
 
 def main():

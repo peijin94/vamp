@@ -59,7 +59,7 @@ def verify(source_tar, local_tar, extracted_parent):
                     for root in roots for p in (extracted_parent / root).rglob("*") if p.is_file()}
     if actual_files != {item["path"] for item in inventory}:
         raise ValueError("Extracted directory has missing or unexpected files")
-    return {"schema": "varquanms.sample-copy/1", "status": "verified",
+    return {"schema": "vamp.sample-copy/1", "status": "verified",
             "source_tar": str(source_tar.resolve()), "local_tar": str(local_tar),
             "extracted_parent": str(extracted_parent), "tar_sha256": copy_hash,
             "tar_bytes": local_tar.stat().st_size, "regular_file_count": len(inventory),
@@ -75,7 +75,7 @@ def main():
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args()
     try:
-        from varquanms.cli import _check_output, _write_new
+        from vamp.cli import _check_output, _write_new
         if args.report.resolve().is_relative_to(args.extracted_parent.resolve()):
             raise ValueError("Report must be outside the extracted data directory")
         report_path = _check_output(args.report, args.source_tar.resolve())

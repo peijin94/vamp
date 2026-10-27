@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 
-from varquanms.imaging import compare_run, file_sha256
+from vamp.imaging import compare_run, file_sha256
 
 
 def main():

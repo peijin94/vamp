@@ -1,7 +1,7 @@
 """Independent standard-library decoder for uniform and signed-power blocks.
 
 This small conformance implementation returns little-endian complex64 bytes.
-The complete HDF5-to-MS decoder is `python -m varquanms decode`.
+The complete HDF5-to-MS decoder is `python -m vamp decode`.
 """
 
 import argparse

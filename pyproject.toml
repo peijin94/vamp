@@ -3,9 +3,9 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "varquanMS"
+name = "vamp"
 version = "0.2.0.dev0"
-description = "Inspection and adaptive visibility archive experiments for CASA Measurement Sets"
+description = "Visibility-Adaptive Mixed Precision for radio-interferometric Measurement Sets"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "python-casacore>=3.5", "h5py>=3.9"]
@@ -15,7 +15,8 @@ plot = ["matplotlib>=3.7"]
 validation = ["matplotlib>=3.7", "astropy>=5.3"]
 
 [project.scripts]
-visarchive = "varquanms.cli:main"
+vamp = "vamp.cli:main"
+visarchive = "vamp.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

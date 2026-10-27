@@ -7,11 +7,11 @@ import time
 import numpy as np
 
 from run_wsclean import snapshot
-from varquanms.archive import compare_ms, read_column
-from varquanms.cli import _write_new
-from varquanms.inspection import _open
-from varquanms.metadata import equal
-from varquanms.partitioned import decode_partitioned, _load, partition_reader, partition_verification
+from vamp.archive import compare_ms, read_column
+from vamp.cli import _write_new
+from vamp.inspection import _open
+from vamp.metadata import equal
+from vamp.partitioned import decode_partitioned, _load, partition_reader, partition_verification
 
 
 def main():
@@ -43,8 +43,8 @@ def main():
                         keep_calib_only=manifest['config'].get('keep_calib_only', False), calib_config=manifest['config'])
     reference_check = None
     if manifest['config'].get('normalized_bounds') is not None:
-        from varquanms.config import Config
-        from varquanms.references import sample_references
+        from vamp.config import Config
+        from vamp.references import sample_references
         fresh = sample_references(args.source, Config(**manifest['config']))
         recorded = manifest['distribution_references']
         if any(fresh[k] != recorded[k] for k in ('schema','source_rows','sampling','groups')):
@@ -64,7 +64,7 @@ def main():
                         actual = np.asarray(t.getcol(name, startrow=part['start']+start, nrow=len(wanted)))
                         if not equal(actual, wanted): raise ValueError('Export differs from archive decoder')
     if before != snapshot(args.source): raise ValueError('Source files changed during export verification')
-    result = {'schema': 'varquanms.partition-export-verification/1', 'status': 'passed',
+    result = {'schema': 'vamp.partition-export-verification/1', 'status': 'passed',
               'source': str(args.source), 'restored': str(args.restored), 'export': exported,
               'column_checks': checks, 'quantized_columns_match_archive_decoder_bitwise': selected,
               'partitions_verified_against_source_at_encode': len(manifest['partitions']),

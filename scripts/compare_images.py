@@ -27,7 +27,7 @@ def main():
     rms = float(np.sqrt(np.mean(error**2)))
     reference_rms = float(np.sqrt(np.mean(reference**2)))
     peak = float(reference.max())
-    result = {"schema": "varquanms.image-comparison/1", "reference": str(args.reference),
+    result = {"schema": "vamp.image-comparison/1", "reference": str(args.reference),
               "candidate": str(args.candidate), "shape": list(reference.shape),
               "difference_rms": rms, "difference_max_abs": float(np.max(np.abs(error))),
               "difference_bias": float(error.mean()), "reference_rms": reference_rms,

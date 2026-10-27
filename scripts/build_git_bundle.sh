@@ -3,13 +3,13 @@
 set -euo pipefail
 
 project_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
-bundle_path="$project_dir/varquanMS-initial.bundle"
+bundle_path="$project_dir/vamp-initial.bundle"
 if [[ -e "$bundle_path" ]]; then
     printf 'Refusing to overwrite %s\n' "$bundle_path" >&2
     exit 1
 fi
 
-staging_dir=$(mktemp -d /tmp/varquanMS-git.XXXXXX)
+staging_dir=$(mktemp -d /tmp/vamp-git.XXXXXX)
 for item in .gitignore README.md pyproject.toml src tests scripts docs devnotes configs .github; do
     cp -a -- "$project_dir/$item" "$staging_dir/"
 done
@@ -27,7 +27,7 @@ if git -C "$staging_dir" ls-files | LC_ALL=C grep -Eq '(^data/|\.ms(/|$)|\.ms\.t
     exit 1
 fi
 git -C "$staging_dir" diff --cached --check
-git -C "$staging_dir" commit --message 'Initialize varquanMS inspection and archive experiment specification'
+git -C "$staging_dir" commit --message 'Initialize vamp inspection and archive experiment specification'
 git -C "$staging_dir" bundle create "$bundle_path.partial" main HEAD
 git -C "$staging_dir" bundle verify "$bundle_path.partial"
 # Hard-link publication refuses an existing target and only exposes a complete bundle.

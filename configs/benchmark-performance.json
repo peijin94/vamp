@@ -1,5 +1,5 @@
 {
-  "schema": "varquanms.benchmark/1",
+  "schema": "vamp.benchmark/1",
   "cache_methodology": "Three sequential fresh encode processes on the same shared host after prior source reads; warm/unspecified OS cache. No cache eviction, CPU pinning or isolation. 24 encoder workers, OMP/OPENBLAS/MKL=1.",
   "notes": "Complete encode-process wall time includes startup, full inspection, exact preservation, candidate search, measured errors, quality arrays, writing, integrity checks and fsync/publication. Source verification is separate. No concurrent full-data encoding or imaging was launched by this task during the final repeats. Profiling is a separate run.",
   "export_ms": false,

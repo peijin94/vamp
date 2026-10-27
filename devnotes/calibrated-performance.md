@@ -1,8 +1,8 @@
 # Calibrated archive performance and I/V validation
 
-Measured 2026-10-25. Issue [#2](https://github.com/peijin94/varquanMS/issues/2)
+Measured 2026-10-25. Issue [#2](https://github.com/peijin94/vamp/issues/2)
 tracks performance; results are also reported in
-[#1](https://github.com/peijin94/varquanMS/issues/1). The paper is intentionally unchanged.
+[#1](https://github.com/peijin94/vamp/issues/1). The paper is intentionally unchanged.
 
 ## Timing scope and controls
 

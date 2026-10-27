@@ -34,7 +34,7 @@ end
 function Link(el)
   if not el.target:match("^%a[%w+.-]*:") and not el.target:match("^#") then
     local kind = el.target:match("/$") and "tree" or "blob"
-    el.target = "https://github.com/peijin94/varquanMS/" .. kind .. "/main/" .. project_path(el.target)
+    el.target = "https://github.com/peijin94/vamp/" .. kind .. "/main/" .. project_path(el.target)
   end
   return el
 end

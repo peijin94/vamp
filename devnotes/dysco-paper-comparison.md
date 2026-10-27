@@ -1,12 +1,13 @@
 # Dysco comparison in the paper: additional epsilon measurements
 
 The existing matched comparison is documented in [compare-dysco.md](compare-dysco.md)
-and [issue #3](https://github.com/peijin94/varquanMS/issues/3). Paper section 3.7
+and [issue #3](https://github.com/peijin94/vamp/issues/3). Paper section 3.7
 adds its four figures and the complete comparison table. The rate figure now
 includes independently measured `epsilon_D = 0.09` and `0.3` points alongside
 the existing 0.01, 0.04 and 0.18 cases. It connects measured settings within
 each method and reverses the log error axes, so lower errors appear higher.
-The other three figures are copies of the matched-rate issue figures.
+The other three figures were regenerated from the same matched-rate data with
+vamp labels; the earlier issue images remain historical records.
 
 ## Experiment and results
 

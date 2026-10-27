@@ -18,13 +18,13 @@ from casacore.tables import table
 import h5py
 import numpy as np
 
-from varquanms.archive import compare_ms
-from varquanms.codec import encode_block as uniform_encode, decode_block as uniform_decode, error_metrics, within_bounds
-from varquanms.config import Config
-from varquanms.experimental_mx import encode_batch, decode_block, decode_component
-from varquanms.inspection import inspect_ms
-from varquanms.ordering import all_orders
-from varquanms.visibility import _flags, quality
+from vamp.archive import compare_ms
+from vamp.codec import encode_block as uniform_encode, decode_block as uniform_decode, error_metrics, within_bounds
+from vamp.config import Config
+from vamp.experimental_mx import encode_batch, decode_block, decode_component
+from vamp.inspection import inspect_ms
+from vamp.ordering import all_orders
+from vamp.visibility import _flags, quality
 
 
 def digest(path):
@@ -174,7 +174,7 @@ def main():
             raise ValueError('Independent file decode differs from encode-time decode')
         del independent
         timings['separate_component_read_decode'] = time.perf_counter()-stamp
-    record = {'schema':'varquanms.mx-evaluation/1','status':'complete','variant':args.variant,
+    record = {'schema':'vamp.mx-evaluation/1','status':'complete','variant':args.variant,
               'source':source.name,'source_shape':list(values.shape),'component_only':True,
               'sample_groups_per_product':args.sample_groups,'selection':'evenly spaced amplitude ranks including extremes' if args.sample_groups else 'all source samples',
               'ordering':args.ordering,'block_count':len(jobs),'complex_samples':sum((b-a)*(hi-lo) for p,a,b,lo,hi in jobs),

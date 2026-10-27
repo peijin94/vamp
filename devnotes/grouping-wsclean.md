@@ -221,7 +221,7 @@ The WSClean runner resolves an already-installed image to its immutable ID; it
 does not pull a container or enable container networking.
 
 ```bash
-visarchive benchmark INPUT.ms --matrix configs/benchmark-grouping.json --output results/grouping
+vamp benchmark INPUT.ms --matrix configs/benchmark-grouping.json --output results/grouping
 python scripts/run_wsclean.py LOSSLESS.ms --output results/reference-fit
 python scripts/run_wsclean.py LOSSLESS.ms --output results/reference \
   --beam-from results/reference-fit/image-image.fits --threads 1

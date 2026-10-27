@@ -5,12 +5,12 @@ import unittest
 from casacore.tables import table, makearrcoldesc, maketabdesc, tabledefinehypercolumn
 import numpy as np
 
-from varquanms.archive import encode, decode, verify, compare_ms
-from varquanms.calibrated import KEYWORD, descriptor
-from varquanms.cli import main
-from varquanms.config import Config
-from varquanms.container import Reader
-from varquanms.partitioned import encode_partitioned, decode_partitioned
+from vamp.archive import encode, decode, verify, compare_ms
+from vamp.calibrated import KEYWORD, descriptor
+from vamp.cli import main
+from vamp.config import Config
+from vamp.container import Reader
+from vamp.partitioned import encode_partitioned, decode_partitioned
 from test_inspection import make_ms, snapshot
 
 

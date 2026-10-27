@@ -4,8 +4,8 @@ import argparse
 import json
 from pathlib import Path
 
-from varquanms.cli import _write_new
-from varquanms.imaging import compare_run, plot_comparison
+from vamp.cli import _write_new
+from vamp.imaging import compare_run, plot_comparison
 
 
 def main():

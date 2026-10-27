@@ -6,9 +6,9 @@ import time
 
 import numpy as np
 
-from varquanms.archive import discover_tables
-from varquanms.inspection import _open
-from varquanms.metadata import casacore_keywords, equal, logical_descriptor, relocate
+from vamp.archive import discover_tables
+from vamp.inspection import _open
+from vamp.metadata import casacore_keywords, equal, logical_descriptor, relocate
 from run_wsclean import snapshot
 
 
@@ -89,7 +89,7 @@ def verify(source, decoded):
             unflagged_nonfinite += int(np.count_nonzero(~np.isfinite(values[~flags])))
     if flagged_changed or unflagged_nonfinite:
         raise ValueError('Dysco output did not preserve the declared discarded-value marker or produced unflagged nonfinite values')
-    return {'schema':'varquanms.dysco-verification/1','status':'passed',
+    return {'schema':'vamp.dysco-verification/1','status':'passed',
             'source':str(source),'decoded':str(decoded),'table_count':len(a_graph),
             'decoded_sha256':snapshot(decoded),
             'exact_columns':exact,'exact_column_count':len(exact),
@@ -102,7 +102,7 @@ def verify(source, decoded):
             'metadata_scope':'Table graph, row counts, table keywords, table info, exact column descriptors and values; storage-manager assignments excluded.',
             'intentional_differences':['Only calibrated visibility DATA is stored; original DATA/MODEL_DATA and duplicate CORRECTED_DATA omitted.',
                 'DATA uses a direct fixed-shape Dysco descriptor; the actual selected input cells are complex64 48×4.',
-                'Three varquanMS-specific policy keywords are replaced by an explicit DYSCO_COMPARISON provenance keyword.'],
+                'Three vamp-specific policy keywords are replaced by an explicit DYSCO_COMPARISON provenance keyword.'],
             'elapsed_seconds':time.perf_counter()-started}
 
 

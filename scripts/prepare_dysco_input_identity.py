@@ -4,9 +4,9 @@ import json
 from pathlib import Path
 
 from run_wsclean import snapshot
-from varquanms.archive import compare_ms
-from varquanms.imaging import file_sha256
-from varquanms.partitioned import _load
+from vamp.archive import compare_ms
+from vamp.imaging import file_sha256
+from vamp.partitioned import _load
 
 
 def main():
@@ -43,7 +43,7 @@ def main():
     fresh_checks=compare_ms(args.original,args.prepared,keep_calib_only=True,calib_config=manifest['config'])
     if snapshot(args.original)!=original_hashes or snapshot(args.prepared)!=prepared_hashes:
         raise ValueError('The original or prepared MS changed during the independent comparison')
-    result={'schema':'varquanms.dysco-input-identity/1','status':'passed',
+    result={'schema':'vamp.dysco-input-identity/1','status':'passed',
             'original_ms':str(args.original.resolve()),'prepared_ms':str(args.prepared.resolve()),
             'verification':str(args.verification),'verification_sha256':file_sha256(args.verification),
             'lossless_archive':str(args.archive.resolve()),'lossless_archive_sha256':file_sha256(args.archive),

@@ -7,8 +7,8 @@ from pathlib import Path
 import numpy as np
 
 from run_wsclean import snapshot
-from varquanms.container import Reader
-from varquanms.imaging import read_fits, sky_mask, plot_comparison
+from vamp.container import Reader
+from vamp.imaging import read_fits, sky_mask, plot_comparison
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -119,7 +119,7 @@ def main():
     p.add_argument('--archives-only',action='store_true')
     args = p.parse_args()
     records = [summarize(k,args.root) for k in ('lossless','uniform','power')]
-    report = {'schema':'varquanms.calibrated-study/1','experiments':records,
+    report = {'schema':'vamp.calibrated-study/1','experiments':records,
               'timing_scope':'Concurrent codec runs on a shared host; 24 quantization workers each. Whole-bundle wall time includes per-partition copying, inspection, encoding, verification and member hashing. No cold-cache or 15-second full-MS claim.',
               'policy':'CORRECTED_DATA only; DATA/FLOAT_DATA/MODEL_DATA removed. Original flags preserved; flagged values discarded and reconstructed as complex positive zero. Four-bit weights are measured exact in this dataset.',
               'limitations':['Stokes I joint imaging only; no per-frame light-curve or Q/U/V validation',

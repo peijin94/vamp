@@ -11,7 +11,7 @@ import update_dysco_paper as manuscript
 
 
 def case(epsilon=None,bits=None,normalization=None,truncation=None,flags='nan',rate=100):
-    result={'method':'varquanMS' if epsilon is not None else 'Dysco',
+    result={'method':'vamp' if epsilon is not None else 'Dysco',
             'stokes_I':[{'difference_over_reference_residual_percent':1.,'clean_final_threshold_reached':True}],
             'stokes_V':[{'difference_over_reference_residual_percent':2.,'clean_final_threshold_reached':True}],
             'visibility_products':{'cross/I-paired':{'relative_rmse':.03},
@@ -46,7 +46,7 @@ class DyscoPaperTests(unittest.TestCase):
 
     def test_series_use_both_new_epsilons_and_exclude_zero_control(self):
         base,extra=self.sample(); groups=paper.collect_series(base,extra)
-        self.assertEqual([p['epsilon_D'] for p in groups['varquanMS']],[.3,.18,.09,.04,.01])
+        self.assertEqual([p['epsilon_D'] for p in groups['vamp']],[.3,.18,.09,.04,.01])
         self.assertEqual(len(groups['Dysco RF, 2.5σ']),4)
         self.assertEqual(len(groups['Dysco RF, 1.5σ']),4)
         self.assertEqual(len(groups['Dysco AF, 2.5σ']),2)
@@ -54,12 +54,21 @@ class DyscoPaperTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'five requested'):
             paper.collect_series(base,extra)
 
+    def test_legacy_measurement_labels_render_as_vamp(self):
+        base,extra=self.sample()
+        for case in base['cases']+extra['cases']:
+            if case['method']=='vamp':
+                case['method']='varquanMS'
+        groups=paper.collect_series(base,extra)
+        self.assertEqual(len(groups['vamp']),5)
+        self.assertEqual(manuscript.section(base,extra).count('\n| vamp'),5)
+
     def test_paper_inserts_four_figures_and_both_corrected_epsilons_once(self):
         base,extra=self.sample(); body=manuscript.section(base,extra)
         self.assertIn(r'$\epsilon_D=0.09$',body)
         self.assertIn(r'$\epsilon_D=0.3$',body)
         self.assertEqual(body.count('![',),4)
-        self.assertEqual(body.count('\n| varquanMS'),5)
+        self.assertEqual(body.count('\n| vamp'),5)
         self.assertEqual(body.count('\n| Dysco'),10)
         intro='new, and a matched Dysco comparison has not yet been performed.'
         conclusion=('not a CASA 6 or precision-astrometry validation. A matched Dysco benchmark,\n'
@@ -73,7 +82,7 @@ class DyscoPaperTests(unittest.TestCase):
         base,extra=self.sample()
         extra['cases'][1]['stokes_I'][0]['clean_final_threshold_reached']=False
         body=manuscript.section(base,extra)
-        row=next(line for line in body.splitlines() if r'varquanMS $\epsilon_D=0.3$' in line)
+        row=next(line for line in body.splitlines() if r'vamp $\epsilon_D=0.3$' in line)
         self.assertIn('1.000†',row)
         self.assertIn('A dagger denotes a CLEAN that did not reach its final threshold.',body)
 

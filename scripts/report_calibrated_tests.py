@@ -7,9 +7,9 @@ import platform
 
 import numpy as np
 
-from varquanms.imaging import compare_run, read_fits, file_sha256
-from varquanms.partitioned import bundle_summary
-from varquanms.container import Reader
+from vamp.imaging import compare_run, read_fits, file_sha256
+from vamp.partitioned import bundle_summary
+from vamp.container import Reader
 
 ROOT = Path('results/calibrated-template')
 OLD = Path('results/calibrated-20261023')
@@ -17,8 +17,8 @@ CASES = ['lossless', 'uniform', 'power', 'amplitude256', 'buckets256', 'tight001
 
 
 def collect():
-    result = dict(schema='varquanms.calibrated-template-tests/1',
-                  issue='https://github.com/peijin94/varquanMS/issues/1',
+    result = dict(schema='vamp.calibrated-template-tests/1',
+                  issue='https://github.com/peijin94/vamp/issues/1',
                   mask=json.loads((ROOT/'above10deg.json').read_text()),
                   reference=json.loads((ROOT/'reference/complete.json').read_text()),
                   experiments=[])
@@ -98,7 +98,7 @@ def collect():
 
 
 def plot(result):
-    os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
+    os.environ.setdefault('MPLCONFIGDIR','/tmp/vamp-mpl')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -213,7 +213,7 @@ def write_note(result):
         return 100*p['regions'][region]['relative_rms_difference']
     entries = {e['name']:e for e in result['experiments']}
     lines = ['# Calibrated data compression tests', '',
-        'Completed 2026-10-23/24. Tracking: [Calibrated data compression #1](https://github.com/peijin94/varquanMS/issues/1). The paper is unchanged.', '',
+        'Completed 2026-10-23/24. Tracking: [Calibrated data compression #1](https://github.com/peijin94/vamp/issues/1). The paper is unchanged.', '',
         'Input: `lwa-15slot-flat.ms`, 15 integrations, 931,920 rows, 48 channels (63.966–68.464 MHz), XX/XY/YX/YY. '
         'The source is 4,428,203,949 bytes. All 108 files still match the original import checksums. '
         'Every archive uses the same calibrated-only policy: omit original DATA/MODEL_DATA, replace flagged values with zero, '

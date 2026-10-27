@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 from astropy.io import fits
-from varquanms.imaging import file_sha256, read_fits, _grid
+from vamp.imaging import file_sha256, read_fits, _grid
 
 ROOT = Path('results/calibrated-epsd-dense')
 REF = Path('results/calibrated-template/reference-v')
@@ -54,7 +54,7 @@ def timing_breakdown():
         'Encoding and writing, including integrity finalization':raw['bundle']['sum_encode_seconds_excluding_inspection'],
         'Source/integrity verification':sum(v['elapsed_seconds'] for v in verifications),
     }
-    return dict(schema='varquanms.median-runtime-breakdown/1',status='passed',
+    return dict(schema='vamp.median-runtime-breakdown/1',status='passed',
         measurement_date='2026-10-25',report_date='2026-10-27',selected_run=process['name'],
         total_process_wall_seconds=total,workflow_seconds=raw['total_workflow_seconds'],
         bundle_wall_seconds=raw['bundle_wall_seconds'],compaction_wall_seconds=compact['elapsed_seconds'],
@@ -125,7 +125,7 @@ def v_results():
             export_verification_file=str(export_path),export_verification_sha256=file_sha256(export_path),
             initial_stokes_i_complete_sha256=file_sha256(i_complete_path),same_input_ms_as_initial_stokes_i=True,
             comparison=runs[0]['comparison'],runs=runs))
-    return dict(schema='varquanms.epsd-v-followup/1',status='passed',measurement_date='2026-10-27',
+    return dict(schema='vamp.epsd-v-followup/1',status='passed',measurement_date='2026-10-27',
         results_root=str(ROOT),reference_directory=str(REF),stokes='V',comparison_mask=mask_info,
         reference_residual_statistics=reference_stats,
         reference_file_sha256=file_sha256(REF/'image-image.fits'),

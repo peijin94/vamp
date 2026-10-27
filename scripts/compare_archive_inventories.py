@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 
-from varquanms.partitioned import _load, _signature, partition_reader
+from vamp.partitioned import _load, _signature, partition_reader
 
 
 def compare(baseline,candidate):

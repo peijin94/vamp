@@ -8,8 +8,8 @@ import shutil
 import subprocess
 import time
 
-from varquanms.cli import _write_new
-from varquanms.imaging import file_sha256
+from vamp.cli import _write_new
+from vamp.imaging import file_sha256
 
 
 def snapshot(path):
@@ -75,7 +75,7 @@ def main():
                 "position_angle_deg": float(header["BPA"])}
         options[-1:-1] = ["-beam-shape", str(beam["major_arcsec"]), str(beam["minor_arcsec"]), str(beam["position_angle_deg"])]
     command = docker + ["-e", "OPENBLAS_NUM_THREADS=1", "-v", f"{output}:/work", "-w", "/work", image_id, "wsclean", *options]
-    record = {"schema": "varquanms.wsclean/1", "status": "running", "source_ms": str(source),
+    record = {"schema": "vamp.wsclean/1", "status": "running", "source_ms": str(source),
               "container": args.container, "container_id": image_id, "container_digests": info.get("RepoDigests", []),
               "wsclean_version": version.strip(), "command": command, "options": options,
               "requested_restoring_beam": beam,

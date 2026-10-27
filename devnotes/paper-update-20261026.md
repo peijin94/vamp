@@ -1,7 +1,7 @@
 # Paper update: calibrated I/V, performance and storage
 
 26 October 2026. This revision incorporates the completed measurements into
-[the paper](../docs/paper/varquantMS.md) and its [PDF](../docs/paper/varquantMS.pdf).
+[the paper](../docs/paper/vamp.md) and its [PDF](../docs/paper/vamp.pdf).
 No new quantization, CLEAN or timing experiment was run for this manuscript update.
 
 The initial three-epsilon I results remain separate from the later I/V tests at

@@ -62,7 +62,7 @@ def main():
     if args.cases:
         if set(args.cases)-{x['name'] for x in plan}:raise ValueError('Unknown case')
         plan=[x for x in plan if x['name'] in args.cases]
-    env={**os.environ,'PYTHONPATH':'src','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MPLCONFIGDIR':'/tmp/varquanms-mpl'}
+    env={**os.environ,'PYTHONPATH':'src','OPENBLAS_NUM_THREADS':'1','OMP_NUM_THREADS':'1','MPLCONFIGDIR':'/tmp/vamp-mpl'}
     if len(set(args.stokes))!=len(args.stokes):raise ValueError('Duplicate Stokes selections')
     references={} if args.archive_only else ensure_references(args.source,args.reference_root,args.stokes,env)
     def run(case):

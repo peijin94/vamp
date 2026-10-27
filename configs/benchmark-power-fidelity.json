@@ -1,5 +1,5 @@
 {
-  "schema": "varquanms.benchmark/1",
+  "schema": "vamp.benchmark/1",
   "base": {
     "mode": "adaptive", "columns": ["DATA"], "workers": 24,
     "baseline_group": 128, "channel_segment": 192,

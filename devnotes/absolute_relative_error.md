@@ -3,7 +3,7 @@
 Experiment run on 24 October 2026. This note records the image comparison;
 the paper and README stay unchanged. Related:
 [calibrated tests](test_calibrated_dataset.md), [gamma rule](gamma_max_std.md),
-[issue #1](https://github.com/peijin94/varquanMS/issues/1).
+[issue #1](https://github.com/peijin94/vamp/issues/1).
 
 ## Question and definitions
 

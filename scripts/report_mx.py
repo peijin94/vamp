@@ -72,12 +72,12 @@ def main():
             full.append(report)
     before=json.loads((args.root/'source-before.json').read_text())
     after=json.loads((args.root/'source-after.json').read_text())
-    result={'schema':'varquanms.mx-study/1','date_utc':'2026-10-23',
+    result={'schema':'vamp.mx-study/1','date_utc':'2026-10-23',
             'ocp_specification':'https://www.opencompute.org/wp-content/uploads/2026/10/OCP_MicroXcaling_Spec_v1.1.0-1.pdf',
             'scope':'Experimental DATA component records, not whole standalone MS archives. Standard MX element formats plus custom outer scale, variable formats, binary16 and exact escapes.',
             'sample_runs':samples,'full_runs':full,'source_files_checked':len(before),'source_files_unchanged':before==after,
             'source_file_sha256':before,
-            'reference_decoder_sha256':hashlib.sha256((ROOT/'src/varquanms/experimental_mx.py').read_bytes()).hexdigest(),
+            'reference_decoder_sha256':hashlib.sha256((ROOT/'src/vamp/experimental_mx.py').read_bytes()).hexdigest(),
             'sample_selection_caveat':'Stratified deterministic rank sample includes extremes; not a random estimate.',
             'timing_caveat':'Single diagnostic run per configuration, one worker, warm/unspecified shared-host cache. Includes per-block source checks; excludes separate file decoding/export/imaging. Not directly comparable to the production 24-worker 12.19 s encode benchmark.'}
     if args.imaging.exists():result['imaging']=json.loads(args.imaging.read_text())

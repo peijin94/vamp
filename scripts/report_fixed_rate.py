@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 import h5py
 
-from varquanms.imaging import compare_run, file_sha256, read_fits
-from varquanms.codec import unpack_header, decode_block
+from vamp.imaging import compare_run, file_sha256, read_fits
+from vamp.codec import unpack_header, decode_block
 
 ROOT=Path('results/calibrated-fixed25')
 REF=Path('results/calibrated-template/reference')
@@ -28,7 +28,7 @@ def payload_distribution(path, *, by_class=False):
             classes={}
             if by_class:
                 from types import SimpleNamespace
-                from varquanms.archive import read_column
+                from vamp.archive import read_column
                 reader=SimpleNamespace(h5=group)
                 for table in spec['tables']:
                     columns=table['columns']
@@ -139,7 +139,7 @@ def collect(partial=False,reuse_preview=False):
             e['worst_restored_fraction_two_runs']=max(fraction(comparison),fraction(e['repeat']['versus_reference']))
         elif not partial:raise ValueError('Repeat required: '+name)
         cases.append(e)
-    result=dict(schema='varquanms.fixed25-study/1',status='partial' if partial else 'complete',
+    result=dict(schema='vamp.fixed25-study/1',status='partial' if partial else 'complete',
         original_complex64_bytes=1431429120,payload_budget_bytes=357857280,screen=screen,experiments=cases,
         selection_objective='Primary empirical score: larger restored-image RMS difference of two CLEAN runs, all above 10 degrees. Also report dirty, faint, bright, peak and aperture metrics; two runs do not establish a confidence interval.',
         scope='Payload fraction includes serialized block factors/headers/exceptions and lossless fallback. Full archive bytes are separate. All products are archived; images are joint Stokes I only.',
@@ -184,7 +184,7 @@ def collect(partial=False,reuse_preview=False):
 
 
 def plots(result, *, root=ROOT, prefix='fixed25', output=FIGS, include_best=True, include_images=True):
-    os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
+    os.environ.setdefault('MPLCONFIGDIR','/tmp/vamp-mpl')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt

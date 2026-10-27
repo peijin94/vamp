@@ -4,9 +4,9 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 
-from varquanms.container import Reader
-from varquanms.imaging import file_sha256
-from varquanms.shared import compact_bundle, load_shared
+from vamp.container import Reader
+from vamp.imaging import file_sha256
+from vamp.shared import compact_bundle, load_shared
 
 
 def main():

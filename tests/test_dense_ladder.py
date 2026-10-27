@@ -8,9 +8,9 @@ from unittest.mock import patch
 
 import numpy as np
 
-from varquanms import codec
-from varquanms.archive import encode, decode, verify
-from varquanms.config import Config, DEFAULT_BITS, SUPPORTED_BITS
+from vamp import codec
+from vamp.archive import encode, decode, verify
+from vamp.config import Config, DEFAULT_BITS, SUPPORTED_BITS
 from test_inspection import make_ms
 from test_reference_decoder import reference
 

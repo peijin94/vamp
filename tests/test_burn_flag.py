@@ -9,11 +9,11 @@ import unittest
 from casacore.tables import table
 import numpy as np
 
-from varquanms.archive import compare_ms, decode, encode, verify
-from varquanms.cli import main
-from varquanms.config import Config
-from varquanms.container import Reader
-from varquanms.flags import ENCODING, FLAG_COLUMNS, POLICY_KEYWORD, burned_columns
+from vamp.archive import compare_ms, decode, encode, verify
+from vamp.cli import main
+from vamp.config import Config
+from vamp.container import Reader
+from vamp.flags import ENCODING, FLAG_COLUMNS, POLICY_KEYWORD, burned_columns
 from test_inspection import make_ms, snapshot
 
 

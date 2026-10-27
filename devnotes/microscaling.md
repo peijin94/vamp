@@ -266,7 +266,7 @@ exact escape, record corruption/truncation, and independent mapped reconstructio
 Full machine-readable evidence is in [microscaling-evaluation.json](../reports/microscaling-evaluation.json).
 Regenerate these figures and the summary with `python scripts/report_mx.py` after
 running the component experiments. The reference implementation is
-[`experimental_mx.py`](../src/varquanms/experimental_mx.py); it does not change the
+[`experimental_mx.py`](../src/vamp/experimental_mx.py); it does not change the
 production codec, archive schema or CLI defaults.
 
 ## WSClean validation

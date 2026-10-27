@@ -7,10 +7,10 @@ from unittest.mock import patch
 
 import numpy as np
 
-from varquanms import codec, power
-from varquanms.archive import encode, decode, verify
-from varquanms.config import Config, SUPPORTED_BITS
-from varquanms.container import Reader
+from vamp import codec, power
+from vamp.archive import encode, decode, verify
+from vamp.config import Config, SUPPORTED_BITS
+from vamp.container import Reader
 from test_inspection import make_ms, snapshot
 from test_reference_decoder import reference
 

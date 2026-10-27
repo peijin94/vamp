@@ -77,7 +77,7 @@ def main():
     if output.is_relative_to(source_path) or any(x.exists() for x in (output, partial, args.report)):
         raise ValueError('Use a new output/report outside the input MS')
     started = time.perf_counter()
-    report = {'schema': 'varquanms.dysco-encode/1', 'status': 'running',
+    report = {'schema': 'vamp.dysco-encode/1', 'status': 'running',
               'input': str(source_path), 'output': str(output), 'partial_output': str(partial),
               'bits_per_real_component': args.bits, 'normalization': args.normalization,
               'distribution': 'TruncatedGaussian', 'distribution_truncation': args.truncation,

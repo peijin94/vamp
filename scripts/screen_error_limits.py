@@ -13,12 +13,12 @@ import time
 
 import numpy as np
 
-from varquanms.codec import encode_block
-from varquanms.config import Config
-from varquanms.error_budget import component_signal_power
-from varquanms.inspection import _open, CORRELATIONS
-from varquanms.ordering import all_orders
-from varquanms.partitioned import context_runs
+from vamp.codec import encode_block
+from vamp.config import Config
+from vamp.error_budget import component_signal_power
+from vamp.inspection import _open, CORRELATIONS
+from vamp.ordering import all_orders
+from vamp.partitioned import context_runs
 
 
 def load_blocks(ms, base, groups=64):
@@ -32,7 +32,7 @@ def load_blocks(ms, base, groups=64):
             pairs = np.column_stack([t.getcol(c, start, stop-start) for c in ('ANTENNA1','ANTENNA2')])
             uvw = t.getcol('UVW', start, stop-start)
             ddids = np.unique(t.getcol('DATA_DESC_ID', start, stop-start))
-            from varquanms.references import CONFIG_COLUMNS, key
+            from vamp.references import CONFIG_COLUMNS, key
             configuration_key = key({c:int(t.getcell(c,start)) for c in CONFIG_COLUMNS if c in t.colnames()})
         if len(ddids) != 1 or data.shape[1] != 48:
             raise ValueError('This study requires one 48-channel configuration per time context')
@@ -133,7 +133,7 @@ def main():
             selected.append(dict(name=label,family=family,parameter=chosen['parameter'],
                 target_absolute_mse=budget,target_screen_bytes=target,screen_bytes=chosen['payload_bytes'],
                 screen_rate_difference_fraction=chosen['payload_bytes']/target-1,config=chosen['config']))
-    report=dict(schema='varquanms.error-limit-screen/1',source=str(args.ms),pivot_component_power=pivot,
+    report=dict(schema='vamp.error-limit-screen/1',source=str(args.ms),pivot_component_power=pivot,
         blocks=[{k:v for k,v in j.items() if k not in ('values','flags')} for j in jobs],
         experiments=list(cache.values()),selected=selected,
         selection='Three absolute targets; 12-step log bisection matches block payload bytes for relative and hybrid. No images used to choose thresholds.',

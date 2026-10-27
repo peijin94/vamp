@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 import statistics
 
-from varquanms.cli import _write_new
-from varquanms.container import Reader
+from vamp.cli import _write_new
+from vamp.container import Reader
 
 
 def distribution(values):
@@ -70,7 +70,7 @@ def summarize(benchmark):
     aggregate["exclusive_encode_stages_seconds"] = {
         key: distribution([r["exclusive_encode_stages_seconds"][key] for r in adaptive])
         for key in adaptive[0]["exclusive_encode_stages_seconds"]}
-    return {"schema": "varquanms.paper-runtime/1", "status": "complete",
+    return {"schema": "vamp.paper-runtime/1", "status": "complete",
             "created_utc": datetime.now(timezone.utc).isoformat(), "source": benchmark["source"],
             "cache_methodology": benchmark["cache_methodology"], "methodology": benchmark["notes"],
             "records": records, "adaptive_summary": aggregate,

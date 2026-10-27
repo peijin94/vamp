@@ -12,8 +12,8 @@ FITS outputs. PNGs support Markdown; SVG/PDF diagrams and charts support the PDF
 | 7–8 | `epsd-v-images`, `epsd-v-zoom` | Matching 2×3 Stokes V comparisons across all three epsilon values; `reports/calibrated-epsd-v.json` and new first-run FITS; Taurus A source zoom audited in `reports/calibrated-v-zoom.json` |
 | 9 | `epsd-rate-distortion` | Initial I image-error/size relation and physical byte categories; dense-ladder report |
 | 10 | `dysco-comparison-rate` | Visibility-storage rate–distortion comparison; five epsilon values, RF/AF Dysco, connected measured series and reversed error axes |
-| 11–12 | `dysco-comparison-images`, `dysco-comparison-v-zoom` | The issue #3 matched-rate I/V image differences and Taurus A V zoom, copied without alteration |
-| 13 | `dysco-comparison-bits` | The issue #3 complex-sample precision distribution, copied without alteration |
+| 11–12 | `dysco-comparison-images`, `dysco-comparison-v-zoom` | The issue #3 matched-rate I/V image differences and Taurus A V zoom, regenerated with vamp labels from the same measured data |
+| 13 | `dysco-comparison-bits` | The issue #3 complex-sample precision distribution, regenerated with vamp labels from the same measured data |
 
 I flux images use viridis; V and signed differences use bwr. Figures 5–6 show
 `100 × (I_quant − I_ref) / RMS(reference residual)` with a percentage

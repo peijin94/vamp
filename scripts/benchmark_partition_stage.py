@@ -9,8 +9,8 @@ from pathlib import Path
 import resource
 import time
 
-from varquanms.config import Config
-from varquanms.partitioned import _encode_context
+from vamp.config import Config
+from vamp.partitioned import _encode_context
 
 
 def main():

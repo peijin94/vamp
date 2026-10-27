@@ -1,5 +1,5 @@
 {
-  "schema": "varquanms.benchmark/1",
+  "schema": "vamp.benchmark/1",
   "cache_methodology": "Warm/unspecified OS cache; previous source inspections have populated cache. No cache eviction or cold-cache claim.",
   "notes": "Engineering bounds in stored DATA units, not validated science tolerances. Same configured ceilings do not imply identical actual reconstruction error.",
   "export_ms": true,

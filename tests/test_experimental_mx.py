@@ -7,8 +7,8 @@ import zlib
 import numpy as np
 import h5py
 
-from varquanms.codec import error_metrics, within_bounds
-from varquanms.experimental_mx import (FORMATS, HEADER, LEVELS, decode_block, decode_component,
+from vamp.codec import error_metrics, within_bounds
+from vamp.experimental_mx import (FORMATS, HEADER, LEVELS, decode_block, decode_component,
                                       element_values, encode_batch, quantize_elements)
 
 

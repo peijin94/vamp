@@ -6,12 +6,12 @@ import unittest
 
 import numpy as np
 
-from varquanms.archive import _check_column
-from varquanms.config import Config, SUPPORTED_BITS
-from varquanms.container import Reader, Writer
-from varquanms.inspection import _open, row_window
-from varquanms.power import reconstruct
-from varquanms import codec
+from vamp.archive import _check_column
+from vamp.config import Config, SUPPORTED_BITS
+from vamp.container import Reader, Writer
+from vamp.inspection import _open, row_window
+from vamp.power import reconstruct
+from vamp import codec
 from test_inspection import make_ms, snapshot
 
 

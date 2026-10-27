@@ -1,5 +1,5 @@
 {
-  "schema": "varquanms.benchmark/1",
+  "schema": "vamp.benchmark/1",
   "cache_methodology": "Three sequential fresh-process adaptive repeats after prior source reads, plus one lossless control. OS caches are not evicted; warm/unspecified cache on a shared host. OMP/OPENBLAS/MKL threads set to 1. No concurrent varquanMS encode or imaging job is launched by this experiment.",
   "notes": "Encode-process wall time includes Python startup, source inspection, encoding, writing, integrity finalization and report serialization. Source verification is separately timed and excluded. No MS export or imaging is included in encode time. Paper figure generation and small synthetic unit tests may run concurrently; shared-host interference is not controlled.",
   "export_ms": false,

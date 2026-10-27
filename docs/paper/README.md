@@ -1,7 +1,7 @@
 # Paper
 
-- [PDF](varquantMS.pdf)
-- [Markdown source](varquantMS.md)
+- [PDF](vamp.pdf)
+- [Markdown source](vamp.md)
 - [Figures](figs/)
 - [Preserved initial development manuscript](work_note_20261025_init_work.md)
 

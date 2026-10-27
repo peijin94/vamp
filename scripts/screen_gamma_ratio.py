@@ -9,12 +9,12 @@ import time
 
 import numpy as np
 
-from varquanms.codec import encode_block
-from varquanms.config import Config
-from varquanms.inspection import _open, CORRELATIONS
-from varquanms.ordering import all_orders
-from varquanms.partitioned import context_runs
-from varquanms.power import maximum_std_ratio
+from vamp.codec import encode_block
+from vamp.config import Config
+from vamp.inspection import _open, CORRELATIONS
+from vamp.ordering import all_orders
+from vamp.partitioned import context_runs
+from vamp.power import maximum_std_ratio
 
 
 def main():
@@ -89,7 +89,7 @@ def main():
                         elapsed_seconds=elapsed,blocks=blocks)
             records.append(record)
             print(json.dumps({k:v for k,v in record.items() if k not in ('config','blocks')}),flush=True)
-    report=dict(schema='varquanms.gamma-ratio-screen/1',source=str(args.ms),integrations=selected_times,
+    report=dict(schema='vamp.gamma-ratio-screen/1',source=str(args.ms),integrations=selected_times,
                 blocks=[{k:v for k,v in job.items() if k not in ('values','flags')} for job in jobs],
                 experiments=records,
                 limitations=['Same exact sampled blocks for all profiles; payload bytes exclude whole-archive metadata.',

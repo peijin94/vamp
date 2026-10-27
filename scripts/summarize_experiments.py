@@ -39,14 +39,14 @@ def main():
     lossless, adaptive = json.loads(args.lossless.read_text()), json.loads(args.adaptive.read_text())
     # Early encode reports did not yet expose the already-stored block histogram.
     if "visibility_block_statistics" not in adaptive:
-        from varquanms.container import Reader
+        from vamp.container import Reader
         with Reader(args.adaptive_archive, verify=False) as reader:
             spec = reader.manifest["tables"][0]["columns"]["DATA"]
             adaptive["visibility_block_statistics"] = {"DATA": {"products": spec["products"]}}
     points = [point("Lossless with deduplication", lossless), point("Grouped original adaptive", adaptive)]
     for experiment in benchmark["experiments"]:
         points.append(point(experiment["name"], experiment["encoding"], experiment["configuration"]))
-    result = {"schema": "varquanms.initial-rate-distortion/1", "points": points,
+    result = {"schema": "vamp.initial-rate-distortion/1", "points": points,
               "cache_methodology": benchmark["cache_methodology"],
               "interpretation": "Different points can have different measured errors under the same ceilings. This limited sample is not an equal-error proof, a block-size sweep, a thermal-noise guarantee or scientific acceptance.",
               "timing_comparison": "Early standalone run and later benchmark use different prototype revisions; do not compare their encode times as a codec-performance benchmark."}

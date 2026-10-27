@@ -1,5 +1,5 @@
 {
-  "schema": "varquanms.benchmark/1",
+  "schema": "vamp.benchmark/1",
   "base": {"mode": "lossless"},
   "export_ms": true,
   "cache_methodology": "Sequential preserve/burn pair on a shared host; filesystem caches are not evicted. Not an isolated throughput benchmark.",

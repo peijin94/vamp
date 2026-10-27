@@ -52,7 +52,7 @@ def main():
         started = time.perf_counter()
         with log.open('x') as stream:
             result = subprocess.run(command, stdout=stream, stderr=subprocess.STDOUT)
-        record = {'schema':'varquanms.dysco-process/1','case':name,'command':command,
+        record = {'schema':'vamp.dysco-process/1','case':name,'command':command,
                   'container_id':image['Id'],'container_repo_digests':image.get('RepoDigests',[]),
                   'process_wall_seconds':time.perf_counter()-started,'returncode':result.returncode,
                   'timing_scope':'Docker launch through process exit; source preparation and subsequent verification/imaging are excluded',

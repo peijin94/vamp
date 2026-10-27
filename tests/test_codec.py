@@ -9,10 +9,10 @@ from unittest.mock import patch
 
 import numpy as np
 
-from varquanms.codec import HEADER, decode_block, encode_block, error_metrics, pack_codes, unpack_codes, within_bounds
-from varquanms import codec
-from varquanms.config import Config, SUPPORTED_BITS
-from varquanms.ordering import amplitude_statistics, all_orders, make_order
+from vamp.codec import HEADER, decode_block, encode_block, error_metrics, pack_codes, unpack_codes, within_bounds
+from vamp import codec
+from vamp.config import Config, SUPPORTED_BITS
+from vamp.ordering import amplitude_statistics, all_orders, make_order
 
 
 class CodecTests(unittest.TestCase):

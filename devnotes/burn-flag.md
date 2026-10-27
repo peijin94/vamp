@@ -4,8 +4,8 @@
 `"burn_flag": true`, or use either CLI spelling:
 
 ```bash
-visarchive encode INPUT.ms archive.h5 --burn-flag
-visarchive encode INPUT.ms archive.h5 --config experiment.json --burn_flag
+vamp encode INPUT.ms archive.h5 --burn-flag
+vamp encode INPUT.ms archive.h5 --config experiment.json --burn_flag
 ```
 
 The switch overrides the configuration to `true`; omitting it leaves the

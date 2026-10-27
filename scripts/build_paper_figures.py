@@ -9,7 +9,7 @@ import json
 import os
 from pathlib import Path
 
-os.environ.setdefault("MPLCONFIGDIR", "/tmp/varquanms-paper-matplotlib")
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/vamp-paper-matplotlib")
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -17,12 +17,12 @@ from matplotlib.colors import SymLogNorm
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Polygon, Rectangle
 import numpy as np
 
-from varquanms.imaging import compare_plane
+from vamp.imaging import compare_plane
 
 ROOT = Path(__file__).resolve().parents[1]
 COLORS = {"blue": "#23618d", "teal": "#247c77", "orange": "#cf7434", "purple": "#805ba5", "red": "#b84d52", "grey": "#65727e"}
 plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 10, "axes.spines.top": False,
-                     "axes.spines.right": False, "svg.fonttype": "none", "svg.hashsalt": "varquanms-paper-v1"})
+                     "axes.spines.right": False, "svg.fonttype": "none", "svg.hashsalt": "vamp-paper-v1"})
 
 
 def read(relative):

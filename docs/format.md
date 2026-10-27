@@ -1,10 +1,14 @@
 # Archive and codec format, version 1
 
+The software is now named vamp. Version 1 retains its original on-disk schema,
+format and MS provenance identifiers so that the rename does not invalidate
+existing archives or silently change their reconstruction contract.
+
 The prototype uses scientific schema `varquanms.archive/1` in an ordinary HDF5
 file. Root attributes identify `varquanms.hdf5`, schema version 1, a complete
 flag and the manifest SHA-256. The `manifest` dataset contains strict UTF-8 JSON.
 No pickle, evaluation, network access, model or downloaded codebook is used.
-Decode with `visarchive decode ARCHIVE OUTPUT.ms`; NumPy, h5py and python-casacore
+Decode with `vamp decode ARCHIVE OUTPUT.ms`; NumPy, h5py and python-casacore
 are the only runtime dependencies. These packages must already be installed.
 
 ## Encoder error limits
@@ -406,7 +410,7 @@ rejected. Physical casacore files need not match the source storage layout.
 Literal conformance bytes are in `tests/fixtures/codec-v1.json`. The independent
 standard-library block decoder in `scripts/reference_block_decoder.py` is tested
 against the NumPy decoder, including exact special-value exceptions. The full
-reference MS reconstruction path lives in `src/varquanms/archive.py`.
+reference MS reconstruction path lives in `src/vamp/archive.py`.
 
 ## Calibrated-only extension and ordered partition bundles
 

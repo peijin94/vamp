@@ -124,7 +124,7 @@ def collect_extra(root, base_path):
                 artifacts[str(comp_path.relative_to(ROOT))]=sha(comp_path)
                 artifacts[str((image_dir/'complete.json').relative_to(ROOT))]=sha(image_dir/'complete.json')
             images['stokes_'+pol]=runs
-        results.append({'method':'varquanMS','name':name,'epsilon_D':epsilon,
+        results.append({'method':'vamp','name':name,'epsilon_D':epsilon,
                         'config':config,'visibility_payload_bytes':categories['visibility_block_payload'],
                         'visibility_with_permutations_and_indexes_bytes':rate,
                         'complete_output_bytes':compact['archive_bytes'],
@@ -135,7 +135,7 @@ def collect_extra(root, base_path):
                         'artifact_sha256':artifacts,**images})
     if snapshot(source)!=identity['original_sha256']:
         raise ValueError('The calibrated source MS changed during the audit')
-    return {'schema':'varquanms.dysco-paper-extra/1','status':'complete',
+    return {'schema':'vamp.dysco-paper-extra/1','status':'complete',
             'base_report':str(base_path.relative_to(ROOT)),'base_report_sha256':sha(base_path),
             'source_complex64_bytes':base['source_complex64_bytes'],
             'comparison_mask':base['mask'],
@@ -144,10 +144,10 @@ def collect_extra(root, base_path):
 
 def collect_series(base, extra):
     """Return sorted actual measured points, separated by method and settings."""
-    groups={'varquanMS':[], 'Dysco RF, 2.5σ':[], 'Dysco RF, 1.5σ':[], 'Dysco AF, 2.5σ':[]}
+    groups={'vamp':[], 'Dysco RF, 2.5σ':[], 'Dysco RF, 1.5σ':[], 'Dysco AF, 2.5σ':[]}
     for case in base['cases']+extra['cases']:
-        if case['method']=='varquanMS':
-            key='varquanMS'
+        if case['method'] in ('vamp', 'varquanMS'):
+            key='vamp'
             rate=case['visibility_with_permutations_and_indexes_bytes']
             label=f"εD={case['epsilon_D']:g}"
         elif case.get('flagged_input')=='nan':
@@ -174,7 +174,7 @@ def collect_series(base, extra):
     for points in groups.values():
         points.sort(key=lambda p:p['x'])
     expected={0.01,0.04,0.09,0.18,0.3}
-    if len(groups['varquanMS'])!=len(expected) or {p['epsilon_D'] for p in groups['varquanMS']}!=expected:
+    if len(groups['vamp'])!=len(expected) or {p['epsilon_D'] for p in groups['vamp']}!=expected:
         raise ValueError('The five requested epsilon values are not all present')
     for key,expected_bits in (('Dysco RF, 2.5σ',{3,4,6,8}),('Dysco RF, 1.5σ',{3,4,6,8}),
                               ('Dysco AF, 2.5σ',{3,8})):
@@ -187,7 +187,7 @@ def draw_rate_figure(groups):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    styles={'varquanMS':('#1d668c','o','-'), 'Dysco RF, 2.5σ':('#c1512c','s','-'),
+    styles={'vamp':('#1d668c','o','-'), 'Dysco RF, 2.5σ':('#c1512c','s','-'),
             'Dysco RF, 1.5σ':('#d59921','D','--'), 'Dysco AF, 2.5σ':('#8b5da7','^',':')}
     fig=plt.figure(figsize=(10,7.2),constrained_layout=True)
     grid=fig.add_gridspec(2,4)
@@ -196,7 +196,7 @@ def draw_rate_figure(groups):
     for series,points in groups.items():
         color,marker,style=styles[series]
         for index,ax in enumerate(axes):
-            legend_label=r'varquanMS ($\epsilon_D$)' if series=='varquanMS' else series
+            legend_label=r'vamp ($\epsilon_D$)' if series=='vamp' else series
             ax.plot([p['x'] for p in points],[p['y'][index] for p in points],
                     color=color,marker=marker,linestyle=style,linewidth=1.35,markersize=5,label=legend_label)
             for point in points:
@@ -207,7 +207,7 @@ def draw_rate_figure(groups):
                 label=point['label']
                 offset=(4,4)
                 align='left'
-                if series=='varquanMS':
+                if series=='vamp':
                     label=f"{point['epsilon_D']:g}"
                     offsets={0.3:(5,7),0.18:(5,6),0.09:(5,6),0.04:(5,6),0.01:(-5,-13)}
                     offset=offsets[point['epsilon_D']]

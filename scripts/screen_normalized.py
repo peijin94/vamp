@@ -18,10 +18,10 @@ import time
 
 import numpy as np
 
-from varquanms import codec
-from varquanms.config import Config
-from varquanms.error_budget import EPSILONS, block_references, normalized_limits
-from varquanms.power import _parameters
+from vamp import codec
+from vamp.config import Config
+from vamp.error_budget import EPSILONS, block_references, normalized_limits
+from vamp.power import _parameters
 from screen_error_limits import load_blocks
 
 LAYOUTS=[('amplitude128x48',128,48,'amplitude','max-std-v1'),
@@ -215,7 +215,7 @@ def main():
             pilot_payload_fraction=e['payload_fraction'],config=dict(e['config'],
                 workers=1 if e['config']['baseline_group']==1 else e['config']['workers'])))
     (args.output/'plan.json').write_text(json.dumps(plan,indent=2,allow_nan=False)+'\n')
-    result=dict(schema='varquanms.normalized-screen/1',source=str(args.source),target=args.target,
+    result=dict(schema='vamp.normalized-screen/1',source=str(args.source),target=args.target,
         pilot_target=args.pilot_target,references_path=str(args.references),references=references,
         recipes=all_recipes,layouts=layout_reports,experiments=entries,selected=plan,
         seconds=time.perf_counter()-started,

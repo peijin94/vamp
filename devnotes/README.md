@@ -1,5 +1,6 @@
 # Development notes
 
+- [Rename to vamp and archive compatibility validation](rename-to-vamp.md)
 - [Paper comparison: additional epsilon measurements and figures](dysco-paper-comparison.md)
 - [Matched calibrated I/V and rate comparison against Dysco](compare-dysco.md)
 - [Calibrated archive profiling, optimization and standard I/V validation](calibrated-performance.md)
@@ -19,7 +20,7 @@
 - [Full-range unsigned quantization and zero-bias validation](uint-midrise.md)
 - [Two-level MXFP microscaling experiment](microscaling.md)
 - [Profiling and the under-15-second encoder](performance.md)
-- [Methods paper and reproducible figures](../docs/paper/varquantMS.md)
+- [Methods paper and reproducible figures](../docs/paper/vamp.md)
 - [Initial development manuscript, preserved 25 October 2026](../docs/paper/work_note_20261025_init_work.md)
 - [Design and experiment specification](design.md)
 - [Initial source inspection findings](initial-findings.md)

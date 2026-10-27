@@ -1,6 +1,6 @@
 # Matched calibrated-MS comparison with Dysco
 
-Tracked in [issue #3](https://github.com/peijin94/varquanMS/issues/3).
+Tracked in [issue #3](https://github.com/peijin94/vamp/issues/3).
 The matched comparison is now summarized in paper section 3.7; additional
 epsilon measurements are documented in [the follow-up note](dysco-paper-comparison.md).
 Results are for this dataset and these settings, not a general ranking of the algorithms. The complete measurements
@@ -14,7 +14,7 @@ I/V study: 931,920 rows, 48 channels and XX, XY, YX, YY. The selected
 The matched calibrated-only input retains original flags, row weights, sigma,
 metadata and UVW, omits raw `DATA` and `MODEL_DATA`, and purges flagged
 visibility values. The flag mask remains available. Four-bit weight
-storage in the varquanMS experiments happens to reproduce the source row
+storage in the vamp experiments happens to reproduce the source row
 weights exactly. The Dysco comparison keeps those row weights exactly too;
 this MS has no `WEIGHT_SPECTRUM`.
 
@@ -26,7 +26,7 @@ cases substitute complex NaN at flagged positions, following the procedure in
 [Offringa (2016), section 5](https://arxiv.org/html/1609.02019v1); its NaN
 marker excludes flagged data from normalization. Earlier zero-filled Dysco
 controls are identified separately, since the same flag policy does not imply
-the same normalization statistics. The varquanMS export uses purged zeros.
+the same normalization statistics. The vamp export uses purged zeros.
 Its WSClean input is the compressed `DATA` column; the
 uncompressed reference images the original `CORRECTED_DATA`. The comparison
 only permits this column-name difference after checking the source and output
@@ -57,7 +57,7 @@ MS.
 
 The Dysco outputs pass checks over all 18 tables, 145 retained exact columns,
 table keywords and row order, including UVW, identities, flags, row weights,
-SIGMA and subtables. Three private varquanMS physical-layout keywords are
+SIGMA and subtables. Three private vamp physical-layout keywords are
 replaced by a `DYSCO_COMPARISON` provenance marker, and the visibility column
 descriptor/storage manager necessarily differs. This is not a claim of
 byte-identical casacore files. Flagged input values were deliberately purged;
@@ -69,7 +69,7 @@ values in these runs are finite.
 
 ## Rate and image definitions
 
-The visibility-specific rate includes the varquanMS serialized visibility
+The visibility-specific rate includes the vamp serialized visibility
 blocks, permutations and indexes, versus the entire Dysco DATA-manager file
 including its scales and header. This is a practical accounting boundary, not
 a claim that both managers have identical internal overhead. Complete-output
@@ -79,7 +79,7 @@ and diagnostics are in the generated report. Counts are byte lengths; MB
 means 1,000,000 bytes. The original MS's full size is not used as a codec
 ratio because it also contains raw/model columns dropped by both policies.
 The Dysco output is itself an MS readable by Dysco-enabled casacore; the
-varquanMS number is a standalone HDF5 archive and WSClean images a reconstructed
+vamp number is a standalone HDF5 archive and WSClean images a reconstructed
 MS. Exported MS size and export time are not included in the archive size.
 
 Both methods use the existing fixed WSClean template: 2048² pixels, 4 arcmin,
@@ -104,13 +104,13 @@ repeat control, not an estimate of compression error.
 
 ## Nearly matched visibility-storage case
 
-The 3-bit RF cases and the `εD=0.18` varquanMS case have essentially the same
+The 3-bit RF cases and the `εD=0.18` vamp case have essentially the same
 visibility-specific byte count: **149.119 MB** for Dysco's manager versus
-**148.702 MB** for varquanMS including its permutations and indexes, a 0.28%
+**148.702 MB** for vamp including its permutations and indexes, a 0.28%
 difference. The first I/V differences, expressed as percentages of the
-matching reference residual RMS, were 5.58% / 10.06% for varquanMS, 22.36% /
+matching reference residual RMS, were 5.58% / 10.06% for vamp, 22.36% /
 26.43% for NaN-flagged Dysco RF at truncation 2.5, and 12.05% / 27.15% for
-NaN-flagged RF at truncation 1.5. The second varquanMS I run was 4.80%, and the
+NaN-flagged RF at truncation 1.5. The second vamp I run was 4.80%, and the
 second Dysco RF 2.5 I run was 22.22%. These are separate lossy encodes; the
 observed difference between Dysco settings cannot be assigned solely to the
 flag-marker convention, truncation or stochastic encoding without further
@@ -136,7 +136,7 @@ container/metadata representation, not just visibility encoding.
 
 At a similar **complete-output** size, the εD 0.04 HDF5 archive is 350.112 MB
 and the Dysco RF 4-bit, NaN-flagged MS is 363.506 MB, about 3.8% larger. The
-first I/V differences are 1.15% / 2.09% for varquanMS and 6.15% / 12.11%
+first I/V differences are 1.15% / 2.09% for vamp and 6.15% / 12.11%
 for Dysco RF with truncation 2.5. Here the visibility storage itself differs:
 256.080 MB versus 193.851 MB, respectively. The comparison therefore measures
 the complete archive designs rather than isolating quantizer efficiency.
@@ -151,9 +151,9 @@ denominators. All listed CLEANs reached the configured final threshold.
 
 | Method | Visibility + decode metadata, MB | Complete output, MB | Paired-I visibility error, % | I image / residual, % | V image / residual, % |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| varquanMS, εD 0.18 | 148.702 | 242.766 | 8.650 | 5.584 | 10.056 |
-| varquanMS, εD 0.04 | 256.080 | 350.112 | 1.678 | 1.151 | 2.088 |
-| varquanMS, εD 0.01 | 333.745 | 427.429 | 0.425 | 1.259 | 1.087 |
+| vamp, εD 0.18 | 148.702 | 242.766 | 8.650 | 5.584 | 10.056 |
+| vamp, εD 0.04 | 256.080 | 350.112 | 1.678 | 1.151 | 2.088 |
+| vamp, εD 0.01 | 333.745 | 427.429 | 0.425 | 1.259 | 1.087 |
 | Dysco RF, 3 bits, 2.5σ | 149.119 | 318.774 | 22.767 | 22.359 | 26.433 |
 | Dysco RF, 4 bits, 2.5σ | 193.851 | 363.506 | 11.060 | 6.145 | 12.111 |
 | Dysco RF, 6 bits, 2.5σ | 283.315 | 452.970 | 3.669 | 4.323 | 4.033 |
@@ -186,7 +186,7 @@ The matched-rate figure compares the first εD 0.18 and Dysco RF 3-bit 1.5σ
 images. The V zoom uses the previously audited Taurus A crop, all above 45°;
 its displayed differences use the full above-10° V residual RMS as denominator.
 The precision plot counts input samples, including flagged slots, and does not
-represent bytes: varquanMS's blocks of exact positive zeros are stored compactly.
+represent bytes: vamp's blocks of exact positive zeros are stored compactly.
 The corresponding AF 3-bit [full-field image](figs/dysco-matched-images-af.png)
 and [V zoom](figs/dysco-matched-v-zoom-af.png) are also retained; its visibility
 storage is 134.293 MB rather than the 149.119 MB used by RF 3-bit.
@@ -196,17 +196,17 @@ all 178,928,640 samples would require 134.196 MB before scales, padding or
 headers. Dysco's 3-bit RF DATA-manager file is 149.119 MB, 14.922 MB above
 that ideal count; the 3-bit AF manager is 134.293 MB, 0.096 MB above it. These
 differences include manager metadata and padding and are not a direct measure
-of scales alone. For εD 0.18, varquanMS stores 142.163 MB of visibility block
+of scales alone. For εD 0.18, vamp stores 142.163 MB of visibility block
 payload plus 6.538 MB of permutations and indexes. Its remaining whole-archive
 bytes and Dysco's remaining MS bytes include different metadata and containers;
-the per-category varquanMS sizes are in the machine-readable report.
+the per-category vamp sizes are in the machine-readable report.
 
 The same matched-rate complete outputs break down as follows. Dysco numbers
-are physical file lengths assigned to casacore storage managers; varquanMS
+are physical file lengths assigned to casacore storage managers; vamp
 numbers are archived dataset/inventory categories. These categories do not
 have identical logical boundaries.
 
-| varquanMS εD 0.18 category | MB | Dysco RF 3-bit, 1.5σ category | MB |
+| vamp εD 0.18 category | MB | Dysco RF 3-bit, 1.5σ category | MB |
 | --- | ---: | --- | ---: |
 | Visibility block payload | 142.163 | DATA manager | 149.119 |
 | Permutations + visibility indexes | 6.538 | UVW manager | 22.545 |
@@ -229,7 +229,7 @@ are relative **visibility** RMS errors, not image-residual percentages:
 
 | Codec / setting | XX | XY | YX | YY |
 | --- | ---: | ---: | ---: | ---: |
-| varquanMS, εD 0.18 | 0.45% | 0.74% | 0.74% | 0.55% |
+| vamp, εD 0.18 | 0.45% | 0.74% | 0.74% | 0.55% |
 | Dysco RF, 3 bits, 2.5σ, NaN flags | 15.14% | 21.24% | 21.06% | 17.72% |
 | Dysco RF, 3 bits, 1.5σ, NaN flags | 14.14% | 20.71% | 20.46% | 16.63% |
 | Dysco RF, 8 bits, 2.5σ, NaN flags | 2.41% | 2.15% | 2.15% | 2.21% |
@@ -308,7 +308,7 @@ repository, and image/encode timings depend on the local hardware and load.
 
 Wall-clock figures are descriptive only. RF process timing starts at Docker
 launch and ends at process exit, excluding matched-input preparation,
-independent verification and imaging. The prior varquanMS complete-archive
+independent verification and imaging. The prior vamp complete-archive
 timing includes inspection, verification and compaction. AF experiments
 overlap other jobs and their containers were CPU-limited to avoid saturating
 the shared host. OS caches were not controlled; none of these is a fair
@@ -324,4 +324,4 @@ respectively under the five-CPU Docker limits while other imaging and analysis
 jobs ran. Earlier zero-flagged AF jobs were deliberately stopped when the
 recommended NaN convention was identified; their partial outputs are excluded
 from the full-MS comparison. These timings do not establish an intrinsic AF
-speed or a fair speed ratio against the earlier varquanMS runs.
+speed or a fair speed ratio against the earlier vamp runs.

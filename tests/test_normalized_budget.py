@@ -10,14 +10,14 @@ from unittest.mock import patch
 import numpy as np
 from casacore.tables import table
 
-from varquanms import codec
-from varquanms.archive import encode, verify, compare_ms
-from varquanms.config import Config
-from varquanms.container import Reader
-from varquanms.error_budget import block_references, normalized_limits, normalized_policy
-from varquanms.partitioned import encode_partitioned, decode_partitioned, _load
-from varquanms.references import sample_references, Sampler, validate_reference_manifest
-from varquanms.shared import compact_bundle
+from vamp import codec
+from vamp.archive import encode, verify, compare_ms
+from vamp.config import Config
+from vamp.container import Reader
+from vamp.error_budget import block_references, normalized_limits, normalized_policy
+from vamp.partitioned import encode_partitioned, decode_partitioned, _load
+from vamp.references import sample_references, Sampler, validate_reference_manifest
+from vamp.shared import compact_bundle
 from test_inspection import make_ms, snapshot
 
 
@@ -157,7 +157,7 @@ class NormalizedBudgetTests(unittest.TestCase):
             before=snapshot(source);cfg=configuration()
             for n in (1,2):
                 execution_cfg=cfg if n==1 else replace(cfg,workers=2)
-                with patch('varquanms.partitioned.os.cpu_count',return_value=4):
+                with patch('vamp.partitioned.os.cpu_count',return_value=4):
                     encode_partitioned(source,root/f'archive{n}',execution_cfg,partition_workers=n)
                 decode_partitioned(root/f'archive{n}',root/f'export{n}.ms')
             self.assertTrue(compare_ms(root/'export1.ms',root/'export2.ms'))
@@ -172,7 +172,7 @@ class NormalizedBudgetTests(unittest.TestCase):
                     self.assertEqual(ia,ib)
                     for path in ia:self.assertEqual(ra.h5[path][...].tobytes(),rb.h5[path][...].tobytes())
             self.assertEqual(before,snapshot(source))
-            with patch('varquanms.partitioned.os.cpu_count',return_value=2):
+            with patch('vamp.partitioned.os.cpu_count',return_value=2):
                 with self.assertRaisesRegex(ValueError,'CPU budget'):
                     encode_partitioned(source,root/'bad',replace(cfg,workers=2),partition_workers=2)
             with self.assertRaises(ValueError):encode_partitioned(source,root/'bad',cfg,partition_workers=0)

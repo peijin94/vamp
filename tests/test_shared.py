@@ -9,12 +9,12 @@ from casacore.tables import table
 import h5py
 import numpy as np
 
-from varquanms.archive import compare_ms, decode
-from varquanms.config import Config
-from varquanms.container import Reader
-from varquanms.metadata import dumps
-from varquanms.partitioned import encode_partitioned, decode_partitioned, partition_reader
-from varquanms.shared import compact_bundle, load_shared
+from vamp.archive import compare_ms, decode
+from vamp.config import Config
+from vamp.container import Reader
+from vamp.metadata import dumps
+from vamp.partitioned import encode_partitioned, decode_partitioned, partition_reader
+from vamp.shared import compact_bundle, load_shared
 from test_inspection import make_ms, snapshot
 from test_calibrated import calibrated_fixture
 

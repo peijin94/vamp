@@ -40,7 +40,7 @@ def _write_new(path, contents):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(prog="visarchive", description="Measurement Set archive research tools")
+    parser = argparse.ArgumentParser(prog="vamp", description="Measurement Set archive research tools")
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
     inspect = sub.add_parser("inspect", help="scan a frozen MS read-only; write a JSON inventory")
@@ -132,5 +132,5 @@ def main(argv=None):
         print(summary, end="")
         return 0
     except (ValueError, OSError, RuntimeError, TypeError, ImportError) as error:
-        print(f"visarchive: {error}", file=sys.stderr)
+        print(f"vamp: {error}", file=sys.stderr)
         return 1

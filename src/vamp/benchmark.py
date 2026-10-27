@@ -16,7 +16,7 @@ def load_matrix(path):
     matrix = json.loads(Path(path).read_text())
     if not isinstance(matrix, dict) or set(matrix) - {"schema", "base", "experiments", "export_ms", "cache_methodology", "notes"}:
         raise ValueError("Unknown benchmark matrix field")
-    if matrix.get("schema") != "varquanms.benchmark/1" or not isinstance(matrix.get("base", {}), dict):
+    if matrix.get("schema") not in ("vamp.benchmark/1", "varquanms.benchmark/1") or not isinstance(matrix.get("base", {}), dict):
         raise ValueError("Unsupported benchmark schema/base configuration")
     if type(matrix.get("export_ms", False)) is not bool or not isinstance(matrix.get("cache_methodology"), str):
         raise ValueError("Benchmark requires explicit cache_methodology and boolean export_ms")
@@ -54,7 +54,7 @@ def run(source, matrix_path, output, selected=None):
     def invoke(name, stage, arguments):
         print(json.dumps({"experiment": name, "stage": stage}), flush=True)
         stamp = time.perf_counter()
-        result = subprocess.run([sys.executable, "-m", "varquanms", *arguments],
+        result = subprocess.run([sys.executable, "-m", "vamp", *arguments],
                                 text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         _write_new(output / name / f"{stage}.stdout.log", result.stdout)
         _write_new(output / name / f"{stage}.stderr.log", result.stderr)
@@ -80,7 +80,7 @@ def run(source, matrix_path, output, selected=None):
                   "process_timings_seconds": timing}
         records.append(record)
         _write_new(directory / "complete.json", json.dumps(record, indent=2) + "\n")
-    result = {"schema": "varquanms.benchmark-results/1", "status": "complete", "source": str(source),
+    result = {"schema": "vamp.benchmark-results/1", "status": "complete", "source": str(source),
               "cache_methodology": matrix["cache_methodology"], "notes": matrix.get("notes"),
               "experiments": records, "selected_experiments": [name for name, _ in experiments],
               "elapsed_seconds": time.perf_counter() - started,

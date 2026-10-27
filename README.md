@@ -1,4 +1,4 @@
-# varquanMS
+# vamp
 
 Adaptive 3/4/5/6/8/10/12/14/16-bit visibility compression for CASA Measurement Sets, with exact
 float32 fallback and reconstruction to a new MS. Experiments group samples by
@@ -14,11 +14,15 @@ Python 3.10+ is required.
 
 ```bash
 python -m pip install -e .
-visarchive inspect INPUT.ms --report inspection.json
-visarchive encode INPUT.ms archive.h5 --config configs/lossless.json
-visarchive decode archive.h5 RESTORED.ms
-visarchive verify archive.h5 --source INPUT.ms --restored RESTORED.ms --report verification.json
+vamp inspect INPUT.ms --report inspection.json
+vamp encode INPUT.ms archive.h5 --config configs/lossless.json
+vamp decode archive.h5 RESTORED.ms
+vamp verify archive.h5 --source INPUT.ms --restored RESTORED.ms --report verification.json
 ```
+
+Existing archives remain readable after the rename. The former `visarchive`
+command and `varquanms` Python namespace remain compatibility aliases; new
+integrations should use `vamp`.
 
 Use `configs/engineering-adaptive.json` for an explicitly lossy experiment.
 The [normalized calibrated preset](configs/calibrated-normalized.json) uses
@@ -41,16 +45,16 @@ contiguous integrations. Unsupported layouts fail explicitly.
 ```bash
 python -m pip install -e '.[validation]'
 python -m unittest discover -s tests -v
-visarchive benchmark INPUT.ms --matrix configs/benchmark-grouping.json --output results/my-run
+vamp benchmark INPUT.ms --matrix configs/benchmark-grouping.json --output results/my-run
 ```
 
 ## Documentation
 
-- Methods paper, diagrams, imaging results and timing: [PDF](docs/paper/varquantMS.pdf) · [Markdown](docs/paper/varquantMS.md)
+- Methods paper, diagrams, imaging results and timing: [PDF](docs/paper/vamp.pdf) · [Markdown](docs/paper/vamp.md)
 - [Archive and codec format](docs/format.md)
 - [Development notes and experiment results](devnotes/README.md)
 - [Initial MS inspection](reports/initial-inspection.txt)
 
-Public repository: [peijin94/varquanMS](https://github.com/peijin94/varquanMS).
+Public repository: [peijin94/vamp](https://github.com/peijin94/vamp).
 Observation payloads, reconstructed MSs and generated FITS files are excluded
 from Git.

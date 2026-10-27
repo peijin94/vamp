@@ -7,10 +7,10 @@ from casacore.tables import table
 import h5py
 import numpy as np
 
-from varquanms.archive import compare_ms, decode, encode, verify
-from varquanms.config import Config
-from varquanms.container import Reader
-from varquanms.metadata import equal, pack, unpack
+from vamp.archive import compare_ms, decode, encode, verify
+from vamp.config import Config
+from vamp.container import Reader
+from vamp.metadata import equal, pack, unpack
 from test_inspection import make_ms, snapshot
 
 

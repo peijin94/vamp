@@ -8,7 +8,7 @@ import re
 import numpy as np
 from astropy.io import fits
 
-from varquanms.imaging import _grid, file_sha256 as _file_sha256, read_fits
+from vamp.imaging import _grid, file_sha256 as _file_sha256, read_fits
 from report_fixed_rate import payload_distribution, fraction, plots
 from report_fixed10 import moments
 
@@ -226,7 +226,7 @@ def collect(partial=False):
         entry['residual_normalized_runs']=measured
         if len(measured)==2:entry['worst_residual_normalized_difference']=max(x['restored_difference_over_reference_residual'] for x in measured)
         entries.append(entry)
-    result=dict(schema='varquanms.normalized-fixed16-study/1',status='partial' if partial else 'complete',
+    result=dict(schema='vamp.normalized-fixed16-study/1',status='partial' if partial else 'complete',
         original_complex64_bytes=ORIGINAL_BYTES,payload_budget_bytes=BUDGET_BYTES,screen=screen,experiments=entries,
         reference_residual_statistics=ref_stats,
         reference_residual=dict(path=str(REFERENCE/'image-residual.fits'),sha256=file_sha256(REFERENCE/'image-residual.fits')),
@@ -275,7 +275,7 @@ def collect(partial=False):
 
 def supplementary_plots(result):
     import os
-    os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
+    os.environ.setdefault('MPLCONFIGDIR','/tmp/vamp-mpl')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt

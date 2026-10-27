@@ -1,4 +1,4 @@
-# varquanMS: local-scale, adaptive-precision archives for Measurement Sets
+# vamp: local-scale, adaptive-precision archives for Measurement Sets
 
 **Working methods and experiment paper — 23 October 2026.** This document describes
 implemented behavior and measured results, not an approved archival science profile.
@@ -1051,12 +1051,12 @@ python -m pip install -e '.[validation]'
 python -m unittest discover -s tests -v
 
 # Full regression and MS export, using a NEW output directory:
-visarchive benchmark INPUT.ms --matrix configs/benchmark-grouping.json \
+vamp benchmark INPUT.ms --matrix configs/benchmark-grouping.json \
   --experiments amplitude-g128-192 --output results/new-precision-run
 
 # Speed benchmark: three fresh processes, 24 workers, verification separate.
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-  visarchive benchmark INPUT.ms --matrix configs/benchmark-performance.json \
+  vamp benchmark INPUT.ms --matrix configs/benchmark-performance.json \
   --output results/new-performance-run
 python scripts/summarize_runtime.py results/new-performance-run/results.json \
   --source-inventory reports/sample-copy-after-grouping.json \
@@ -1066,13 +1066,13 @@ python scripts/summarize_runtime.py results/new-performance-run/results.json \
 python scripts/build_paper_figures.py
 
 # Matched unsigned-code comparison; use a fresh result directory.
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 vamp benchmark INPUT.ms \
   --matrix configs/benchmark-midrise.json --output results/new-uint-comparison
 python scripts/report_midrise.py --figures-only
 
 # Median-centered adaptive power-law quantization and its controls.
-visarchive encode INPUT.ms NEW-POWER.h5 --config configs/power-adaptive.json
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 visarchive benchmark INPUT.ms \
+vamp encode INPUT.ms NEW-POWER.h5 --config configs/power-adaptive.json
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 vamp benchmark INPUT.ms \
   --matrix configs/benchmark-power.json --output results/new-power-controls
 python scripts/report_power.py --figures-only
 ```

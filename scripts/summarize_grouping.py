@@ -6,8 +6,8 @@ import json
 import os
 from pathlib import Path
 
-from varquanms.benchmark import load_matrix
-from varquanms.cli import _write_new
+from vamp.benchmark import load_matrix
+from vamp.cli import _write_new
 
 
 def point(record, imaging):
@@ -67,7 +67,7 @@ def summarize(matrix, roots, reports, repeat, image_prefix="wsclean-"):
             raise ValueError(f"Imaging controls differ from the repeatability reference: {name}")
         entry = point(record, image)
         entry["wsclean_run"] = json.loads((Path(image["candidate"]) / "complete.json").read_text())
-        from varquanms.container import Reader
+        from vamp.container import Reader
         with Reader(record["encoding"]["archive"], verify=False) as reader:
             entry["archive_environment"] = reader.manifest["environment"]
         points.append(entry)
@@ -76,7 +76,7 @@ def summarize(matrix, roots, reports, repeat, image_prefix="wsclean-"):
         vector = vectors[p["name"]]
         p["dominated_by"] = [name for name, other in vectors.items() if name != p["name"] and
                              all(x <= y for x, y in zip(other, vector)) and any(x < y for x, y in zip(other, vector))]
-    return {"schema": "varquanms.grouping-results/1", "status": "complete", "points": points,
+    return {"schema": "vamp.grouping-results/1", "status": "complete", "points": points,
             "reference_repeatability": repeat,
             "reference_wsclean_run": json.loads((Path(repeat["reference"]) / "complete.json").read_text()),
             "dominance_definition": "No worse in whole bytes, every product's MSE/maximum/bias/max-baseline-MSE, and dirty/restored valid-sky RMS; strictly better in at least one. This finite-sample relation is not a scientific guarantee or equal-error interpolation.",
@@ -86,7 +86,7 @@ def summarize(matrix, roots, reports, repeat, image_prefix="wsclean-"):
 
 
 def plot(result, path):
-    os.environ.setdefault("MPLCONFIGDIR", "/tmp/varquanms-matplotlib-cache")
+    os.environ.setdefault("MPLCONFIGDIR", "/tmp/vamp-matplotlib-cache")
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

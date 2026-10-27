@@ -5,7 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
-from varquanms.inspection import _open, CORRELATIONS
+from vamp.inspection import _open, CORRELATIONS
 
 
 def analyze(source, decoded, source_column='CORRECTED_DATA', decoded_column='CORRECTED_DATA'):
@@ -69,7 +69,7 @@ def analyze(source, decoded, source_column='CORRECTED_DATA', decoded_column='COR
         return [dict(samples=int(n),signal_component_power=p/n if n else None,
                      component_mse=e/n if n else None,
                      relative_rmse=float(np.sqrt(e/p)) if p else None) for n,p,e in raw]
-    return dict(schema='varquanms.visibility-error-diagnostics/1',source=str(source),decoded=str(decoded),
+    return dict(schema='vamp.visibility-error-diagnostics/1',source=str(source),decoded=str(decoded),
         source_column=source_column,decoded_column=decoded_column,
         products={k:finish(v) for k,v in moments.items()},
         amplitude_edges=[float(v) if np.isfinite(v) else None for v in amplitude_edges],

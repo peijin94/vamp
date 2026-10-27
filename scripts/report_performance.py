@@ -7,12 +7,12 @@ from pathlib import Path
 import pstats
 import statistics
 
-os.environ.setdefault("MPLCONFIGDIR", "/tmp/varquanms-performance-matplotlib")
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/vamp-performance-matplotlib")
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from varquanms.cli import _write_new
+from vamp.cli import _write_new
 
 
 def profile(path):
@@ -55,7 +55,7 @@ def main():
            for name in ("native_search_quantization_cpu", "native_search_compression_cpu")}
     result = {"all_final_repeats_under_target": runtime["adaptive_summary"]["encode_process_seconds"]["maximum"] < 15}
     if not args.plot_only:
-        result.update({"schema": "varquanms.performance-profile/1", "status": "complete",
+        result.update({"schema": "vamp.performance-profile/1", "status": "complete",
               "baseline_profile": profile(args.baseline_profile),
               "optimized_profile": profile(args.optimized_profile),
               "profile_scope": "cProfile observes the calling thread. Lock acquire time in the optimized profile is primarily waiting for worker results; it is not a CPU-cost attribution to locks. Native kernel CPU counters are separately measured with CLOCK_THREAD_CPUTIME_ID.",

@@ -189,7 +189,7 @@ def compare_run(reference_dir, candidate_dir, mask_path=None, equivalent_calibra
             difference_over_reference_residual_rms=delta/denominator if denominator else None,
             denominator_status='positive' if denominator else 'zero; ratio undefined',
             definition='RMS(candidate image-reference image) / RMS(reference residual); same fixed comparison domain; no denominator floor')
-    result = {"schema": "varquanms.wsclean-comparison/1", "status": "measured",
+    result = {"schema": "vamp.wsclean-comparison/1", "status": "measured",
               "reference": str(reference_dir), "candidate": str(candidate_dir),
               "parameters": runs[0]["parameters"], "container_id": runs[0]["container_id"], "products": products,
               "comparison_mask": mask_info, "residual_normalized": residual_normalized,
@@ -209,7 +209,7 @@ def compare_run(reference_dir, candidate_dir, mask_path=None, equivalent_calibra
 
 def plot_comparison(reference_path, candidate_path, output, comparison_mask=None):
     # Reuse a writable task-specific font cache on restricted execution hosts.
-    os.environ.setdefault("MPLCONFIGDIR", "/tmp/varquanms-matplotlib-cache")
+    os.environ.setdefault("MPLCONFIGDIR", "/tmp/vamp-matplotlib-cache")
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

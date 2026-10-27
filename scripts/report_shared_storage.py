@@ -8,10 +8,10 @@ import casacore
 import h5py
 import numpy as np
 
-from varquanms.container import Reader
-from varquanms.imaging import file_sha256
-from varquanms.partitioned import partition_reader
-from varquanms.shared import load_shared
+from vamp.container import Reader
+from vamp.imaging import file_sha256
+from vamp.partitioned import partition_reader
+from vamp.shared import load_shared
 
 ROOT = Path('results/calibrated-sharing')
 
@@ -52,7 +52,7 @@ def collect():
     assert export['status']=='passed' and identical['status']=='passed'
     assert identical['all_supported_values_and_metadata_bitwise_equal']
     assert identical['original_source_import_checksums_match']
-    return dict(schema='varquanms.shared-storage-experiment/1', experiments=results,
+    return dict(schema='vamp.shared-storage-experiment/1', experiments=results,
                 recommended_profile='amplitude256', original_encoding_phase_seconds=phases,
                 amplitude256_export_verification=export, amplitude256_matches_previously_imaged_export=identical,
                 tests=dict(local_suite_passed=95), hardware=baseline['hardware'],
@@ -65,7 +65,7 @@ def collect():
 
 
 def plot(result):
-    os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
+    os.environ.setdefault('MPLCONFIGDIR','/tmp/vamp-mpl')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt

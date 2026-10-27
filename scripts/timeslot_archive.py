@@ -3,9 +3,9 @@ import argparse
 import json
 from pathlib import Path
 
-from varquanms.cli import _write_new
-from varquanms.config import Config
-from varquanms.partitioned import decode_partitioned, encode_partitioned
+from vamp.cli import _write_new
+from vamp.config import Config
+from vamp.partitioned import decode_partitioned, encode_partitioned
 
 
 def main():
@@ -29,7 +29,7 @@ def main():
         raise ValueError('--ms-v2-data is an export option')
     overrides = {"keep_calib_only": True, "columns": ["CORRECTED_DATA"]} if args.keep_calib_only else {}
     if args.operation == 'compact':
-        from varquanms.shared import compact_bundle
+        from vamp.shared import compact_bundle
         result = compact_bundle(args.source, args.output)
     elif args.operation == 'encode':
         result = encode_partitioned(args.source, args.output, Config.load(args.config, **overrides),

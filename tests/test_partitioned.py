@@ -6,10 +6,10 @@ import unittest
 from casacore.tables import table, makearrcoldesc, maketabdesc, tabledefinehypercolumn
 import numpy as np
 
-from varquanms.archive import compare_ms
-from varquanms.config import Config
-from varquanms.partitioned import context_runs, decode_partitioned, encode_partitioned
-from varquanms.imaging import file_sha256
+from vamp.archive import compare_ms
+from vamp.config import Config
+from vamp.partitioned import context_runs, decode_partitioned, encode_partitioned
+from vamp.imaging import file_sha256
 from test_inspection import make_ms, snapshot
 
 

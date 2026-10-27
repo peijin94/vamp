@@ -1,5 +1,5 @@
 {
-  "schema": "varquanms.benchmark/1",
+  "schema": "vamp.benchmark/1",
   "cache_methodology": "Warm/unspecified OS cache; independent experiment lanes run concurrently on a shared host. Timings are diagnostic, not isolated throughput measurements.",
   "notes": "Matched adaptive precisions and absolute bounds. Geometry and antenna group boundaries are explicit. Frequency-segment experiments vary only segment length relative to amplitude-64. All decoded outputs undergo WSClean imaging separately.",
   "export_ms": true,

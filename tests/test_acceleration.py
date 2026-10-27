@@ -6,10 +6,10 @@ from unittest.mock import patch
 
 import numpy as np
 
-from varquanms import codec, visibility
-from varquanms.archive import encode, verify
-from varquanms.config import Config, SUPPORTED_BITS
-from varquanms.container import Reader
+from vamp import codec, visibility
+from vamp.archive import encode, verify
+from vamp.config import Config, SUPPORTED_BITS
+from vamp.container import Reader
 from test_inspection import make_ms
 
 

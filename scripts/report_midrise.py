@@ -12,8 +12,8 @@ import numpy as np
 from casacore.tables import table
 
 from run_wsclean import snapshot
-from varquanms.container import Reader
-from varquanms.visibility import quality
+from vamp.container import Reader
+from vamp.visibility import quality
 
 ROOT = Path(__file__).resolve().parents[1]
 plt.rcParams["svg.hashsalt"] = "varquanms-midrise-v1"
@@ -72,7 +72,7 @@ def main():
     benchmark = json.loads((args.root/"benchmark/results.json").read_text())
     if benchmark["status"] != "complete":
         raise ValueError("Incomplete benchmark")
-    report = {"schema": "varquanms.uint-midrise-study/1", "date_utc": "2026-10-23",
+    report = {"schema": "vamp.uint-midrise-study/1", "date_utc": "2026-10-23",
               "source": benchmark["source"], "methodology": benchmark["notes"],
               "cache_methodology": benchmark["cache_methodology"], "codecs": [],
               "formula": {"levels": "N=2**b; C=(N-1)/2; delta=ceil_float32(t/C)",

@@ -16,12 +16,12 @@ PAPER = ROOT / "docs/paper"
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=PAPER / "varquantMS.pdf")
+    parser.add_argument("--output", type=Path, default=PAPER / "vamp.pdf")
     args = parser.parse_args()
-    with tempfile.TemporaryDirectory(prefix="varquanms-paper-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="vamp-paper-") as temporary:
         intermediate = Path(temporary) / "paper.typ"
         subprocess.run([
-            pypandoc.get_pandoc_path(), str(PAPER / "varquantMS.md"),
+            pypandoc.get_pandoc_path(), str(PAPER / "vamp.md"),
             "--from=markdown-implicit_figures", "--to=typst", "--standalone",
             "--syntax-highlighting=none", "--fail-if-warnings", "--wrap=none",
             "--template=" + str(PAPER / "pdf-template.typ"),

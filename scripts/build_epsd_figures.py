@@ -4,10 +4,10 @@ import json
 import datetime
 import os
 
-os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
+os.environ.setdefault('MPLCONFIGDIR','/tmp/vamp-mpl')
 import matplotlib
 matplotlib.use('Agg')
-matplotlib.rcParams['svg.hashsalt'] = 'varquanms-paper'
+matplotlib.rcParams['svg.hashsalt'] = 'vamp-paper'
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Circle
 import numpy as np
@@ -71,7 +71,7 @@ def image_comparisons(result):
     from astropy.io import fits
     from matplotlib.colors import Normalize, SymLogNorm
     from matplotlib.ticker import PercentFormatter
-    from varquanms.imaging import read_fits, _grid, file_sha256
+    from vamp.imaging import read_fits, _grid, file_sha256
     from report_fixed_rate import REF
 
     pol = result.get('stokes', 'I')

@@ -12,8 +12,8 @@ import unittest
 from casacore.tables import default_ms, makearrcoldesc, maketabdesc, table
 import numpy as np
 
-from varquanms.cli import main
-from varquanms.inspection import inspect_ms, json_value, numeric_counts, unique_bits
+from vamp.cli import main
+from vamp.inspection import inspect_ms, json_value, numeric_counts, unique_bits
 
 
 def make_ms(path, pairs=((0, 0), (0, 1), (1, 1)), channels=3,

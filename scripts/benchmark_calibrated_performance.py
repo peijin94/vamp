@@ -1,5 +1,6 @@
 """Run isolated-in-sequence fresh-process workflow benchmarks and a separate profile."""
 import argparse
+import importlib
 import json
 import os
 from pathlib import Path
@@ -10,9 +11,9 @@ import time
 
 
 def child(args):
-    from varquanms.config import Config
-    from varquanms.partitioned import encode_partitioned
-    from varquanms.shared import compact_bundle
+    Config=importlib.import_module(args.package+'.config').Config
+    encode_partitioned=importlib.import_module(args.package+'.partitioned').encode_partitioned
+    compact_bundle=importlib.import_module(args.package+'.shared').compact_bundle
     cfg=Config.load(args.config)
     before=time.perf_counter()
     bundle=encode_partitioned(args.source,args.output.with_suffix('.bundle'),cfg,
@@ -41,10 +42,13 @@ def main():
     p.add_argument('--repeats',type=int,default=3)
     p.add_argument('--profile-first',action='store_true')
     p.add_argument('--child',action='store_true')
+    p.add_argument('--package',choices=('vamp','varquanms'),default='vamp',help=argparse.SUPPRESS)
     args=p.parse_args()
     if args.child:return child(args)
-    if not (args.code_root/'src/varquanms/__init__.py').is_file():
-        raise ValueError('code-root must contain the intended varquanms source tree')
+    package=next((name for name in ('vamp','varquanms')
+                  if (args.code_root/'src'/name/'__init__.py').is_file()),None)
+    if package is None:
+        raise ValueError('code-root must contain a vamp or legacy source tree')
     if args.repeats<0 or args.repeats==0 and not args.profile_first:
         raise ValueError('Select positive repeats or a separate profile')
     args.output.mkdir(parents=True,exist_ok=True)
@@ -59,7 +63,7 @@ def main():
         if profile:command+=['-m','cProfile','-o',str(output.with_suffix('.prof'))]
         command += [str(Path(__file__).resolve()),'--child','--source',str(args.source.resolve()),
                     '--config',str(args.config.resolve()),'--output',str(output.resolve()),
-                    '--partition-workers',str(args.partition_workers)]
+                    '--partition-workers',str(args.partition_workers),'--package',package]
         start=time.perf_counter()
         with output.with_suffix('.log').open('w') as log:
             completed=subprocess.run(command,env=env,stdout=log,stderr=subprocess.STDOUT)

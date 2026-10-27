@@ -5,10 +5,10 @@ import unittest
 from casacore.tables import table
 import numpy as np
 
-from varquanms.archive import encode, decode, verify
-from varquanms.config import Config
-from varquanms.codec import unpack_codes
-from varquanms.weights import encode_chunk
+from vamp.archive import encode, decode, verify
+from vamp.config import Config
+from vamp.codec import unpack_codes
+from vamp.weights import encode_chunk
 from test_calibrated import calibrated_fixture
 
 

@@ -2,7 +2,7 @@
 
 25 October 2026. Three requested tolerances were encoded independently from the original calibrated source, with no rate cap or retuning: 0.01, 0.04, 0.18. All use 128×48×1 amplitude groups, median centres, max/std gamma (R0=4), range quantiles 1 and 0.995, and the 3/4/5/6/8/10/12/14/16 ladder plus exact fallback. G/S/R are disabled.
 
-Correction: the requested third tolerance is **0.18**, replacing 0.018. The 0.18 archive and both CLEAN runs are new measurements; verified 0.01 and 0.04 results are reused unchanged. The [earlier 0.018 results](https://github.com/peijin94/varquanMS/blob/b9596c800e176dfe312945212453b99161343bac/devnotes/epsd-dense.md) remain historical and are not relabelled.
+Correction: the requested third tolerance is **0.18**, replacing 0.018. The 0.18 archive and both CLEAN runs are new measurements; verified 0.01 and 0.04 results are reused unchanged. The [earlier 0.018 results](https://github.com/peijin94/vamp/blob/b9596c800e176dfe312945212453b99161343bac/devnotes/epsd-dense.md) remain historical and are not relabelled.
 
 The four-bit precision selector is stored in the low nibble of a versioned header byte. Exact is tag 0; tags 1–9 select the nine widths; tag A is legacy two-bit; B–E are reserved and F is invalid/error. Invalid tags fail rather than pretending to contain data. Header sizes remain 16/28 bytes.
 
@@ -156,6 +156,6 @@ export PYTHONPATH=src OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
 python scripts/run_normalized_study.py --source INPUT.ms --root NEW_RESULTS --plan configs/calibrated-epsd-study.json
 ```
 
-[Machine-readable results](../reports/calibrated-epsd-dense.json). [Rewritten paper](../docs/paper/varquantMS.md). The previous manuscript was moved without content changes to [the initial work note](../docs/paper/work_note_20261025_init_work.md).
+[Machine-readable results](../reports/calibrated-epsd-dense.json). [Rewritten paper](../docs/paper/vamp.md). The previous manuscript was moved without content changes to [the initial work note](../docs/paper/work_note_20261025_init_work.md).
 
 Only joint Stokes I on this supplied observation was tested; no held-out, polarization, spectral-cube or calibration-solution claim is made.

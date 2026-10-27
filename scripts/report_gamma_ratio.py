@@ -8,7 +8,7 @@ import re
 
 import numpy as np
 
-from varquanms.imaging import compare_run, file_sha256, plot_comparison, read_fits
+from vamp.imaging import compare_run, file_sha256, plot_comparison, read_fits
 
 ROOT = Path('results/calibrated-gamma-ratio')
 REFERENCE = Path('results/calibrated-template/reference')
@@ -20,7 +20,7 @@ def collect():
     screen = json.loads((ROOT/'screen-final/screen.json').read_text())
     # Keep per-block rates/errors and the common sampled-block identities in
     # the public report; the large per-block timing trace stays local.
-    screen['schema'] = 'varquanms.gamma-ratio-screen-summary/1'
+    screen['schema'] = 'vamp.gamma-ratio-screen-summary/1'
     for experiment in screen['experiments']:
         experiment['blocks'] = [dict(bytes=b['bytes'], bits=b['bits'], gamma=b['gamma'],
                                       samples=b['samples'],valid_samples=b['metrics']['valid_samples'],
@@ -74,7 +74,7 @@ def collect():
     repeated=dict(versus_reference=compare_run(REFERENCE,ROOT/'ratio-repeat-images',MASK),
                   versus_first=compare_run(ROOT/'ratio-images',ROOT/'ratio-repeat-images',MASK),
                   imaging=json.loads((ROOT/'ratio-repeat-images/complete.json').read_text()))
-    return dict(schema='varquanms.gamma-ratio-experiment/1',screen=screen,experiments=records,ratio_repeat=repeated,
+    return dict(schema='vamp.gamma-ratio-experiment/1',screen=screen,experiments=records,ratio_repeat=repeated,
         baseline=dict(name='symmetric-amplitude256',shared_bytes=baseline['archive_bytes'],
                       comparison=baseline['image_comparison'],previous_image_repeat_percent=[.68605007,.54955293]),
         source_integrity=dict(original_import_checksums_match=True,files_checked=len(imported['files'])),
@@ -88,7 +88,7 @@ def collect():
 
 
 def screen_plots(screen):
-    os.environ.setdefault('MPLCONFIGDIR','/tmp/varquanms-mpl')
+    os.environ.setdefault('MPLCONFIGDIR','/tmp/vamp-mpl')
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -171,7 +171,7 @@ def write_note(result):
     percentage=lambda e:100*e['comparison']['products']['image-image.fits']['regions']['above_elevation_cut']['relative_rms_difference']
     repeat_percentage=100*result['ratio_repeat']['versus_reference']['products']['image-image.fits']['regions']['above_elevation_cut']['relative_rms_difference']
     lines=['# Gamma from maximum / standard deviation','',
-        '24 October 2026. Follow-up to [calibrated dataset tests](test_calibrated_dataset.md) and [issue #1](https://github.com/peijin94/varquanMS/issues/1). The paper is unchanged.','',
+        '24 October 2026. Follow-up to [calibrated dataset tests](test_calibrated_dataset.md) and [issue #1](https://github.com/peijin94/vamp/issues/1). The paper is unchanged.','',
         f"**Result:** the direct rule produces {full['ratio']['shared']['archive_bytes']/1e6:.3f} MB and {min(percentage(full['ratio']),repeat_percentage):.3f}–{max(percentage(full['ratio']),repeat_percentage):.3f}% restored-image differences in two runs. "
         f"Full gamma search gives {full['search']['shared']['archive_bytes']/1e6:.3f} MB / {percentage(full['search']):.3f}%; the inlier rule gives {full['inlier']['shared']['archive_bytes']/1e6:.3f} MB / {percentage(full['inlier']):.3f}% in its single run. "
         'The ratio rules reduce measured native search work, but show no practical whole-archive compression or full-encoding latency advantage here. Both remain optional; archive defaults are unchanged. '

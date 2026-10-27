@@ -13,9 +13,9 @@ from casacore.tables import table
 
 from report_midrise import save
 from run_wsclean import snapshot
-from varquanms.container import Reader
-from varquanms.power import reconstruct
-from varquanms.visibility import quality
+from vamp.container import Reader
+from vamp.power import reconstruct
+from vamp.visibility import quality
 
 ROOT=Path(__file__).resolve().parents[1]
 plt.rcParams['svg.hashsalt']='varquanms-power-v1'
@@ -80,7 +80,7 @@ def main():
     fidelity=json.loads((args.root/'fidelity-benchmark/results.json').read_text())
     entries=initial['experiments']+final['experiments']+fidelity['experiments']
     if any(e['verification_status']!='passed' for e in entries):raise ValueError('Every archive must be verified')
-    report={'schema':'varquanms.power-study/1','date_utc':'2026-10-23','source':initial['source'],
+    report={'schema':'vamp.power-study/1','date_utc':'2026-10-23','source':initial['source'],
             'methodology':initial['notes'],'cache_methodology':initial['cache_methodology'],
             'experiments':[summarize(e) for e in entries],
             'primary_sources':['https://arxiv.org/html/1609.02019v1','https://www.audiolabs-erlangen.de/resources/MIR/FMP/C2/C2S2_DigitalSignalQuantization.html'],

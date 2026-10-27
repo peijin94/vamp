@@ -7,7 +7,7 @@ from pathlib import Path
 import numpy as np
 from astropy.io import fits
 
-from varquanms.imaging import _grid, file_sha256, read_fits
+from vamp.imaging import _grid, file_sha256, read_fits
 from report_fixed_rate import fraction, payload_distribution, plots
 
 ROOT=Path('results/calibrated-fixed10')
@@ -99,7 +99,7 @@ def collect(partial=False):
         entries.append(entry)
     previous=json.loads(Path('reports/calibrated-fixed25.json').read_text())
     previous=next(e for e in previous['experiments'] if e['name']==previous['empirical_best_worst_of_two'])
-    result=dict(schema='varquanms.fixed10-study/1',status='partial' if partial else 'complete',
+    result=dict(schema='vamp.fixed10-study/1',status='partial' if partial else 'complete',
         original_complex64_bytes=ORIGINAL_BYTES,payload_budget_bytes=BUDGET_BYTES,
         screen=json.loads((ROOT/'screen/screen.json').read_text()),experiments=entries,
         reference_residual_statistics=reference_statistics,

@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from varquanms.inspection import _open
+from vamp.inspection import _open
 
 
 def main():
@@ -54,7 +54,7 @@ def main():
     for name, (count,power,error) in zip(('XX','XY','YX','YY'),totals):
         products[name] = {'unflagged_samples':int(count),
                           'relative_complex_rms_error':float(np.sqrt(error/power))}
-    result = {'schema':'varquanms.dysco-autocorr-probe/1','status':'exploratory',
+    result = {'schema':'vamp.dysco-autocorr-probe/1','status':'exploratory',
               'source':str(args.source),'probe':str(args.probe),'rows':n,'integrations':2,
               'verified_prefix_columns':list(names),'flagged_input':'zero control',
               'normalization':'AF','bits_per_component':8,'distribution':'TruncatedGaussian',

@@ -6,7 +6,7 @@ import unittest
 
 import numpy as np
 
-from varquanms.imaging import compare_plane, compare_run, difference_metrics, image_parameters_match
+from vamp.imaging import compare_plane, compare_run, difference_metrics, image_parameters_match
 
 
 @unittest.skipUnless(importlib.util.find_spec("astropy"), "Install the optional validation extra")

@@ -1,6 +1,6 @@
 # Gamma from maximum / standard deviation
 
-24 October 2026. Follow-up to [calibrated dataset tests](test_calibrated_dataset.md) and [issue #1](https://github.com/peijin94/varquanMS/issues/1). The paper is unchanged.
+24 October 2026. Follow-up to [calibrated dataset tests](test_calibrated_dataset.md) and [issue #1](https://github.com/peijin94/vamp/issues/1). The paper is unchanged.
 
 **Result:** the direct rule produces 414.827 MB and 0.766–0.768% restored-image differences in two runs. Full gamma search gives 414.629 MB / 0.734%; the inlier rule gives 414.757 MB / 1.325% in its single run. The ratio rules reduce measured native search work, but show no practical whole-archive compression or full-encoding latency advantage here. Both remain optional; archive defaults are unchanged. This tests the discrete gamma set {1, 1/2, 1/4}, not every possible smoother max/std-to-gamma mapping.
 

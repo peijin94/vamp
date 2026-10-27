@@ -12,7 +12,7 @@ from pathlib import Path
 import numpy as np
 
 from screen_error_limits import configuration, evaluate, load_blocks
-from varquanms.config import Config
+from vamp.config import Config
 
 
 def main():
@@ -88,7 +88,7 @@ def main():
     plan=[dict(name=args.prefix+'-'+e['name'],family=e['family'],layout=e['layout'],parameter=e['parameter'],
                payload_fraction_target=args.target_fraction,pilot_payload_fraction=e['payload_ratio'],config=e['config']) for e in selected]
     (args.output/'plan.json').write_text(json.dumps(plan,indent=2,allow_nan=False)+'\n')
-    (args.output/'screen.json').write_text(json.dumps(dict(schema='varquanms.fixed-rate-screen/1',
+    (args.output/'screen.json').write_text(json.dumps(dict(schema='vamp.fixed-rate-screen/1',
         source=str(args.ms),payload_fraction_target=args.target_fraction,pilot_fraction_target=pilot,
         layouts=layouts,experiments=entries,trials=trace,selected=plan,
         selection='Feasible error rules at 128x48, the alternative layout/codec with lowest sampled cross XX/YY MSE, and optionally a smaller-group control. No candidate image used for selection.',

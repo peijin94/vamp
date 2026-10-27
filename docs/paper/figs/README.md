@@ -20,8 +20,8 @@ uncentred reference residual RMS over the full fixed above-10° mask:
 it is shared across all cases and zooms. The difference scale is fixed at −30%
 to +30%, with colourbar extensions marking
 values beyond the displayed range.
-V intensity uses linear scales with −4 to +4 Jy/beam limits in the full field
-(Figure 7) and −10 to +10 Jy/beam in the zoom (Figure 8), with evenly spaced
+V intensity uses linear scales with −2.5 to +2.5 Jy/beam limits in the full field
+(Figure 7) and −8 to +8 Jy/beam in the zoom (Figure 8), with evenly spaced
 colourbar ticks. Figure 7 uses colourbar extensions to show values outside its
 display range. Its 64×64 zoom is centred on the
 largest absolute reference V pixel above 45° at every integration, a compact

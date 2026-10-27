@@ -141,6 +141,10 @@ out-of-range intensities. Figure 8 (Taurus A zoom) retains the linear −10 to
 +10 Jy/beam scale. Both figures retain the ±30% difference scale; no measurements
 are changed.
 
+The next adjustment sets the linear intensity scale to **−2.5 to +2.5 Jy/beam**
+for Figure 7 and **−8 to +8 Jy/beam** for Figure 8. Both retain their existing
+±30% difference scales and the same image data and crop.
+
 ## Timing table replacing Figure 10
 
 The table decomposes the existing **run 2**, which is the median of the three

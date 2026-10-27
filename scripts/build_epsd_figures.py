@@ -137,7 +137,7 @@ def image_comparisons(result):
     limit = 30.0  # Fixed display range in percent; underlying errors are unchanged.
     DEST.mkdir(exist_ok=True)
     for zoom in (False, True):
-        panel_scale = (10. if zoom else 4.) if pol == 'V' else scale
+        panel_scale = (8. if zoom else 2.5) if pol == 'V' else scale
         intensity_norm = (Normalize(vmin=-panel_scale, vmax=panel_scale) if pol == 'V'
                           else SymLogNorm(.01 * panel_scale, vmin=-panel_scale, vmax=panel_scale))
         view = zoom_view if zoom else np.s_[:,:]

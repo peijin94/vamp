@@ -41,7 +41,38 @@ is 1.031244811054661 Jy/beam. Denominators are uncentred RMS over the full fixed
 mask, shared across epsilon values and zooms; the earlier std display convention
 is superseded. V and differences use bwr; I intensity uses viridis. Colourbar
 labels are compact mathematical expressions. Top-row x axes and y axes in
-columns 2–3 are hidden. Each polarization uses its own reference-peak crop.
+columns 2–3 are hidden. I uses its reference-peak crop; the V crop was subsequently
+moved to high elevation as described below.
+
+## V display limits and high-elevation zoom
+
+The later 27 October request fixes V intensity limits to **−30 to +30 Jy/beam**
+in both the full-field and zoom figures. The symmetric-log normalization is
+retained, with its linear threshold at 0.3 Jy/beam; both intensity and difference
+panels use bwr. Differences remain linear at **−30% to +30%**, normalized by the
+unchanged full-mask V reference residual RMS.
+
+The V zoom is centred on the largest absolute reference pixel whose elevation
+exceeds 60° at all 15 original integration times. The complete 128×128 crop is
+also checked to exceed 45° at every epoch. Selection uses only the V reference
+and the original mask's retained time, array location and IERS information.
+It does not use reconstructed images or their errors.
+
+- Centre: zero-based `(y, x) = (1204, 1231)`; reference V = 2.015388 Jy/beam.
+- Crop: `y[1140:1268], x[1167:1295]`, with exclusive stop indices.
+- Minimum centre elevation: **68.967343°** across the integration times.
+- Minimum elevation over every crop pixel and time: **62.633077°**.
+
+[Selection audit](../reports/calibrated-v-zoom.json) records the bounds,
+reference/mask/IERS hashes and geometric inputs. Regenerate it with
+`PYTHONPATH=src:scripts python scripts/select_v_zoom.py` using the retained
+reference FITS, mask provenance and local IERS table. The plotting script checks
+the selection's reference and mask hashes before using its fixed crop.
+
+These are display changes. Scientific error measurements, the fixed above-10°
+comparison domain, I figures, archives and source MS remain unchanged. Checks
+cover every panel's colour limits, colormap and axis visibility, zoom dimensions
+and bounds, recorded FITS errors, figure appearance and PDF compilation.
 
 ## Timing table replacing Figure 10
 

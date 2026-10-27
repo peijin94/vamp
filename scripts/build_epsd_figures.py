@@ -121,13 +121,24 @@ def image_comparisons(result):
         differences.append(100.0 * error / residual_rms)
 
     peak = np.unravel_index(np.argmax(np.where(mask, np.abs(reference), -np.inf)), reference.shape)
-    scale = max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.
+    zoom_view = (slice(max(0, peak[0]-64), min(reference.shape[0], peak[0]+64)),
+                 slice(max(0, peak[1]-64), min(reference.shape[1], peak[1]+64)))
+    if pol == 'V':
+        zoom_record = json.loads(Path('reports/calibrated-v-zoom.json').read_text())
+        if (zoom_record['reference_fits_sha256'] != reference_sha
+                or zoom_record['comparison_mask_sha256'] != mask_info['sha256']
+                or zoom_record['entire_crop_minimum_elevation_deg'] <= 45.):
+            raise ValueError('V zoom does not match the measured reference or high-elevation requirement')
+        bounds = zoom_record['bounds']
+        zoom_view = (slice(bounds['y_start'], bounds['y_stop']), slice(bounds['x_start'], bounds['x_stop']))
+        if reference[zoom_view].shape != (128, 128) or not mask[zoom_view].all():
+            raise ValueError('V zoom must be a complete, valid 128-pixel crop')
+    scale = 30. if pol == 'V' else (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.)
     limit = 30.0  # Fixed display range in percent; underlying errors are unchanged.
     intensity_norm = SymLogNorm(.01 * scale, vmin=-scale, vmax=scale)
     DEST.mkdir(exist_ok=True)
     for zoom in (False, True):
-        view = (slice(max(0, peak[0]-64), min(reference.shape[0], peak[0]+64)),
-                slice(max(0, peak[1]-64), min(reference.shape[1], peak[1]+64))) if zoom else np.s_[:,:]
+        view = zoom_view if zoom else np.s_[:,:]
         extent = ((view[1].start-.5, view[1].stop-.5, view[0].start-.5, view[0].stop-.5)
                   if zoom else (-.5, reference.shape[1]-.5, -.5, reference.shape[0]-.5))
         fig, axes = plt.subplots(2, 3, figsize=(12.4, 8.5), layout='constrained')
@@ -159,7 +170,10 @@ def image_comparisons(result):
                 else:
                     ax.set_ylabel('Pixel y')
         view_label = 'reference-peak crop' if zoom else 'full field'
-        fig.suptitle(f'Stokes {pol} · {view_label} · above 10° · reference residual RMS = {residual_rms:.6f} Jy/beam',
+        elevation_label = 'above 10°'
+        if zoom and pol == 'V':
+            view_label, elevation_label = 'high-elevation reference crop', 'above 45°'
+        fig.suptitle(f'Stokes {pol} · {view_label} · {elevation_label} · reference residual RMS = {residual_rms:.6f} Jy/beam',
                      fontsize=12)
         prefix = 'epsd' if pol=='I' else 'epsd-v'
         fig.savefig(DEST / (prefix+('-zoom.png' if zoom else '-images.png')), dpi=180)

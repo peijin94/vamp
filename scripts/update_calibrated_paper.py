@@ -82,23 +82,26 @@ substituted. The matching V reference residual RMS is 0.384439444 Jy/beam.
 
 [Full three-epsilon V measurements](../../reports/calibrated-epsd-v.json).
 Figures 7–8 use the same layout as the I comparisons in Figures 5–6. The V
-reference selects its own peak crop, which need not cover the I peak region.
+reference selects a high-elevation crop independently of the reconstructions.
 
 ![Recovered Stokes V and RMS-normalized percentage differences](figs/epsd-v-images.png)
 
 *Figure 7. Stokes V counterparts to Figure 5: recovered images above signed
 percentage differences, with epsilon-D 0.01, 0.04 and 0.18 from left to right.
-Both rows use bwr; the intensity scale is symmetric logarithmic and the
-RMS-normalized difference scale is linear from −30% to +30%. Extended colourbar
+Both rows use bwr; the intensity scale is symmetric logarithmic with fixed
+limits of −30 to +30 Jy/beam, and the RMS-normalized difference scale is linear
+from −30% to +30%. Extended difference-colourbar
 ends indicate values outside that display range. Only the fixed above-10° mask
 is shown. Top-row x axes and the last two columns' y axes are omitted.*
 
-![Stokes V reference-peak zooms](figs/epsd-v-zoom.png)
+![Stokes V high-elevation zooms](figs/epsd-v-zoom.png)
 
 *Figure 8. The same V comparisons in a fixed 128×128-pixel crop around the
-largest absolute V reference pixel, retaining the full-field RMS denominator
-and colour scales. The reference defines the crop independently of the
-reconstructions; the peak is not assigned a source identity.*
+largest absolute V reference pixel among those above 60° elevation at every
+integration. Every pixel in the crop remains above 45° throughout the
+observation. The full-field residual RMS denominator and colour scales are
+retained. The reference defines the crop independently of the reconstructions;
+the peak is not assigned a source identity.*
 '''
 
 

@@ -1,0 +1,52 @@
+{
+  "schema": "varquanms.paper-v-zoom/1",
+  "reference_fits": "results/calibrated-template/reference-v/image-image.fits",
+  "reference_fits_sha256": "9a438429b5050f16275658fb98e655ddd2dbab4206b1dd89e8b385db862b30b6",
+  "comparison_mask_sha256": "d2d25dccd02e43027d5f20c1126dd0a9bf7f9949531bcc2416111ab98e530965",
+  "mask_provenance_path": "results/calibrated-template/above10deg.json",
+  "mask_provenance_sha256": "57da528707ba2f64a49b591ecc29e8aa09391a6c84da20d8d649a13cd0c86d1f",
+  "selection": "Largest absolute reference V pixel above 60 degrees at all integration TIME values; first row-major tie",
+  "center_yx": [
+    1204,
+    1231
+  ],
+  "bounds": {
+    "y_start": 1140,
+    "y_stop": 1268,
+    "x_start": 1167,
+    "x_stop": 1295
+  },
+  "pixel_indexing": "zero-based; stop indices exclusive",
+  "center_reference_jy_per_beam": 2.015388250350952,
+  "center_minimum_elevation_deg": 68.96734323129712,
+  "entire_crop_minimum_elevation_deg": 62.63307698865253,
+  "required_entire_crop_minimum_elevation_deg": 45.0,
+  "eligible_pixels": 574218,
+  "astropy_version": "6.0.0",
+  "times_utc_mjd_seconds": [
+    5268786625.260147,
+    5268786635.291167,
+    5268786645.322187,
+    5268786655.353209,
+    5268786665.384229,
+    5268786675.415249,
+    5268786685.44627,
+    5268786695.47729,
+    5268786705.50831,
+    5268786715.5393305,
+    5268786725.570351,
+    5268786735.601371,
+    5268786745.632392,
+    5268786755.663412,
+    5268786765.694432
+  ],
+  "antenna_mean_itrf_metres": [
+    -2409316.8337426665,
+    -4477802.554482933,
+    3839384.2225559545
+  ],
+  "pressure_hpa": 0.0,
+  "iers_file": "results/calibrated-template/finals2000A.all",
+  "iers_sha256": "95a61292c957fa74ed624bd4f7a84b1b984077e412b43ed39b99e092f38de9da",
+  "note": "Display selection only; all reported errors retain the full above-10-degree mask and original residual RMS."
+}

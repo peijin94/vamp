@@ -8,7 +8,7 @@ import numpy as np
 from varquanms.inspection import _open, CORRELATIONS
 
 
-def analyze(source, decoded):
+def analyze(source, decoded, source_column='CORRECTED_DATA', decoded_column='CORRECTED_DATA'):
     amplitude_edges = np.r_[0., np.logspace(-2,8,21), np.inf]
     length_edges = np.array([0.,30.,100.,300.,1000.,3000.,np.inf])
     moments = {}; amplitude = {}; lengths = {}; channel = {}
@@ -43,8 +43,8 @@ def analyze(source, decoded):
         xx,yy=names.index('XX'),names.index('YY')
         for start in range(0,src.nrows(),2048):
             count=min(2048,src.nrows()-start)
-            a=src.getcol('CORRECTED_DATA',start,count)
-            b=dst.getcol('CORRECTED_DATA',start,count)
+            a=src.getcol(source_column,start,count)
+            b=dst.getcol(decoded_column,start,count)
             f=src.getcol('FLAG',start,count)|src.getcol('FLAG_ROW',start,count)[:,None,None]
             valid=~f & np.isfinite(a)
             if not np.all(np.isfinite(b[valid])): raise ValueError('Nonfinite reconstruction')
@@ -70,6 +70,7 @@ def analyze(source, decoded):
                      component_mse=e/n if n else None,
                      relative_rmse=float(np.sqrt(e/p)) if p else None) for n,p,e in raw]
     return dict(schema='varquanms.visibility-error-diagnostics/1',source=str(source),decoded=str(decoded),
+        source_column=source_column,decoded_column=decoded_column,
         products={k:finish(v) for k,v in moments.items()},
         amplitude_edges=[float(v) if np.isfinite(v) else None for v in amplitude_edges],
         length_edges_m=[float(v) if np.isfinite(v) else None for v in length_edges],
@@ -82,9 +83,11 @@ def analyze(source, decoded):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('source',type=Path);p.add_argument('decoded',type=Path);p.add_argument('--report',type=Path,required=True)
+    p.add_argument('--source-column',default='CORRECTED_DATA')
+    p.add_argument('--decoded-column',default='CORRECTED_DATA')
     args=p.parse_args()
     if args.report.exists():raise ValueError('Report must be new')
-    args.report.write_text(json.dumps(analyze(args.source,args.decoded),indent=2,allow_nan=False)+'\n')
+    args.report.write_text(json.dumps(analyze(args.source,args.decoded,args.source_column,args.decoded_column),indent=2,allow_nan=False)+'\n')
 
 
 if __name__=='__main__':main()

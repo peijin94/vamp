@@ -1,0 +1,47 @@
+{
+  "schema": "varquanms.dysco-autocorr-probe/1",
+  "status": "exploratory",
+  "source": "results/dysco-comparison/input-calibrated.ms",
+  "probe": "results/dysco-comparison/direct3-probe-8.partial.ms",
+  "rows": 124256,
+  "integrations": 2,
+  "verified_prefix_columns": [
+    "TIME",
+    "TIME_CENTROID",
+    "ANTENNA1",
+    "ANTENNA2",
+    "UVW",
+    "FLAG",
+    "FLAG_ROW",
+    "WEIGHT",
+    "SIGMA",
+    "FIELD_ID",
+    "DATA_DESC_ID",
+    "OBSERVATION_ID",
+    "SCAN_NUMBER"
+  ],
+  "flagged_input": "zero control",
+  "normalization": "AF",
+  "bits_per_component": 8,
+  "distribution": "TruncatedGaussian",
+  "distribution_truncation": 2.5,
+  "products": {
+    "XX": {
+      "unflagged_samples": 30240,
+      "relative_complex_rms_error": 0.9728862576089877
+    },
+    "XY": {
+      "unflagged_samples": 30240,
+      "relative_complex_rms_error": 0.632652228372534
+    },
+    "YX": {
+      "unflagged_samples": 30240,
+      "relative_complex_rms_error": 0.6600147698474541
+    },
+    "YY": {
+      "unflagged_samples": 30240,
+      "relative_complex_rms_error": 0.9679372250990232
+    }
+  },
+  "scope": "First two integrations only; not an archive acceptance or imaging test."
+}

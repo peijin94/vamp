@@ -6,7 +6,7 @@ import unittest
 
 import numpy as np
 
-from varquanms.imaging import compare_plane, compare_run, difference_metrics
+from varquanms.imaging import compare_plane, compare_run, difference_metrics, image_parameters_match
 
 
 @unittest.skipUnless(importlib.util.find_spec("astropy"), "Install the optional validation extra")
@@ -92,6 +92,17 @@ class ImagingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "settings"):
             compare_run(a, b)
 
+    def test_calibrated_dysco_column_alias_requires_opt_in_and_matching_settings(self):
+        reference = dict(data_column='CORRECTED_DATA', polarizations='V', threads=8)
+        candidate = dict(reference, data_column='DATA')
+        self.assertFalse(image_parameters_match(reference, candidate))
+        self.assertTrue(image_parameters_match(reference, candidate, equivalent_calibrated_columns=True))
+        self.assertFalse(image_parameters_match(candidate, reference, equivalent_calibrated_columns=True))
+        self.assertFalse(image_parameters_match(reference, dict(candidate, threads=4),
+                                                equivalent_calibrated_columns=True))
+        self.assertFalse(image_parameters_match(reference, dict(candidate, data_column='MODEL_DATA'),
+                                                equivalent_calibrated_columns=True))
+
     def test_run_mask_grid_and_binary_values_checked(self):
         import shutil
         a, b = self.root / 'a', self.root / 'b'
@@ -104,6 +115,7 @@ class ImagingTests(unittest.TestCase):
         mask = self.write('mask.fits', np.ones((10,10)), ELCUT=10.)
         report = compare_run(a, b, mask)
         self.assertEqual(report['comparison_mask']['pixels'], 100)
+        self.assertNotIn('data_columns', compare_run(a, b, mask, equivalent_calibrated_columns=True))
         invalid = self.write('badmask.fits', np.full((10,10), 2))
         with self.assertRaisesRegex(ValueError, 'only zero and one'):
             compare_run(a, b, invalid)

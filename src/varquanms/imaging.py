@@ -116,12 +116,26 @@ def compare_plane(reference_path, candidate_path, aperture_radius=4, comparison_
     return result, (reference, candidate, valid)
 
 
-def compare_run(reference_dir, candidate_dir, mask_path=None):
+def image_parameters_match(reference, candidate, equivalent_calibrated_columns=False):
+    """Compare imaging settings, optionally allowing a verified DATA alias."""
+    if reference == candidate:
+        return True
+    if not equivalent_calibrated_columns:
+        return False
+    if (reference.get('data_column'), candidate.get('data_column')) != ('CORRECTED_DATA', 'DATA'):
+        return False
+    a, b = dict(reference), dict(candidate)
+    del a['data_column'], b['data_column']
+    return a == b
+
+
+def compare_run(reference_dir, candidate_dir, mask_path=None, equivalent_calibrated_columns=False):
     reference_dir, candidate_dir = Path(reference_dir), Path(candidate_dir)
     runs = [json.loads((path / "complete.json").read_text()) for path in (reference_dir, candidate_dir)]
     if any(r.get("status") != "complete" or r.get("source_unchanged") is not True for r in runs):
         raise ValueError("Imaging runs must be complete with unchanged source checksums")
-    if runs[0]["parameters"] != runs[1]["parameters"] or runs[0]["container_id"] != runs[1]["container_id"]:
+    if (not image_parameters_match(runs[0]["parameters"], runs[1]["parameters"], equivalent_calibrated_columns)
+            or runs[0]["container_id"] != runs[1]["container_id"]):
         raise ValueError("Imaging settings or container versions differ")
     files = sorted(p.name for p in reference_dir.glob("image-*.fits"))
     if files != sorted(p.name for p in candidate_dir.glob("image-*.fits")):
@@ -185,6 +199,11 @@ def compare_run(reference_dir, candidate_dir, mask_path=None):
                               ("All metrics use the supplied fixed elevation mask; no primary-beam correction is implied" if mask is not None else
                                "Celestial WCS validity excludes SIN projection corners; this is not a primary-beam or sky mask"),
                               "No calibration-solution, solar-identification, absolute-flux or temporal validation is implied"]}
+    if (equivalent_calibrated_columns
+            and runs[0]['parameters'].get('data_column') != runs[1]['parameters'].get('data_column')):
+        result['data_columns'] = {'reference':runs[0]['parameters']['data_column'],
+                                  'candidate':runs[1]['parameters']['data_column'],
+                                  'interpretation':'Caller must independently verify that candidate DATA represents the calibrated CORRECTED_DATA stream.'}
     return result
 
 

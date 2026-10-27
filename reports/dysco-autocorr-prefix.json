@@ -1,0 +1,210 @@
+{
+  "schema": "varquanms.autocorrelation-prefix-comparison/1",
+  "status": "measured",
+  "source": "results/dysco-comparison/input-calibrated.ms",
+  "rows": 124256,
+  "integrations": 2,
+  "verified_prefix_columns": [
+    "TIME",
+    "ANTENNA1",
+    "ANTENNA2",
+    "UVW",
+    "FLAG",
+    "FLAG_ROW",
+    "WEIGHT",
+    "SIGMA",
+    "DATA_DESC_ID",
+    "FIELD_ID"
+  ],
+  "time_values": [
+    5268786625.260147,
+    5268786635.291167
+  ],
+  "scope": "Unflagged autocorrelations in the same input row prefix; no imaging or full-MS acceptance is implied.",
+  "cases": [
+    {
+      "label": "varquan-eps018",
+      "ms": "results/calibrated-epsd-dense/epsd-018-dense.ms",
+      "column": "CORRECTED_DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.004454683450832556
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.007423452115274745
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.007423453069119461
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.005532232699904976
+        }
+      }
+    },
+    {
+      "label": "dysco-rf03-nan",
+      "ms": "results/dysco-comparison/dysco-rf-03-nan.ms",
+      "column": "DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.1513765066494667
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.21238856027807984
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.2106295361914062
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.1771704952638329
+        }
+      }
+    },
+    {
+      "label": "dysco-rf03-t15-nan",
+      "ms": "results/dysco-comparison/dysco-rf-03-t15-nan.ms",
+      "column": "DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.1413933685812895
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.20709451594107642
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.2045631425139133
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.16632445895459455
+        }
+      }
+    },
+    {
+      "label": "dysco-rf08-nan",
+      "ms": "results/dysco-comparison/dysco-rf-08-nan.ms",
+      "column": "DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.024110642907432547
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.021525521663035653
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.021459947339441683
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.022123819331423513
+        }
+      }
+    },
+    {
+      "label": "dysco-rf08-t15-nan",
+      "ms": "results/dysco-comparison/dysco-rf-08-t15-nan.ms",
+      "column": "DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.006596094423244164
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.006914203084635768
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.006895507529030858
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.0064530351424248525
+        }
+      }
+    },
+    {
+      "label": "dysco-af03-nan",
+      "ms": "results/dysco-comparison/dysco-af-03-nan.ms",
+      "column": "DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.9722684972754232
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.6608206787847258
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.6733323976330513
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.9660665895533641
+        }
+      }
+    },
+    {
+      "label": "dysco-af08-nan",
+      "ms": "results/dysco-comparison/dysco-af-08-nan.ms",
+      "column": "DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.9722684974202537
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.6594669794227012
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.6721127357104425
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.9660665895867835
+        }
+      }
+    },
+    {
+      "label": "dysco-af08-zero-probe",
+      "ms": "results/dysco-comparison/direct3-probe-8.partial.ms",
+      "column": "DATA",
+      "products": {
+        "XX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.9728862576089877
+        },
+        "XY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.632652228372534
+        },
+        "YX": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.6600147698474541
+        },
+        "YY": {
+          "unflagged_samples": 30240,
+          "relative_complex_rms_error": 0.9679372250990232
+        }
+      }
+    }
+  ]
+}

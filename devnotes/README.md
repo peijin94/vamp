@@ -1,5 +1,6 @@
 # Development notes
 
+- [Matched calibrated I/V and rate comparison against Dysco](compare-dysco.md)
 - [Calibrated archive profiling, optimization and standard I/V validation](calibrated-performance.md)
 
 - [Fixed epsilon D: expanded bit ladder and calibrated image comparisons](epsd-dense.md)

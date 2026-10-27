@@ -78,8 +78,9 @@ and bounds, recorded FITS errors, figure appearance and PDF compilation.
 
 The next request replaces the diffuse high-elevation field with a compact V
 feature at a radio source and widens V intensity limits to **−120 to +120
-Jy/beam**. Both full-field and zoomed V images use those limits, bwr and the
-existing symmetric-log linear threshold of 0.3 Jy/beam. Differences remain
+Jy/beam**. Both full-field and zoomed V images initially used those limits, bwr
+and the existing symmetric-log linear threshold of 0.3 Jy/beam; the subsequent
+linear-scale revision below supersedes that normalization. Differences remain
 linear at ±30%, with the same full-mask reference residual RMS.
 
 Searching reference V peaks above 45° at every integration selects `(y,x) =
@@ -111,6 +112,19 @@ difference bounds, bwr colormaps, hidden axes and new crop bounds are checked
 while regenerating; dashed circles locate the reference peak in the recovered
 V zoom panels. The paper and PDF captions describe the source association
 and its polarization limitation.
+
+## Linear V intensity scale
+
+The subsequent request removes the symmetric-log stretch from V intensity.
+Both full-field and Taurus A zoom panels now use a strictly linear mapping from
+**−120 to +120 Jy/beam**, with colourbar ticks at −120, −60, 0, 60 and 120.
+The bwr colormap, source crop, reference-peak circles and linear ±30% difference
+panels are retained. I intensity keeps its existing display scale.
+
+The figures and paper/PDF captions are regenerated from the existing FITS.
+Checks verify the V normalization is linear, limits and ticks match the request,
+and crop/axes remain correct. No imaging, compression or scientific metric is
+recomputed; all measurement reports and I figures remain unchanged.
 
 ## Timing table replacing Figure 10
 

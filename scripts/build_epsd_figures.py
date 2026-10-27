@@ -69,7 +69,7 @@ def methods():
 def image_comparisons(result):
     """Recovered I or V over RMS-normalized percent error, three epsilon columns."""
     from astropy.io import fits
-    from matplotlib.colors import SymLogNorm
+    from matplotlib.colors import Normalize, SymLogNorm
     from matplotlib.ticker import PercentFormatter
     from varquanms.imaging import read_fits, _grid, file_sha256
     from report_fixed_rate import REF
@@ -135,7 +135,8 @@ def image_comparisons(result):
             raise ValueError('V zoom must match its complete, valid recorded crop')
     scale = 120. if pol == 'V' else (max(float(np.max(np.abs(a[mask]))) for a in [reference, *images]) or 1.)
     limit = 30.0  # Fixed display range in percent; underlying errors are unchanged.
-    intensity_norm = SymLogNorm(.3 if pol == 'V' else .01 * scale, vmin=-scale, vmax=scale)
+    intensity_norm = (Normalize(vmin=-scale, vmax=scale) if pol == 'V'
+                      else SymLogNorm(.01 * scale, vmin=-scale, vmax=scale))
     DEST.mkdir(exist_ok=True)
     for zoom in (False, True):
         view = zoom_view if zoom else np.s_[:,:]
@@ -155,7 +156,7 @@ def image_comparisons(result):
             axes[1, col].set_title('Difference', fontsize=11)
         intensity_bar = fig.colorbar(top, ax=axes[0, :].tolist(), shrink=.85, pad=.02,
                                      label=rf'${pol}_{{\rm quant}}$ [Jy/beam]')
-        ticks = [-scale, -.1*scale, 0, .1*scale, scale]
+        ticks = np.linspace(-scale, scale, 5) if pol == 'V' else [-scale, -.1*scale, 0, .1*scale, scale]
         intensity_bar.set_ticks(ticks)
         intensity_bar.set_ticklabels([f'{value:g}' if pol == 'V' else f'{value:.2g}' for value in ticks])
         difference_bar = fig.colorbar(bottom, ax=axes[1, :].tolist(), shrink=.85, pad=.02,
